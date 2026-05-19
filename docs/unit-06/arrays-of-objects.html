@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student RPG Guide: Arrays of Objects — Unit 6</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 6</a>
+    <span class="sep">/</span>
+    <span class="here">Student Guide: Arrays of Objects</span>
+</nav>
+
+<h1>Student RPG Guide: Party Arrays + Multi-Combat</h1>
+
+<div class="callout">
+    <strong>One file: <code>PartyManager.java</code>.</strong> Your RPG has fought one monster at a time since Unit 3. This guide replaces that with a party of 4 heroes fighting 3+ enemies simultaneously. Arrays of objects, null-checking, helper methods, and a turn-based combat loop.
+</div>
+
+<h2>References</h2>
+
+<ul>
+    <li><a href="../unit-05/player-builder.html">Player.java (Unit 5)</a> — the class you just built, now stored in arrays</li>
+    <li><a href="../unit-05/monster-builder.html">Monster.java (Unit 5)</a> — enemies with attack(), isAlive(), defeatedCount</li>
+    <li><a href="card-deck.html">CardDeck</a> — array of objects, pointer-based tracking</li>
+    <li><a href="high-score.html">High Score Table</a> — looping arrays, finding max, shift for insert</li>
+    <li><a href="array-traversal.html">Array Traversal</a> — <code>for (int i = 0; i < arr.length; i++)</code></li>
+    <li><a href="array-algorithms.html">Array Algorithms</a> — null checks, counting, picking random elements</li>
+</ul>
+
+<hr>
+
+<h2>Spec: PartyManager.java</h2>
+
+<p>All methods are <code>static</code>. No instance variables this time — just a utility class with a <code>main()</code> that ties everything together.</p>
+
+<h3>Part 1: Party Setup (in main)</h3>
+
+<ul>
+    <li>Create a <code>Player[]</code> of size 4</li>
+    <li>Fill each slot with a different character:
+        <ul>
+            <li><code>[0]</code> Warrior — HP:30 STR:18 DEX:12 INT:10 CON:14</li>
+            <li><code>[1]</code> Mage — HP:18 STR:10 DEX:14 INT:18 CON:12</li>
+            <li><code>[2]</code> Rogue — HP:22 STR:14 DEX:18 INT:12 CON:10</li>
+            <li><code>[3]</code> Cleric — HP:26 STR:12 DEX:10 INT:14 CON:16</li>
+        </ul>
+    </li>
+    <li>Print all four party members using a loop</li>
+    <li><strong>Important:</strong> slots start null. You must assign before using.</li>
+</ul>
+
+<h3>Part 2: Helper Methods</h3>
+
+<table>
+    <tr><th>Method</th><th>Returns</th><th>What It Does</th></tr>
+    <tr>
+        <td><code>countAlive(Player[] party)</code></td>
+        <td><code>int</code></td>
+        <td>Count how many party members are NOT null AND isAlive() returns true</td>
+    </tr>
+    <tr>
+        <td><code>countAlive(Monster[] enemies)</code></td>
+        <td><code>int</code></td>
+        <td>Same, for monsters. <strong>Method overloading:</strong> same name, different parameter type.</td>
+    </tr>
+    <tr>
+        <td><code>pickRandomAlive(Player[] party)</code></td>
+        <td><code>Player</code></td>
+        <td>Pick a random alive player. Return null if everyone is dead. <strong>Algorithm:</strong> loop to find alive targets, pick one at random.</td>
+    </tr>
+    <tr>
+        <td><code>pickRandomAlive(Monster[] enemies)</code></td>
+        <td><code>Monster</code></td>
+        <td>Same, for monsters. More overloading.</td>
+    </tr>
+    <tr>
+        <td><code>allDead(Player[] party)</code></td>
+        <td><code>boolean</code></td>
+        <td>Is every party member dead or null? (countAlive == 0)</td>
+    </tr>
+    <tr>
+        <td><code>allDead(Monster[] enemies)</code></td>
+        <td><code>boolean</code></td>
+        <td>Same, for monsters.</td>
+    </tr>
+</table>
+
+<h3>Part 3: multiCombat()</h3>
+
+<p><strong>Signature:</strong> <code>public static void multiCombat(Player[] party, Monster[] enemies)</code></p>
+
+<p>This is a <strong>simplified combat loop</strong>. Don't worry about turns, initiative, or targeting choices — just the core pattern.</p>
+
+<p><strong>The outer loop</strong> — while both sides have alive members:</p>
+
+<ol>
+    <li><strong>Party attacks each round:</strong> For each alive player:
+        <ul>
+            <li>Pick a random alive enemy as target (use <code>pickRandomAlive(enemies)</code>)</li>
+            <li>If no targets remain, break</li>
+            <li><strong>Attack roll:</strong> d20 + (player.strength / 4). If >= enemy armorClass, it hits.</li>
+            <li><strong>Damage:</strong> d6 + (player.strength / 4)</li>
+            <li>Call <code>enemy.takeDamage(damage)</code></li>
+            <li>If enemy dies: print "&lt;enemy&gt; has been slain!"</li>
+            <li>Check if all enemies are dead → break out of party loop early</li>
+        </ul>
+    </li>
+    <li><strong>Enemies attack back:</strong> For each alive enemy:
+        <ul>
+            <li>Pick a random alive party member</li>
+            <li>If no targets, break</li>
+            <li><strong>Attack roll:</strong> d20 + (enemy.armorClass / 4). If >= player AC (use a fixed AC of 14), it hits.</li>
+            <li><strong>Damage:</strong> enemy.attack() (which handles boss advantage)</li>
+            <li>Call <code>player.takeDamage(damage)</code></li>
+            <li>If player dies: print "&lt;player&gt; has fallen!"</li>
+            <li>Check if all party members are dead → break early</li>
+        </ul>
+    </li>
+</ol>
+
+<p><strong>After the loop:</strong> Print VICTORY or DEFEAT. Print total monsters defeated using <code>Monster.getDefeatedCount()</code>.</p>
+
+<h3>Round Display</h3>
+
+<p>Between rounds, print a status bar:</p>
+
+<pre><code>=== Round N ===
+Party: Warrior(HP:30) Mage(HP:10) Rogue(DEAD) Cleric(HP:26)
+Enemies: Goblin(HP:3) Skeleton(HP:18) Orc(HP:20)
+---</code></pre>
+
+<hr>
+
+<h2>Test It</h2>
+
+<p>In <code>main()</code>, after party setup:</p>
+
+<pre><code>// === Test 1: countAlive ===
+System.out.println("Party alive: " + countAlive(party) + "/" + party.length);
+// Expected: 4/4
+
+// === Test 2: pickRandomAlive returns a valid player ===
+Player target = pickRandomAlive(party);
+System.out.println(target != null);  // true
+
+// === Test 3: allDead on fresh party ===
+System.out.println(allDead(party));  // false
+
+// === Test 4: Create enemy group ===
+Monster[] enemies = new Monster[3];
+enemies[0] = new Monster("Goblin", 12, 12, 6);
+enemies[1] = new Monster("Skeleton", 18, 13, 8);
+enemies[2] = new Monster("Orc", 20, 14, 10);
+
+// === Test 5: Run combat ===
+multiCombat(party, enemies);
+// Should see rounds print, some hits, some deaths, and a winner
+
+// === Test 6: After combat — defeatedCount ===
+System.out.println("Monsters killed: " + Monster.getDefeatedCount());
+// Should be > 0 (unless party wiped immediately)
+
+// === Test 7: Null safety — party with gaps ===
+Player[] partialParty = new Player[3];
+partialParty[0] = new Player("Solo", 20, 14, 12, 10, 10);
+// slots 1 and 2 are null
+System.out.println(countAlive(partialParty));   // 1 — nulls skipped
+System.out.println(allDead(partialParty));       // false
+System.out.println(pickRandomAlive(partialParty).getName()); // "Solo"</code></pre>
+
+<hr>
+
+<h2>Integrate Into Your RPG</h2>
+
+<table>
+    <tr><th>Before</th><th>After</th></tr>
+    <tr><td>One player, one monster per fight</td><td>Party of 4 vs group of 3+</td></tr>
+    <tr><td><code>while (playerHP > 0 && monsterHP > 0)</code></td><td><code>while (!allDead(party) && !allDead(enemies))</code></td></tr>
+    <tr><td>Direct HP variables</td><td>Player.takeDamage() and Monster.takeDamage()</td></tr>
+    <tr><td>No kill tracking</td><td>Monster.getDefeatedCount()</td></tr>
+</table>
+
+</body>
+</html>

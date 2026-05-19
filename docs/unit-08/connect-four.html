@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connect Four Walkthrough — Unit 8</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 8</a>
+    <span class="sep">/</span>
+    <span class="here">Connect Four</span>
+</nav>
+
+<h1>Connect Four — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    It builds on Tic-Tac-Toe's 2D array patterns with added gravity —
+    pieces fall to the lowest empty row in a column.
+    Use this page as a reference when building your own projects.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Build a two-player Connect Four game on a 6-row × 7-column board. Pieces drop to the bottom. Check for four-in-a-row in any direction.</p>
+
+<pre><code><span class="output"> 0 1 2 3 4 5 6</span>
+<span class="output">| | | | | | | |</span>
+<span class="output">| | | | | | | |</span>
+<span class="output">| | | | | | | |</span>
+<span class="output">| | | |X| | | |</span>
+<span class="output">| | |O|X| | | |</span>
+<span class="output">|O|X|O|X| | | |</span>
+<span class="output">---------------</span>
+<span class="output">Player X wins!</span></code></pre>
+
+<h2>Step 1: The Board</h2>
+
+<pre><code>public class ConnectFour {
+    private char[][] board;  // 6 rows, 7 cols
+    private char currentPlayer;
+
+    public ConnectFour() {
+        board = new char[6][7];
+        for (int r = 0; r < 6; r++)
+            for (int c = 0; c < 7; c++)
+                board[r][c] = ' ';
+        currentPlayer = 'X';
+    }</code></pre>
+
+<h2>Step 2: Drop a Piece (Gravity Logic)</h2>
+
+<pre><code>    public boolean dropPiece(int col) {
+        if (col < 0 || col > 6) {
+            System.out.println("Column must be 0-6.");
+            return false;
+        }
+        // Start from the bottom row, find first empty spot
+        for (int row = 5; row >= 0; row--) {
+            if (board[row][col] == ' ') {
+                board[row][col] = currentPlayer;
+                return true;
+            }
+        }
+        System.out.println("Column is full!");
+        return false;
+    }</code></pre>
+
+<p>
+    <strong>Walk upward from the bottom.</strong> Row 5 is the bottom, row 0 is the top.
+    Find the first empty cell going up — that's where the piece lands.
+</p>
+
+<h2>Step 3: Check for Four-in-a-Row</h2>
+
+<p>Four directions: horizontal, vertical, and two diagonals. Check from every cell.</p>
+
+<pre><code>    public boolean checkWin() {
+        // Check all four directions from every cell
+        for (int r = 0; r < 6; r++) {
+            for (int c = 0; c < 7; c++) {
+                if (board[r][c] == ' ') continue;
+                char player = board[r][c];
+
+                // Horizontal (right)
+                if (c <= 3 &&
+                    board[r][c+1] == player &&
+                    board[r][c+2] == player &&
+                    board[r][c+3] == player) return true;
+
+                // Vertical (down)
+                if (r <= 2 &&
+                    board[r+1][c] == player &&
+                    board[r+2][c] == player &&
+                    board[r+3][c] == player) return true;
+
+                // Diagonal down-right
+                if (r <= 2 && c <= 3 &&
+                    board[r+1][c+1] == player &&
+                    board[r+2][c+2] == player &&
+                    board[r+3][c+3] == player) return true;
+
+                // Diagonal up-right
+                if (r >= 3 && c <= 3 &&
+                    board[r-1][c+1] == player &&
+                    board[r-2][c+2] == player &&
+                    board[r-3][c+3] == player) return true;
+            }
+        }
+        return false;
+    }</code></pre>
+
+<p>
+    <strong>Boundary checks prevent ArrayIndexOutOfBounds.</strong>
+    Can't check horizontal at column 5 (needs 3 more to the right).
+    Can't check vertical at row 4 (needs 3 more below). The bounds
+    (c <= 3, r <= 2, etc.) ensure we stay in the array.
+</p>
+
+<h2>Step 4: Display and Game Loop</h2>
+
+<pre><code>    public void display() {
+        System.out.println(" 0 1 2 3 4 5 6");
+        for (int r = 0; r < 6; r++) {
+            for (int c = 0; c < 7; c++) {
+                System.out.print("|" + board[r][c]);
+            }
+            System.out.println("|");
+        }
+        System.out.println("---------------");
+    }
+
+    public void play() {
+        Scanner input = new Scanner(System.in);
+        int moves = 0;
+        while (moves < 42) {  // 6 × 7 = 42 max moves
+            display();
+            System.out.print("Player " + currentPlayer + ", choose column (0-6): ");
+            int col = input.nextInt();
+
+            if (dropPiece(col)) {
+                moves++;
+                if (checkWin()) {
+                    display();
+                    System.out.println("Player " + currentPlayer + " wins!");
+                    return;
+                }
+                currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+            }
+        }
+        System.out.println("It's a tie!");
+    }</code></pre>
+
+<h2>Extending the Program</h2>
+<ul>
+    <li>Add an AI that blocks three-in-a-row threats.</li>
+    <li>Highlight the winning four pieces on display.</li>
+    <li>Add an undo feature (store move history).</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    The gravity logic (walking from bottom to top) is the same as finding
+    the first empty inventory slot. The multi-direction win check is the
+    same pattern as checking for contiguous dungeon rooms or spell area-of-effect.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="2d-array-basics.html">2D Array Basics</a></li>
+    <li><a href="2d-array-traversal.html">2D Array Traversal</a></li>
+    <li><a href="tic-tac-toe.html">Tic-Tac-Toe</a> — simpler 2D game</li>
+</ul>
+
+</body>
+</html>

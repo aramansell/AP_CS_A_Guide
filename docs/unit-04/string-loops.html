@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loops + Strings — Unit 4</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 4</a>
+    <span class="sep">/</span>
+    <span class="here">Loops + Strings</span>
+</nav>
+
+<h1>Loops + Strings</h1>
+
+<p>
+    Strings are sequences of characters. Loops let you visit every character one at
+    a time — <strong>string traversal</strong>. You can search, count, transform, and
+    validate text.
+</p>
+
+<h2>Accessing Characters: charAt()</h2>
+
+<p><code>charAt(index)</code> returns the character at that position. Index starts at 0.</p>
+
+<pre><code>String weapon = "Longsword";
+// Index:          012345678
+
+weapon.charAt(0);  // 'L'
+weapon.charAt(4);  // 's'
+weapon.charAt(8);  // 'd'</code></pre>
+
+<div class="callout lab bug-hunt">
+    <h3>🐛 Bug Hunt: Out of Bounds</h3>
+    <p>A student wrote this code to print the last letter of a weapon's name:</p>
+<pre><code>String weapon = "Longsword";
+char lastLetter = weapon.charAt(weapon.length());
+System.out.println(lastLetter);</code></pre>
+    <p><strong>Your Task:</strong> Why does this code throw a <code>StringIndexOutOfBoundsException</code>? What exact change needs to be made to fix it?</p>
+</div>
+
+<h2>String Traversal Pattern</h2>
+
+<pre><code>String spell = "Fireball";
+
+for (int i = 0; i < spell.length(); i++) {
+    char c = spell.charAt(i);
+    System.out.println("Position " + i + ": " + c);
+}</code></pre>
+
+<p class="output">Position 0: F<br>Position 1: i<br>Position 2: r<br>Position 3: e<br>Position 4: b<br>Position 5: a<br>Position 6: l<br>Position 7: l</p>
+
+<h2>Counting Characters</h2>
+
+<pre><code>// How many 'l's in "Fireball"?
+String spell = "Fireball";
+int count = 0;
+
+for (int i = 0; i < spell.length(); i++) {
+    if (spell.charAt(i) == 'l') {
+        count++;
+    }
+}
+System.out.println("Found " + count + " 'l' characters.");
+// → "Found 2 'l' characters."</code></pre>
+
+<h2>Building Strings in a Loop</h2>
+
+<p>
+    Strings are immutable — you can't change them. Instead, <strong>build a new one</strong>.
+</p>
+
+<pre><code>// Reverse a string
+String original = "sword";
+String reversed = "";
+
+for (int i = original.length() - 1; i >= 0; i--) {
+    reversed += original.charAt(i);
+}
+System.out.println(reversed);  // "drows"</code></pre>
+
+<div class="callout lab socratic">
+    <h3>🧠 Socratic Checkpoint: The Memory Cost</h3>
+    <p>Strings in Java are <em>immutable</em>, meaning they can never be changed once created. Every time you use <code>+=</code>, Java creates a brand new String and throws the old one away.</p>
+    <p><strong>Think about it:</strong> If you use a loop to build a String of 1,000 characters one by one using <code>+=</code>, how many temporary Strings does Java have to create and destroy? (Hint: Later, you'll learn about <code>StringBuilder</code> which solves this problem!)</p>
+</div>
+
+<h2>Application: RPG Word Filter</h2>
+
+<pre><code>// Check if a spell name starts with "Fire"
+String spell = "Fireball";
+
+if (spell.length() >= 4) {
+    String prefix = "";
+    for (int i = 0; i < 4; i++) {
+        prefix += spell.charAt(i);
+    }
+    if (prefix.equals("Fire")) {
+        System.out.println("FIRE spell detected! Boost damage.");
+    }
+}</code></pre>
+
+<p>Easier way (once you know substring):</p>
+
+<pre><code>if (spell.substring(0, 4).equals("Fire")) { ... }</code></pre>
+
+<h2>Finding Substrings</h2>
+
+<pre><code>// Does the password contain "dragon"?
+String password = "red-dragon-gate";
+String keyword = "dragon";
+boolean found = false;
+
+for (int i = 0; i <= password.length() - keyword.length(); i++) {
+    String piece = password.substring(i, i + keyword.length());
+    if (piece.equals(keyword)) {
+        found = true;
+        break;  // stop — found it
+    }
+}</code></pre>
+
+<h2>Application: Combat Command Parser</h2>
+
+<pre><code>Scanner input = new Scanner(System.in);
+System.out.print("Action: ");
+String cmd = input.nextLine();
+
+// Parse "attack goblin" into verb and target
+int spacePos = -1;
+for (int i = 0; i < cmd.length(); i++) {
+    if (cmd.charAt(i) == ' ') {
+        spacePos = i;
+        break;
+    }
+}
+
+if (spacePos == -1) {
+    System.out.println("One-word command: " + cmd);
+} else {
+    String verb = cmd.substring(0, spacePos);
+    String target = cmd.substring(spacePos + 1);
+    System.out.println("Verb: \"" + verb + "\" → Target: \"" + target + "\"");
+}</code></pre>
+
+<h2>Character Testing Methods</h2>
+
+<p>These <code>Character</code> class methods test what kind of character something is:</p>
+
+<table>
+    <tr><th>Method</th><th>True for...</th></tr>
+    <tr><td><code>Character.isDigit(c)</code></td><td>'0'–'9'</td></tr>
+    <tr><td><code>Character.isLetter(c)</code></td><td>'a'–'z', 'A'–'Z'</td></tr>
+    <tr><td><code>Character.isUpperCase(c)</code></td><td>'A'–'Z'</td></tr>
+    <tr><td><code>Character.isLowerCase(c)</code></td><td>'a'–'z'</td></tr>
+    <tr><td><code>Character.isWhitespace(c)</code></td><td>space, tab, newline</td></tr>
+</table>
+
+<pre><code>// Count only the letters in a player name
+String name = "Gandalf99";
+int letters = 0;
+for (int i = 0; i < name.length(); i++) {
+    if (Character.isLetter(name.charAt(i))) {
+        letters++;
+    }
+}</code></pre>
+
+<h2>Tinker Challenge: The Cipher</h2>
+
+<div class="callout lab tinker">
+    <h3>🛠️ Tinker Challenge: Vowel Counter & Parser</h3>
+    <p>Create a tool that analyzes magical incantations (Strings).</p>
+    <ul>
+        <li>Ask the user to enter a spell name.</li>
+        <li>Write a loop that traverses the string and counts the total number of vowels (A, E, I, O, U). Make sure it works for both uppercase and lowercase!</li>
+        <li><strong>Bonus:</strong> Modify your loop so it also counts how many numbers (digits) are in the spell name, using the <code>Character.isDigit()</code> method.</li>
+    </ul>
+    <p><em>Testing:</em> If the user types "F1r3bAll", what should the vowel count be? What should the digit count be?</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recursion Basics — Unit 10</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 10</a>
+    <span class="sep">/</span>
+    <span class="here">Recursion Basics</span>
+</nav>
+
+<h1>Recursion Basics</h1>
+
+<p>
+    <strong>Recursion</strong> is when a method calls itself to solve a smaller version
+    of the same problem. It's like a Russian nesting doll — each doll contains a smaller doll,
+    until you reach the tiniest solid one at the center.
+</p>
+
+<h2>The Two Required Parts</h2>
+
+<p>Every recursive method MUST have exactly two things:</p>
+
+<ol>
+    <li>
+        <strong>Base case</strong> — when the problem is trivially small, stop.
+        This prevents infinite recursion and <code>StackOverflowError</code>.
+    </li>
+    <li>
+        <strong>Recursive call</strong> — call the same method on a smaller/simpler
+        problem that moves toward the base case.
+    </li>
+</ol>
+
+<pre><code>public static void countdown(int n) {
+    if (n <= 0) {                    // BASE CASE: stop here
+        System.out.println("Go!");
+        return;
+    }
+    System.out.print(n + "... ");    // do one step
+    countdown(n - 1);               // RECURSIVE: smaller number
+}</code></pre>
+
+<p>
+    <code>countdown(3)</code> prints: <code>3... 2... 1... Go!</code>
+</p>
+
+<h2>The Call Stack</h2>
+
+<p>
+    Every time a method is called, Java pushes a <strong>stack frame</strong> — a block
+    of memory holding that call's parameters and local variables. When the method returns,
+    its frame is popped off.
+</p>
+
+<p>
+    During recursion, the stack grows:
+</p>
+
+<pre><code>countdown(3)
+  → calls countdown(2)
+      → calls countdown(1)
+          → calls countdown(0)
+              → base case! returns
+          → returns
+      → returns
+  → returns</code></pre>
+
+<p>
+    Each call has its <strong>own</strong> copy of <code>n</code>. They don't interfere
+    with each other. When a call returns, its <code>n</code> is gone.
+</p>
+
+<div class="callout">
+    <strong>Why "StackOverflowError"?</strong> The call stack has a maximum size.
+    If recursion never hits a base case, it keeps pushing frames until the stack
+    overflows — Java throws <code>StackOverflowError</code> and your program crashes.
+</div>
+
+<h2>Factorial — The Classic Example</h2>
+
+<p>
+    The factorial of n, written n!, is the product of all integers 1 through n:
+</p>
+
+<pre><code>5! = 5 × 4 × 3 × 2 × 1 = 120</code></pre>
+
+<p>Recursive definition: n! = n × (n-1)!, with 0! = 1 as the base case.</p>
+
+<pre><code>public static int factorial(int n) {
+    if (n <= 1) return 1;           // BASE: 0! = 1, 1! = 1
+    return n * factorial(n - 1);    // n! = n × (n-1)!
+}</code></pre>
+
+<p>Tracing <code>factorial(4)</code>:</p>
+
+<pre><code>factorial(4)
+  → 4 × factorial(3)
+          → 3 × factorial(2)
+                  → 2 × factorial(1)
+                          → 1          (base case!)
+                  → 2 × 1 = 2
+          → 3 × 2 = 6
+  → 4 × 6 = 24</code></pre>
+
+<p>
+    Notice: the multiplication <em>waits</em> for the recursive call to return.
+    The <code>4 ×</code> sits on the stack until <code>factorial(3)</code> finishes.
+</p>
+
+<h2>The Trust Fall</h2>
+
+<p>
+    The hardest mental shift with recursion is <strong>trusting the recursive call</strong>.
+    When you write <code>return n * factorial(n - 1)</code>, you must believe that
+    <code>factorial(n - 1)</code> correctly returns (n-1)!. You don't trace into it —
+    you <em>trust</em> it.
+</p>
+
+<p>
+    This is called the <strong>recursive leap of faith</strong>. You verify:
+</p>
+
+<ol>
+    <li>The base case is correct (factorial(1) should be 1 — yes)</li>
+    <li>The recursive call moves toward the base case (n-1 is smaller — yes)</li>
+    <li>Assuming the recursive call works, the combination is correct
+        (n × (n-1)! = n! — yes)</li>
+</ol>
+
+<p>If all three hold, the method works. You don't need to trace every level.</p>
+
+<h2>Recursive Count-Up</h2>
+
+<p>
+    What if you print <em>after</em> the recursive call?
+</p>
+
+<pre><code>public static void countup(int n) {
+    if (n <= 0) return;       // BASE
+    countup(n - 1);           // recurse first
+    System.out.print(n + " "); // print on the way BACK
+}</code></pre>
+
+<p>
+    <code>countup(3)</code> prints: <code>1 2 3</code>
+</p>
+
+<p>
+    The printing happens during the <strong>unwinding</strong> — as each call returns,
+    it prints its n. The deepest call (countup(0)) returns first, then countup(1) prints 1,
+    then countup(2) prints 2, then countup(3) prints 3.
+</p>
+
+<h2>Common Traps</h2>
+
+<table>
+    <tr>
+        <th>Trap</th>
+        <th>What happens</th>
+        <th>Fix</th>
+    </tr>
+    <tr>
+        <td>No base case</td>
+        <td><code>StackOverflowError</code></td>
+        <td>Add stop condition that always gets reached</td>
+    </tr>
+    <tr>
+        <td>Recursive call moves away from base</td>
+        <td>Same — never stops</td>
+        <td>n → n-1 (toward 0). NOT n → n+1 (away)</td>
+    </tr>
+    <tr>
+        <td>Base case unreachable</td>
+        <td>Same — e.g., step by 2, base is at 1, never hits it exactly</td>
+        <td>Use n <= 1 not n == 1, or carefully design step size</td>
+    </tr>
+    <tr>
+        <td>Forgetting return value</td>
+        <td>Wrong result (void methods excepted)</td>
+        <td>Every non-void branch must return a value</td>
+    </tr>
+</table>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Anatomy of Stack Overflow</h3>
+    <p>We know that a loop like <code>while (true) {}</code> will run forever but will not crash the program due to a memory error, whereas a recursive method with no base case causes an immediate <code>StackOverflowError</code> and crashes. Explain this difference in terms of the JVM's <strong>call stack</strong>. What physical resource is recursion consuming with every call that a simple loop does not?</p>
+
+    <h3>2. The Unwinding Echo</h3>
+    <p>Compare these two recursive printing patterns:</p>
+    <pre><code>// Count Down
+public static void count1(int n) {
+    if (n &lt;= 0) return;
+    System.out.print(n + " ");
+    count1(n - 1);
+}
+
+// Count Up
+public static void count2(int n) {
+    if (n &lt;= 0) return;
+    count2(n - 1);
+    System.out.print(n + " ");
+}</code></pre>
+    <p>Why does <code>count1(3)</code> print <code>3 2 1</code> while <code>count2(3)</code> prints <code>1 2 3</code>? How does the JVM use stack frames to "remember" the values of <code>n</code> until the recursion starts unwinding?</p>
+</div>
+
+<h2>Bug Hunt: The Odd Skipping Trap</h2>
+
+<div class="bug-hunt">
+    <p>A student writes a recursive method intended to sum all positive numbers from <code>n</code> down to 0, skipping by 2 (e.g., for even numbers: 6 + 4 + 2 = 12). However, when they test it with an odd integer like <code>sumEvenSkip(3)</code>, the program hangs for a second and then crashes with a massive <code>java.lang.StackOverflowError</code> trace.</p>
+    <pre><code>public static int sumEvenSkip(int n) {
+    if (n == 0) {
+        return 0;
+    }
+    return n + sumEvenSkip(n - 2); // Crashes if n is odd!
+}</code></pre>
+    <p><strong>Question:</strong> Spot the bug! Why does an odd integer input like <code>3</code> bypass the base case entirely? How can you modify the base case condition to make this method safe for all positive integer inputs?</p>
+</div>
+
+<h2>Tinker Challenge: Recursive Range Sum & Indented Trace</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Write recursive accumulators and visualize the call stack dynamically.</p>
+    <ol>
+        <li><strong>Range Accumulation:</strong> Write a method <code>public static int sumRange(int start, int end)</code> that recursively calculates the sum of all integers from <code>start</code> to <code>end</code> inclusive. For example, <code>sumRange(3, 6)</code> must return <code>18</code> (3 + 4 + 5 + 6).
+            <div class="callout warn">
+                <strong>Safety First:</strong> Guard against invalid ranges! If the user inputs a range where <code>start &gt; end</code>, your method must safely return <code>0</code> rather than descending into a stack overflow.
+            </div>
+        </li>
+        <li><strong>Visual Stack Tracer (Boss Move):</strong> Modify your <code>sumRange</code> method (or create a helper) that accepts a depth level and prints out an indented trace of the calls. For example, calling <code>sumRange(3, 5)</code> should print:
+            <pre><code>-> sumRange(3, 5)
+  -> sumRange(4, 5)
+    -> sumRange(5, 5)
+      [Base Case Hit: returning 5]
+    [Unwinding: returning 5 + 4 = 9]
+  [Unwinding: returning 9 + 3 = 12]</code></pre>
+        </li>
+    </ol>
+</div>
+
+</body>
+</html>

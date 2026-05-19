@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nested Loops — Unit 4</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 4</a>
+    <span class="sep">/</span>
+    <span class="here">Nested Loops</span>
+</nav>
+
+<h1>Nested Loops</h1>
+
+<p>
+    A <strong>nested loop</strong> is a loop inside another loop. For each iteration of
+    the outer loop, the inner loop runs to completion. This is how you process grids,
+    tables, and multi-dimensional data.
+</p>
+
+<h2>The Pattern</h2>
+
+<pre><code>for (int row = 1; row <= 3; row++) {         // OUTER: runs 3 times
+    for (int col = 1; col <= 4; col++) {     // INNER: runs 4 times PER outer
+        System.out.print("(" + row + "," + col + ") ");
+    }
+    System.out.println();  // newline after each row
+}</code></pre>
+
+<p class="output">(1,1) (1,2) (1,3) (1,4)<br>(2,1) (2,2) (2,3) (2,4)<br>(3,1) (3,2) (3,3) (3,4)</p>
+
+<p>The outer loop runs 3 times. Each time, the inner loop runs 4 times. Total iterations: 3 × 4 = 12.</p>
+
+<h2>Multiplication Table</h2>
+
+<pre><code>// Print a 10x10 multiplication table
+for (int i = 1; i <= 10; i++) {
+    for (int j = 1; j <= 10; j++) {
+        System.out.print(i * j + "\t");
+    }
+    System.out.println();
+}</code></pre>
+
+<h2>Application: Dungeon Grid</h2>
+
+<pre><code>// Map a dungeon: 5 rows, 5 columns
+// "." = empty room, "E" = enemy, "T" = treasure, "B" = boss
+
+char[][] dungeon = {
+    {'.', '.', 'E', '.', '.'},
+    {'.', 'T', '.', 'E', '.'},
+    {'E', '.', '.', '.', 'T'},
+    {'.', '.', 'E', '.', '.'},
+    {'.', '.', '.', 'B', '.'}
+};
+
+System.out.println("=== DUNGEON MAP ===");
+for (int row = 0; row < dungeon.length; row++) {
+    for (int col = 0; col < dungeon[row].length; col++) {
+        System.out.print(dungeon[row][col] + " ");
+    }
+    System.out.println();
+}</code></pre>
+
+<p class="output">=== DUNGEON MAP ===<br>. . E . .<br>. T . E .<br>E . . . T<br>. . E . .<br>. . . B .</p>
+
+<h2>Application: Combat with Multiple Enemies</h2>
+
+<pre><code>String[] enemies = {"Goblin", "Skeleton", "Orc"};
+
+for (int round = 1; round <= 3; round++) {
+    System.out.println("--- Round " + round + " ---");
+
+    for (int i = 0; i < enemies.length; i++) {
+        int roll = (int)(Math.random() * 20) + 1;
+        if (roll >= 10) {
+            System.out.println("  " + enemies[i] + " attacks!");
+        } else {
+            System.out.println("  " + enemies[i] + " hesitates...");
+        }
+    }
+}</code></pre>
+
+<p class="output">--- Round 1 ---<br>  Goblin attacks!<br>  Skeleton hesitates...<br>  Orc attacks!<br>--- Round 2 ---<br>  Goblin hesitates...<br>  Skeleton attacks!<br>  Orc hesitates...<br>--- Round 3 ---<br>  Goblin attacks!<br>  Skeleton attacks!<br>  Orc attacks!</p>
+
+<h2>Triangle Patterns</h2>
+
+<pre><code>// Right triangle of dungeon levels
+for (int row = 1; row <= 5; row++) {
+    for (int col = 1; col <= row; col++) {
+        System.out.print("█");
+    }
+    System.out.println("  — Level " + row);
+}</code></pre>
+
+<p class="output">█  — Level 1<br>██  — Level 2<br>███  — Level 3<br>████  — Level 4<br>█████  — Level 5</p>
+
+<h2>Analysis: How Many Times?</h2>
+
+<p>For nested loops, multiply the iterations:</p>
+
+<pre><code>for (int i = 0; i < n; i++) {       // n times
+    for (int j = 0; j < m; j++) {   // m times per i
+        // body runs n × m times
+    }
+}</code></pre>
+
+<div class="callout lab socratic">
+    <h3>🧠 Socratic Checkpoint: The Multiplication Rule</h3>
+    <p>Look at the table above.</p>
+    <p><strong>Think about it:</strong> If you have an outer loop that runs 50 times, and an inner loop that runs 50 times, the code inside runs 2,500 times. Why does nesting loops drastically increase the time a program takes to run? What happens if you add a <em>third</em> nested loop?</p>
+</div>
+
+<div class="callout lab bug-hunt">
+    <h3>🐛 Bug Hunt: The Neverending Dungeon</h3>
+    <p>A student wrote this code to create a 3x3 grid of rooms, but the program freezes and prints forever:</p>
+<pre><code>for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
+        System.out.print("[ROOM] ");
+    }
+    System.out.println();
+}</code></pre>
+    <p><strong>Your Task:</strong> What is wrong with the variables in these loops? How do the inner loop's updates break the outer loop's condition? How would you fix it?</p>
+</div>
+
+<h2>When to Use Nested Loops</h2>
+
+<ul>
+    <li><strong>Grids and maps</strong> — each cell (row, col) gets processed</li>
+    <li><strong>Tables</strong> — every combination of row and column header</li>
+    <li><strong>Combat rounds with multiple enemies</strong> — outer: rounds, inner: enemies</li>
+    <li><strong>Dungeon exploration</strong> — outer: rooms, inner: actions per room</li>
+    <li><strong>Pattern printing</strong> — shapes, ASCII art, dungeon maps</li>
+</ul>
+
+<h2>Tinker Challenge: The Grid Master</h2>
+
+<div class="callout lab tinker">
+    <h3>🛠️ Tinker Challenge: The Boss Chamber</h3>
+    <p>Build a dungeon map generator using nested <code>for</code> loops.</p>
+    <ul>
+        <li>Create a 5x5 grid using nested loops (outer for rows, inner for columns).</li>
+        <li>Print a <code>.</code> for most rooms.</li>
+        <li><strong>The Twist:</strong> Use <code>if/else</code> logic inside the inner loop so that the center room (row 3, column 3) prints a <code>B</code> for Boss, and the corners print <code>T</code> for Treasure.</li>
+        <li><em>Hint:</em> What are the exact coordinates of the four corners in a 5x5 grid (assuming you start counting from 1)?</li>
+    </ul>
+</div>
+
+</body>
+</html>

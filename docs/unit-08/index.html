@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 8: 2D Arrays — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <span class="here">Unit 8: 2D Arrays</span>
+</nav>
+
+<h1>Unit 8: 2D Arrays</h1>
+
+<p>
+    Every array you've used so far has been one-dimensional — a line of values. But dungeon
+    maps are grids. Game boards have rows and columns. Images are pixels arranged in width and
+    height. You need a second dimension.
+</p>
+
+<p>
+    This unit introduces <strong>2D arrays</strong> — arrays of arrays. Grid-based data
+    structures for modeling boards, maps, and tables.
+</p>
+
+<h2>Concepts</h2>
+
+<table>
+    <tr><th>Topic</th><th>What you'll learn</th></tr>
+    <tr>
+        <td><a href="2d-array-basics.html">2D Array Basics</a></td>
+        <td>Declaration, initialization, rows vs columns, ragged arrays.</td>
+    </tr>
+    <tr>
+        <td><a href="2d-array-traversal.html">2D Array Traversal</a></td>
+        <td>Row-major and column-major traversal. Nested loops for grid operations.</td>
+    </tr>
+</table>
+
+<h2>Teacher Projects (Standalone Demos)</h2>
+
+<table>
+    <tr><th>Project</th><th>What it demonstrates</th></tr>
+    <tr>
+        <td><a href="tic-tac-toe.html">Tic-Tac-Toe</a></td>
+        <td>3x3 grid, move validation, win detection. Classic board game logic.</td>
+    </tr>
+    <tr>
+        <td><a href="connect-four.html">Connect Four</a></td>
+        <td>6x7 grid, gravity-based placement, four-in-a-row detection.</td>
+    </tr>
+</table>
+
+<h2>Your RPG Project</h2>
+
+<p>
+    <strong><a href="dungeon-map.html">Dungeon Map (Student RPG Guide)</a></strong> —
+    Your dungeon gets a grid. Rooms, walls, player position, enemy spawns. Movement with
+    WASD-style input. Map rendering in the console. The foundation for Unit 10's flood fill
+    and backtracking.
+</p>
+
+<h2>RPG Thread</h2>
+
+<p>
+    The dungeon grid you build here is the home for your entire RPG. Each cell holds terrain,
+    enemies, items, or the player. In Unit 9, enemies on the grid become polymorphic — a
+    Skeleton at [2][3] behaves differently from a Dragon at [5][1]. In Unit 10, flood fill
+    lights connected rooms and backtracking finds paths through the grid. The 2D array is
+    the single most reused structure in your RPG.
+</p>
+
+<h2>Prerequisites</h2>
+
+<p>Before starting this unit, you should be comfortable with:</p>
+<ul>
+    <li>1D arrays, traversal, and algorithms: <a href="../unit-06/index.html">Unit 6</a></li>
+    <li>ArrayList and dynamic collections: <a href="../unit-07/index.html">Unit 7</a></li>
+    <li>Writing classes, constructors, and methods: <a href="../unit-05/index.html">Unit 5</a></li>
+    <li>Nested loops: <a href="../unit-04/index.html">Unit 4</a></li>
+</ul>
+
+<h2>Reference Materials</h2>
+
+<ul>
+    <li><strong>Quick Reference:</strong> <code>reference/2DArraysQuickRef.md</code> — 2D array syntax, row/column conventions, traversal patterns, bounds checking</li>
+</ul>
+
+<h2>Assessment</h2>
+
+<ul>
+    <li><strong>Part A:</strong> Knowledge — row vs column, 2D array declaration, nested loop structure</li>
+    <li><strong>Part B:</strong> Code trace — predict output of 2D array traversal and mutation</li>
+    <li><strong>Part C:</strong> Write code — implement a grid-based algorithm from a specification</li>
+</ul>
+
+</body>
+</html>

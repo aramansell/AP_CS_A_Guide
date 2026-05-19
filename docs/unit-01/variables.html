@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Variables & Types — Unit 1</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 1</a>
+    <span class="sep">/</span>
+    <span class="here">Variables &amp; Types</span>
+</nav>
+
+<h1>Variables &amp; Types</h1>
+
+<p>
+    A <strong>variable</strong> is a named box that holds a value. You create one by saying
+    what <em>type</em> of value it holds, what <em>name</em> you'll use to refer to it,
+    and (optionally) what <em>initial value</em> to put in it.
+</p>
+
+<h2>Declaration Syntax</h2>
+
+<pre><code><em>type</em> <em>name</em> = <em>value</em>;</code></pre>
+
+<pre><code>int playerHealth = 100;
+double luck = 0.75;
+boolean isAlive = true;</code></pre>
+
+<h2>The Three Primitive Types You Need Right Now</h2>
+
+<table>
+    <tr><th>Type</th><th>Stores</th><th>Example values</th><th>RPG uses</th></tr>
+    <tr>
+        <td><code>int</code></td>
+        <td>Whole numbers (no decimal)</td>
+        <td><code>42</code>, <code>-5</code>, <code>0</code>, <code>9999</code></td>
+        <td>HP, score, level, dice values, gold coins</td>
+    </tr>
+    <tr>
+        <td><code>double</code></td>
+        <td>Numbers with decimals</td>
+        <td><code>3.14</code>, <code>-0.5</code>, <code>100.0</code>, <code>0.75</code></td>
+        <td>Percentages, luck stats, precise damage multipliers</td>
+    </tr>
+    <tr>
+        <td><code>boolean</code></td>
+        <td>True or false only</td>
+        <td><code>true</code>, <code>false</code></td>
+        <td>isAlive, hasKey, wearingArmor, questComplete</td>
+    </tr>
+</table>
+
+<h2>Declaration vs. Initialization</h2>
+
+<p>You can separate the two steps:</p>
+
+<pre><code>int score;           // declaration — box created, but empty (Java sets to 0)
+score = 100;         // initialization — put a value in the box</code></pre>
+
+<p>Or combine them — this is more common:</p>
+
+<pre><code>int score = 100;     // declare AND initialize in one line</code></pre>
+
+<h2>Assignment (=)</h2>
+
+<p>
+    In Java, <code>=</code> does <strong>not</strong> mean "equals." It means
+    <strong>"put this value into this box."</strong> You read it right-to-left:
+    take whatever is on the right and store it in the variable on the left.
+</p>
+
+<pre><code>int hp = 100;        // put 100 into hp
+hp = 75;             // replace what's in hp with 75 — the old 100 is gone
+hp = hp - 10;        // take current hp (75), subtract 10, store result (65) back in hp</code></pre>
+
+<h2>Naming Rules</h2>
+
+<ul>
+    <li>Use <strong>camelCase</strong>: start lowercase, capitalize each new word (<code>playerHealth</code>, <code>goldAmount</code>)</li>
+    <li>No spaces. No special characters except <code>_</code> and <code>$</code> (avoid both).</li>
+    <li>Can't start with a number.</li>
+    <li>Can't use Java keywords (<code>int</code>, <code>class</code>, <code>public</code>, etc.).</li>
+    <li>Make names descriptive. <code>hp</code> is fine. <code>x</code> is not.</li>
+</ul>
+
+<h2>Common Traps</h2>
+
+<div class="callout lab">
+    <strong>Bug Hunt: The Strict Compiler</strong><br>
+    Type the following lines into your IDE. They will cause compiler errors (red underlines). 
+    Hover over the red underlines to read the error messages.
+    <pre><code>int x = 3.5;
+int y = "hello";</code></pre>
+    Based on the error messages, what rule is Java enforcing? How would you fix these lines so they compile?
+</div>
+
+<div class="callout socratic">
+    <strong>Socratic Checkpoint</strong><br>
+    Try this line in your IDE:
+    <pre><code>double z = 5;</code></pre>
+    Does this cause an error? Why does Java let you put an <code>int</code> into a <code>double</code> box, but not a <code>double</code> into an <code>int</code> box?
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="arithmetic.html">Arithmetic &amp; Operators</a> — what you can do with numbers</li>
+    <li><a href="printing.html">Printing &amp; Concatenation</a> — how to show variable values</li>
+</ul>
+
+</body>
+</html>

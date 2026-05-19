@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Objects & Classes — Unit 2</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 2</a>
+    <span class="sep">/</span>
+    <span class="here">Objects &amp; Classes</span>
+</nav>
+
+<h1>Objects &amp; Classes</h1>
+
+<h2>The Problem With Primitives</h2>
+
+<p>
+    An <code>int</code> holds a number. A <code>double</code> holds a decimal.
+    A <code>boolean</code> holds true or false. But what if you need to represent
+    a <em>player character</em>? A character has a name AND strength AND health AND
+    gold. That's multiple pieces of data that belong together.
+</p>
+
+<p>
+    This is what <strong>objects</strong> are for. An object bundles related data
+    and the operations you can perform on that data into one thing.
+</p>
+
+<h2>Classes Are Blueprints</h2>
+
+<p>
+    A <strong>class</strong> is the blueprint. The <strong>object</strong> is the thing
+    built from the blueprint.
+</p>
+
+<pre><code>// The BLUEPRINT (class)
+public class Player {
+    String name;
+    int strength;
+
+    // Constructor — builds the object
+    public Player(String n) {
+        name = n;
+        strength = 10;
+    }
+
+    // Method — something the object can do
+    public void sayHello() {
+        System.out.println("I am " + name + "!");
+    }
+}</code></pre>
+
+<p>
+    Once the blueprint exists, you build objects from it:
+</p>
+
+<pre><code>// The FIRST OBJECT — built from the blueprint
+Player frodo = new Player("Frodo");
+
+// The "." operator lets you talk to the object
+frodo.sayHello();              // prints "I am Frodo!"
+System.out.println(frodo.name); // prints "Frodo"</code></pre>
+
+<h2>The Three Key Parts</h2>
+
+<p><strong>1. The Constructor</strong> — runs when you write <code>new</code>. Sets up the new object.</p>
+
+<pre><code>public Player(String n) {   // constructor
+    name = n;
+    strength = 10;
+}
+
+Player p = new Player("Gimli");  // calls constructor</code></pre>
+
+<p><strong>2. Instance Variables</strong> — the data that belongs to each object. Every Player has their own copy.</p>
+
+<pre><code>String name;    // each Player has their own name
+int strength;   // each Player has their own strength</code></pre>
+
+<p><strong>3. Methods</strong> — what the object can do. Called with the dot operator.</p>
+
+<pre><code>public void sayHello() {   // a method
+    System.out.println("Hello!");
+}
+
+myPlayer.sayHello();        // call it with a dot</code></pre>
+
+<h2>Tinker Challenge: Multiple Objects</h2>
+
+<div class="callout lab">
+<pre><code>Player a = new Player("Aragorn");
+Player b = new Player("Boromir");
+
+System.out.println(a.name);
+System.out.println(b.name);</code></pre>
+<p>What prints? Write your prediction, then run it. Does creating <code>b</code> overwrite <code>a</code>'s name?</p>
+</div>
+
+<h2>Socratic Checkpoint: The Reference Trap</h2>
+
+<div class="callout socratic">
+<pre><code>Player x = new Player("Legolas");
+Player y = x;
+
+x.name = "Gandalf";
+System.out.println(y.name);</code></pre>
+<p>What prints? <strong>This is important.</strong> Run it. Why did changing <code>x</code> also change <code>y</code>? What exactly does the variable <code>y</code> hold?</p>
+</div>
+
+<h2>Bug Hunt: Broken Blueprints</h2>
+
+<div class="callout lab">
+    <strong>Bug 1: The Missing Word</strong><br>
+    <p>Run this code:</p>
+    <code>Player p = Player("Frodo");</code>
+    <p>You get a "Cannot find symbol" error. Why? What keyword is required to build a <em>new</em> object from a blueprint?</p>
+</div>
+
+<div class="callout lab">
+    <strong>Bug 2: The Empty Pointer</strong><br>
+    <p>Run this code:</p>
+    <code>Player p;<br>p.sayHello();</code>
+    <p>You get a <strong>NullPointerException</strong>. This is one of the most famous crashes in Java. You declared the variable <code>p</code>, but what didn't you do? How do you fix it?</p>
+</div>
+
+<h2>Want More?</h2>
+<ul>
+    <li><a href="string.html">The String Class</a> — String is an object! Try <code>"hello".length()</code></li>
+    <li><a href="scanner.html">Scanner</a> — another object you'll build with <code>new</code></li>
+    <li><a href="character-creator.html">Character Creator Walkthrough</a> — see this in action</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relational Operators & if — Unit 3</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 3</a>
+    <span class="sep">/</span>
+    <span class="here">Relational Operators &amp; if</span>
+</nav>
+
+<h1>Relational Operators &amp; if Statements</h1>
+
+<h2>Asking Questions About Data</h2>
+
+<p>A relational operator compares two values and answers true or false.</p>
+
+<pre><code>int playerHP = 12;
+int enemyHP = 8;
+
+playerHP > enemyHP;   // true — 12 is greater than 8
+playerHP < enemyHP;   // false
+playerHP == enemyHP;  // false — are they equal?
+playerHP != enemyHP;  // true — are they NOT equal?</code></pre>
+
+<h2>All Six Operators</h2>
+
+<table>
+    <tr><th>Operator</th><th>Meaning</th><th>Example</th><th>Result</th></tr>
+    <tr><td><code>&lt;</code></td><td>less than</td><td><code>3 &lt; 5</code></td><td>true</td></tr>
+    <tr><td><code>&gt;</code></td><td>greater than</td><td><code>7 &gt; 2</code></td><td>true</td></tr>
+    <tr><td><code>&lt;=</code></td><td>less than or equal</td><td><code>4 &lt;= 4</code></td><td>true</td></tr>
+    <tr><td><code>&gt;=</code></td><td>greater than or equal</td><td><code>5 &gt;= 6</code></td><td>false</td></tr>
+    <tr><td><code>==</code></td><td>equal to</td><td><code>3 == 3</code></td><td>true</td></tr>
+    <tr><td><code>!=</code></td><td>not equal to</td><td><code>3 != 4</code></td><td>true</td></tr>
+</table>
+
+<div class="lab bug-hunt">
+    <h3>Bug Hunt: The Assignment Trap</h3>
+    <p>A student wrote this code to check if a player has exactly 5 potions:</p>
+<pre><code>int potions = 5;
+if (potions = 5) {
+    System.out.println("You have exactly 5 potions.");
+}</code></pre>
+    <p>When they try to compile it, Java throws an error: <code>incompatible types: int cannot be converted to boolean</code>.</p>
+    <ol>
+        <li>Why is Java confused about this condition? (Hint: What does a single <code>=</code> do?)</li>
+        <li>Fix the code so it properly checks for equality.</li>
+    </ol>
+</div>
+
+<h2>The if Statement</h2>
+
+<pre><code>if (condition) {
+    // runs ONLY if condition is true
+}
+
+// After the if block closes, execution continues normally</code></pre>
+
+<pre><code>int d20 = Dice.roll(20);
+
+if (d20 >= 15) {
+    System.out.println("You hit!");
+}</code></pre>
+
+<h2>The else Statement</h2>
+
+<pre><code>if (d20 >= 15) {
+    System.out.println("You hit!");
+} else {
+    System.out.println("You missed!");
+}
+// Exactly ONE of these blocks runs. Never both. Always one.</code></pre>
+
+<div class="lab tinker-challenge">
+    <h3>Tinker Challenge: Critical Rolls</h3>
+    <p>Roll a d20 and check for criticals. Build a program that follows these rules:</p>
+    <ul>
+        <li>If the roll is exactly 20: print "CRITICAL HIT!"</li>
+        <li>If the roll is exactly 1: print "CRITICAL MISS!"</li>
+        <li>Otherwise: just print the number rolled.</li>
+    </ul>
+    <p>Test your program by forcing the <code>d20</code> variable to be 20, 1, and 10 to ensure all paths work.</p>
+</div>
+
+<h2>Indentation and Braces</h2>
+
+<pre><code>// CORRECT:
+if (condition) {
+    doThing();
+    doOtherThing();
+}
+
+// ALSO CORRECT (single statement, braces optional):
+if (condition)
+    doThing();
+
+// NEVER DO THIS (no braces, indentation lies):
+if (condition)
+    doThing();
+    doOtherThing();  // THIS ALWAYS RUNS — it's outside the if!</code></pre>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: The Lying Indentation</h3>
+    <p>Look at the "NEVER DO THIS" example above. Why does <code>doOtherThing()</code> always run, regardless of the condition? What does Java actually see when you omit the braces?</p>
+</div>
+
+<div class="lab bug-hunt">
+    <h3>Bug Hunt: The Empty Statement Trap</h3>
+    <p>A student wrote this combat code:</p>
+<pre><code>int hp = 5;
+if (hp > 10); {
+    System.out.println("You are feeling healthy.");
+}</code></pre>
+    <p>Even though HP is only 5, it prints "You are feeling healthy." Why? What is the tiny character causing this bug?</p>
+</div>
+
+<h2>Want More?</h2>
+<ul>
+    <li><a href="boolean-logic.html">Boolean Logic</a> — combining multiple conditions</li>
+    <li><a href="else-if-chains.html">else-if Chains</a> — more than two outcomes</li>
+    <li><a href="combat-system.html">Combat System Walkthrough</a> — all of this in action</li>
+</ul>
+
+</body>
+</html>

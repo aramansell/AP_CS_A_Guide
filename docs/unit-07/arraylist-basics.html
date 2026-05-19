@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArrayList Basics — Unit 7</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 7</a>
+    <span class="sep">/</span>
+    <span class="here">ArrayList Basics</span>
+</nav>
+
+<h1>ArrayList Basics</h1>
+
+<p>
+    An <strong>ArrayList</strong> is a <strong>resizable list</strong> — like an array,
+    but it grows when you add elements and shrinks when you remove them. No fixed size.
+    No manual counting. Just a list that works.
+</p>
+
+<h2>Why ArrayList Exists</h2>
+
+<p>Unit 6's inventory had a hard problem:</p>
+
+<pre><code>Item[] inventory = new Item[20];  // 20 slots, forever
+int itemCount = 0;               // manual tracking, error-prone
+
+// Adding item #21? Crash or "Inventory full!" — you lose.</code></pre>
+
+<p>ArrayList removes the problem:</p>
+
+<pre><code>ArrayList&lt;Item&gt; inventory = new ArrayList&lt;&gt;();
+inventory.add(new Item("Sword", 3, 50));
+inventory.add(new Item("Potion", 1, 25));
+// ... add 100 more, no problem</code></pre>
+
+<p>No capacity. No <code>itemCount</code>. The list handles everything.</p>
+
+<h2>Importing ArrayList</h2>
+
+<p>ArrayList lives in <code>java.util</code>. Always import it at the top of your file:</p>
+
+<pre><code>import java.util.ArrayList;</code></pre>
+
+<h2>Generics: <code>ArrayList&lt;E&gt;</code></h2>
+
+<p>
+    The angle brackets <code>&lt; &gt;</code> specify what <strong>type</strong> of element the list holds.
+    This is called a <strong>generic</strong> — it makes the list type-safe.
+</p>
+
+<pre><code>ArrayList&lt;String&gt;  names;     // a list of Strings
+ArrayList&lt;Integer&gt; scores;    // a list of Integers (not int!)
+ArrayList&lt;Double&gt;  temps;     // a list of Doubles
+ArrayList&lt;Player&gt;  party;     // a list of your Player objects
+ArrayList&lt;Item&gt;    inventory; // a list of your Item objects</code></pre>
+
+<p>You cannot use primitive types in generics:</p>
+
+<pre><code>ArrayList&lt;int&gt; list;    // COMPILE ERROR — can't use int
+ArrayList&lt;Integer&gt; list; // CORRECT — use the wrapper class</code></pre>
+
+<h2>Wrapper Classes</h2>
+
+<p>
+    ArrayList only works with <strong>objects</strong>, not primitives. Java provides
+    <strong>wrapper classes</strong> that box each primitive into an object:
+</p>
+
+<table>
+    <tr><th>Primitive</th><th>Wrapper Class</th></tr>
+    <tr><td><code>int</code></td><td><code>Integer</code></td></tr>
+    <tr><td><code>double</code></td><td><code>Double</code></td></tr>
+    <tr><td><code>boolean</code></td><td><code>Boolean</code></td></tr>
+    <tr><td><code>char</code></td><td><code>Character</code></td></tr>
+</table>
+
+<h3>Autoboxing and Unboxing</h3>
+
+<p>Java converts between primitives and wrappers automatically:</p>
+
+<pre><code>ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;();
+list.add(5);           // autoboxing: int 5 → Integer automatically
+list.add(10);          // same thing
+
+int x = list.get(0);   // unboxing: Integer → int automatically
+int y = list.get(1);   // same thing</code></pre>
+
+<p>
+    You write <code>int</code> values and Java handles the conversion. This is why
+    <code>ArrayList&lt;Integer&gt;</code> feels almost like <code>int[]</code>.
+</p>
+
+<h2>Declaring and Creating</h2>
+
+<pre><code>// Declare + instantiate (most common):
+ArrayList&lt;String&gt; names = new ArrayList&lt;&gt;();
+
+// The &lt;&gt; on the right is the "diamond operator" — Java infers the type.
+// You could write: new ArrayList&lt;String&gt;()
+// But &lt;&gt; is shorter and means the same thing.</code></pre>
+
+<div class="callout warn">
+    <strong>Empty list.</strong> A new <code>ArrayList</code> starts with 0 elements.
+    <code>size()</code> returns 0. There's nothing in it until you <code>add()</code>.
+</div>
+
+<h2>Essential Methods</h2>
+
+<table>
+    <tr><th>Method</th><th>What it does</th><th>Returns</th></tr>
+    <tr>
+        <td><code>add(E element)</code></td>
+        <td>Appends to the end of the list</td>
+        <td><code>boolean</code> (always true)</td>
+    </tr>
+    <tr>
+        <td><code>add(int index, E element)</code></td>
+        <td>Inserts at a specific position; elements shift right</td>
+        <td><code>void</code></td>
+    </tr>
+    <tr>
+        <td><code>get(int index)</code></td>
+        <td>Accesses the element at that index</td>
+        <td><code>E</code></td>
+    </tr>
+    <tr>
+        <td><code>set(int index, E element)</code></td>
+        <td>Replaces the element at that index</td>
+        <td><code>E</code> (the old value)</td>
+    </tr>
+    <tr>
+        <td><code>remove(int index)</code></td>
+        <td>Removes by position; elements shift left</td>
+        <td><code>E</code> (removed element)</td>
+    </tr>
+    <tr>
+        <td><code>remove(Object obj)</code></td>
+        <td>Removes by value (first occurrence)</td>
+        <td><code>boolean</code></td>
+    </tr>
+    <tr>
+        <td><code>size()</code></td>
+        <td>Returns how many elements are in the list</td>
+        <td><code>int</code></td>
+    </tr>
+    <tr>
+        <td><code>clear()</code></td>
+        <td>Removes every element</td>
+        <td><code>void</code></td>
+    </tr>
+    <tr>
+        <td><code>contains(Object obj)</code></td>
+        <td>Checks if the element is in the list</td>
+        <td><code>boolean</code></td>
+    </tr>
+    <tr>
+        <td><code>indexOf(Object obj)</code></td>
+        <td>Finds the position; -1 if not found</td>
+        <td><code>int</code></td>
+    </tr>
+</table>
+
+<h2>The #1 Trap: <code>remove(int)</code> vs <code>remove(Object)</code></h2>
+
+<p>
+    For <code>ArrayList&lt;Integer&gt;</code>, <code>remove(5)</code> does
+    <strong>not</strong> remove the number 5. It removes the element at
+    <strong>index 5</strong>.
+</p>
+
+<pre><code>ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;();
+list.add(3); list.add(7); list.add(2); list.add(9);
+list.add(4); list.add(8); list.add(1); list.add(6);
+
+list.remove(5);        // Removes element at INDEX 5 — the 8!
+list.remove(2);        // Removes element at INDEX 2 — the 2!
+
+// To remove by VALUE, cast to Integer:
+list.remove((Integer) 7);  // Removes the number 7
+list.remove((Integer) 3);  // Removes the number 3</code></pre>
+
+<div class="callout trap">
+    <strong>Why this happens:</strong> Java sees <code>remove(5)</code> and matches
+    it to <code>remove(int index)</code> because 5 is an <code>int</code>. To call
+    <code>remove(Object)</code>, you must pass an <code>Integer</code> object — that's
+    what the cast <code>(Integer)</code> does.
+</div>
+
+<h2>Array vs ArrayList Syntax</h2>
+
+<table>
+    <tr><th>Operation</th><th>Array</th><th>ArrayList</th></tr>
+    <tr><td>Create</td><td><code>int[] arr = new int[5]</code></td><td><code>ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;()</code></td></tr>
+    <tr><td>Get size</td><td><code>arr.length</code></td><td><code>list.size()</code></td></tr>
+    <tr><td>Access</td><td><code>arr[i]</code></td><td><code>list.get(i)</code></td></tr>
+    <tr><td>Assign</td><td><code>arr[i] = value</code></td><td><code>list.set(i, value)</code></td></tr>
+    <tr><td>Add to end</td><td>Manual (track count)</td><td><code>list.add(value)</code></td></tr>
+    <tr><td>Remove</td><td>Manual (shift)</td><td><code>list.remove(i)</code></td></tr>
+    <tr><td>Resize</td><td>Impossible</td><td>Automatic</td></tr>
+</table>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Wrapper Mystery</h3>
+    <p>Why do we have to write <code>ArrayList&lt;Integer&gt;</code> instead of <code>ArrayList&lt;int&gt;</code>? What is Java actually doing behind the scenes when you <code>add(5)</code>?</p>
+
+    <h3>2. The Removal Trap</h3>
+    <pre><code>ArrayList&lt;Integer&gt; scores = new ArrayList&lt;&gt;();
+// (Imagine we added the numbers 10, 20, 30, 40 here)
+scores.remove(2);</code></pre>
+    <p>Did this code just delete the number <code>2</code> from the list, or the number <code>30</code>? Explain how to delete the <i>other</i> one.</p>
+</div>
+
+<h2>Bug Hunt: The Impatient Index</h2>
+
+<div class="bug-hunt">
+    <p>A player is setting up their custom loadout, but the game crashes on line 3. Find the bug.</p>
+    <pre><code>ArrayList&lt;String&gt; loadout = new ArrayList&lt;&gt;();
+loadout.add(0, "Primary Weapon");
+loadout.add(2, "Secondary Weapon"); // Game crashes here!</code></pre>
+    <p><strong>Question:</strong> What is the <code>size()</code> of the ArrayList when line 3 tries to run? What are the valid index numbers you can insert at?</p>
+</div>
+
+<h2>Tinker Challenge: Dynamic Spellbook</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Manage a wizard's growing spellbook.</p>
+    <ol>
+        <li>Create an empty <code>ArrayList&lt;String&gt;</code> called <code>spells</code>.</li>
+        <li>Use <code>.add()</code> to append "Fireball" and "Heal" to the list.</li>
+        <li>Use the other version of <code>.add(index, element)</code> to squeeze "Shield" directly into index <code>0</code> (pushing the others down).</li>
+        <li>Print the list. Then use <code>.remove()</code> to delete "Heal" by providing the String itself (not the index number).</li>
+        <li><strong>Boss Move:</strong> Print the list's <code>.size()</code>. Then use <code>.clear()</code> and print the size again to prove it's empty.</li>
+    </ol>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student RPG Guide: Dice Roller — Unit 1</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 1</a>
+    <span class="sep">/</span>
+    <span class="here">Student Guide: Dice Roller</span>
+</nav>
+
+<h1>Student RPG Guide: Dice Roller</h1>
+
+<div class="callout">
+    <strong>This is YOUR guide.</strong> Every dice roll, damage calculation, and loot
+    drop in your RPG depends on this class. Get it right once, use it all year. Instead of
+    giving you the code, this guide provides the <strong>Acceptance Criteria</strong>. It is your
+    job to write the code that satisfies the criteria.
+</div>
+
+<h2>The Setup</h2>
+
+<p>
+    Create two files in your project:
+    <ol>
+        <li><code>Dice.java</code> — This will contain all your dice logic.</li>
+        <li><code>DiceTester.java</code> — This will contain a <code>main</code> method to run your tests.</li>
+    </ol>
+</p>
+
+<p>In <code>Dice.java</code>, start with a basic class outline. You will add methods to this class.</p>
+<pre><code>public class Dice {
+    // Your methods will go here
+}</code></pre>
+
+<hr>
+
+<h2>Part 1: roll() — Roll a Single Die</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static int roll(int sides)</code></li>
+    <li>Behavior: Generates a random integer between 1 and the number of <code>sides</code> (inclusive).</li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>Look back at your <code>Math.random()</code> lab notebook. How do you construct the formula for a specific range? What is the "range" based on the <code>sides</code> parameter? What is the "min"?</p>
+
+<h3>Acceptance Test:</h3>
+<p>Add this to <code>DiceTester.java</code>'s main method:</p>
+<pre><code>System.out.println("Rolling d20: " + Dice.roll(20));
+System.out.println("Rolling d6: " + Dice.roll(6));</code></pre>
+<p>Run it multiple times. Do you ever see a 0? Do you ever see a number higher than the sides?</p>
+
+<hr>
+
+<h2>Part 2: rollDice() — Roll Multiple Dice and Sum</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static int rollDice(int count, int sides)</code></li>
+    <li>Behavior: Rolls the specified <code>count</code> of dice, each with <code>sides</code>, and returns the total sum.</li>
+</ul>
+
+<h3>Tinker Challenge:</h3>
+<p>For now, since we haven't learned loops, you can hardcode this method to just roll 3 dice. Call your own <code>roll(sides)</code> method three times and add the results together. How do you store a "running total" across multiple lines of code?</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>System.out.println("Rolling 3d6: " + Dice.rollDice(3, 6));</code></pre>
+<p>Run it. Can you roll below a 3? Can you roll above an 18?</p>
+
+<hr>
+
+<h2>Part 3: rollWithAdvantage() — Roll Twice, Take Higher</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static int rollWithAdvantage(int sides)</code></li>
+    <li>Behavior: Rolls two dice of the specified <code>sides</code>. Prints both rolls so the player can see them. Returns the higher of the two rolls.</li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>If you have two integers, <code>roll1</code> and <code>roll2</code>, how can you ask Java which one is larger? Refer to the documentation on <code>if</code> statements.</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>System.out.println("Rolling d20 with advantage. Final result: " + Dice.rollWithAdvantage(20));</code></pre>
+<p>Run it. Ensure the printed output shows both rolls, and the final returned result matches the higher of the two.</p>
+
+<hr>
+
+<h2>Part 4: isCritical() — Detect a Maximum Roll</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static boolean isCritical(int roll, int sides)</code></li>
+    <li>Behavior: Returns <code>true</code> if the <code>roll</code> is equal to the <code>sides</code> (the maximum possible value). Returns <code>false</code> otherwise.</li>
+</ul>
+
+<h3>Tinker Challenge:</h3>
+<p>Can you write this method in a single line of code inside the method body? Hint: Relational operators (like <code>==</code>) evaluate to a boolean value on their own.</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>System.out.println("Is 20 on a d20 a crit? " + Dice.isCritical(20, 20)); // Should be true
+System.out.println("Is 19 on a d20 a crit? " + Dice.isCritical(19, 20)); // Should be false</code></pre>
+
+<hr>
+
+<h2>Part 5: displayResult() — Formatted Output</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static void displayResult(String label, int sides, int result)</code></li>
+    <li>Behavior: Prints a formatted string in the pattern: <code>[label] (d[sides]): [result]</code>. If the result is a critical hit, append <code> -- CRITICAL!</code> to the string.</li>
+    <li>Does not return anything.</li>
+</ul>
+
+<h3>Acceptance Test:</h3>
+<pre><code>Dice.displayResult("Attack roll", 20, 15);
+Dice.displayResult("Sneak attack", 20, 20);</code></pre>
+<p>Expected Output:</p>
+<pre><code>Attack roll (d20): 15
+Sneak attack (d20): 20 -- CRITICAL!</code></pre>
+
+</body>
+</html>

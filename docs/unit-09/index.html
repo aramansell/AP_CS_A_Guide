@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 9: Inheritance — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <span class="here">Unit 9: Inheritance</span>
+</nav>
+
+<h1>Unit 9: Inheritance</h1>
+
+<p>
+    You've written Player.java. You've written Monster.java. They have different names,
+    different stats, different behavior. But they share a lot of the same code: hit points,
+    attack methods, name fields. Copy-paste is the enemy of good code.
+</p>
+
+<p>
+    This unit introduces <strong>inheritance</strong> — the mechanism that lets one class
+    inherit everything from another and then add its own specialties. Player and Monster
+    both extend a shared GameCharacter class. Method overriding lets each subclass change
+    how it attacks. Polymorphism lets you treat a Skeleton, Dragon, and Goblin all as
+    the same type — a collection of GameCharacter objects.
+</p>
+
+<h2>Concepts</h2>
+
+<table>
+    <tr><th>Topic</th><th>What you'll learn</th></tr>
+    <tr>
+        <td><a href="extends-and-super.html">extends &amp; super</a></td>
+        <td>Creating subclasses. Calling parent constructors and methods.</td>
+    </tr>
+    <tr>
+        <td><a href="overriding.html">Method Overriding</a></td>
+        <td>Replacing a parent method with specialized behavior.</td>
+    </tr>
+    <tr>
+        <td><a href="abstract-classes.html">Abstract Classes</a></td>
+        <td>Forcing subclasses to implement specific methods.</td>
+    </tr>
+    <tr>
+        <td><a href="polymorphism.html">Polymorphism</a></td>
+        <td>Treating multiple types as one. Polymorphic arrays and ArrayLists.</td>
+    </tr>
+</table>
+
+<h2>Your RPG Project</h2>
+
+<p>
+    <strong><a href="character-hierarchy.html">GameCharacter + Refactored Player/Monster (Student RPG Guide)</a></strong> —
+    Extract everything Player and Monster share into a GameCharacter superclass. Player
+    and Monster become subclasses. Create specialized enemy types — Skeleton, Dragon,
+    Goblin — each with their own overridden attack method. Polymorphic combat: one
+    ArrayList&lt;GameCharacter&gt; that holds your hero AND all enemies.
+</p>
+
+<h2>RPG Thread</h2>
+
+<p>
+    This is the unification unit. Every class you've built across Units 1-8 gets organized
+    into a hierarchy. Player and Monster share GameCharacter. Inventory items become subclasses
+    of Item (Weapon, Armor, Potion). In Unit 10, recursive AoE spells target everything on
+    the board — and because of polymorphism, one method handles Skeletons, Dragons, and
+    Players identically.
+</p>
+
+<h2>Prerequisites</h2>
+
+<p>Before starting this unit, you should be comfortable with:</p>
+<ul>
+    <li>Writing classes, constructors, and methods: <a href="../unit-05/index.html">Unit 5</a></li>
+    <li>Arrays and ArrayList: <a href="../unit-06/index.html">Unit 6</a>, <a href="../unit-07/index.html">Unit 7</a></li>
+    <li>2D arrays: <a href="../unit-08/index.html">Unit 8</a></li>
+    <li>Method signatures, return types, and parameters</li>
+</ul>
+
+<h2>Reference Materials</h2>
+
+<ul>
+    <li><strong>Quick Reference:</strong> <code>reference/InheritanceQuickRef.md</code> — extends, super, @Override, abstract keyword, polymorphic declarations</li>
+</ul>
+
+<h2>Assessment</h2>
+
+<ul>
+    <li><strong>Part A:</strong> Knowledge — inheritance terminology, super(), overriding, abstract, polymorphism</li>
+    <li><strong>Part B:</strong> Code trace — predict method dispatch in inheritance hierarchies</li>
+    <li><strong>Part C:</strong> Write code — implement a class hierarchy from a specification</li>
+</ul>
+
+</body>
+</html>

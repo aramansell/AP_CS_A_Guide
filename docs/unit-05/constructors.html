@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Constructors — Unit 5</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 5</a>
+    <span class="sep">/</span>
+    <span class="here">Constructors</span>
+</nav>
+
+<h1>Constructors</h1>
+
+<p>
+    A constructor is a special method that runs <strong>when you create an object</strong>.
+    It sets the object's initial state. Without a constructor, your object is a blank
+    shell — all zeros, nulls, and false.
+</p>
+
+<h2>Syntax</h2>
+
+<pre><code>public ClassName(parameters) {
+    // initialize instance variables
+}</code></pre>
+
+<p>Three rules:</p>
+<ol>
+    <li>The name is <strong>exactly the class name</strong>.</li>
+    <li><strong>No return type</strong>. Not even <code>void</code>.</li>
+    <li>Java calls it automatically when you write <code>new</code>.</li>
+</ol>
+
+<h2>Default vs Parameterized</h2>
+
+<pre><code>public class Weapon {
+    private String name;
+    private int damage;
+
+    // DEFAULT (no-arg) constructor
+    public Weapon() {
+        name = "Fists";
+        damage = 1;
+    }
+
+    // PARAMETERIZED constructor
+    public Weapon(String n, int dmg) {
+        name = n;
+        damage = dmg;
+    }
+}
+
+// Usage:
+Weapon w1 = new Weapon();              // uses default
+Weapon w2 = new Weapon("Sword", 12);   // uses parameterized</code></pre>
+
+<div class="callout warn">
+    <strong>The free constructor trap.</strong> If you write <strong>zero</strong>
+    constructors, Java gives you a free no-arg one. If you write <strong>any</strong>
+    constructor, Java takes the free one away. If you need a no-arg constructor,
+    you have to write it yourself.
+</div>
+
+<h2>Constructor Overloading</h2>
+
+<p>
+    You can have <strong>multiple constructors</strong> with different parameter lists.
+    Java picks the one whose types match your <code>new</code> call.
+</p>
+
+<pre><code>public class Player {
+    private String name;
+    private int hp;
+    private int ac;
+
+    // No-arg: default hero
+    public Player() {
+        name = "Hero";
+        hp = 10;
+        ac = 10;
+    }
+
+    // Name only: default hp and ac
+    public Player(String n) {
+        name = n;
+        hp = 10;
+        ac = 10;
+    }
+
+    // Full specification
+    public Player(String n, int h, int a) {
+        name = n;
+        hp = h;
+        ac = a;
+    }
+}
+
+Player p1 = new Player();                 // → no-arg
+Player p2 = new Player("Rogue");          // → name-only
+Player p3 = new Player("Mage", 8, 14);    // → full</code></pre>
+
+<h2>Calling Another Constructor: <code>this(...)</code></h2>
+
+<p>
+    Instead of copying constructor code, call another constructor from within one.
+    <strong>Must be the first line.</strong>
+</p>
+
+<pre><code>public Player() {
+    this("Hero", 10, 10);  // calls the 3-param constructor
+}
+
+public Player(String n) {
+    this(n, 10, 10);       // calls the 3-param constructor
+}
+
+public Player(String n, int h, int a) {
+    name = n;
+    hp = h;
+    ac = a;
+}</code></pre>
+
+<h2>Validation in Constructors</h2>
+
+<p>
+    Your constructor should <strong>reject bad data</strong>. Don't let someone create
+    a Player with -50 HP. Use the same validation you'd put in setters.
+</p>
+
+<pre><code>public Player(String n, int h, int a) {
+    name = n;
+
+    if (h <= 0) {
+        hp = 10;     // minimum HP
+    } else {
+        hp = h;
+    }
+
+    if (a < 8) {
+        ac = 8;      // minimum AC
+    } else {
+        ac = a;
+    }
+}</code></pre>
+
+<div class="callout trap">
+    <strong>Shadowing alert.</strong> If your parameter has the same name as your
+    instance variable, <code>name = name;</code> assigns the parameter to ITSELF.
+    The instance variable stays unchanged. Fix: <code>this.name = name;</code>.
+</div>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: The Missing Constructor</h3>
+    <p>A student writes a <code>Weapon</code> class with one constructor: <code>public Weapon(String n, int dmg)</code>. Later, they try to write <code>Weapon fists = new Weapon();</code> and their code won't compile. Why does Java throw an error here, and what is the rule about "free" constructors?</p>
+</div>
+
+<div class="bug-hunt">
+    <h3>Bug Hunt: The Null Goblin</h3>
+    <p>A student wrote this constructor for a new monster type, but when they run their game, the goblin always has 0 HP and its name is <code>null</code>. Find the two major constructor mistakes in this code:</p>
+    <pre><code>public class Enemy {
+    private String name;
+    private int hp;
+
+    public void Enemy(String name, int hp) {
+        name = name;
+        hp = hp;
+    }
+}</code></pre>
+    <p><em>Hint: Pay close attention to the method signature and what exactly is being assigned inside the method body.</em></p>
+</div>
+
+<div class="tinker">
+    <h3>Tinker Challenge: The Constructor Chain</h3>
+    <p>Write a <code>Shield</code> class that demonstrates constructor chaining and robust data validation.</p>
+    <ol>
+        <li><strong>Variables:</strong> <code>name</code> (String), <code>defense</code> (int), <code>weight</code> (double). Make sure they are correctly encapsulated.</li>
+        <li><strong>Full Constructor:</strong> Takes all three parameters. <strong>Validation rules:</strong> <code>defense</code> cannot be less than 1 (set to 1 if it is). <code>weight</code> cannot be negative (set to 0.0 if it is).</li>
+        <li><strong>Partial Constructor:</strong> Takes only <code>name</code> and <code>defense</code>. Default weight is <code>5.0</code>. <strong>Do not copy your validation logic!</strong> Call the full constructor using <code>this(...)</code>.</li>
+        <li><strong>Default Constructor:</strong> Takes no arguments. Default name is "Wooden Shield", defense is 2, weight is 3.5. Chain it to the full constructor!</li>
+    </ol>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>else-if Chains — Unit 3</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 3</a>
+    <span class="sep">/</span>
+    <span class="here">else-if Chains</span>
+</nav>
+
+<h1>else-if Chains — Multi-Way Decisions</h1>
+
+<h2>More Than Two Outcomes</h2>
+
+<p>if/else gives you two paths. What about five?</p>
+
+<pre><code>int roll = Dice.roll(20);
+
+if (roll == 20) {
+    System.out.println("CRITICAL HIT! Double damage!");
+} else if (roll >= 15) {
+    System.out.println("Hit!");
+} else if (roll >= 10) {
+    System.out.println("Glancing blow — half damage.");
+} else if (roll == 1) {
+    System.out.println("CRITICAL MISS! You stumble.");
+} else {
+    System.out.println("Miss!");
+}</code></pre>
+
+<p>
+    Java checks conditions top to bottom. The FIRST true condition runs.
+    Then it <strong>skips everything else</strong>. Exactly ONE block executes.
+</p>
+
+<div class="lab bug-hunt">
+    <h3>Bug Hunt: The Order Matters Trap</h3>
+    <p>A student wrote this code to assign grades based on a score:</p>
+<pre><code>int score = 85;
+String grade = "";
+
+if (score >= 60) {
+    grade = "D";
+} else if (score >= 70) {
+    grade = "C";  
+} else if (score >= 80) {
+    grade = "B";  
+} else if (score >= 90) {
+    grade = "A";  
+}
+
+System.out.println("Your grade is: " + grade);</code></pre>
+    <p>When the code runs, it prints <code>Your grade is: D</code>. Even though 85 should be a B!</p>
+    <ol>
+        <li>Trace the execution of the code. Why did Java choose the first block and ignore the rest?</li>
+        <li>Fix the code. What is the rule of thumb for ordering <code>if / else if</code> chains when checking ranges?</li>
+    </ol>
+</div>
+
+<h2>Nested if Statements</h2>
+
+<pre><code>if (roll >= 15) {
+    System.out.println("Hit!");
+    if (roll == 20) {
+        System.out.println("It's a critical!");
+        damage *= 2;
+    }
+} else {
+    System.out.println("Miss!");
+}</code></pre>
+
+<p>Nesting works. Don't go deeper than 2-3 levels or it becomes unreadable.</p>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: Boolean Zen</h3>
+    <p>Consider the following two code snippets. They do exactly the same thing.</p>
+
+    <p><strong>Snippet A:</strong></p>
+<pre><code>if (enemyAlive == true) { 
+    System.out.println("Keep fighting!"); 
+}</code></pre>
+
+    <p><strong>Snippet B:</strong></p>
+<pre><code>if (enemyAlive) { 
+    System.out.println("Keep fighting!"); 
+}</code></pre>
+
+    <p>Why is Snippet B preferred by Java developers? What does the <code>if</code> statement actually expect inside its parentheses?</p>
+    
+    <p>Similarly, look at this method returning a boolean:</p>
+<pre><code>if (hp > 0) {
+    return true;
+} else {
+    return false;
+}</code></pre>
+    <p>How could you rewrite this using a single line of code? (Hint: <code>hp &gt; 0</code> is an expression that evaluates to what?)</p>
+</div>
+
+<div class="lab tinker-challenge">
+    <h3>Tinker Challenge: Build a Damage Classifier</h3>
+    <p>Write an <code>if / else if</code> chain that reads a damage number and prints the correct classification:</p>
+    <ul>
+        <li>0: "Miss!"</li>
+        <li>1-5: "Scratch"</li>
+        <li>6-10: "Solid hit"</li>
+        <li>11-15: "Heavy blow"</li>
+        <li>16+: "Devastating!"</li>
+    </ul>
+    <p><strong>Constraints:</strong> Make sure you test the edges! Test with inputs like 5, 6, 15, and 16 to verify your logic.</p>
+</div>
+
+<h2>Want More?</h2>
+<ul>
+    <li><a href="boolean-logic.html">Boolean Logic</a> — combining conditions in the chain</li>
+    <li><a href="combat-system.html">Combat System Walkthrough</a> — damage classification in action</li>
+</ul>
+
+</body>
+</html>

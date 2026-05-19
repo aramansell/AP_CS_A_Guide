@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boolean Logic — Unit 3</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 3</a>
+    <span class="sep">/</span>
+    <span class="here">Boolean Logic</span>
+</nav>
+
+<h1>Boolean Logic — &amp;&amp;, ||, !</h1>
+
+<h2>One Condition Isn't Enough</h2>
+
+<p>
+    "Did I hit?" is one condition. "Did I hit AND is the enemy still alive?" is two.
+    Boolean operators let you combine conditions.
+</p>
+
+<pre><code>int roll = Dice.roll(20);
+boolean enemyAlive = true;
+
+if (roll >= 15 && enemyAlive) {
+    System.out.println("Hit!");
+}</code></pre>
+
+<h2>The Three Operators</h2>
+
+<table>
+    <tr><th>Operator</th><th>Name</th><th>True when...</th></tr>
+    <tr><td><code>&amp;&amp;</code></td><td>AND</td><td>BOTH conditions are true</td></tr>
+    <tr><td><code>||</code></td><td>OR</td><td>AT LEAST ONE condition is true</td></tr>
+    <tr><td><code>!</code></td><td>NOT</td><td>The condition is FALSE</td></tr>
+</table>
+
+<h2>AND (&amp;&amp;) — Both Must Be True</h2>
+
+<pre><code>// To hit: roll high enough AND enemy must be alive
+if (roll >= 15 && enemy.isAlive()) {
+    // hit!
+}
+
+// Truth table:
+// true  && true  → true
+// true  && false → false
+// false && true  → false
+// false && false → false</code></pre>
+
+<h2>OR (||) — At Least One</h2>
+
+<pre><code>// Player wins: enemy dead OR enemy surrendered
+if (enemyHP <= 0 || enemySurrendered) {
+    System.out.println("Victory!");
+}
+
+// Truth table:
+// true  || true  → true
+// true  || false → true
+// false || true  → true
+// false || false → false</code></pre>
+
+<h2>NOT (!) — Flip It</h2>
+
+<pre><code>boolean doorLocked = false;
+if (!doorLocked) {
+    System.out.println("The door opens.");
+}
+
+// !true  → false
+// !false → true</code></pre>
+
+<h2>Short-Circuit Evaluation</h2>
+
+<p>
+    Java is lazy. It evaluates left to right and STOPS as soon as it knows the answer.
+</p>
+
+<pre><code>// AND short-circuits on first false:
+if (enemy != null && enemy.isAlive()) {
+    // If enemy is null, enemy.isAlive() NEVER runs!
+    // This prevents a NullPointerException.
+}
+
+// OR short-circuits on first true:
+if (roll == 20 || roll >= 15 && enemyWeak) {
+    // Wait — what order does this evaluate?
+    // && has higher precedence than ||.
+    // This is: roll == 20 || (roll >= 15 && enemyWeak)
+}
+
+// Use parentheses to be clear:
+if (roll == 20 || (roll >= 15 && enemyWeak)) {
+    // Unambiguous.
+}</code></pre>
+
+<h2>Operator Precedence</h2>
+
+<p>
+    <code>!</code> → <code>&amp;&amp;</code> → <code>||</code><br>
+    When in doubt, use parentheses. They cost nothing and prevent bugs.
+</p>
+
+<pre><code>// These are DIFFERENT:
+if (a && b || c)         // (a && b) || c
+if (a && (b || c))       // different!
+
+// Be explicit:
+if ((a && b) || c)       // clear intent</code></pre>
+
+<div class="lab tinker-challenge">
+    <h3>Tinker Challenge: Predict and Verify</h3>
+    <p>Read the following code and predict what each statement will print. <strong>Write your predictions down before running the code.</strong></p>
+<pre><code>int hp = 5;
+boolean poisoned = true;
+boolean shielded = false;
+
+System.out.println(hp > 0 && !shielded);
+System.out.println(hp <= 0 || poisoned);
+System.out.println(!poisoned && shielded);
+System.out.println(hp > 0 && (poisoned || shielded));</code></pre>
+
+    <div class="socratic">
+        <h4>Socratic Checkpoint</h4>
+        <ul>
+            <li>Did any of your predictions not match the output?</li>
+            <li>Look closely at the last statement. In what order does Java evaluate <code>hp > 0</code>, <code>poisoned</code>, and <code>shielded</code>? How do the parentheses change the result?</li>
+        </ul>
+    </div>
+</div>
+
+<h2>RPG Patterns</h2>
+
+<pre><code>// Critical hit: natural 20 AND target not immune
+if (roll == 20 && !target.isCritImmune())
+
+// Vulnerable: low HP OR no armor
+if (hp < 10 || armor == 0)
+
+// Double damage: poisoned AND not resistant
+if (poisoned && !poisonResistant)</code></pre>
+
+<h2>Want More?</h2>
+<ul>
+    <li><a href="de-morgan.html">De Morgan's Laws</a> — flipping complex conditions</li>
+    <li><a href="combat-system.html">Combat System Walkthrough</a> — using all of this</li>
+</ul>
+
+</body>
+</html>

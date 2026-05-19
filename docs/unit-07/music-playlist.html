@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music Playlist Walkthrough — Unit 7</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 7</a>
+    <span class="sep">/</span>
+    <span class="here">Music Playlist</span>
+</nav>
+
+<h1>Music Playlist — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    It uses ArrayList to manage a dynamic collection of songs — add, remove,
+    search, shuffle, and display. Use this page as a reference.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Build a playlist manager using ArrayList<Song>. Add songs, remove by title, search by artist, shuffle, and display the playlist.</p>
+
+<pre><code><span class="output">=== MY PLAYLIST ===</span>
+<span class="output">1. "Bohemian Rhapsody" by Queen (5:55)</span>
+<span class="output">2. "Stairway to Heaven" by Led Zeppelin (8:02)</span>
+<span class="output">3. "Hotel California" by Eagles (6:30)</span>
+<span class="output">---</span>
+<span class="output">Total songs: 3</span>
+<span class="output">Total duration: 20:27</span>
+<span class="output">---</span>
+<span class="output">Search "Queen": Bohemian Rhapsody</span></code></pre>
+
+<h2>Step 1: The Song Class</h2>
+
+<p>Small, focused class — just three fields and toString.</p>
+
+<pre><code>public class Song {
+    private String title;
+    private String artist;
+    private int durationSeconds;
+
+    public Song(String title, String artist, int durationSeconds) {
+        this.title = title;
+        this.artist = artist;
+        this.durationSeconds = durationSeconds;
+    }
+
+    public String getTitle()  { return title; }
+    public String getArtist() { return artist; }
+    public int getDuration()  { return durationSeconds; }
+
+    public String toString() {
+        int min = durationSeconds / 60;
+        int sec = durationSeconds % 60;
+        return """ + title + "" by " + artist
+               + " (" + min + ":" + String.format("%02d", sec) + ")";
+    }
+}</code></pre>
+
+<h2>Step 2: ArrayList Basics — Add, Remove, Display</h2>
+
+<pre><code>import java.util.ArrayList;
+
+ArrayList&lt;Song&gt; playlist = new ArrayList&lt;&gt;();
+
+playlist.add(new Song("Bohemian Rhapsody", "Queen", 355));
+playlist.add(new Song("Stairway to Heaven", "Led Zeppelin", 482));
+playlist.add(new Song("Hotel California", "Eagles", 390));
+
+// Remove by title (case-insensitive)
+String toRemove = "hotel california";
+for (int i = 0; i < playlist.size(); i++) {
+    if (playlist.get(i).getTitle().equalsIgnoreCase(toRemove)) {
+        playlist.remove(i);
+        break;
+    }
+}
+
+// Display
+for (int i = 0; i < playlist.size(); i++) {
+    System.out.println((i + 1) + ". " + playlist.get(i));
+}</code></pre>
+
+<p>
+    <strong>Why ArrayList and not an array?</strong> The playlist size changes
+    when songs are added or removed. ArrayList handles resizing automatically.
+    No need to track count or shift elements by hand.
+</p>
+
+<h2>Step 3: Search and Shuffle</h2>
+
+<pre><code>// Search by artist
+public static void searchByArtist(ArrayList&lt;Song&gt; list, String artist) {
+    boolean found = false;
+    for (Song s : list) {
+        if (s.getArtist().equalsIgnoreCase(artist)) {
+            System.out.println("  " + s.getTitle());
+            found = true;
+        }
+    }
+    if (!found) System.out.println("  No songs found by " + artist);
+}
+
+// Shuffle (Fisher-Yates on ArrayList)
+public static void shuffle(ArrayList&lt;Song&gt; list) {
+    for (int i = list.size() - 1; i > 0; i--) {
+        int j = (int) (Math.random() * (i + 1));
+        Song temp = list.get(i);
+        list.set(i, list.get(j));
+        list.set(j, temp);
+    }
+}</code></pre>
+
+<h2>The Full Program</h2>
+
+<pre><code>import java.util.ArrayList;
+
+public class PlaylistManager {
+    public static void main(String[] args) {
+        ArrayList&lt;Song&gt; playlist = new ArrayList&lt;&gt;();
+
+        playlist.add(new Song("Bohemian Rhapsody", "Queen", 355));
+        playlist.add(new Song("Stairway to Heaven", "Led Zeppelin", 482));
+        playlist.add(new Song("Hotel California", "Eagles", 390));
+
+        // Display
+        System.out.println("=== MY PLAYLIST ===");
+        int totalSec = 0;
+        for (int i = 0; i < playlist.size(); i++) {
+            System.out.println((i + 1) + ". " + playlist.get(i));
+            totalSec += playlist.get(i).getDuration();
+        }
+
+        System.out.println("Total songs: " + playlist.size());
+        System.out.println("Total duration: "
+            + (totalSec / 60) + ":" + String.format("%02d", totalSec % 60));
+
+        // Search
+        System.out.println("
+Search for "Queen":");
+        for (Song s : playlist) {
+            if (s.getArtist().equalsIgnoreCase("Queen")) {
+                System.out.println("  " + s.getTitle());
+            }
+        }
+    }
+}</code></pre>
+
+<h2>Extending the Program</h2>
+<ul>
+    <li>Sort by title, artist, or duration (Collections.sort with Comparator).</li>
+    <li>Save/load playlist from a file (AP extension).</li>
+    <li>Add a "play next" queue separate from the main playlist.</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    Your dynamic inventory in Unit 7 uses ArrayList for the same reason:
+    items come and go. The patterns — .add(), .remove(i), .get(i), enhanced for-loop —
+    are identical. Shuffle is the same Fisher-Yates on ArrayList instead of array.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="arraylist-basics.html">ArrayList Basics</a></li>
+    <li><a href="arraylist-traversal.html">ArrayList Traversal</a></li>
+    <li><a href="dynamic-inventory.html">Dynamic Inventory (RPG)</a></li>
+</ul>
+
+</body>
+</html>

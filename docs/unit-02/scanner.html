@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scanner — Reading Input — Unit 2</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 2</a>
+    <span class="sep">/</span>
+    <span class="here">Scanner</span>
+</nav>
+
+<h1>Scanner — Reading Input From the Keyboard</h1>
+
+<p>
+    Your programs so far have been one-directional: they print at you. Scanner lets
+    the user talk <em>back</em>. It reads what the user types.
+</p>
+
+<h2>Setting Up Scanner</h2>
+
+<p>Three things you always need:</p>
+
+<pre><code>import java.util.Scanner;  // 1. Import — top of file, before the class
+
+public class MyProgram {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);  // 2. Create — once
+
+        System.out.print("Enter your name: ");   // prompt
+        String name = input.nextLine();          // 3. Read — blocks until Enter
+
+        System.out.println("Hello, " + name + "!");
+    }
+}</code></pre>
+
+<h2>Reading Different Types</h2>
+
+<pre><code>String s = input.nextLine();   // whole line (including spaces)
+int n = input.nextInt();       // next integer (skips whitespace)
+double d = input.nextDouble(); // next decimal number</code></pre>
+
+<div class="callout lab">
+    <strong>Bug Hunt: The Phantom Enter Key</strong><br>
+    Write a short program using Scanner that asks for a number, then a word:
+    <pre><code>System.out.print("Age: ");
+int age = input.nextInt();      
+
+System.out.print("Name: ");
+String name = input.nextLine(); 
+
+System.out.println("You are " + age + " and your name is " + name);</code></pre>
+    Run it. Type 17, hit Enter. <strong>Wait, what happened?</strong> Did it let you type a name?<br>
+    <em>Observation:</em> Why did the program skip the name input? What key did you press after typing "17" that the computer might have misread as your "Name"?
+</div>
+
+<div class="callout socratic">
+    <strong>Socratic Checkpoint</strong><br>
+    The #1 Scanner bug is the "Input Buffer Trap". <code>nextInt()</code> reads the number "17" but leaves the <strong>Enter key</strong> you pressed in the buffer. The next <code>nextLine()</code> reads that leftover Enter and instantly thinks you gave it a blank line.<br>
+    How can you add a single line of code after <code>nextInt()</code> to "eat" the leftover Enter key before it asks for the name?
+</div>
+
+<h2>Tinker Challenge: Armory Input</h2>
+
+<div class="callout">
+<pre><code>// Build a program that asks:
+//   "What is your weapon?"
+//   "How much damage does it do?"
+// Then prints: "Your sword does 8 damage."
+//
+// TRAP: What happens if you ask for the damage (int) BEFORE the weapon name (String)? Try it both ways!</code></pre>
+</div>
+
+<h2>Common Traps</h2>
+<ul>
+    <li><strong>Forgot to import</strong> — <code>import java.util.Scanner;</code> at the top</li>
+    <li><strong>Buffer trap</strong> — extra nextLine() after nextInt/nextDouble</li>
+    <li><strong>next() vs nextLine()</strong> — next() reads one word, nextLine() reads everything</li>
+    <li><strong>Closing Scanner</strong> — don't close System.in Scanner (it closes System.in forever)</li>
+</ul>
+
+<h2>Want More?</h2>
+<ul>
+    <li><a href="string.html">The String Class</a> — what to do with the Strings you read</li>
+    <li><a href="character-creator.html">Character Creator Walkthrough</a> — Scanner + Dice together</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slot Machine Walkthrough — Unit 1</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 1</a>
+    <span class="sep">/</span>
+    <span class="here">Slot Machine</span>
+</nav>
+
+<h1>Slot Machine &mdash; Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher built live. It uses variables, arithmetic, printing, Math.random(), and the three-step pattern.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Simulate a three-reel slot machine. Generate three random symbols, display them, and announce a winner if all three match.</p>
+
+<pre><code><span class="output">=== SLOT MACHINE ===</span>
+<span class="output">Spinning...</span>
+<span class="output">[ Cherry | Lemon | Cherry ]</span>
+<span class="output">No match — try again!</span></code></pre>
+
+<h2>Iteration 1: The Broken Reels</h2>
+
+<p>Below is an early version of the code we wrote in class. Copy this into a file named <code>SlotMachine.java</code> and run it. You will notice a major bug.</p>
+
+<pre><code>public class SlotMachine {
+    public static void main(String[] args) {
+        // Step 1: Declare
+        int reel1;
+        int reel2;
+        int reel3;
+
+        // Step 2: Generate
+        reel1 = (int) Math.random() * 4;
+        reel2 = (int) Math.random() * 4;
+        reel3 = (int) Math.random() * 4;
+
+        // Step 3: Map to Symbols (Simplified for testing)
+        // Let's just print the numbers first to see if they work
+        System.out.println("=== SLOT MACHINE ===");
+        System.out.println("[ " + reel1 + " | " + reel2 + " | " + reel3 + " ]");
+    }
+}</code></pre>
+
+<h3>Bug Hunt 1:</h3>
+<p>Run the code 5 times. What is the output every single time? Why? <em>Hint: Look closely at the casting on the generation lines. Refer back to the Math.random() documentation if you are stuck.</em></p>
+<p><strong>Fix the bug in your code before moving on.</strong></p>
+
+<hr>
+
+<h2>Iteration 2: Adding the Symbols</h2>
+
+<p>Once the reels are generating random numbers from 0 to 3, we need to map them to Strings. Here is the logic we added for the first reel:</p>
+
+<pre><code>        String symbol1;
+        if (reel1 == 0) symbol1 = "Cherry";
+        else if (reel1 == 1) symbol1 = "Lemon";
+        else if (reel1 == 2) symbol1 = "7";
+        else symbol1 = "Bell";</code></pre>
+
+<h3>Tinker Challenge:</h3>
+<p>You need to repeat this logic for <code>reel2</code> (saving into <code>symbol2</code>) and <code>reel3</code> (saving into <code>symbol3</code>). Add this code, and update your print statement at the end to print the Strings instead of the integers.</p>
+
+<hr>
+
+<h2>Iteration 3: The Win Condition</h2>
+
+<p>Finally, we need to check if the player won. Here is the code with a logic error.</p>
+
+<pre><code>        if (reel1 == reel2) {
+            System.out.println("JACKPOT! All three match!");
+        } else {
+            System.out.println("No match — try again!");
+        }</code></pre>
+
+<h3>Bug Hunt 2:</h3>
+<p>What is wrong with the win condition above? (Think about a scenario where reel1 is Cherry, reel2 is Cherry, and reel3 is Lemon). How do you modify the `if` statement to ensure ALL THREE match?</p>
+
+<hr>
+
+<h2>Extending the Program (Mandatory Tinker Challenges)</h2>
+<p>Once your slot machine works perfectly, pick at least one of these to implement:</p>
+<ul>
+    <li>Change the random generation to <code>* 6</code> and add two more symbols (e.g., "Diamond" and "Star").</li>
+    <li>Add a payout system: Start the player with 100 coins. If they win, add 50 coins. Print their final balance at the end.</li>
+    <li>Give two-of-a-kind a "small payout" message.</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    Your RPG uses the same random-number pattern in <code>Dice.java</code>.
+    The slot machine is pure randomness + display. Your dice roller is randomness + arithmetic.
+    Same engine, different game.
+</p>
+
+</body>
+</html>

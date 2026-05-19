@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hangman Walkthrough — Unit 3</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 3</a>
+    <span class="sep">/</span>
+    <span class="here">Hangman</span>
+</nav>
+
+<h1>Hangman — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    It combines String methods, conditionals, and character comparison
+    to build a classic word-guessing game. Use this page as a reference
+    when building your own projects.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Pick a secret word. Let the player guess one letter at a time. Show which letters are revealed and which are still hidden.</p>
+
+<pre><code><span class="output">=== HANGMAN ===</span>
+<span class="output">Secret word: _ _ _ _ _</span>
+<span class="output">Guess a letter: a</span>
+<span class="output">✗ No 'a' found.</span>
+<span class="output">_ _ _ _ _</span>
+<span class="output">Guess a letter: e</span>
+<span class="output">✓ Correct!</span>
+<span class="output">_ e _ _ _</span></code></pre>
+
+<h2>Step 1: Set Up the Word and Display</h2>
+
+<pre><code>String secret = "dragon";
+int length = secret.length();
+
+// Create a display showing underscores
+String display = "";
+for (int i = 0; i < length; i++) {
+    display = display + "_ ";  // underscore + space
+}
+System.out.println("Secret word: " + display);</code></pre>
+
+<p>
+    <strong>Why String instead of an array?</strong> Arrays come in Unit 6.
+    For now, Strings and their methods (length(), charAt(), indexOf()) do the job.
+    The display string grows as letters are revealed.
+</p>
+
+<h2>Step 2: Read a Guess and Check It</h2>
+
+<pre><code>Scanner input = new Scanner(System.in);
+
+System.out.print("Guess a letter: ");
+String guessStr = input.nextLine();
+char guess = guessStr.charAt(0);  // first character only
+
+// Check if the letter exists in the secret word
+if (secret.indexOf(guess) >= 0) {
+    System.out.println("✓ Correct!");
+} else {
+    System.out.println("✗ No '" + guess + "' found.");
+}</code></pre>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: String Extraction</h3>
+    <p>Why do we use <code>charAt(0)</code> here? What would happen if the player typed multiple letters, or accidentally typed a space first?</p>
+    <p>Also, <code>indexOf()</code> returns <code>-1</code> if the letter is not found. What does it return if the letter is found multiple times (like 'o' in "door")?</p>
+</div>
+
+<h2>Step 3: Reveal Matching Letters</h2>
+
+<pre><code>// Rebuild the display with the guessed letter revealed
+String newDisplay = "";
+for (int i = 0; i < length; i++) {
+    if (secret.charAt(i) == guess) {
+        newDisplay = newDisplay + guess + " ";  // show the letter
+    } else if (display.charAt(i * 2) != '_') {
+        // Already revealed — keep it
+        newDisplay = newDisplay + display.charAt(i * 2) + " ";
+    } else {
+        newDisplay = newDisplay + "_ ";  // still hidden
+    }
+}
+display = newDisplay;
+System.out.println(display);</code></pre>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: The * 2 Trick</h3>
+    <p>Look at the <code>else if (display.charAt(i * 2) != '_')</code> line. Why are we multiplying <code>i</code> by 2?</p>
+    <p>Think about how the display string is formatted: <code>"_ _ _ _ _ "</code>. What character is at index 1? What is at index 3?</p>
+</div>
+
+<h2>Step 4: Loop Until Solved</h2>
+
+<p>In Unit 4, wrap this in a while loop:</p>
+
+<pre><code>while (display.indexOf('_') >= 0) {
+    // Prompt, guess, check, rebuild display
+    // ... same logic as above ...
+}
+System.out.println("You guessed it! The word was: " + secret);</code></pre>
+
+<h2>The Full Program</h2>
+
+<pre><code>import java.util.Scanner;
+
+public class Hangman {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        String secret = "dragon";
+        int length = secret.length();
+
+        // Build initial display
+        String display = "";
+        for (int i = 0; i < length; i++) {
+            display = display + "_ ";
+        }
+
+        System.out.println("=== HANGMAN ===");
+        System.out.println("Secret word: " + display);
+
+        // Game loop — one guess for now (Unit 4 adds looping)
+        System.out.print("Guess a letter: ");
+        String guessStr = input.nextLine();
+        char guess = guessStr.charAt(0);
+
+        if (secret.indexOf(guess) >= 0) {
+            System.out.println("✓ Correct!");
+        } else {
+            System.out.println("✗ No '" + guess + "' found.");
+        }
+
+        // Reveal matching letters
+        String newDisplay = "";
+        for (int i = 0; i < length; i++) {
+            if (secret.charAt(i) == guess) {
+                newDisplay = newDisplay + guess + " ";
+            } else if (display.charAt(i * 2) != '_') {
+                newDisplay = newDisplay + display.charAt(i * 2) + " ";
+            } else {
+                newDisplay = newDisplay + "_ ";
+            }
+        }
+        display = newDisplay;
+        System.out.println(display);
+    }
+}</code></pre>
+
+<h2>Extending the Program</h2>
+<ul>
+    <li>Add a word bank — pick a random word from a list (arrays, Unit 6).</li>
+    <li>Track wrong guesses and draw the hangman.</li>
+    <li>Limit guesses to 6 (or 7 with a body) before game over.</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    The display-rebuilding loop is the same pattern you'll use to update
+    HP bars, inventory lists, and dungeon maps. Start with a default display,
+    modify it based on player actions, print the new version.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="../unit-02/string.html">String Methods</a> — length(), charAt(), indexOf()</li>
+    <li><a href="../unit-02/scanner.html">Scanner</a></li>
+    <li><a href="boolean-logic.html">Boolean Logic</a></li>
+</ul>
+
+</body>
+</html>

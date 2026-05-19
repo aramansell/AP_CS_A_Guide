@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Methods & Static — Unit 5</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 5</a>
+    <span class="sep">/</span>
+    <span class="here">Methods &amp; Static</span>
+</nav>
+
+<h1>Writing Methods &amp; The Static Keyword</h1>
+
+<p>
+    Methods are <strong>what your objects can do</strong>. A Sword can attack. A Player can
+    level up. A Monster can roll damage. Methods use instance variables to perform actions
+    and return results.
+</p>
+
+<h2>Method Syntax</h2>
+
+<pre><code>public returnType methodName(parameters) {
+    // body — uses instance variables, parameters, local variables
+    return value;  // if returnType is not void
+}</code></pre>
+
+<h2>Methods That Use Instance State</h2>
+
+<pre><code>public class Sword {
+    private String name;
+    private int damage;
+    private int durability;
+
+    public int attack() {
+        if (durability <= 0) {
+            System.out.println(name + " is broken!");
+            return 0;
+        }
+        durability--;
+        return damage;
+    }
+
+    public boolean isBroken() {
+        return durability <= 0;
+    }
+}</code></pre>
+
+<p>
+    Notice: <code>attack()</code> uses THREE instance variables (name, damage, durability).
+    No parameters needed — the data lives in the object.
+</p>
+
+<h2>toString() — The Universal Method</h2>
+
+<p>
+    Every class in Java inherits <code>toString()</code> from <code>Object</code>.
+    The default version prints garbage: <code>Sword@15db9742</code>. You <strong>override</strong>
+    it to print something useful.
+</p>
+
+<pre><code>public String toString() {
+    return name + " [" + damage + " dmg, " + durability + " dur]";
+}
+
+// Java calls toString() automatically:
+Sword s = new Sword("Iron Sword", 12, 80);
+System.out.println(s);     // Iron Sword [12 dmg, 80 dur]
+String info = "Equipped: " + s;  // toString runs here too!</code></pre>
+
+<div class="callout warn">
+    <strong>toString is for programmers.</strong> It's for debugging, logging,
+    and quick inspection. If the player needs pretty output, write a separate
+    <code>display()</code> method.
+</div>
+
+<h2>Static Variables</h2>
+
+<p>
+    A <code>static</code> variable belongs to the <strong>class itself</strong>,
+    not any one object. One copy, shared by every instance.
+</p>
+
+<pre><code>public class Player {
+    private String name;
+    private static int playerCount = 0;  // one counter for ALL players
+
+    public Player(String name) {
+        this.name = name;
+        playerCount++;   // increment every time a Player is created
+    }
+
+    public static int getPlayerCount() {
+        return playerCount;
+    }
+}
+
+// Usage — no object needed:
+System.out.println(Player.getPlayerCount());  // 0
+
+Player p1 = new Player("Hero");
+Player p2 = new Player("Mage");
+System.out.println(Player.getPlayerCount());  // 2</code></pre>
+
+<h2>Static Methods</h2>
+
+<p>
+    A static method belongs to the class. Call it with <code>ClassName.method()</code>.
+    You don't need an object.
+</p>
+
+<pre><code>public static int getPlayerCount() {
+    return playerCount;
+}</code></pre>
+
+<div class="callout trap">
+    <strong>THE TRAP:</strong> Static methods cannot access instance variables.
+    <code>getPlayerCount()</code> can read <code>playerCount</code> (static),
+    but it CANNOT read <code>name</code> (instance). Which Player's name would it be?
+    There's no <code>this</code> in a static context.
+</div>
+
+<h2>Static vs Instance — Quick Reference</h2>
+
+<table>
+    <tr><th></th><th>Instance</th><th>Static</th></tr>
+    <tr><td>Belongs to</td><td>Each object</td><td>The class itself</td></tr>
+    <tr><td>How many copies?</td><td>One per object</td><td>One total</td></tr>
+    <tr><td>Access with</td><td><code>object.method()</code></td><td><code>ClassName.method()</code></td></tr>
+    <tr><td>Can access instance vars?</td><td>Yes (has <code>this</code>)</td><td>No (no <code>this</code>)</td></tr>
+    <tr><td>Use for</td><td>Object behavior</td><td>Counters, constants, utilities</td></tr>
+</table>
+
+<h2>Method Overloading</h2>
+
+<p>
+    Same method name, different parameter lists. Java picks the right one based
+    on the arguments you pass:
+</p>
+
+<pre><code>public int attack() {           // no parameters — uses equipped weapon
+    return weapon.getDamage();
+}
+
+public int attack(int bonus) {  // one parameter — extra damage
+    return weapon.getDamage() + bonus;
+}</code></pre>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: The Shared Counter</h3>
+    <p>Look at the <code>playerCount</code> example above. If a student forgot the <code>static</code> keyword and just wrote <code>private int playerCount = 0;</code>, what would happen to the logic? If they created three Player objects, what would the "count" be inside each of them? Why?</p>
+</div>
+
+<div class="bug-hunt">
+    <h3>Bug Hunt: The Static Trap</h3>
+    <p>A student wants to be able to quickly check their player's current weapon without creating a Player object first. They wrote this code, but the compiler is furious. Find the error and explain why it violates the laws of physics in Java:</p>
+    <pre><code>public class Player {
+    private String equippedWeapon = "Shortsword";
+
+    public static void printWeapon() {
+        System.out.println("Currently holding: " + equippedWeapon);
+    }
+}</code></pre>
+</div>
+
+<div class="tinker">
+    <h3>Tinker Challenge: The Level Up System</h3>
+    <p>Add an interactive leveling system to your <code>Player</code> class using instance methods.</p>
+    <ol>
+        <li><strong>Variables:</strong> You should have <code>hp</code>, <code>maxHP</code>, and <code>level</code>. Add an overriding <code>toString()</code> method that prints them nicely.</li>
+        <li><strong>Static Tracking:</strong> Add a static variable <code>totalLevelsGained</code> that starts at 0. Write a static getter for it.</li>
+        <li><strong>The Method:</strong> Write a <code>public void levelUp()</code> method.</li>
+        <li><strong>The Logic:</strong> Inside <code>levelUp()</code>, increase <code>level</code> by 1, increase <code>maxHP</code> by 5, fully heal the player (<code>hp = maxHP</code>), and increase the static <code>totalLevelsGained</code> by 1.</li>
+        <li><strong>Overload It:</strong> Write a second method <code>public void levelUp(int levels)</code> that allows a player to level up multiple times at once. <em>Hint: Use a loop that calls your other <code>levelUp()</code> method!</em></li>
+    </ol>
+</div>
+
+</body>
+</html>

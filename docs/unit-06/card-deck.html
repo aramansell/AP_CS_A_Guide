@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Deck Walkthrough — Unit 6</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 6</a>
+    <span class="sep">/</span>
+    <span class="here">Card Deck</span>
+</nav>
+
+<h1>Card Deck Builder — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    It builds on the Card class from Unit 5, uses arrays of objects,
+    and implements shuffling and dealing. Use this page as a reference.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Build a Deck class that holds 52 Card objects. Provide methods to shuffle and deal cards. Test by dealing a 5-card poker hand.</p>
+
+<pre><code><span class="output">=== NEW DECK ===</span>
+<span class="output">Cards remaining: 52</span>
+<span class="output">Dealt: Ace of Spades (14 pts)</span>
+<span class="output">Dealt: 7 of Hearts (7 pts)</span>
+<span class="output">Dealt: King of Diamonds (13 pts)</span>
+<span class="output">Dealt: 2 of Clubs (2 pts)</span>
+<span class="output">Dealt: 10 of Spades (10 pts)</span>
+<span class="output">Cards remaining: 47</span></code></pre>
+
+<h2>Step 1: Build the Deck</h2>
+
+<p>Store cards in a Card[] array. Use nested loops to generate all 52 combinations.</p>
+
+<pre><code>public class Deck {
+    private Card[] cards;
+    private int nextCard;  // index of next card to deal
+
+    public Deck() {
+        cards = new Card[52];
+        String[] suits = {"Spades", "Hearts", "Diamonds", "Clubs"};
+        String[] ranks = {"2","3","4","5","6","7","8","9","10",
+                          "Jack","Queen","King","Ace"};
+        int[] pointValues = {2,3,4,5,6,7,8,9,10,11,12,13,14};
+
+        int index = 0;
+        for (int s = 0; s < suits.length; s++) {
+            for (int r = 0; r < ranks.length; r++) {
+                cards[index] = new Card(suits[s], ranks[r], pointValues[r]);
+                index++;
+            }
+        }
+        nextCard = 0;
+    }</code></pre>
+
+<p>
+    <strong>Nested loops for combinations.</strong> 4 suits × 13 ranks = 52 cards.
+    The outer loop picks the suit, the inner loop creates all 13 ranks in that suit.
+    pointValues[r] maps to the same rank index.
+</p>
+
+<h2>Step 2: Deal a Card</h2>
+
+<pre><code>    public Card deal() {
+        if (nextCard >= cards.length) {
+            return null;  // no cards left
+        }
+        Card dealt = cards[nextCard];
+        nextCard++;
+        return dealt;
+    }
+
+    public int cardsRemaining() {
+        return cards.length - nextCard;
+    }</code></pre>
+
+<p>
+    <strong>nextCard is a pointer, not a data mover.</strong> We don't remove
+    cards from the array — we just advance the pointer. The dealt cards are
+    still in the array, but we never hand them out again. Simple and efficient.
+</p>
+
+<h2>Step 3: Shuffle</h2>
+
+<pre><code>    public void shuffle() {
+        for (int i = cards.length - 1; i > 0; i--) {
+            int randomPos = (int) (Math.random() * (i + 1));
+            // Swap cards[i] with cards[randomPos]
+            Card temp = cards[i];
+            cards[i] = cards[randomPos];
+            cards[randomPos] = temp;
+        }
+        nextCard = 0;  // reset the deal pointer
+    }</code></pre>
+
+<p>
+    <strong>Fisher-Yates shuffle.</strong> Walk backward through the array.
+    Pick a random position from 0 to i, swap with position i. Every permutation
+    is equally likely. The gold standard of shuffling.
+</p>
+
+<h2>The Full Program</h2>
+
+<pre><code>public class Deck {
+    private Card[] cards;
+    private int nextCard;
+
+    public Deck() {
+        cards = new Card[52];
+        String[] suits = {"Spades", "Hearts", "Diamonds", "Clubs"};
+        String[] ranks = {"2","3","4","5","6","7","8","9","10",
+                          "Jack","Queen","King","Ace"};
+        int[] values = {2,3,4,5,6,7,8,9,10,11,12,13,14};
+
+        int idx = 0;
+        for (String suit : suits)
+            for (int r = 0; r < ranks.length; r++)
+                cards[idx++] = new Card(suit, ranks[r], values[r]);
+        nextCard = 0;
+    }
+
+    public void shuffle() {
+        for (int i = cards.length - 1; i > 0; i--) {
+            int j = (int) (Math.random() * (i + 1));
+            Card temp = cards[i];
+            cards[i] = cards[j];
+            cards[j] = temp;
+        }
+        nextCard = 0;
+    }
+
+    public Card deal() {
+        return (nextCard < cards.length) ? cards[nextCard++] : null;
+    }
+
+    public int cardsRemaining() {
+        return cards.length - nextCard;
+    }
+}
+
+// Test:
+public class DeckTest {
+    public static void main(String[] args) {
+        Deck d = new Deck();
+        d.shuffle();
+        System.out.println("Dealing 5 cards:");
+        for (int i = 0; i < 5; i++) System.out.println(d.deal());
+        System.out.println("Remaining: " + d.cardsRemaining());
+    }
+}</code></pre>
+
+<h2>Extending the Program</h2>
+<ul>
+    <li>Add a PokerHand class that evaluates 5 cards (flush, straight, etc.).</li>
+    <li>Build a Blackjack game with the deck.</li>
+    <li>Add jokers — expand the array to 54 and handle wildcard logic.</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    The Card array is identical to your inventory array. Both store objects in
+    a fixed-size array with a pointer (nextCard / itemCount). Shuffle is the
+    same technique you'd use to randomize loot drops.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="arrays-of-objects.html">Arrays of Objects</a></li>
+    <li><a href="array-algorithms.html">Array Algorithms</a> — swap, shuffle</li>
+    <li><a href="../unit-05/card.html">Card Class (Unit 5)</a></li>
+</ul>
+
+</body>
+</html>

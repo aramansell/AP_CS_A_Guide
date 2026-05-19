@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Method Overriding — Unit 9</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 9</a>
+    <span class="sep">/</span>
+    <span class="here">Method Overriding</span>
+</nav>
+
+<h1>Method Overriding</h1>
+
+<p>
+    Inheritance gives the child everything the parent has. But sometimes
+    "everything" isn't what you want. A Warrior's <code>attack()</code> should
+    be different from a Mage's <code>attack()</code>. <strong>Overriding</strong>
+    is how a child class says: "I'll handle this my own way."
+</p>
+
+<h2>The Problem Inheritance Creates</h2>
+
+<pre><code>public class Character {
+    public void attack() {
+        System.out.println(name + " attacks!");
+    }
+}
+
+public class Player extends Character {
+    // No attack() here — inherits Character's version
+}
+
+// In main:
+Player hero = new Player("Aria");
+hero.attack();   // "Aria attacks!"  ... that's boring</code></pre>
+
+<p>
+    Every player says the exact same thing. A warrior with an axe, a mage with
+    magic, a rogue with daggers — all just say "attacks!" That's what overriding fixes.
+</p>
+
+<h2>@Override — Replace the Parent's Version</h2>
+
+<pre><code>public class Warrior extends Player {
+    @Override                         // ← ALWAYS include this
+    public void attack(Character target) {
+        int damage = getStrength() / 3;
+        System.out.println(name + " swings their axe for " + damage + " damage!");
+        target.takeDamage(damage);
+    }
+}</code></pre>
+
+<p>Now when a Warrior attacks:</p>
+
+<pre><code>Warrior thorn = new Warrior("Thorn");
+thorn.attack(goblin);
+// Output: Thorn swings their axe for 5 damage!</code></pre>
+
+<h2>Three Rules of Overriding</h2>
+
+<ol>
+    <li><strong>Same signature:</strong> Same method name, same parameter types, same return type. Exact match.</li>
+    <li><strong>Use @Override:</strong> The annotation tells Java "I intend to override." If you get the signature wrong, the compiler catches it.</li>
+    <li><strong>Access can't be more restrictive:</strong> If the parent method is <code>public</code>, the override must be <code>public</code> too.</li>
+</ol>
+
+<h2>Why @Override Matters</h2>
+
+<p>Without <code>@Override</code>, a typo becomes a silent new method:</p>
+
+<pre><code>// BUG — forgot @Override, misspelled the method name
+public void atack(Character target) {   // atack ≠ attack
+    // This is a NEW method, not an override!
+    // The inherited attack() still runs.
+    // No compiler error to warn you.
+}
+
+// FIXED — @Override catches the mistake
+@Override
+public void atack(Character target) {   // COMPILE ERROR: method doesn't override
+    // ...
+}</code></pre>
+
+<div class="callout">
+    <strong>Always. Use. @Override.</strong> It's your safety net. Two characters
+    of typing saves you from debugging a method that never gets called.
+</div>
+
+<h2>super.method() — Extend, Don't Replace</h2>
+
+<p>
+    Sometimes you want the parent's version PLUS your own additions. Use
+    <code>super.method()</code> to call the parent's version from inside
+    your override:
+</p>
+
+<pre><code>@Override
+public String toString() {
+    // Parent gives us: "Thorn [85/120]"
+    String parentInfo = super.toString();
+    // Add our own stuff
+    return parentInfo + " | Warrior | STA:" + getStamina();
+}
+// Result: "Thorn [85/120] | Warrior | STA:20"</code></pre>
+
+<p>
+    This is the <strong>"extend, don't replace"</strong> pattern. Call
+    <code>super.method()</code> to get the parent's work, then add yours on top.
+</p>
+
+<h2>Override vs Overload</h2>
+
+<p>These two words sound similar but mean completely different things:</p>
+
+<table>
+    <tr><th></th><th>Override</th><th>Overload</th></tr>
+    <tr>
+        <td>Where?</td>
+        <td>Child class replaces parent's version</td>
+        <td>Same class, multiple versions</td>
+    </tr>
+    <tr>
+        <td>Signature</td>
+        <td>EXACT match (same name, same params, same return)</td>
+        <td>Different parameters (count, type, or order)</td>
+    </tr>
+    <tr>
+        <td>Annotation</td>
+        <td><code>@Override</code></td>
+        <td>None</td>
+    </tr>
+    <tr>
+        <td>Which runs?</td>
+        <td>Actual object type at runtime (polymorphism)</td>
+        <td>Argument types at compile time</td>
+    </tr>
+</table>
+
+<pre><code>// OVERLOAD — same class, different parameters
+public void attack(Character target) { }       // version 1
+public void attack(int x, int y) { }           // version 2 — OVERLOADED
+
+// OVERRIDE — child replaces parent
+@Override
+public void attack(Character target) { }       // OVERRIDES Character's attack()</code></pre>
+
+<h2>Real RPG Example: Different Attacks</h2>
+
+<pre><code>// Warrior: big hits, strength-based
+@Override
+public void attack(Character target) {
+    int damage = getStrength() / 3;
+    System.out.println(name + " swings their axe for " + damage + " damage!");
+    target.takeDamage(damage);
+}
+
+// Mage: spells, intelligence-based
+@Override
+public void attack(Character target) {
+    int damage = getIntelligence() / 3;
+    System.out.println(name + " casts a magic bolt for " + damage + " arcane damage!");
+    target.takeDamage(damage);
+}
+
+// Rogue: precision, dexterity-based, chance to miss
+@Override
+public void attack(Character target) {
+    int roll = (int)(Math.random() * 20) + 1;
+    if (roll >= 10) {
+        int damage = getDexterity() / 4;
+        System.out.println(name + " strikes for " + damage + " damage! (roll: " + roll + ")");
+        target.takeDamage(damage);
+    } else {
+        System.out.println(name + " misses! (roll: " + roll + ")");
+    }
+}</code></pre>
+
+<p>
+    Same method signature. Three completely different behaviors. That's the
+    power of overriding.
+</p>
+
+<h2>Common Traps</h2>
+
+<table>
+    <tr><th>What you did</th><th>Result</th><th>Fix</th></tr>
+    <tr>
+        <td>Forgot <code>@Override</code></td>
+        <td>Silent overload instead of override. Wrong method runs.</td>
+        <td>Add <code>@Override</code>. If it doesn't compile, your signature is wrong.</td>
+    </tr>
+    <tr>
+        <td>Different parameter type</td>
+        <td>Overload, not override. Parent's version still calls on superclass refs.</td>
+        <td>Match the parameter types EXACTLY.</td>
+    </tr>
+    <tr>
+        <td>Different return type</td>
+        <td>Compile error (unless return is a subtype — "covariant return")</td>
+        <td>Match the return type.</td>
+    </tr>
+    <tr>
+        <td><code>private</code> override of <code>public</code> parent</td>
+        <td>Compile error: "attempting to assign weaker access privileges"</td>
+        <td>Match or widen the access modifier.</td>
+    </tr>
+</table>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Timing of Decisions</h3>
+    <p>We know that Method Overloading and Method Overriding represent two completely different kinds of polymorphism. Overloading is resolved at <strong>compile-time</strong>, while Overriding is resolved at <strong>runtime</strong>. In your own words, explain how the compiler makes decisions about overloaded methods versus how the JVM makes decisions about overridden methods. Why can't the compiler resolve overridden methods in advance?</p>
+
+    <h3>2. The LSP (Liskov Substitution Principle) Access Restriction</h3>
+    <p>Java strictly forbids a child class from "weakening" the access privileges of an overridden method (for instance, trying to override a <code>public</code> parent method as <code>private</code> in the child). Why is this limitation structurally mandatory for polymorphism to work? What catastrophe would occur if a developer held a child object inside a parent variable (e.g., <code>Character c = new Thief();</code>) and tried to call a method that was public on the parent but private on the child?</p>
+</div>
+
+<h2>Bug Hunt: The Silent Overload</h2>
+
+<div class="bug-hunt">
+    <p>An RPG designer attempts to implement a custom <code>Boss</code> class that overrides the <code>takeDamage</code> method to apply a 50% damage reduction. However, when playtesting, they notice that calling <code>takeDamage(12.5)</code> on a Boss instance completely bypasses the damage reduction, dealing full damage!</p>
+    <pre><code>public class Monster {
+    public void takeDamage(double amount) {
+        // Base damage logic
+    }
+}
+
+public class Boss extends Monster {
+    // Intended to override and reduce damage by half
+    public void takeDamage(int amount) {
+        System.out.println("Boss shrugs off some pain!");
+        super.takeDamage(amount / 2.0);
+    }
+}</code></pre>
+    <p><strong>Question:</strong> Spot the bug! Why did the compiler allow this code to run without error, and why does a <code>double</code> damage value bypass the boss's custom reduction logic entirely? How would adding the <code>@Override</code> annotation above the boss's method have saved the developer?</p>
+</div>
+
+<h2>Tinker Challenge: Berserker Override & Safe Extension</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Safely extend parent behaviors through controlled overrides.</p>
+    <ol>
+        <li><strong>Conditional super Call:</strong> Create a class <code>Berserker</code> that extends <code>Player</code>. Override the <code>takeDamage(int amount)</code> method. If the berserker's current HP is below 50, double the incoming damage to represent their high-risk rage state, and print a warning. Otherwise, keep damage normal.
+            <div class="callout warn">
+                <strong>Safety First:</strong> Never copy-paste the parent's core logic inside the child override! Always route final calculations through <code>super.takeDamage(finalAmount)</code> so that general bookkeeping (like death detection or status effect tracking) is never bypassed.
+            </div>
+        </li>
+        <li><strong>Override Verification:</strong> Write a small driver class where you create a <code>Berserker</code> with 100 HP, deal 20 damage (normal behavior), then deal 40 damage (which drops HP below 50), and then deal 20 more damage to verify that the damage doubling triggers dynamically!</li>
+    </ol>
+</div>
+
+</body>
+</html>

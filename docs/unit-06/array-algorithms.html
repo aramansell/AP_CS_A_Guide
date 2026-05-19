@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Array Algorithms — Unit 6</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 6</a>
+    <span class="sep">/</span>
+    <span class="here">Array Algorithms</span>
+</nav>
+
+<h1>Array Algorithms</h1>
+
+<p>
+    These are the patterns you'll use forever. Every programming language has arrays,
+    and these algorithms work in all of them. Learn them once. Use them everywhere.
+</p>
+
+<h2>Find Maximum</h2>
+
+<pre><code>int[] arr = {14, 8, 16, 12, 10, 18, 7};
+
+int maxIndex = 0;                       // start assuming first is max
+for (int i = 1; i < arr.length; i++) {  // check rest
+    if (arr[i] > arr[maxIndex]) {       // found bigger?
+        maxIndex = i;                   // update champion
+    }
+}
+System.out.println("Max: " + arr[maxIndex] + " at index " + maxIndex);
+// → Max: 18 at index 5</code></pre>
+
+<p>
+    Why start at index 0? Because it's a real array value. Why start loop at 1?
+    Because we've already "checked" index 0.
+</p>
+
+<h2>Find Minimum</h2>
+
+<pre><code>int minIndex = 0;
+for (int i = 1; i < arr.length; i++) {
+    if (arr[i] < arr[minIndex]) {   // only difference: < instead of >
+        minIndex = i;
+    }
+}</code></pre>
+
+<h2>Sum and Average</h2>
+
+<pre><code>int sum = 0;
+for (int value : arr) {
+    sum += value;
+}
+double avg = (double) sum / arr.length;  // cast to double!</code></pre>
+
+<div class="callout warn">
+    <strong>Integer division trap:</strong> <code>sum / arr.length</code> with both
+    ints gives integer division (truncates). Cast one to double:
+    <code>(double) sum / arr.length</code>.
+</div>
+
+<h2>Linear Search</h2>
+
+<pre><code>public static int find(int[] arr, int target) {
+    for (int i = 0; i < arr.length; i++) {
+        if (arr[i] == target) {
+            return i;      // FOUND! Return position immediately.
+        }
+    }
+    return -1;             // Not found. -1 means "invalid index."
+}
+
+// Usage:
+int[] stats = {14, 8, 16, 12, 10};
+int pos = find(stats, 16);   // → 2
+int notFound = find(stats, 99);  // → -1</code></pre>
+
+<p>
+    Why -1? All valid array indices are 0 or higher. -1 can never be confused
+    with a real position.
+</p>
+
+<h2>Count Matches</h2>
+
+<pre><code>int count = 0;
+for (int value : arr) {
+    if (value > 10) {       // whatever your condition
+        count++;
+    }
+}</code></pre>
+
+<h2>Swap Two Elements</h2>
+
+<pre><code>// Swap positions a and b
+int temp = arr[a];    // save a's value
+arr[a] = arr[b];      // b → a
+arr[b] = temp;        // saved a → b</code></pre>
+
+<p>
+    <strong>You need the temp variable.</strong> If you do <code>a = b; b = a;</code>,
+    both end up with b's original value. The temp saves a's value before it's overwritten.
+</p>
+
+<h2>Reverse an Array (In Place)</h2>
+
+<pre><code>int[] arr = {10, 20, 30, 40, 50};
+
+for (int i = 0; i < arr.length / 2; i++) {
+    int temp = arr[i];
+    arr[i] = arr[arr.length - 1 - i];
+    arr[arr.length - 1 - i] = temp;
+}
+// arr is now {50, 40, 30, 20, 10}</code></pre>
+
+<p>
+    Swap first with last, second with second-to-last, etc. Stop at the middle
+    (<code>length / 2</code>) — going past the middle swaps everything back!
+</p>
+
+<h2>Shift Elements Right (Insert at Front)</h2>
+
+<pre><code>// Shift everything right one position (must go backwards!)
+for (int i = arr.length - 1; i > 0; i--) {
+    arr[i] = arr[i - 1];
+}
+arr[0] = newValue;  // insert new value at front</code></pre>
+
+<div class="callout trap">
+    <strong>Must go backwards!</strong> If you go forward (i=0,1,2...),
+    you'd copy arr[0] to arr[1], then copy that NEW arr[1] to arr[2],
+    and the entire array fills with the original arr[0]. Going backwards
+    means each element moves into a slot that's already been vacated.
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Champion's Start</h3>
+    <p>In the "Find Maximum" algorithm, we start the loop at <code>int i = 1</code> instead of <code>0</code>. Why? What would happen if the array only had exactly 1 element?</p>
+
+    <h3>2. The Magic Number</h3>
+    <p>When searching for a specific item in an array, we return <code>-1</code> if it isn't found. Why can't we just return <code>0</code> to mean "not found"?</p>
+</div>
+
+<h2>Bug Hunt: The Double Reverse</h2>
+
+<div class="bug-hunt">
+    <p>A student wrote code to reverse their array of loot values, but when they print it out, the array looks exactly the same as when it started! Find the bug.</p>
+    <pre><code>int[] loot = {10, 50, 100, 500};
+for (int i = 0; i < loot.length; i++) {
+    int temp = loot[i];
+    loot[i] = loot[loot.length - 1 - i];
+    loot[loot.length - 1 - i] = temp;
+}</code></pre>
+    <p><strong>Question:</strong> How many times does this loop run? Try tracing what happens to the number <code>10</code> on the first iteration and the last iteration.</p>
+</div>
+
+<h2>Tinker Challenge: Target Priority</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Find the weakest enemy and move them to the front of the combat order.</p>
+    <ol>
+        <li>Create an <code>int[]</code> called <code>enemyAC</code> (Armor Class) with the values: <code>{18, 14, 16, 12, 15}</code>.</li>
+        <li>Write an algorithm to find the <strong>index</strong> of the lowest AC value.</li>
+        <li>Swap the value at that lowest index with the value at index <code>0</code>.</li>
+        <li>Print the entire array using an enhanced for loop to prove the weakest enemy (12) is now first.</li>
+        <li><strong>Boss Move:</strong> Try changing your initial array so the lowest value is at the very end. Does your code still work?</li>
+    </ol>
+</div>
+
+</body>
+</html>

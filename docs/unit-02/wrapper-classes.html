@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wrapper Classes — Unit 2</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 2</a>
+    <span class="sep">/</span>
+    <span class="here">Wrapper Classes</span>
+</nav>
+
+<h1>Wrapper Classes</h1>
+
+<p>
+    Primitives (int, double, boolean) are fast and simple. But sometimes you need
+    them to behave like objects. That's what wrapper classes do — they <em>wrap</em>
+    a primitive value in an object.
+</p>
+
+<h2>The Wrappers</h2>
+
+<table>
+    <tr><th>Primitive</th><th>Wrapper Class</th></tr>
+    <tr><td>int</td><td>Integer</td></tr>
+    <tr><td>double</td><td>Double</td></tr>
+    <tr><td>boolean</td><td>Boolean</td></tr>
+    <tr><td>char</td><td>Character</td></tr>
+</table>
+
+<h2>Constants — Named Magic Numbers</h2>
+
+<pre><code>int biggest = Integer.MAX_VALUE;   // 2147483647
+int smallest = Integer.MIN_VALUE;  // -2147483648
+
+double maxDouble = Double.MAX_VALUE; // huge number
+
+// Much more readable than magic numbers:
+if (score > Integer.MAX_VALUE - 100) { ... }</code></pre>
+
+<h2>Parsing — String to Number</h2>
+
+<p>
+    This is the most common use. User types a number... but Scanner already does
+    this for you with nextInt(). So when would you use parsing directly?
+</p>
+
+<pre><code>// When the number is embedded in data:
+String line = "42,18,99";  // like reading from a file later
+String[] parts = line.split(",");
+int first = Integer.parseInt(parts[0]);  // "42" → 42
+
+// Or validating input:
+String userInput = "hello";
+try {
+    int n = Integer.parseInt(userInput); // throws exception — not a number
+} catch (NumberFormatException e) {
+    System.out.println("That's not a number!");
+}</code></pre>
+
+<h2>Autoboxing — Java Does It For You</h2>
+
+<pre><code>// You rarely need to wrap/unwrap manually.
+// Java automatically converts between primitive and wrapper:
+
+Integer wrapped = 42;        // autoboxing: int → Integer
+int unwrapped = wrapped;     // unboxing: Integer → int
+
+// This also works:
+ArrayList<Integer> list = new ArrayList<>();
+list.add(5);                 // autoboxing happens automatically</code></pre>
+
+<h2>When To Use Wrappers vs Primitives</h2>
+
+<p><strong>Use primitives (int, double):</strong> almost always. They're faster,
+simpler, and can't be null.</p>
+
+<p><strong>Use wrappers (Integer, Double):</strong></p>
+<ul>
+    <li>When using ArrayList or other generic collections (Unit 7)</li>
+    <li>When you need the constants (MAX_VALUE, MIN_VALUE)</li>
+    <li>When a value might be "unknown" — primitives can't be null</li>
+</ul>
+
+<h2>Tinker Challenge: The Caching Trap</h2>
+
+<div class="callout lab">
+<pre><code>Integer a = 100;
+Integer b = 100;
+Integer c = 200;
+Integer d = 200;
+
+System.out.println(a == b);  // ???
+System.out.println(c == d);  // ???
+System.out.println(a.equals(b)); // ???
+System.out.println(c.equals(d)); // ???</code></pre>
+
+<p>
+    Run it. <strong>Wait, what happened?</strong> Why is <code>a == b</code> true but <code>c == d</code> is false?
+</p>
+</div>
+
+<div class="callout socratic">
+    <strong>Socratic Checkpoint</strong><br>
+    Java tries to save memory by caching small Integers (from -128 to 127). So <code>a</code> and <code>b</code> point to the exact same cached object in memory. But 200 is too big to be cached, so <code>c</code> and <code>d</code> point to <em>different</em> objects in memory, even though they hold the same value.<br>
+    Knowing this, what method should you ALWAYS use to compare <code>Integer</code> objects, just like with <code>String</code>s?
+</div>
+
+<h2>Bug Hunt: Unboxing Dangers</h2>
+
+<div class="callout lab">
+    <strong>Bug 1: The Null Pointer</strong><br>
+    <pre><code>Integer score = null;
+int finalScore = score;</code></pre>
+    <p>Run this. It causes a <code>NullPointerException</code>. Why? What happens when Java tries to unbox a null wrapper into a primitive?</p>
+</div>
+
+<div class="callout lab">
+    <strong>Bug 2: The Parsing Crash</strong><br>
+    <pre><code>String input = "10.5";
+int value = Integer.parseInt(input);</code></pre>
+    <p>Run this. It throws a <code>NumberFormatException</code>. Look closely at the string "10.5". Why can't `Integer.parseInt` handle it? How would you fix it?</p>
+</div>
+
+<h2>Want More?</h2>
+<ul>
+    <li><a href="math-class.html">The Math Class</a> — more static methods</li>
+    <li><a href="character-creator.html">Character Creator Walkthrough</a> — stats as numbers</li>
+</ul>
+
+</body>
+</html>

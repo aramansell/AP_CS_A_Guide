@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2D Array Traversal — Unit 8</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 8</a>
+    <span class="sep">/</span>
+    <span class="here">2D Array Traversal</span>
+</nav>
+
+<h1>2D Array Traversal and Algorithms</h1>
+
+<p>
+    Traversing a 2D array means visiting every cell. You already know nested loops
+    from Unit 4. The only new thing: which loop goes on the outside?
+</p>
+
+<h2>Row-Major Traversal (The Default)</h2>
+
+<p>
+    <strong>Visit every cell in row 0, then every cell in row 1, then row 2...</strong>
+    This is how you display a map, fill a grid, or scan for something.
+</p>
+
+<pre><code>for (int row = 0; row < grid.length; row++) {
+    for (int col = 0; col < grid[row].length; col++) {
+        System.out.print(grid[row][col] + " ");
+    }
+    System.out.println();  // newline AFTER each row
+}
+
+// Visit order on a 3x3:
+// (0,0) (0,1) (0,2) (1,0) (1,1) (1,2) (2,0) (2,1) (2,2)</code></pre>
+
+<p>Outer loop = rows. Inner loop = columns within that row. println() outside inner loop.</p>
+
+<h2>Column-Major Traversal</h2>
+
+<p>
+    <strong>Visit every cell in column 0, then column 1, then column 2...</strong>
+    Use this for column sums, vertical scanning, or any column-oriented processing.
+</p>
+
+<pre><code>for (int col = 0; col < grid[0].length; col++) {
+    for (int row = 0; row < grid.length; row++) {
+        System.out.print(grid[row][col] + " ");
+    }
+    System.out.println();
+}
+
+// Visit order on a 3x3:
+// (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)</code></pre>
+
+<p>Outer loop = columns. Inner loop = rows. Same cells, different order.</p>
+
+<div class="callout">
+    <strong>Key difference:</strong> In row-major, you finish an entire ROW before moving to the next row.
+    In column-major, you finish an entire COLUMN before moving to the next column.
+    The data access pattern is different — even though you visit the same cells.
+</div>
+
+<h2>Displaying a Grid</h2>
+
+<pre><code>char[][] map = {
+    {'#', '#', '#', '#'},
+    {'#', '.', '$', '#'},
+    {'#', 'M', '.', '#'},
+    {'#', '#', '#', '#'}
+};
+
+for (int row = 0; row < map.length; row++) {
+    for (int col = 0; col < map[row].length; col++) {
+        System.out.print(map[row][col]);
+    }
+    System.out.println();
+}</code></pre>
+
+<p>Output matches the grid layout exactly — one println per row.</p>
+
+<h2>Sum All Cells</h2>
+
+<pre><code>public static int sumGrid(int[][] grid) {
+    int sum = 0;
+    for (int row = 0; row < grid.length; row++) {
+        for (int col = 0; col < grid[row].length; col++) {
+            sum += grid[row][col];
+        }
+    }
+    return sum;
+}</code></pre>
+
+<h2>Count Occurrences</h2>
+
+<pre><code>public static int countChar(char[][] grid, char target) {
+    int count = 0;
+    for (int row = 0; row < grid.length; row++) {
+        for (int col = 0; col < grid[row].length; col++) {
+            if (grid[row][col] == target) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
+// Usage:
+int numTreasures = countChar(map, '$');    // how many treasures on the map?
+int numMonsters = countChar(map, 'M');     // how many monsters?</code></pre>
+
+<h2>Find Maximum (With Position)</h2>
+
+<pre><code>public static int[] findMax(int[][] grid) {
+    // Returns {maxValue, maxRow, maxCol}
+    int max = grid[0][0];
+    int maxRow = 0;
+    int maxCol = 0;
+
+    for (int row = 0; row < grid.length; row++) {
+        for (int col = 0; col < grid[row].length; col++) {
+            if (grid[row][col] > max) {
+                max = grid[row][col];
+                maxRow = row;
+                maxCol = col;
+            }
+        }
+    }
+    return new int[]{max, maxRow, maxCol};
+}</code></pre>
+
+<h2>Row Sums</h2>
+
+<pre><code>int[][] grid = {{1,2,3}, {4,5,6}, {7,8,9}};
+
+for (int row = 0; row < grid.length; row++) {
+    int rowSum = 0;
+    for (int col = 0; col < grid[row].length; col++) {
+        rowSum += grid[row][col];
+    }
+    System.out.println("Row " + row + " sum: " + rowSum);
+}
+// Row 0 sum: 6
+// Row 1 sum: 15
+// Row 2 sum: 24</code></pre>
+
+<h2>Column Sums (Now Column-Major Matters)</h2>
+
+<pre><code>for (int col = 0; col < grid[0].length; col++) {
+    int colSum = 0;
+    for (int row = 0; row < grid.length; row++) {
+        colSum += grid[row][col];
+    }
+    System.out.println("Col " + col + " sum: " + colSum);
+}
+// Col 0 sum: 12
+// Col 1 sum: 15
+// Col 2 sum: 18</code></pre>
+
+<h2>Main Diagonal (row == col)</h2>
+
+<pre><code>// The diagonal from top-left to bottom-right
+for (int i = 0; i < grid.length && i < grid[0].length; i++) {
+    System.out.print(grid[i][i] + " ");
+}
+// grid = {{1,2,3}, {4,5,6}, {7,8,9}}
+// Output: 1 5 9</code></pre>
+
+<h2>Anti-Diagonal (row + col == size - 1)</h2>
+
+<pre><code>int n = grid.length;
+for (int i = 0; i < n; i++) {
+    System.out.print(grid[i][n - 1 - i] + " ");
+}
+// grid = {{1,2,3}, {4,5,6}, {7,8,9}}
+// Output: 3 5 7</code></pre>
+
+<h2>The #1 Trap: println() Placement</h2>
+
+<pre><code>// WRONG — newline inside inner loop:
+for (int row = 0; row < grid.length; row++) {
+    for (int col = 0; col < grid[row].length; col++) {
+        System.out.print(grid[row][col] + " ");
+        System.out.println();  // TOO SOON — newline after EVERY cell
+    }
+}
+
+// RIGHT — newline OUTSIDE inner loop:
+for (int row = 0; row < grid.length; row++) {
+    for (int col = 0; col < grid[row].length; col++) {
+        System.out.print(grid[row][col] + " ");
+    }
+    System.out.println();  // newline after each complete ROW
+}</code></pre>
+
+<h2>The #2 Trap: Bounds Confusion</h2>
+
+<pre><code>int[][] grid = new int[3][5];  // 3 rows, 5 columns
+
+// Which of these throws ArrayIndexOutOfBoundsException?
+grid[3][0];   // ERROR — row 3 doesn't exist (rows: 0,1,2)
+grid[0][5];   // ERROR — col 5 doesn't exist (cols: 0,1,2,3,4)
+grid[0][3];   // OK — valid row 0, valid col 3
+
+// Error message for BOTH: "Index X out of bounds for length Y"
+// You can't tell from the message alone whether row or col is wrong.
+// Read your code carefully.</code></pre>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Column-Major Guard</h3>
+    <p>When traversing a rectangular grid in Column-Major format (e.g., 4 rows and 10 columns), the loops look like this:</p>
+    <pre><code>for (int col = 0; col &lt; grid[0].length; col++) {
+    for (int row = 0; row &lt; grid.length; row++) {
+        System.out.print(grid[row][col] + " ");
+    }
+}</code></pre>
+    <p>Why must the outer loop check <code>grid[0].length</code> instead of <code>grid.length</code>? What runtime exception would occur if you accidentally swapped the outer loop guard to check <code>grid.length</code> and the inner loop to check <code>grid[row].length</code>? On which line of code would it throw?</p>
+
+    <h3>2. The Limit of Diagonals</h3>
+    <p>We know we can traverse a diagonal from top-left to bottom-right using a single loop accessing <code>grid[i][i]</code>. Why does this only work cleanly for square arrays? If you have a rectangular array (e.g., 3 rows by 8 columns), how can you dynamically calculate the maximum length of this main diagonal to prevent an out-of-bounds crash?</p>
+</div>
+
+<h2>Bug Hunt: The Inverted Indices</h2>
+
+<div class="bug-hunt">
+    <p>A game designer is building a rendering system for a rectangular 2D map with 3 rows and 6 columns. They attempt to print the entire terrain heightmap in row-major order, but the code throws a <code>java.lang.ArrayIndexOutOfBoundsException</code> and crashes immediately on the print line.</p>
+    <pre><code>int[][] terrain = new int[3][6]; // 3 rows, 6 columns
+
+for (int row = 0; row &lt; terrain.length; row++) {
+    for (int col = 0; col &lt; terrain[row].length; col++) {
+        System.out.print(terrain[col][row] + " "); // Crashes here!
+    }
+    System.out.println();
+}</code></pre>
+    <p><strong>Question:</strong> Find the bug! Why does accessing <code>terrain[col][row]</code> cause a crash here? Which indices did the developer swap, and what are the specific values of <code>row</code> and <code>col</code> when the crash occurs?</p>
+</div>
+
+<h2>Tinker Challenge: Matrix Transposer & Grid Utilities</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Build robust utility methods to manipulate, rotate, and query grid cells safely.</p>
+    <ol>
+        <li><strong>Rectangular Matrix Transpose:</strong> Write a method <code>public static int[][] transpose(int[][] grid)</code> that returns a new 2D array where the rows and columns are swapped. If the input is a 3x4 grid, the output must be a brand new 4x3 grid where <code>transposed[col][row] = grid[row][col]</code>. Print both grids out to confirm!</li>
+        <li><strong>Orthogonal Neighbor Check:</strong> Write a method <code>public static boolean hasNeighbor(char[][] grid, int row, int col, char target)</code> that returns <code>true</code> if any direct orthogonal neighbor (up, down, left, right) equals <code>target</code>.
+            <div class="callout warn">
+                <strong>Safety First:</strong> Ensure you handle array boundaries correctly! Checking a neighbor for a cell in row 0 or column 0 should not throw an <code>ArrayIndexOutOfBoundsException</code>.
+            </div>
+        </li>
+        <li><strong>Boss Move:</strong> Create a method <code>public static void reverseMainDiagonal(int[][] grid)</code> that takes a square 2D array and reverses the order of elements along its main diagonal (from top-left to bottom-right) in-place, leaving all other elements unchanged. For example:
+            <pre><code>// Input:
+// 1 2 3          // Output:
+// 4 5 6   ---&gt;   // 9 2 3
+// 7 8 9          // 4 5 6
+//                // 7 8 1</code></pre>
+        </li>
+    </ol>
+</div>
+
+</body>
+</html>

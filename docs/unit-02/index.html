@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 2: Using Objects — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <span class="here">Unit 2: Using Objects</span>
+</nav>
+
+<h1>Unit 2: Using Objects</h1>
+
+<p>
+    In Unit 1, you used primitive types — int, double, boolean. They hold exactly
+    one value. For everything else, Java has <strong>objects</strong>. Objects bundle
+    data AND behavior together. A String is an object. A Scanner is an object. Your
+    Player character will be an object.
+</p>
+
+<p>
+    By the end of this unit, you'll build a <strong>Character Creator</strong>: the
+    player types their name, you roll random stats using your Dice engine from Unit 1,
+    and you print a formatted character sheet that introduces them to the dungeon.
+</p>
+
+<h2>Concepts</h2>
+
+<table>
+    <tr><th>Topic</th><th>What you'll learn</th></tr>
+    <tr>
+        <td><a href="objects-and-classes.html">Objects &amp; Classes</a></td>
+        <td>What objects are. Constructors, methods, the dot operator.</td>
+    </tr>
+    <tr>
+        <td><a href="string.html">The String Class</a></td>
+        <td>length(), substring(), indexOf(), equals(), compareTo().</td>
+    </tr>
+    <tr>
+        <td><a href="scanner.html">Scanner — Reading Input</a></td>
+        <td>nextLine(), nextInt(), nextDouble(). Getting input from the keyboard.</td>
+    </tr>
+    <tr>
+        <td><a href="math-class.html">The Math Class</a></td>
+        <td>abs(), pow(), sqrt(), min(), max(). Math extends what primitive operations can do.</td>
+    </tr>
+    <tr>
+        <td><a href="wrapper-classes.html">Wrapper Classes</a></td>
+        <td>Integer, Double. Constants like Integer.MAX_VALUE. Parsing strings to numbers.</td>
+    </tr>
+</table>
+
+<h2>Teacher Projects (Standalone Demos)</h2>
+
+<table>
+    <tr><th>Project</th><th>What it demonstrates</th></tr>
+    <tr>
+        <td><a href="mad-libs.html">Mad Libs</a></td>
+        <td>Scanner input, String concatenation, printing. Fill-in-the-blank storytelling.</td>
+    </tr>
+    <tr>
+        <td><a href="rock-paper-scissors.html">Rock Paper Scissors</a></td>
+        <td>Scanner, Math.random(), String comparison, conditionals. A complete game.</td>
+    </tr>
+</table>
+
+<h2>Your RPG Project</h2>
+
+<p>
+    <strong><a href="character-creator.html">Character Creator (Student RPG Guide)</a></strong> —
+    Read the player's name with Scanner. Roll stats (strength, dexterity, constitution,
+    intelligence) using your Dice engine. Print a formatted character sheet. This Player.java
+    object follows you through every unit for the rest of the year.
+</p>
+
+<h2>RPG Thread</h2>
+
+<p>
+    The stats you roll here (STR, DEX, INT, CON) determine everything later.
+    In Unit 3, STR becomes your attack bonus in combat. In Unit 4, CON determines
+    starting HP. In Unit 9, these stats become instance variables on the Player class.
+    The name you read here? Printed on the character sheet in Unit 3, displayed on
+    the dungeon map in Unit 8.
+</p>
+
+<h2>Prerequisites</h2>
+
+<p>Before starting this unit, you should be comfortable with:</p>
+<ul>
+    <li>Primitive types, variables, and arithmetic: <a href="../unit-01/index.html">Unit 1</a></li>
+    <li>Writing and running a simple Java program with a main method</li>
+</ul>
+
+<h2>Reference Materials</h2>
+
+<ul>
+    <li><strong>Quick Reference:</strong> <code>reference/UsingObjectsQuickRef.md</code> — String methods, Scanner patterns, Math class, wrapper class conversions</li>
+</ul>
+
+<h2>Assessment</h2>
+
+<ul>
+    <li><strong>Part A:</strong> Knowledge — constructors, methods, the dot operator, String methods</li>
+    <li><strong>Part B:</strong> Code trace — predict output of String method chains and Scanner calls</li>
+    <li><strong>Part C:</strong> Write code — use Scanner to read input, use String methods to process it</li>
+</ul>
+
+</body>
+</html>

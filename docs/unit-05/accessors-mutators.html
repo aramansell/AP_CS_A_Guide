@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Getters & Setters — Unit 5</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 5</a>
+    <span class="sep">/</span>
+    <span class="here">Getters &amp; Setters</span>
+</nav>
+
+<h1>Accessors and Mutators (Getters and Setters)</h1>
+
+<p>
+    Instance variables are <code>private</code>. That means <strong>only the class itself</strong>
+    can touch them directly. So how does the rest of your program read or change your object's data?
+    Through methods.
+</p>
+
+<h2>Why Encapsulation?</h2>
+
+<p>Without encapsulation, anyone can corrupt your object:</p>
+
+<pre><code>// WITH public variables — dangerous!
+player.hp = -999;       // negative HP? Impossible to kill.
+player.ac = 99999;      // invincible. Cheating is trivial.
+
+// WITH private variables + setters — safe!
+player.setHP(-999);     // setter clamps to 0
+player.setAC(99999);    // setter caps at reasonable max</code></pre>
+
+<p>
+    Encapsulation means <strong>you</strong> write the rules. Your methods are the only
+    way in. If someone wants to change your object, they play by your rules.
+</p>
+
+<h2>Accessors (Getters)</h2>
+
+<p>
+    A getter <strong>returns</strong> a value. It reads data. It changes nothing.
+    The naming convention: <code>get</code> + VariableName.
+</p>
+
+<pre><code>public class Player {
+    private String name;
+    private int hp;
+
+    public String getName() {   // returns the name
+        return name;
+    }
+
+    public int getHP() {        // returns current HP
+        return hp;
+    }
+}
+
+// Usage:
+Player p = new Player("Hero", 20, 14);
+System.out.println(p.getName());  // "Hero"
+if (p.getHP() < 10) { ... }       // check without touching private data</code></pre>
+
+<h2>Mutators (Setters)</h2>
+
+<p>
+    A setter <strong>changes</strong> a value — after checking that the new value is valid.
+    Naming: <code>set</code> + VariableName. Usually <code>void</code> — they do things,
+    they don't return things.
+</p>
+
+<pre><code>public void setHP(int newHP) {
+    if (newHP < 0) {
+        hp = 0;              // floor: can't go below 0
+    } else if (newHP > maxHP) {
+        hp = maxHP;          // ceiling: can't exceed max
+    } else {
+        hp = newHP;
+    }
+}</code></pre>
+
+<h2>Do I Always Need Both?</h2>
+
+<p>No. Some variables should be <strong>read-only</strong> (getter, no setter):</p>
+
+<pre><code>private final String id;     // ID never changes after creation
+public String getID() { return id; }
+// No setID() — there shouldn't be one.</code></pre>
+
+<p>Some should be <strong>internal only</strong> (no getter, no setter):</p>
+
+<pre><code>private int tempCalculation;  // used internally, nobody else needs it
+// No getter. No setter. This variable is the class's business.</code></pre>
+
+<p>
+    The rule: <strong>only expose what other code needs</strong>. Start with nothing public.
+    Add getters and setters only when another class actually calls them.
+</p>
+
+<h2>The this Keyword with Setters</h2>
+
+<p>
+    When the parameter has the same name as the instance variable, you need <code>this</code>
+    to tell them apart:
+</p>
+
+<pre><code>public void setName(String name) {
+    this.name = name;    // this.name = instance var, name = parameter
+}</code></pre>
+
+<p>
+    Even when there's no shadowing, adding <code>this.</code> makes your intent clear.
+    It's never wrong to use <code>this.</code> for instance variables.
+</p>
+
+<h2>Pattern: Combat Methods Through Setters</h2>
+
+<pre><code>public void takeDamage(int amount) {
+    if (amount < 1) amount = 1;   // minimum 1 damage
+    setHP(hp - amount);            // use setHP for bounds checking
+}
+
+public void heal(int amount) {
+    if (amount < 0) return;        // negative healing = do nothing
+    setHP(hp + amount);            // setHP caps at maxHP
+}
+
+public boolean isAlive() {
+    return hp > 0;
+}</code></pre>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: The Invincible Boss</h3>
+    <p>A student creates a <code>Boss</code> class with a private instance variable for <code>maxHP</code>. Should they automatically write a <code>setMaxHP()</code> method just because the variable exists? Think about the consequences. What might happen in an RPG if a boss's maximum health could be changed by any other part of the code mid-combat?</p>
+</div>
+
+<div class="bug-hunt">
+    <h3>Bug Hunt: The Phantom Setter</h3>
+    <p>A student wrote a setter to update their player's speed, but no matter what they do, their player always moves at the default speed of 10. Spot the missing keyword that is causing this "shadowing" bug, where the parameter just updates itself:</p>
+    <pre><code>public class Player {
+    private int speed = 10;
+
+    public void setSpeed(int speed) {
+        speed = speed;
+    }
+}</code></pre>
+</div>
+
+<div class="tinker">
+    <h3>Tinker Challenge: The Fragile Blade</h3>
+    <p>Write the getters and setters for a <code>Sword</code> class that manages its own durability using strict encapsulation.</p>
+    <ol>
+        <li><strong>Variables:</strong> Provide a private <code>durability</code> (int, representing 0 to 100) and a private <code>name</code> (String).</li>
+        <li><strong>Getters:</strong> Write accessors for both variables.</li>
+        <li><strong>Setter Validation:</strong> Write a <code>setDurability(int dur)</code> method. If the new value is greater than 100, clamp the durability to 100. If the new value is less than 0, clamp it to 0. Otherwise, update it to the new value.</li>
+        <li><strong>Action Methods:</strong> Write a <code>strike()</code> method that lowers the sword's durability by 5 (by calling your own <code>setDurability</code> method to get the validation for free). Write a <code>repair()</code> method that increases it by 20 (again, use the setter!).</li>
+    </ol>
+</div>
+
+</body>
+</html>

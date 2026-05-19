@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tip Calculator — Unit 1</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 1</a>
+    <span class="sep">/</span>
+    <span class="here">Tip Calculator</span>
+</nav>
+
+<h1>Tip Calculator &mdash; Full Walkthrough</h1>
+
+<p>
+    This project will be built <strong>together as a class</strong>. Your teacher will guide you through the process, 
+    but you will write the code and figure out the bugs. This introduces the "Three-Step Pattern" (Declare, Calculate, Display) that you will use in almost every program this year.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Given a bill amount and a tip percentage, calculate and display the tip and total.</p>
+
+<pre><code><span class="output">===== TIP CALCULATOR =====</span>
+<span class="output">Bill:  $45.5</span>
+<span class="output">Tip:   $9.1</span>
+<span class="output">Total: $54.6</span>
+<span class="output">==========================</span></code></pre>
+
+<h2>Iteration 1: Declare the Data</h2>
+
+<p>Before we can do math, we need to store our data.</p>
+
+<div class="callout lab">
+    <strong>Task 1: Variables</strong><br>
+    Create a new class called <code>TipCalculator</code> with a <code>main</code> method.<br><br>
+    Declare four variables to hold:
+    <ol>
+        <li>The starting bill amount (set it to <code>45.50</code>)</li>
+        <li>The tip percentage (set it to <code>20</code>)</li>
+        <li>The calculated tip amount (don't set a value yet)</li>
+        <li>The final total amount (don't set a value yet)</li>
+    </ol>
+</div>
+
+<div class="callout socratic">
+    <strong>Socratic Checkpoint</strong><br>
+    What data type should you use for these variables? Why is <code>int</code> a bad choice for money?
+</div>
+
+<h2>Iteration 2: The Math Trap</h2>
+
+<p>Now we need to calculate the tip. 20 percent means 20 divided by 100.</p>
+
+<div class="callout lab">
+    <strong>Bug Hunt: The Zero Dollar Tip</strong><br>
+    Add this calculation to your code:
+    <pre><code>tip = billAmount * (tipPercent / 100);
+System.out.println("Debug Tip: " + tip);</code></pre>
+    Run the code. The output is <code>Debug Tip: 0.0</code>. 
+    <br><br>
+    Why is the tip 0? Use what you discovered in the <a href="arithmetic.html">Arithmetic</a> lab to fix this line of code so that it prints <code>9.1</code>.
+</div>
+
+<h2>Iteration 3: Display the Receipt</h2>
+
+<p>Once the math is fixed, calculate the <code>total</code> (bill + tip). Then, replace your debug print statement with a nicely formatted receipt.</p>
+
+<div class="callout lab">
+    <strong>Task 2: Formatting Output</strong><br>
+    Use <code>System.out.println</code> and String concatenation (the <code>+</code> operator) to print the exact receipt shown in "The Goal" section above.
+</div>
+
+<h2>Extending the Program</h2>
+
+<p>Once your basic calculator works, try these upgrades:</p>
+
+<ul>
+    <li><strong>Split the Check:</strong> Add a variable for the number of people and calculate how much each person owes.</li>
+    <li><strong>Sales Tax:</strong> Add a tax rate variable (like 8.25%) and apply tax <em>before</em> calculating the tip.</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    The Tip Calculator is not your RPG project. Your RPG project is the Dice Roller.
+    But they share the exact same <strong>structure</strong>: declare variables,
+    calculate, display. When you start a new project, remember this pattern!
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="three-step-pattern.html">The Three-Step Pattern</a> — the skeleton behind this program</li>
+    <li><a href="arithmetic.html">Arithmetic &amp; Operators</a> — review the math traps</li>
+    <li><a href="printing.html">Printing &amp; Concatenation</a> — formatting the output</li>
+</ul>
+
+</body>
+</html>

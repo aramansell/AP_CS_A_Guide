@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student RPG Guide: Dungeon Loop System — Unit 4</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 4</a>
+    <span class="sep">/</span>
+    <span class="here">Student Guide: Dungeon Loop System</span>
+</nav>
+
+<h1>Student RPG Guide: Dungeon Loop System</h1>
+
+<div class="callout">
+    <strong>This is YOUR guide.</strong> After studying while-loops and for-loops,
+    you wrap your combat system in loops so fights last multiple rounds and
+    dungeons have multiple rooms. Instead of code blanks, you are provided with
+    <strong>Acceptance Criteria</strong>: if your code passes every test, it works.
+</div>
+
+<h2>What You're Building</h2>
+
+<p>
+    A <code>DungeonLoop.java</code> class that demonstrates two kinds of loops:
+    a <strong>while loop</strong> for combat (keep fighting until someone dies)
+    and a <strong>for loop</strong> for room exploration (five rooms, each with
+    a random encounter). By the end, you understand when to use while vs for.
+</p>
+
+<h2>How It Connects to the Unit 4 Concepts</h2>
+
+<p>
+    <strong>while-loops:</strong> Combat is indeterminate — you don't know how many
+    rounds it will take. That's a while loop: "while both are alive, keep fighting."<br>
+    <strong>for-loops:</strong> Dungeon rooms are fixed — you know exactly how many
+    rooms to generate. That's a for loop: "for room 1 through 5, generate an encounter."
+</p>
+
+<hr>
+
+<h2>FILE: DungeonLoop.java</h2>
+
+<p>
+    Create a new file called <code>DungeonLoop.java</code>. Every part on this page
+    belongs to this ONE file.
+</p>
+
+<h3>Part 1: runCombat() — Combat While Loop</h3>
+
+<div class="callout">
+    <strong>Recall while-loops and Combat.java (Unit 3).</strong> A while loop runs as long
+    as its condition is true. Combat uses <code>while (playerHP > 0 && monsterHP > 0)</code>
+    — the <code>&&</code> operator from Unit 3's boolean logic.
+</div>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature:
+<pre><code>public static boolean runCombat(String playerName, int playerHP, int playerAC,
+                                    int playerAttackBonus, String monsterName,
+                                    int monsterHP, int monsterAC,
+                                    int monsterAttackBonus, int monsterDamageDie)</code></pre>
+    </li>
+    <li>Prints a header: <code>"=== COMBAT: [playerName] vs [monsterName] ==="</code></li>
+    <li>Uses a <code>while</code> loop. Condition: both playerHP > 0 AND monsterHP > 0</li>
+    <li>Each iteration:
+        <ol>
+            <li>Print current HP for both combatants</li>
+            <li>Player attacks: roll d20, add bonus, compare to AC. Same pattern from Combat.java Unit 3: if roll == 20, critical hit (roll d8 × 2). If total >= AC, hit (roll d8). Otherwise, miss.</li>
+            <li>Subtract damage from monsterHP if hit</li>
+            <li>Monster counterattacks ONLY if monsterHP > 0</li>
+            <li>Monster attack: roll d20, add bonus, compare to AC. If total >= playerAC, hit (roll monsterDamageDie). Otherwise, miss.</li>
+            <li>Subtract damage from playerHP if hit</li>
+        </ol>
+    </li>
+    <li>After the loop ends (someone died): if playerHP > 0, print victory message and return <code>true</code>. Otherwise, print defeat message and return <code>false</code></li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>Why does the monster only counterattack when <code>monsterHP > 0</code>? What would happen if you removed that check?</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>boolean result = DungeonLoop.runCombat("Hero", 20, 14, 3, "Goblin", 10, 12, 2, 6);
+System.out.println("Combat result: " + (result ? "Won" : "Lost"));
+// Run multiple times. Verify:
+// - Combat continues until someone's HP reaches 0
+// - Winner is reported correctly
+// - The returned boolean matches the winner</code></pre>
+
+<h3>When to Use While</h3>
+<p>You don't know how many rounds this fight will last. It could be 1 round or 20. That's exactly when you use a while loop — the number of iterations is determined by the data, not by a fixed count.</p>
+
+<hr>
+
+<h3>Part 2: runDungeon() — Room Exploration For Loop</h3>
+
+<div class="callout">
+    <strong>Recall for-loops.</strong> When you know the count in advance, use
+    <code>for (int i = start; i <= end; i++)</code>. Five dungeon rooms = five iterations.
+</div>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static void runDungeon(int difficulty)</code></li>
+    <li>Prints a header: <code>"=== DUNGEON CRAWL (Difficulty: [difficulty]) ==="</code></li>
+    <li>Track <code>playerHP</code> (start at 20), <code>gold</code> (start at 0), <code>roomsSurvived</code> (start at 0)</li>
+    <li>Use a <code>for</code> loop: room from 1 to 5 (inclusive)</li>
+    <li>At the top of each iteration: if playerHP <= 0, print "You cannot continue..." and <code>break</code></li>
+    <li>Each iteration generates a random room type (0, 1, or 2):
+        <ul>
+            <li><strong>Combat (type 0):</strong> Scale a monster. monsterHP = 5 + room * difficulty, AC = 10 + room, atk = room + difficulty, dmg die = 4 + room. Print "A [name] appears!" (use an array of names indexed by room-1). Call <code>runCombat()</code>. If the player wins, add <code>10 * room</code> gold. If not, set playerHP = 0.</li>
+            <li><strong>Treasure (type 1):</strong> Add <code>5 + Dice.roll(10) * difficulty</code> gold. Print what was found.</li>
+            <li><strong>Trap (type 2):</strong> Subtract <code>Dice.roll(6)</code> from playerHP. Print the damage and remaining HP.</li>
+        </ul>
+    </li>
+    <li>Increment roomsSurvived after processing each room</li>
+    <li>After the loop: print a summary showing rooms explored, gold collected, and HP remaining</li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>Why is the dungeon loop a for loop but the combat loop is a while loop? What's the rule for choosing between them?</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>DungeonLoop.runDungeon(1);
+// Verify:
+// - Exactly 5 rooms are generated (or fewer if player dies)
+// - Room types vary randomly (re-run to see all types)
+// - Combat, treasure, and trap rooms behave as described
+// - HP carries over across rooms
+// - Gold accumulates across rooms
+// - If player dies, remaining rooms are skipped (break)</code></pre>
+
+<hr>
+
+<h3>Part 3: main() — Test It</h3>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>First, call <code>runCombat()</code> once with hardcoded stats to test while loops in isolation</li>
+    <li>Then, call <code>runDungeon(1)</code> to test the full for-loop dungeon</li>
+</ul>
+
+<h3>Acceptance Test:</h3>
+<p>Run <code>DungeonLoop.main()</code>. Confirm the isolated combat test runs first, then the full dungeon. Re-run — results should vary because dice rolls are random.</p>
+
+<hr>
+
+<h2>Full Method Summary</h2>
+
+<p>When complete, your class should have this shape:</p>
+
+<pre><code>public class DungeonLoop {
+
+    public static boolean runCombat(String playerName, int playerHP, int playerAC,
+                                      int playerAttackBonus, String monsterName,
+                                      int monsterHP, int monsterAC,
+                                      int monsterAttackBonus, int monsterDamageDie) {
+        // while (playerHP > 0 && monsterHP > 0) { ... }
+    }
+
+    public static void runDungeon(int difficulty) {
+        // for (int room = 1; room <= 5; room++) { ... }
+    }
+
+    public static void main(String[] args) {
+        // test runCombat, then runDungeon
+    }
+}</code></pre>
+
+</body>
+</html>

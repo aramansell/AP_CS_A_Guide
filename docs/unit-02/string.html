@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The String Class — Unit 2</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 2</a>
+    <span class="sep">/</span>
+    <span class="here">The String Class</span>
+</nav>
+
+<h1>The String Class</h1>
+
+<p>
+    You've been using Strings since hello world. But String is not a primitive — it's
+    an <strong>object</strong>. That means it comes with methods. A LOT of them.
+</p>
+
+<h2>Strings Are Objects</h2>
+
+<pre><code>String name = "Frodo";          // shortcut — Java does this for you
+String name2 = new String("Frodo"); // explicit — same thing
+
+// Strings have methods. Call them with a dot.
+System.out.println(name.length());  // 5 — counts characters
+System.out.println(name.toUpperCase()); // "FRODO"</code></pre>
+
+<p>
+    <strong>Important:</strong> Strings are <em>immutable</em>. Methods like
+    <code>toUpperCase()</code> don't change the original — they return a new String.
+</p>
+
+<pre><code>String s = "hello";
+s.toUpperCase();
+System.out.println(s); // still "hello" — the original didn't change!
+
+s = s.toUpperCase();   // NOW s is "HELLO" — we reassigned</code></pre>
+
+<h2>The Essential Methods</h2>
+
+<h3>length() — how many characters</h3>
+<pre><code>"dragon".length();   // 6
+"".length();          // 0 — empty string
+" ".length();         // 1 — space is a character</code></pre>
+
+<h3>substring(start, end) — slice out part</h3>
+<pre><code>String s = "dungeon";
+s.substring(0, 3);    // "dun" — characters 0,1,2 (stops BEFORE 3)
+s.substring(3);       // "geon" — from 3 to end</code></pre>
+
+<h3>indexOf(thing) — find position</h3>
+<pre><code>"sword".indexOf("o");   // 2 — first 'o' is at index 2
+"sword".indexOf("z");   // -1 — not found
+"sword".indexOf("or");  // 2 — finds whole substring</code></pre>
+
+<h3>equals(other) — compare contents</h3>
+<pre><code>String a = "sword";
+String b = "sword";
+String c = "shield";
+
+a.equals(b);  // true — same characters
+a.equals(c);  // false
+
+// NEVER use == to compare Strings!
+a == b        // SOMETIMES true, sometimes false — DON'T DO THIS</code></pre>
+
+<h3>compareTo(other) — ordering</h3>
+<pre><code>"axe".compareTo("bow");     // negative — "axe" comes before "bow"
+"bow".compareTo("axe");     // positive
+"axe".compareTo("axe");     // 0 — they're equal</code></pre>
+
+<h2>Tinker Challenge: String Slicing</h2>
+
+<div class="callout lab">
+<pre><code>String weapon = "Excalibur";
+System.out.println(weapon.length());
+System.out.println(weapon.substring(0, 3));
+System.out.println(weapon.indexOf("cal"));
+System.out.println(weapon.substring(weapon.indexOf("cal")));</code></pre>
+<p>Write your prediction for each line. Then run and check. Did the second substring behave differently than the first? Why?</p>
+</div>
+
+<h2>String + Concatenation</h2>
+
+<pre><code>int hp = 42;
+System.out.println("HP: " + hp);          // "HP: 42"
+System.out.println("Damage: " + (10 + 5)); // "Damage: 15"
+System.out.println("Damage: " + 10 + 5);   // "Damage: 105" — TRAP!</code></pre>
+
+<p>+ runs left-to-right. <code>"Damage: " + 10</code> becomes <code>"Damage: 10"</code>,
+then <code>"Damage: 10" + 5</code> becomes <code>"Damage: 105"</code>.
+Use parentheses: <code>"Damage: " + (10 + 5)</code>.</p>
+
+<h2>Bug Hunt: String Traps</h2>
+
+<div class="callout lab">
+    <strong>Bug 1: The Identical Twins</strong><br>
+    <pre><code>String s1 = new String("magic");
+String s2 = new String("magic");
+if (s1 == s2) {
+    System.out.println("They match!");
+} else {
+    System.out.println("They are different!");
+}</code></pre>
+    <p>Run this. Why does it say they are different? Fix the code so it correctly identifies them as matching.</p>
+</div>
+
+<div class="callout lab">
+    <strong>Bug 2: The Stubborn String</strong><br>
+    <pre><code>String word = "dragon";
+word.toUpperCase();
+System.out.println(word);</code></pre>
+    <p>Run this. Why is it still lowercase? Fix the code so it prints "DRAGON".</p>
+</div>
+
+<h2>Want More?</h2>
+<ul>
+    <li><a href="scanner.html">Scanner</a> — read Strings from the keyboard</li>
+    <li><a href="character-creator.html">Character Creator Walkthrough</a> — format a character name</li>
+</ul>
+
+</body>
+</html>

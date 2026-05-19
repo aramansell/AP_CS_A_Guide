@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic-Tac-Toe Walkthrough — Unit 8</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 8</a>
+    <span class="sep">/</span>
+    <span class="here">Tic-Tac-Toe</span>
+</nav>
+
+<h1>Tic-Tac-Toe — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    It uses a 2D array as the game board, with methods to place marks,
+    check for winners, and display the board. Use this page as a reference.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Build a two-player Tic-Tac-Toe game with a 3x3 board. Let players take turns placing X and O. Check for a winner after every move.</p>
+
+<pre><code><span class="output">  0 1 2</span>
+<span class="output">0  | | </span>
+<span class="output"> ---+---+---</span>
+<span class="output">1  | | </span>
+<span class="output"> ---+---+---</span>
+<span class="output">2  | | </span>
+<span class="output">
+Player X, enter row and col: 1 1</span>
+<span class="output">...</span>
+<span class="output">X wins!</span></code></pre>
+
+<h2>Step 1: The Board (2D Array)</h2>
+
+<pre><code>public class TicTacToe {
+    private char[][] board;
+    private char currentPlayer;
+
+    public TicTacToe() {
+        board = new char[3][3];
+        // Initialize with empty spaces
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                board[r][c] = ' ';
+            }
+        }
+        currentPlayer = 'X';
+    }</code></pre>
+
+<p>
+    <strong>Why char and not String?</strong> Each cell holds one character.
+    char is simpler, lighter, and == comparison works (no .equals() needed).
+    X, O, or space — three possible values.
+</p>
+
+<h2>Step 2: Display the Board</h2>
+
+<pre><code>    public void display() {
+        System.out.println("  0 1 2");
+        for (int r = 0; r < 3; r++) {
+            System.out.print(r + " ");
+            for (int c = 0; c < 3; c++) {
+                System.out.print(board[r][c]);
+                if (c < 2) System.out.print("|");
+            }
+            System.out.println();
+            if (r < 2) System.out.println(" ---+---+---");
+        }
+    }</code></pre>
+
+<p>
+    Each cell prints the char. Bars between columns. Dashed line between rows.
+    The row/col labels help players choose coordinates.
+</p>
+
+<h2>Step 3: Place a Mark</h2>
+
+<pre><code>    public boolean placeMark(int row, int col) {
+        if (row < 0 || row > 2 || col < 0 || col > 2) {
+            System.out.println("Out of bounds! Use 0-2.");
+            return false;
+        }
+        if (board[row][col] != ' ') {
+            System.out.println("Cell is already taken!");
+            return false;
+        }
+        board[row][col] = currentPlayer;
+        return true;
+    }</code></pre>
+
+<h2>Step 4: Check for Winner</h2>
+
+<p>Three ways to win: rows, columns, diagonals. Check all eight lines.</p>
+
+<pre><code>    public boolean checkWin() {
+        // Check rows
+        for (int r = 0; r < 3; r++) {
+            if (board[r][0] != ' ' &&
+                board[r][0] == board[r][1] &&
+                board[r][1] == board[r][2])
+                return true;
+        }
+        // Check columns
+        for (int c = 0; c < 3; c++) {
+            if (board[0][c] != ' ' &&
+                board[0][c] == board[1][c] &&
+                board[1][c] == board[2][c])
+                return true;
+        }
+        // Check diagonals
+        if (board[0][0] != ' ' &&
+            board[0][0] == board[1][1] &&
+            board[1][1] == board[2][2])
+            return true;
+        if (board[0][2] != ' ' &&
+            board[0][2] == board[1][1] &&
+            board[1][1] == board[2][0])
+            return true;
+
+        return false;
+    }</code></pre>
+
+<p>
+    <strong>First check != ' '.</strong> An empty row (three spaces) would
+    technically "match" but shouldn't count as a win. Skip empty cells.
+</p>
+
+<h2>Step 5: Game Loop</h2>
+
+<pre><code>    public void play() {
+        Scanner input = new Scanner(System.in);
+        int moves = 0;
+
+        while (moves < 9) {
+            display();
+            System.out.println("Player " + currentPlayer
+                               + ", enter row and col: ");
+            int row = input.nextInt();
+            int col = input.nextInt();
+
+            if (placeMark(row, col)) {
+                moves++;
+                if (checkWin()) {
+                    display();
+                    System.out.println(currentPlayer + " wins!");
+                    return;
+                }
+                // Switch player
+                currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+            }
+        }
+        display();
+        System.out.println("It's a tie!");
+    }</code></pre>
+
+<h2>The Full Program</h2>
+
+<pre><code>import java.util.Scanner;
+
+public class TicTacToe {
+    private char[][] board;
+    private char currentPlayer;
+
+    public TicTacToe() {
+        board = new char[3][3];
+        for (int r = 0; r < 3; r++)
+            for (int c = 0; c < 3; c++)
+                board[r][c] = ' ';
+        currentPlayer = 'X';
+    }
+
+    public void display() {
+        System.out.println("  0 1 2");
+        for (int r = 0; r < 3; r++) {
+            System.out.print(r + " ");
+            for (int c = 0; c < 3; c++) {
+                System.out.print(board[r][c]);
+                if (c < 2) System.out.print("|");
+            }
+            System.out.println();
+            if (r < 2) System.out.println(" ---+---+---");
+        }
+    }
+
+    public boolean placeMark(int row, int col) {
+        if (row < 0 || row > 2 || col < 0 || col > 2) return false;
+        if (board[row][col] != ' ') return false;
+        board[row][col] = currentPlayer;
+        return true;
+    }
+
+    public boolean checkWin() {
+        for (int r = 0; r < 3; r++)
+            if (board[r][0] != ' ' && board[r][0] == board[r][1]
+                && board[r][1] == board[r][2]) return true;
+        for (int c = 0; c < 3; c++)
+            if (board[0][c] != ' ' && board[0][c] == board[1][c]
+                && board[1][c] == board[2][c]) return true;
+        if (board[0][0] != ' ' && board[0][0] == board[1][1]
+            && board[1][1] == board[2][2]) return true;
+        if (board[0][2] != ' ' && board[0][2] == board[1][1]
+            && board[1][1] == board[2][0]) return true;
+        return false;
+    }
+
+    public void play() {
+        Scanner input = new Scanner(System.in);
+        int moves = 0;
+        while (moves < 9) {
+            display();
+            System.out.print("Player " + currentPlayer + ": row col? ");
+            int r = input.nextInt(), c = input.nextInt();
+            if (placeMark(r, c)) {
+                moves++;
+                if (checkWin()) { display(); System.out.println(currentPlayer + " wins!"); return; }
+                currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+            }
+        }
+        System.out.println("Tie!");
+    }
+
+    public static void main(String[] args) {
+        new TicTacToe().play();
+    }
+}</code></pre>
+
+<h2>Extending the Program</h2>
+<ul>
+    <li>Add an AI opponent (random moves, or minimax for a challenge).</li>
+    <li>Allow board sizes larger than 3x3.</li>
+    <li>Track wins across multiple games.</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    Your dungeon map uses a 2D array with the same row/col access pattern.
+    The win-check loops (rows, cols, diagonals) are the same traversal
+    patterns you use to scan your dungeon for enemies, treasure, or exits.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="2d-array-basics.html">2D Array Basics</a></li>
+    <li><a href="2d-array-traversal.html">2D Array Traversal</a></li>
+    <li><a href="dungeon-map.html">Dungeon Map (RPG)</a></li>
+</ul>
+
+</body>
+</html>

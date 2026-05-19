@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student RPG Guide: Monster.java — Unit 5</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 5</a>
+    <span class="sep">/</span>
+    <span class="here">Student Guide: Monster.java</span>
+</nav>
+
+<h1>Student RPG Guide: Building Monster.java</h1>
+
+<div class="callout">
+    <strong>After writing Player.java, transfer the same pattern to enemies.</strong>
+    Same anatomy — but monsters have features players don't: boss status, damage dice, and a kill counter. One file: <code>Monster.java</code>.
+</div>
+
+<h2>References</h2>
+
+<ul>
+    <li><a href="card.html">Card</a> — immutable fields, basic class structure</li>
+    <li><a href="bank-account.html">BankAccount</a> — mutable state, guard clauses, static counter</li>
+    <li><a href="player-builder.html">Player.java Guide</a> — the class you just built. Monster mirrors most of Player's HP methods.</li>
+    <li><a href="methods-and-static.html">Methods &amp; Static</a> — static variables belong to the class, not individual objects</li>
+    <li><a href="constructors.html">Constructors</a> — overloading, <code>this(...)</code> constructor chaining</li>
+</ul>
+
+<hr>
+
+<h2>Spec</h2>
+
+<h3>Instance Variables</h3>
+
+<p>All <code>private</code>.</p>
+
+<table>
+    <tr><th>Variable</th><th>Type</th><th>Purpose</th></tr>
+    <tr><td><code>name</code></td><td><code>String</code></td><td>Enemy name, e.g. "Goblin"</td></tr>
+    <tr><td><code>hitPoints</code></td><td><code>int</code></td><td>Current health</td></tr>
+    <tr><td><code>maxHitPoints</code></td><td><code>int</code></td><td>Maximum health</td></tr>
+    <tr><td><code>armorClass</code></td><td><code>int</code></td><td>Defense rating (AC)</td></tr>
+    <tr><td><code>damageDie</code></td><td><code>int</code></td><td>What die to roll for damage (d4=4, d6=6, d8=8, etc.)</td></tr>
+    <tr><td><code>isBoss</code></td><td><code>boolean</code></td><td>Is this a boss monster?</td></tr>
+</table>
+
+<h3>Static Variable</h3>
+
+<table>
+    <tr><th>Variable</th><th>Type</th><th>Purpose</th></tr>
+    <tr><td><code>defeatedCount</code></td><td><code>int</code></td><td>How many monsters have been killed <strong>total</strong>. Belongs to the class, not individual monsters. Start at 0.</td></tr>
+</table>
+
+<h3>Constructors (Overloaded — Two Versions)</h3>
+
+<p><strong>Constructor 1 — Basic (non-boss):</strong></p>
+<ul>
+    <li>Parameters: <code>String name, int hp, int ac, int damageDie</code></li>
+    <li>Store all four fields</li>
+    <li>Set <code>isBoss = false</code></li>
+    <li><strong>Validation:</strong>
+        <ul>
+            <li>hp must be > 0 — otherwise default to 10</li>
+            <li>ac can't be below 6 — otherwise default to 10</li>
+            <li>damageDie can't be below 2 — otherwise default to 6 (d6)</li>
+        </ul>
+    </li>
+</ul>
+
+<p><strong>Constructor 2 — Boss-capable:</strong></p>
+<ul>
+    <li>Parameters: <code>String name, int hp, int ac, int damageDie, boolean isBoss</code></li>
+    <li>Call Constructor 1 using <code>this(name, hp, ac, damageDie)</code> for shared setup</li>
+    <li>Then set <code>this.isBoss = isBoss</code></li>
+    <li>Do NOT duplicate the validation logic — let Constructor 1 handle it</li>
+</ul>
+
+<h3>Getters</h3>
+
+<ul>
+    <li>Instance getters: one for each of the six instance variables</li>
+    <li>Static getter: <code>getDefeatedCount()</code> — returns <code>defeatedCount</code></li>
+</ul>
+
+<h3>HP Management</h3>
+
+<p>Same pattern as Player.java. These should be identical except for print messages using the monster's name.</p>
+
+<table>
+    <tr><th>Method</th><th>What It Does</th></tr>
+    <tr>
+        <td><code>setHP(int newHP)</code></td>
+        <td>Clamp to [0, maxHitPoints].<br>
+            <strong>Critical:</strong> if <code>newHP == 0</code>, increment <code>defeatedCount</code>. Only increment ONCE per death — use <code>if (hitPoints > 0 && newHP == 0)</code> to guard.</td>
+    </tr>
+    <tr><td><code>takeDamage(int amount)</code></td><td>Reduce HP by amount via <code>setHP()</code>. Print message.</td></tr>
+    <tr><td><code>heal(int amount)</code></td><td>Increase HP by amount via <code>setHP()</code>. Print message.</td></tr>
+    <tr><td><code>isAlive()</code></td><td>Returns <code>hitPoints > 0</code>.</td></tr>
+</table>
+
+<h3>attack()</h3>
+
+<p>Returns <code>int</code> — the damage dealt. Requires <code>Dice.java</code> from Unit 1.</p>
+<ul>
+    <li><strong>Normal monster:</strong> Roll <code>damageDie</code> once. Return the result.</li>
+    <li><strong>Boss monster:</strong> Roll <code>damageDie</code> twice. Return the <em>higher</em> of the two rolls.</li>
+</ul>
+
+<h3>toString()</h3>
+
+<p>Bosses get a star prefix to stand out. Format:</p>
+
+<pre><code>"☆ &lt;name&gt; — HP:&lt;hp&gt;/&lt;max&gt; AC:&lt;ac&gt; d&lt;die&gt;"  (boss)
+"  &lt;name&gt; — HP:&lt;hp&gt;/&lt;max&gt; AC:&lt;ac&gt; d&lt;die&gt;"  (normal)</code></pre>
+
+<hr>
+
+<h2>Test It</h2>
+
+<pre><code>// === Test 1: Constructor + toString ===
+Monster goblin = new Monster("Goblin", 12, 12, 6);
+System.out.println(goblin);
+// Expected: "  Goblin — HP:12/12 AC:12 d6"
+
+// === Test 2: Boss constructor chaining ===
+Monster dragon = new Monster("Dragon", 50, 18, 12, true);
+System.out.println(dragon);
+// Expected: "☆ Dragon — HP:50/50 AC:18 d12"
+System.out.println(dragon.isBoss());  // true
+
+// === Test 3: Validation — bad inputs ===
+Monster broken = new Monster("???", -5, 2, 0);
+System.out.println(broken.getHitPoints());     // 10 (clamped)
+System.out.println(broken.getArmorClass());     // 10 (clamped)
+System.out.println(broken.getDamageDie());      // 6  (clamped)
+
+// === Test 4: takeDamage and defeatedCount ===
+System.out.println(Monster.getDefeatedCount()); // 0
+goblin.takeDamage(5);
+System.out.println(goblin.getHitPoints());      // 7
+goblin.takeDamage(100);
+System.out.println(goblin.getHitPoints());      // 0
+System.out.println(goblin.isAlive());           // false
+System.out.println(Monster.getDefeatedCount()); // 1 — incremented!
+
+// === Test 5: defeatedCount only increments ONCE ===
+goblin.takeDamage(10);  // already dead
+System.out.println(Monster.getDefeatedCount()); // still 1 — not double-counted
+
+// === Test 6: attack() — normal vs boss ===
+// (Requires Dice.java. Roll enough times to see both behaviors.)
+Monster rat = new Monster("Rat", 5, 8, 4);   // d4, non-boss
+Monster boss = new Monster("Orc Warlord", 30, 15, 8, true); // d8, boss
+System.out.println("Rat attack: " + rat.attack());    // 1-4
+System.out.println("Boss attack: " + boss.attack());  // 1-8, advantage (roll 2 take higher)
+
+// === Test 7: Boss advantage over many rolls ===
+// Boss should consistently roll higher on average than a normal d8
+int bossSum = 0;
+for (int i = 0; i < 1000; i++) bossSum += boss.attack();
+System.out.println("Boss avg (should be ~6 for d8 advantage): " + (bossSum / 1000.0));</code></pre>
+
+<hr>
+
+<h2>Integrate Into Your RPG</h2>
+
+<p>Replace temporary monster variables in <code>DungeonCrawl.java</code>:</p>
+
+<table>
+    <tr><th>Before</th><th>After</th></tr>
+    <tr><td><code>int monsterHP = 12;<br>String monsterName = "Goblin";</code></td><td><code>Monster monster = new Monster("Goblin", 12, 12, 6);</code></td></tr>
+    <tr><td><code>monsterHP -= damage;</code></td><td><code>monster.takeDamage(damage);</code></td></tr>
+    <tr><td><code>if (monsterHP > 0)</code></td><td><code>if (monster.isAlive())</code></td></tr>
+    <tr><td>Attack: random damage</td><td><code>int dmg = monster.attack();</code></td></tr>
+</table>
+
+<p>At the end of combat, display the kill count:</p>
+<pre><code>System.out.println("Total monsters defeated: " + Monster.getDefeatedCount());</code></pre>
+
+</body>
+</html>

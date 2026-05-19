@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArrayList Traversal — Unit 7</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 7</a>
+    <span class="sep">/</span>
+    <span class="here">ArrayList Traversal</span>
+</nav>
+
+<h1>ArrayList Traversal and Algorithms</h1>
+
+<p>
+    Traversing an ArrayList looks almost identical to traversing an array. The only
+    differences: <code>.get(i)</code> instead of <code>[i]</code>, and
+    <code>.size()</code> instead of <code>.length</code>. Everything you learned
+    about array algorithms — search, filter, min/max, accumulate — carries over
+    directly.
+</p>
+
+<h2>Standard For Loop</h2>
+
+<p>Use when you need the index (for searching, replacing, removing):</p>
+
+<pre><code>ArrayList&lt;String&gt; party = new ArrayList&lt;&gt;();
+party.add("Hero"); party.add("Mage"); party.add("Rogue");
+
+for (int i = 0; i &lt; party.size(); i++) {
+    System.out.println(i + ": " + party.get(i));
+    // Can modify: party.set(i, ...);
+}
+// Output:
+// 0: Hero
+// 1: Mage
+// 2: Rogue</code></pre>
+
+<h2>Enhanced For Loop</h2>
+
+<p>Use when you only need to read each element (most common for display, sum, filter):</p>
+
+<pre><code>for (String member : party) {
+    System.out.println(member);
+    // CANNOT modify the list itself here
+}
+// Output:
+// Hero
+// Mage
+// Rogue</code></pre>
+
+<div class="callout warn">
+    <strong>Can't remove while traversing with enhanced for.</strong> Removing elements
+    while using enhanced for causes a <code>ConcurrentModificationException</code>. If
+    you need to remove elements based on a condition, use a standard for loop and
+    decrement your index after removal, or build a new list.
+</div>
+
+<h2>Linear Search</h2>
+
+<p>Find an element and return its index. Return -1 if not found.</p>
+
+<pre><code>public static int findItem(ArrayList&lt;Item&gt; inventory, String name) {
+    for (int i = 0; i &lt; inventory.size(); i++) {
+        if (inventory.get(i).getName().equals(name)) {
+            return i;
+        }
+    }
+    return -1;
+}</code></pre>
+
+<p>Same pattern as array search — just <code>.get(i)</code> instead of <code>[i]</code>.</p>
+
+<h2>Filtering — Return a New ArrayList</h2>
+
+<p>Build a new list containing only elements that match a condition:</p>
+
+<pre><code>public static ArrayList&lt;Item&gt; getHeavyItems(ArrayList&lt;Item&gt; inventory) {
+    ArrayList&lt;Item&gt; result = new ArrayList&lt;&gt;();
+    for (Item item : inventory) {
+        if (item.getWeight() &gt; 25) {
+            result.add(item);
+        }
+    }
+    return result;
+}</code></pre>
+
+<h2>Filter by Rarity</h2>
+
+<pre><code>public static ArrayList&lt;Item&gt; getByRarity(ArrayList&lt;Item&gt; inventory, String rarity) {
+    ArrayList&lt;Item&gt; result = new ArrayList&lt;&gt;();
+    for (Item item : inventory) {
+        if (item.getRarity().equalsIgnoreCase(rarity)) {
+            result.add(item);
+        }
+    }
+    return result;
+}</code></pre>
+
+<h2>Accumulator — Sum, Average, Count</h2>
+
+<pre><code>// Sum all gold values
+public static int getTotalValue(ArrayList&lt;Item&gt; inventory) {
+    int total = 0;
+    for (Item item : inventory) {
+        total += item.getGoldValue();
+    }
+    return total;
+}
+
+// Average
+public static double getAverageValue(ArrayList&lt;Item&gt; inventory) {
+    if (inventory.size() == 0) return 0;
+    int total = 0;
+    for (Item item : inventory) {
+        total += item.getGoldValue();
+    }
+    return (double) total / inventory.size();
+}
+
+// Count by rarity
+public static int countByRarity(ArrayList&lt;Item&gt; inventory, String rarity) {
+    int count = 0;
+    for (Item item : inventory) {
+        if (item.getRarity().equalsIgnoreCase(rarity)) {
+            count++;
+        }
+    }
+    return count;
+}</code></pre>
+
+<h2>Min and Max (with Objects)</h2>
+
+<pre><code>// Find the most expensive item
+public static Item findMostExpensive(ArrayList&lt;Item&gt; inventory) {
+    if (inventory.size() == 0) return null;
+
+    Item mostExpensive = inventory.get(0);
+    for (Item item : inventory) {
+        if (item.getGoldValue() &gt; mostExpensive.getGoldValue()) {
+            mostExpensive = item;
+        }
+    }
+    return mostExpensive;
+}</code></pre>
+
+<h2>Removing While Traversing</h2>
+
+<p>
+    Removing elements shifts indices. If you loop forward and remove, you'll skip elements.
+    The safest approach: build a new list.
+</p>
+
+<pre><code>// Remove all items of a given rarity
+public static void removeByRarity(ArrayList&lt;Item&gt; inventory, String rarity) {
+    // Option A: Build a new list (safest)
+    ArrayList&lt;Item&gt; toKeep = new ArrayList&lt;&gt;();
+    for (Item item : inventory) {
+        if (!item.getRarity().equalsIgnoreCase(rarity)) {
+            toKeep.add(item);
+        }
+    }
+    inventory.clear();
+    inventory.addAll(toKeep);
+
+    // Option B: Loop backward
+    for (int i = inventory.size() - 1; i &gt;= 0; i--) {
+        if (inventory.get(i).getRarity().equalsIgnoreCase(rarity)) {
+            inventory.remove(i);
+        }
+    }
+}</code></pre>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Pure Filter</h3>
+    <p>When writing a method that filters an ArrayList (like <code>getHeavyItems</code>), we usually create and return a brand new <code>ArrayList</code> rather than deleting items from the original one. Why is this considered "safer" design?</p>
+
+    <h3>2. The Concurrent Crash</h3>
+    <p>If you try to use <code>.remove()</code> while inside an enhanced <code>for</code> loop, Java panics and throws a <code>ConcurrentModificationException</code>. Based on how enhanced loops work, why does Java forbid this?</p>
+</div>
+
+<h2>Bug Hunt: The Survivor</h2>
+
+<div class="bug-hunt">
+    <p>A player uses a "Banish" spell to remove all Goblins from the room, but one Goblin always seems to survive. Find the bug.</p>
+    <pre><code>ArrayList&lt;String&gt; room = new ArrayList&lt;&gt;();
+room.add("Goblin");
+room.add("Goblin");
+room.add("Hero");
+
+// Try to remove all goblins
+for (int i = 0; i &lt; room.size(); i++) {
+    if (room.get(i).equals("Goblin")) {
+        room.remove(i);
+    }
+}</code></pre>
+    <p><strong>Question:</strong> Trace the value of <code>i</code> and the state of the <code>room</code> list step-by-step. What happens to the second Goblin when the first Goblin is removed at <code>i = 0</code>?</p>
+</div>
+
+<h2>Tinker Challenge: Loot Sorting</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Clean up a messy inventory of gold coin drops.</p>
+    <ol>
+        <li>Create an <code>ArrayList&lt;Integer&gt;</code> with the following gold drops: <code>{12, 55, 8, 105, 90, 4, 30}</code>.</li>
+        <li>Write a method that takes this list and <strong>returns a new list</strong> containing only the "Big Drops" (values greater than 50). Print the new list.</li>
+        <li><strong>Boss Move:</strong> Instead of making a new list, write a loop that goes <em>backwards</em> through the original list and uses <code>.remove(i)</code> to delete any drops smaller than 50. Print the modified original list.</li>
+    </ol>
+</div>
+
+</body>
+</html>

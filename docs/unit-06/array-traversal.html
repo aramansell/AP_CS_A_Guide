@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Array Traversal — Unit 6</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 6</a>
+    <span class="sep">/</span>
+    <span class="here">Array Traversal</span>
+</nav>
+
+<h1>Traversing Arrays</h1>
+
+<p>
+    Traversal = visiting every element in order. You do this to print, sum, count,
+    search, or modify. Two tools: standard for loop and enhanced for loop.
+</p>
+
+<h2>Standard for Loop (Index-Based)</h2>
+
+<pre><code>for (int i = 0; i < arr.length; i++) {
+    // arr[i] — read or write
+    // i      — know your position
+}</code></pre>
+
+<p>This is your <strong>power tool</strong>. You can do everything with it:</p>
+
+<pre><code>int[] hp = {20, 15, 8, 22, 7};
+
+// Print with index
+for (int i = 0; i < hp.length; i++) {
+    System.out.println("Member " + i + ": " + hp[i] + " HP");
+}
+
+// Modify elements
+for (int i = 0; i < hp.length; i++) {
+    hp[i] += 5;  // heal everyone by 5
+}
+
+// Iterate backwards
+for (int i = hp.length - 1; i >= 0; i--) {
+    System.out.println(hp[i]);  // prints last to first
+}</code></pre>
+
+<h2>Enhanced for Loop (for-each)</h2>
+
+<pre><code>for (type variable : array) {
+    // variable = current element (read-only copy)
+}</code></pre>
+
+<p>
+    "For each element in the array, do this." Clean, safe, no index to mess up:
+</p>
+
+<pre><code>int[] hp = {20, 15, 8, 22, 7};
+
+// Print all
+for (int h : hp) {
+    System.out.println(h + " HP");
+}
+
+// Sum all
+int total = 0;
+for (int h : hp) {
+    total += h;
+}
+
+// Count condition
+int critical = 0;
+for (int h : hp) {
+    if (h < 10) critical++;
+}</code></pre>
+
+<div class="callout trap">
+    <strong>THE TRAP:</strong> The loop variable is a <strong>copy</strong>. Changing it
+    does NOT change the array:
+    <pre><code>for (int h : hp) {
+    h = 999;   // changes the local copy — array unchanged!
+}</code></pre>
+    If you need to modify array elements, use the standard for loop.
+</div>
+
+<h2>When to Use Which</h2>
+
+<table>
+    <tr><th>Task</th><th>Standard for</th><th>Enhanced for</th></tr>
+    <tr><td>Print all elements</td><td>✅</td><td>✅ (cleaner)</td></tr>
+    <tr><td>Sum / average</td><td>✅</td><td>✅ (cleaner)</td></tr>
+    <tr><td>Count matches</td><td>✅</td><td>✅ (cleaner)</td></tr>
+    <tr><td>Find max/min value</td><td>✅</td><td>✅</td></tr>
+    <tr><td>Find max/min INDEX</td><td>✅</td><td>❌ (no index)</td></tr>
+    <tr><td>Modify elements</td><td>✅</td><td>❌</td></tr>
+    <tr><td>Need position number</td><td>✅</td><td>❌</td></tr>
+    <tr><td>Parallel arrays</td><td>✅</td><td>❌</td></tr>
+    <tr><td>Reverse traversal</td><td>✅</td><td>❌</td></tr>
+</table>
+
+<h2>Rule of Thumb</h2>
+
+<p>
+    <strong>Start with enhanced for.</strong> It's safer — impossible to get the
+    bounds wrong. If you hit a "can't do this with enhanced for" limit, switch to
+    standard for. When in doubt, standard for always works.
+</p>
+
+<h2>The Accumulator Pattern</h2>
+
+<p>
+    The most common array pattern: a variable that "accumulates" results
+    as you traverse.
+</p>
+
+<pre><code>// SUM accumulator
+int sum = 0;                   // start at 0
+for (int value : arr) {
+    sum += value;              // add each element
+}
+
+// COUNT accumulator (conditional)
+int count = 0;                 // start at 0
+for (int value : arr) {
+    if (value > threshold) {   // check condition
+        count++;               // increment when true
+    }
+}
+
+// STRING accumulator
+String result = "";            // start empty
+for (String s : words) {
+    result += s + " ";        // build up a string
+}</code></pre>
+
+<h2>Off-By-One Errors</h2>
+
+<p>The most common traversal bug:</p>
+
+<pre><code>int[] arr = {10, 20, 30, 40, 50};
+
+// WRONG: i <= arr.length runs 6 times for a 5-element array
+for (int i = 0; i <= arr.length; i++) {  // CRASH on last iteration!
+    System.out.println(arr[i]);
+}
+
+// RIGHT: i < arr.length runs exactly 5 times
+for (int i = 0; i < arr.length; i++) {
+    System.out.println(arr[i]);
+}</code></pre>
+
+<p>
+    If your loop condition uses <code><=</code> with <code>.length</code>,
+    check very carefully. Usually wrong.
+</p>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Illusion of Change</h3>
+    <pre><code>String[] inventory = {"Potion", "Sword", "Shield"};
+for (String item : inventory) {
+    item = "Empty";
+}</code></pre>
+    <p>After this loop runs, what is inside the <code>inventory</code> array? Why?</p>
+
+    <h3>2. The Lost Index</h3>
+    <p>You need to find which slot in the array holds the "Boss Key". Why is an enhanced <code>for</code> loop the wrong tool for this job?</p>
+</div>
+
+<h2>Bug Hunt: The Ineffective Healer</h2>
+
+<div class="bug-hunt">
+    <p>The cleric casts a mass heal spell, but the party's HP doesn't go up. Find the bug.</p>
+    <pre><code>int[] partyHP = {15, 20, 8, 12};
+// Heal everyone by 10
+for (int hp : partyHP) {
+    hp += 10;
+}
+System.out.println("First member HP: " + partyHP[0]); // Still prints 15!</code></pre>
+    <p><strong>Question:</strong> How do you rewrite this loop so the healing actually applies to the <code>partyHP</code> array?</p>
+</div>
+
+<h2>Tinker Challenge: Battle Log</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Analyze a series of attacks in combat.</p>
+    <ol>
+        <li>Create an <code>int[]</code> called <code>damageDealt</code> with the values: <code>{12, 5, 22, 9, 18}</code>.</li>
+        <li>Use an <strong>enhanced for loop</strong> to calculate and print the total sum of all damage dealt.</li>
+        <li>Use a <strong>standard for loop</strong> to find and print the <em>index numbers</em> of any "Critical Hits" (damage greater than 15). Print it like: <code>"Crit at attack #2"</code>.</li>
+        <li><strong>Boss Move:</strong> Try to change the condition in your standard loop to run <em>backwards</em>, printing the critical hit indices from last to first.</li>
+    </ol>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student RPG Guide: Dungeon Crawl Extended — Unit 4</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 4</a>
+    <span class="sep">/</span>
+    <span class="here">Student Guide: Dungeon Crawl Extended</span>
+</nav>
+
+<h1>Student RPG Guide: Dungeon Crawl Extended</h1>
+
+<div class="callout">
+    <strong>This is YOUR guide.</strong> After <a href="dungeon-system.html">DungeonLoop</a>,
+    this guide adds multi-floor dungeons, trap rooms, escape mechanics, and treasure rooms —
+    all driven by nested loops and deeper loop logic. Instead of code blanks, you are provided
+    with <strong>Acceptance Criteria</strong>: if your code passes every test, it works.
+</div>
+
+<h2>What You're Building</h2>
+
+<p>
+    A <code>DungeonCrawl.java</code> that chains together room exploration,
+    combat encounters, treasure collection, escape mechanics, and a final boss.
+    This combines everything from Unit 4: while loops (combat), for loops (rooms),
+    nested loops (multi-floor), and loop analysis (break/continue decisions).
+</p>
+
+<h2>How It Connects to the Unit 4 Concepts</h2>
+
+<p>
+    <strong>for-loops:</strong> Outer loop over floors, inner loop over rooms — nested.<br>
+    <strong>nested-loops:</strong> Each floor has multiple rooms. Two for loops, one inside
+    the other. Outer controls floor number, inner controls room number.<br>
+    <strong>string-loops:</strong> Building and displaying the inventory list by looping
+    through a comma-separated String.<br>
+    <strong>loop-analysis:</strong> When does break fire? How many times does each loop run?
+    Trace it before running.
+</p>
+
+<hr>
+
+<h2>FILE: DungeonCrawl.java</h2>
+
+<p>
+    Create a new file called <code>DungeonCrawl.java</code>. Every part on this page
+    belongs to this ONE file.
+</p>
+
+<h3>Part 1: generateRoom() — Random Encounter Engine</h3>
+
+<div class="callout">
+    <strong>Recall DungeonLoop.java.</strong> You wrote an if/else chain for combat/treasure/trap rooms.
+    Extract that pattern into a reusable method that takes parameters for scaling.
+</div>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature:
+<pre><code>public static boolean generateRoom(int[] playerHP, int playerAC, int playerAtk,
+                                     int[] gold, String[] inventory,
+                                     int floor, int roomNumber)</code></pre>
+    </li>
+    <li>Parameters use arrays so the method can modify HP, gold, and inventory in place (primitives can't be modified by a method)</li>
+    <li>Generates a random room type: 0 = combat, 1 = treasure, 2 = trap</li>
+</ul>
+
+<p><strong>Combat (type 0):</strong></p>
+<ul>
+    <li>Pick a monster name from an array (Goblin, Skeleton, Orc, Dark Elf, Troll, Wraith) using <code>(roomNumber + floor - 2) % names.length</code> as the index</li>
+    <li>Scale monster stats: HP = 5 + (floor * roomNumber * 2), AC = 10 + floor + roomNumber, atk = floor + roomNumber, dmg die = 4 + floor + roomNumber</li>
+    <li>Use a while loop (same as DungeonLoop.runCombat): player attacks first, monster counterattacks if alive</li>
+    <li>Player attack: roll d20, add bonus. Natural 20 = critical (d8 × 2). Total >= AC = hit (d8). Otherwise miss.</li>
+    <li>Monster counterattack (only if monsterHP > 0): roll d20, add bonus. Total >= AC = hit (roll dmg die). Otherwise miss.</li>
+    <li>If player dies (playerHP[0] <= 0), return false. If victory, add gold (10 * floor * roomNumber) and return true.</li>
+</ul>
+
+<p><strong>Treasure (type 1):</strong></p>
+<ul>
+    <li>Add gold: <code>Dice.roll(10) * floor + roomNumber</code> added to <code>gold[0]</code></li>
+    <li>Pick a random item from an array and append it to <code>inventory[0]</code> followed by a comma</li>
+    <li>Return true</li>
+</ul>
+
+<p><strong>Trap (type 2):</strong></p>
+<ul>
+    <li>Deal damage: <code>Dice.roll(6) + floor</code> subtracted from <code>playerHP[0]</code></li>
+    <li>If playerHP[0] <= 0 after damage, return false. Otherwise return true.</li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>Why are <code>playerHP</code>, <code>gold</code>, and <code>inventory</code> passed as arrays instead of plain int and String? What's the difference between passing an array and passing a primitive?</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>int[] hp = {20};
+int[] gold = {0};
+String[] inv = {""};
+boolean alive = DungeonCrawl.generateRoom(hp, 14, 3, gold, inv, 1, 1);
+System.out.println("Survived: " + alive + ", HP: " + hp[0] + ", Gold: " + gold[0]);
+// Re-run several times to see all three room types</code></pre>
+
+<hr>
+
+<h3>Part 2: exploreFloor() — Multi-Room Floor Loop</h3>
+
+<div class="callout">
+    <strong>Recall for-loops.</strong> Each floor has a fixed number of rooms. Use a for loop.
+    This is the inner loop of the nested structure.
+</div>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature:
+<pre><code>public static boolean exploreFloor(int[] playerHP, int playerAC, int playerAtk,
+                                     int[] gold, String[] inventory, int floor)</code></pre>
+    </li>
+    <li>Print a floor header: <code>"\n=== FLOOR [floor] ==="</code></li>
+    <li>A floor has <code>3 + floor</code> rooms (later floors are longer)</li>
+    <li>For loop: room from 1 to roomsOnFloor (inclusive)</li>
+    <li>Each iteration calls <code>generateRoom()</code>. If it returns false, immediately return false (player died)</li>
+    <li>After all rooms: restore <code>floor * 3</code> HP (rest at end of floor). Print the recovery. Return true.</li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>Why is <code>roomsOnFloor = 3 + floor</code> instead of always 5? What does this mean for floor 3 vs floor 1?</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>int[] hp = {25};
+int[] gold = {0};
+String[] inv = {""};
+boolean survived = DungeonCrawl.exploreFloor(hp, 14, 3, gold, inv, 1);
+System.out.println("Survived floor: " + survived);
+// Verify room count matches 3 + floor = 4 rooms for floor 1
+// Verify HP recovery after floor completion</code></pre>
+
+<hr>
+
+<h3>Part 3: runDungeon() — Multi-Floor Outer Loop</h3>
+
+<div class="callout">
+    <strong>Recall nested-loops.</strong> The dungeon is an outer for loop (floors) containing
+    an inner for loop (rooms). Each iteration of the outer loop runs the entire inner loop.</div>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static void runDungeon(int playerHP, int playerAC, int playerAtk, int totalFloors)</code></li>
+    <li>Print a big dungeon header</li>
+    <li>Wrap playerHP, gold (0), and inventory ("") in arrays so methods can modify them</li>
+    <li>Save starting HP for the summary</li>
+    <li>Outer for loop: floor from 1 to totalFloors (inclusive)</li>
+    <li>Each iteration calls <code>exploreFloor()</code>. If it returns false, print failure summary and return</li>
+    <li>After all floors: call <code>bossFight()</code>, then <code>printSummary()</code></li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>Draw the structure: an outer for loop contains exploreFloor, which contains a for loop, which calls generateRoom, which contains a while loop. Four levels of loops. Which loop controls what?</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>DungeonCrawl.runDungeon(25, 14, 3, 3);
+// Verify: 3 floors, 4+5+6 = 15 rooms max (fewer if player dies)
+// Boss fight triggers after floor 3
+// Summary prints at the end</code></pre>
+
+<hr>
+
+<h3>Part 4: bossFight() — Final Encounter</h3>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature is the same as Part 3 plus a <code>floors</code> param for scaling</li>
+    <li>Print a boss header</li>
+    <li>Boss name: "Ancient Dragon" if floors >= 3, "Ogre Lord" otherwise</li>
+    <li>Boss stats scale with floors: HP = 15 + floors * 10, AC = 14 + floors, atk = 4 + floors, dmg die = 8 + floors * 2</li>
+    <li>While loop (same combat pattern): player attacks first, then boss attacks if still alive</li>
+    <li>Boss CAN get critical hits (natural 20 = dmg die × 2)</li>
+    <li>If boss dies: print victory, add gold (floors * 50), add treasure to inventory, return</li>
+    <li>If player dies: print defeat</li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>The boss fight uses the same while-loop combat pattern as generateRoom. Why not just call generateRoom with boss stats? What's different about the boss fight that warrants its own method?</p>
+
+<h3>Acceptance Test:</h3>
+<p>Run the full dungeon. Verify the boss fight triggers after all floors. Verify boss name depends on floor count. Verify boss can critical hit.</p>
+
+<hr>
+
+<h3>Part 5: printSummary() — End-of-Dungeon Report</h3>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static void printSummary(int finalHP, int startHP, int gold, String inventory)</code></li>
+    <li>Print HP remaining vs starting HP</li>
+    <li>Print total gold</li>
+    <li>Print inventory items: if inventory is empty, print "(empty)". Otherwise, split on "," and loop through each item, printing with "  - " prefix</li>
+</ul>
+
+<h3>Acceptance Test:</h3>
+<pre><code>DungeonCrawl.printSummary(10, 25, 75, "Health Potion,Iron Sword,Ancient Scroll,");
+// Verify output:
+// HP remaining: 10 / 25
+// Gold collected: 75
+// Inventory:
+//   - Health Potion
+//   - Iron Sword
+//   - Ancient Scroll
+DungeonCrawl.printSummary(0, 25, 30, "");
+// Verify: Inventory: (empty)</code></pre>
+
+<hr>
+
+<h3>Part 6: main() — Run It</h3>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Call <code>runDungeon(25, 14, 3, 3)</code> — 25 HP, 14 AC, +3 attack, 3 floors</li>
+</ul>
+
+<h3>Acceptance Test:</h3>
+<p>Run <code>DungeonCrawl.main()</code>. A full 3-floor dungeon should execute. Verify all parts connect: rooms generate, combat works, boss appears after floor 3, summary prints.</p>
+
+<hr>
+
+<h2>Full Method Summary</h2>
+
+<p>When complete, your class should have this shape:</p>
+
+<pre><code>public class DungeonCrawl {
+
+    public static boolean generateRoom(int[] playerHP, int playerAC, int playerAtk,
+                                         int[] gold, String[] inventory,
+                                         int floor, int roomNumber) { ... }
+
+    public static boolean exploreFloor(int[] playerHP, int playerAC, int playerAtk,
+                                         int[] gold, String[] inventory, int floor) { ... }
+
+    public static void runDungeon(int playerHP, int playerAC, int playerAtk,
+                                    int totalFloors) { ... }
+
+    public static void bossFight(int[] hp, int playerAC, int playerAtk,
+                                   int[] gold, String[] inventory, int floors) { ... }
+
+    public static void printSummary(int finalHP, int startHP,
+                                      int gold, String inventory) { ... }
+
+    public static void main(String[] args) { ... }
+}</code></pre>
+
+</body>
+</html>

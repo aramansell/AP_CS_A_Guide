@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student RPG Guide: Chain Damage — Unit 10</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 10</a>
+    <span class="sep">/</span>
+    <span class="here">Student Guide: Chain Damage</span>
+</nav>
+
+<h1>Student RPG Guide: Chain Lightning — Recursive Damage</h1>
+
+<div class="callout">
+    <strong>Your first recursive spell.</strong> Chain lightning hits one target, then jumps to adjacent enemies that haven't been hit yet. Recursion naturally models this "hit one, then try neighbors" pattern. Two files: <code>ChainSpell.java</code> and <code>ChainSpellRunner.java</code>.
+</div>
+
+<h2>References</h2>
+
+<ul>
+    <li><a href="recursion-basics.html">Recursion Basics</a> — base case + recursive step, the two required parts</li>
+    <li><a href="recursive-fibonacci.html">Fibonacci & Efficiency</a> — overlapping subproblems, why visited tracking matters</li>
+    <li><a href="../unit-08/dungeon-map.html">DungeonMap (Unit 8)</a> — char[][] grid, WASD movement, tile legend</li>
+    <li><a href="../unit-08/2d-array-traversal.html">2D Array Traversal (Unit 8)</a> — bounds checking, nested loops</li>
+    <li><a href="../unit-09/character-hierarchy.html">Character Hierarchy (Unit 9)</a> — GameCharacter parent class, polymorphic arrays</li>
+</ul>
+
+<hr>
+
+<h2>How Chain Lightning Works</h2>
+
+<p>Given this battle grid (M = monster, @ = center target):</p>
+
+<pre>    .  .  M  .  .
+    .  M  @  M  .
+    .  .  M  .  .</pre>
+
+<p>The spell hits @ (center), then chains outward:</p>
+<ol>
+    <li>Hit @ (the center — currentChain = 1)</li>
+    <li>Recurse to @'s 4 neighbors — hit the M above, below, left, right (currentChain = 2)</li>
+    <li>For each of THOSE, recurse to THEIR neighbors that are alive and not yet hit (currentChain = 3)</li>
+    <li>Stop when: out of bounds, cell is null/dead, already visited, or maxChains reached</li>
+</ol>
+
+<h3>THE BUG: Why We Need Visited Tracking</h3>
+
+<p>Dense cluster of enemies:</p>
+
+<pre>    M  M  M
+    M  @  M
+    M  M  M</pre>
+
+<p>Without visited tracking, the top-left M gets hit TWICE — once from the top-M recursing left, once from the left-M recursing up. A <code>boolean[][] visited</code> grid fixes this. Mark a cell visited BEFORE dealing damage. Before recursing, check visited. This is the same pattern used in flood fill and backtracking.</p>
+
+<hr>
+
+<h2>FILE 1: ChainSpell.java</h2>
+
+<p><strong>NEW FILE.</strong> One static method. No constructor. No instance variables.</p>
+
+<h3>Method Signature</h3>
+
+<pre><code>public class ChainSpell {
+
+    public static int chainDamage(GameCharacter[][] grid,
+                                  int row, int col,
+                                  int damage,
+                                  int maxChains,
+                                  int currentChain,
+                                  boolean[][] visited) {
+
+        // ... base cases and recursive step
+    }
+}</code></pre>
+
+<table>
+    <tr><th>Parameter</th><th>Type</th><th>Purpose</th></tr>
+    <tr><td><code>grid</code></td><td><code>GameCharacter[][]</code></td><td>2D array — can hold Player, Monster, or null (empty cell)</td></tr>
+    <tr><td><code>row, col</code></td><td><code>int</code></td><td>Where the spell currently strikes</td></tr>
+    <tr><td><code>damage</code></td><td><code>int</code></td><td>Damage to deal this hop (halves each recursion)</td></tr>
+    <tr><td><code>maxChains</code></td><td><code>int</code></td><td>Maximum number of hops — prevents infinite recursion</td></tr>
+    <tr><td><code>currentChain</code></td><td><code>int</code></td><td>Which hop this is (starts at 1 from the caller)</td></tr>
+    <tr><td><code>visited</code></td><td><code>boolean[][]</code></td><td>Same size as grid. true = already hit. CRITICAL for preventing double-hits.</td></tr>
+</table>
+
+<p>Returns <code>int</code> — total number of characters damaged (including any that take 0 damage from integer division decay).</p>
+
+<h3>Base Cases (Order Matters!)</h3>
+
+<p>Check in this exact order. Bounds check MUST come first — otherwise <code>grid[row][col]</code> crashes with ArrayIndexOutOfBoundsException.</p>
+
+<pre><code>        // (1) Out of bounds
+        if (row < 0 || row >= grid.length
+            || col < 0 || col >= grid[0].length)
+            return 0;
+
+        // (2) Empty cell or dead character
+        if (grid[row][col] == null
+            || !grid[row][col].isAlive())
+            return 0;
+
+        // (3) Already visited — prevents double-hits!
+        if (visited[row][col])
+            return 0;
+
+        // (4) Max chains reached
+        if (currentChain > maxChains)
+            return 0;</code></pre>
+
+<h3>Recursive Step</h3>
+
+<pre><code>        // Mark visited FIRST — before dealing damage
+        visited[row][col] = true;
+
+        // Deal damage
+        GameCharacter target = grid[row][col];
+        target.takeDamage(damage);
+        System.out.println("Chain " + currentChain + ": "
+            + target.getName() + " takes " + damage + " damage!");
+
+        int count = 1;  // we hit one target
+
+        // Recurse to 4 neighbors (damage halves via integer division)
+        count += chainDamage(grid, row - 1, col,
+                    damage / 2, maxChains, currentChain + 1, visited);
+        count += chainDamage(grid, row + 1, col,
+                    damage / 2, maxChains, currentChain + 1, visited);
+        count += chainDamage(grid, row, col - 1,
+                    damage / 2, maxChains, currentChain + 1, visited);
+        count += chainDamage(grid, row, col + 1,
+                    damage / 2, maxChains, currentChain + 1, visited);
+
+        return count;
+    }
+}</code></pre>
+
+<p><strong>Key design decisions:</strong></p>
+<ul>
+    <li><strong>Integer division (<code>damage / 2</code>):</strong> Each hop does half damage. 8 → 4 → 2 → 1 → 0. The spell naturally weakens as it spreads.</li>
+    <li><strong>Visited is permanent:</strong> Unlike backtracking (where you un-visit), chain damage never un-visits. Once hit, a cell stays hit for this spell cast.</li>
+    <li><strong>No early exit:</strong> We always recurse to all 4 neighbors before returning. This is BFS-like — process current, then all children.</li>
+</ul>
+
+<hr>
+
+<h2>FILE 2: ChainSpellRunner.java</h2>
+
+<p><strong>NEW FILE.</strong> Main method to test the chain spell on a battle grid.</p>
+
+<pre><code>public class ChainSpellRunner {
+    public static void main(String[] args) {
+
+        // 5x5 grid of GameCharacter
+        GameCharacter[][] battleGrid = new GameCharacter[5][5];
+
+        // Place monsters in a dense block (tests visited tracking):
+        battleGrid[2][1] = new Monster("Goblin TL", 15, 12, 6);
+        battleGrid[2][2] = new Monster("Orc Captain", 25, 14, 8);
+        battleGrid[2][3] = new Monster("Goblin TR", 15, 12, 6);
+        battleGrid[3][2] = new Monster("Goblin Bot", 15, 12, 6);
+
+        // Display initial state
+        System.out.println("=== INITIAL GRID ===");
+        for (int r = 0; r < battleGrid.length; r++) {
+            for (int c = 0; c < battleGrid[r].length; c++) {
+                if (battleGrid[r][c] != null) {
+                    System.out.println("(" + r + "," + c + "): "
+                        + battleGrid[r][c]);
+                }
+            }
+        }
+
+        // Cast chain lightning at (2,2) — the Orc Captain
+        System.out.println("\n=== CASTING CHAIN LIGHTNING ===");
+        boolean[][] visited = new boolean[5][5];
+        int hit = ChainSpell.chainDamage(
+            battleGrid, 2, 2,    // target center
+            8,                    // initial damage
+            4,                    // max chains
+            1,                    // current chain starts at 1
+            visited
+        );
+        System.out.println("Total enemies hit: " + hit);
+
+        // Display final state
+        System.out.println("\n=== FINAL GRID ===");
+        for (int r = 0; r < battleGrid.length; r++) {
+            for (int c = 0; c < battleGrid[r].length; c++) {
+                if (battleGrid[r][c] != null) {
+                    System.out.println("(" + r + "," + c + "): "
+                        + battleGrid[r][c]);
+                }
+            }
+        }
+    }
+}</code></pre>
+
+<p>Expected output: 4 enemies hit, each exactly once.</p>
+
+<pre>Chain 1: Orc Captain takes 8 damage!
+Chain 2: Goblin TL takes 4 damage!
+Chain 2: Goblin TR takes 4 damage!
+Chain 2: Goblin Bot takes 4 damage!
+Total enemies hit: 4</pre>
+
+<hr>
+
+<h2>Execution Trace (Cross Pattern with Visited)</h2>
+
+<p>Start at (2,2): visited[2][2] = true. Orc takes 8 damage.</p>
+
+<pre>
+Recurse UP to (1,2): bounds OK, grid[1][2] == null → return 0
+Recurse LEFT to (2,1): bounds OK, alive, NOT visited
+    → visited[2][1] = true. Goblin TL takes 4 damage.
+    → UP (1,1): null → 0
+    → DOWN (3,1): null → 0
+    → LEFT (2,0): out → 0
+    → RIGHT (2,2): VISITED → return 0  ← PREVENTED DOUBLE-HIT
+Recurse RIGHT to (2,3): bounds OK, alive, NOT visited
+    → visited[2][3] = true. Goblin TR takes 4 damage.
+    → All 4 neighbors: visited/out/null → 0
+Recurse DOWN to (3,2): bounds OK, alive, NOT visited
+    → visited[3][2] = true. Goblin Bot takes 4 damage.
+    → UP (2,2): VISITED → return 0  ← PREVENTED DOUBLE-HIT
+    → All others: null or out → 0
+</pre>
+
+<p>Final count: 4. Each enemy hit exactly once.</p>
+
+<hr>
+
+<h2>Integrate Into Your RPG</h2>
+
+<table>
+    <tr><th>Before</th><th>After</th></tr>
+    <tr><td>Combat is 1v1 only</td><td>Multi-target spells that chain across the grid</td></tr>
+    <tr><td>No grid-based combat</td><td>GameCharacter[][] battle grid (enabled by Unit 9 polymorphism)</td></tr>
+    <tr><td>No recursion in combat</td><td>Recursive neighbor traversal — the core Unit 10 pattern</td></tr>
+</table>
+
+<p>This is your gateway to all Unit 10 recursion topics. Flood fill, pathfinding, and backtracking all use the same recursive 4-direction neighbor traversal with different stopping conditions.</p>
+
+</body>
+</html>

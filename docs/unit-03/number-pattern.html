@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Number Pattern Generator Walkthrough — Unit 3</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 3</a>
+    <span class="sep">/</span>
+    <span class="here">Number Pattern Generator</span>
+</nav>
+
+<h1>Number Pattern Generator — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    It uses if/else to classify numbers and prints formatted patterns.
+    Use this page as a reference when building your own projects.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Build three mini-programs on one page: FizzBuzz, a multiplication table snippet, and a star pattern — each controlled by conditionals.</p>
+
+<h3>Part 1: FizzBuzz</h3>
+
+<pre><code><span class="output">Number: 15</span>
+<span class="output">FizzBuzz!</span>
+<span class="output">Number: 7</span>
+<span class="output">7</span>
+<span class="output">Number: 9</span>
+<span class="output">Fizz</span></code></pre>
+
+<h3>Part 2: Multiplication Table</h3>
+
+<pre><code><span class="output">5 x 1 = 5</span>
+<span class="output">5 x 2 = 10</span>
+<span class="output">5 x 3 = 15</span>
+<span class="output">...</span></code></pre>
+
+<h3>Part 3: Star Triangle</h3>
+
+<pre><code><span class="output">*</span>
+<span class="output">**</span>
+<span class="output">***</span>
+<span class="output">****</span>
+<span class="output">*****</span></code></pre>
+
+<h2>Part 1: FizzBuzz Logic</h2>
+
+<pre><code>int num = 15;
+
+if (num % 3 == 0 && num % 5 == 0) {
+    System.out.println("FizzBuzz!");
+} else if (num % 3 == 0) {
+    System.out.println("Fizz");
+} else if (num % 5 == 0) {
+    System.out.println("Buzz");
+} else {
+    System.out.println(num);
+}</code></pre>
+
+<div class="lab bug-hunt">
+    <h3>Bug Hunt: FizzBuzz Order</h3>
+    <p>A student wrote their FizzBuzz like this:</p>
+<pre><code>if (num % 3 == 0) {
+    System.out.println("Fizz");
+} else if (num % 5 == 0) {
+    System.out.println("Buzz");
+} else if (num % 3 == 0 && num % 5 == 0) {
+    System.out.println("FizzBuzz!");
+} else {
+    System.out.println(num);
+}</code></pre>
+    <p>When they test it with <code>15</code>, it prints "Fizz". It NEVER prints "FizzBuzz!".</p>
+    <ol>
+        <li>Why does this happen? (Trace the execution top-to-bottom).</li>
+        <li>What is the rule about ordering conditions from most specific to most general?</li>
+    </ol>
+</div>
+
+<h2>Part 2: Multiplication Table</h2>
+
+<pre><code>int factor = 5;
+
+for (int i = 1; i <= 10; i++) {
+    System.out.println(factor + " x " + i + " = " + (factor * i));
+}</code></pre>
+
+<p>
+    <strong>This is a for loop.</strong> Covered formally in Unit 4,
+    but the pattern is useful now. The loop repeats 10 times with i counting 1..10.
+</p>
+
+<h2>Part 3: Star Pattern</h2>
+
+<pre><code>for (int row = 1; row <= 5; row++) {
+    String line = "";
+    for (int col = 1; col <= row; col++) {
+        line = line + "*";
+    }
+    System.out.println(line);
+}</code></pre>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: Nested Loops</h3>
+    <p>Look at the two loops. For every <strong>1</strong> time the outer loop runs, how many times does the inner loop run?</p>
+    <p>When <code>row</code> is 3, what is the value of <code>col</code> during each iteration of the inner loop? What will the <code>line</code> string contain at the end of that row?</p>
+</div>
+
+<h2>The Full Program</h2>
+
+<pre><code>import java.util.Scanner;
+
+public class NumberPatterns {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        // === PART 1: FIZZBUZZ ===
+        System.out.println("=== FIZZBUZZ ===");
+        System.out.print("Enter a number: ");
+        int num = input.nextInt();
+
+        if (num % 3 == 0 && num % 5 == 0) {
+            System.out.println("FizzBuzz!");
+        } else if (num % 3 == 0) {
+            System.out.println("Fizz");
+        } else if (num % 5 == 0) {
+            System.out.println("Buzz");
+        } else {
+            System.out.println(num);
+        }
+
+        // === PART 2: MULTIPLICATION TABLE ===
+        System.out.println("
+=== MULTIPLICATION TABLE ===");
+        System.out.print("Enter a factor: ");
+        int factor = input.nextInt();
+
+        for (int i = 1; i <= 10; i++) {
+            int product = factor * i;
+            System.out.println(factor + " x " + i + " = " + product);
+        }
+
+        // === PART 3: STAR TRIANGLE ===
+        System.out.println("
+=== STAR TRIANGLE ===");
+        System.out.print("Enter height: ");
+        int height = input.nextInt();
+
+        for (int row = 1; row <= height; row++) {
+            String line = "";
+            for (int col = 1; col <= row; col++) {
+                line += "*";
+            }
+            System.out.println(line);
+        }
+    }
+}</code></pre>
+
+<h2>Extending the Program</h2>
+<ul>
+    <li>Add FizzBuzzPop: also check % 7 for "Pop".</li>
+    <li>Make the star triangle right-aligned with leading spaces.</li>
+    <li>Add number pyramids: 1, 121, 12321, etc.</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    FizzBuzz is the same pattern as your combat system's hit detection.
+    Multiplication tables are the same loop structure as dungeon room generation.
+    Star patterns are the same nested logic as your dungeon map.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="boolean-logic.html">Boolean Logic (&&, ||)</a></li>
+    <li><a href="../unit-04/for-loops.html">For Loops (Unit 4)</a></li>
+    <li><a href="../unit-04/nested-loops.html">Nested Loops (Unit 4)</a></li>
+</ul>
+
+</body>
+</html>

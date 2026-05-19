@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>for Loops — Unit 4</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 4</a>
+    <span class="sep">/</span>
+    <span class="here">for Loops</span>
+</nav>
+
+<h1>for Loops</h1>
+
+<p>
+    A <code>for</code> loop is a <strong>count-controlled</strong> loop. Use it when you
+    know exactly how many times something should repeat — like "do this for every room"
+    or "roll damage five times."
+</p>
+
+<h2>Syntax</h2>
+
+<pre><code>for (initialize; test; update) {
+    // body
+}</code></pre>
+
+<p>All three parts of a while loop, packed into one line:</p>
+
+<pre><code>//     initialize     test       update
+//       ↓             ↓          ↓
+for (int i = 0;    i < 5;       i++) {
+    System.out.println("Loop #" + i);
+}</code></pre>
+
+<p class="output">Loop #0<br>Loop #1<br>Loop #2<br>Loop #3<br>Loop #4</p>
+
+<h2>How It Executes</h2>
+
+<ol>
+    <li><strong>Initialize</strong> — runs ONCE at the very start.</li>
+    <li><strong>Test</strong> — if true, run body. If false, stop.</li>
+    <li><strong>Body</strong> — the statements inside the braces.</li>
+    <li><strong>Update</strong> — runs AFTER the body. Then go back to step 2.</li>
+</ol>
+
+<h2>for vs while — When to Use Which</h2>
+
+<table>
+    <tr><th></th><th>while</th><th>for</th></tr>
+    <tr><td>Best for</td><td>Unknown number of repetitions</td><td>Known number of repetitions</td></tr>
+    <tr><td>Example</td><td>"Keep fighting until someone dies"</td><td>"Print 5 rooms"</td></tr>
+    <tr><td>Loop variable</td><td>Declared outside, updated inside</td><td>Declared in the header, scoped to loop</td></tr>
+</table>
+
+<pre><code>// while: unknown how many attacks until death
+while (enemyHP > 0) { ... }
+
+// for: exactly 10 rooms in the dungeon
+for (int room = 1; room <= 10; room++) { ... }</code></pre>
+
+<h2>Application: Dungeon Rooms</h2>
+
+<pre><code>for (int room = 1; room <= 5; room++) {
+    System.out.println("=== Room " + room + " ===");
+
+    // Generate a random enemy
+    int enemyHP = Dice.rollRange(5, 20);
+    String enemyName;
+    if (Dice.roll(20) >= 15) {
+        enemyName = "Goblin";
+    } else {
+        enemyName = "Skeleton";
+    }
+
+    System.out.println("A " + enemyName + " appears! (" + enemyHP + " HP)");
+
+    // Combat loop here (from your while-loop page)
+    // ...
+}</code></pre>
+
+<h2>Counting Patterns</h2>
+
+<pre><code>// 0 to 9 (10 times — standard array pattern)
+for (int i = 0; i < 10; i++) { ... }
+
+// 1 to 10
+for (int i = 1; i <= 10; i++) { ... }
+
+// 10 down to 1
+for (int i = 10; i >= 1; i--) { ... }
+
+// Even numbers: 0, 2, 4, 6, 8
+for (int i = 0; i < 10; i += 2) { ... }
+
+// 10, 20, 30, ..., 100
+for (int i = 10; i <= 100; i += 10) { ... }</code></pre>
+
+<h2>Loop Variable Scope</h2>
+
+<p>
+    A variable declared in the for-loop header <strong>only exists inside the loop</strong>.
+</p>
+
+<div class="callout lab socratic">
+    <h3>🧠 Socratic Checkpoint: Lost in Scope</h3>
+    <p>Look at this code snippet:</p>
+<pre><code>for (int i = 0; i < 5; i++) {
+    System.out.println(i);
+}
+System.out.println("The final value is: " + i);</code></pre>
+    <p><strong>Think about it:</strong> Why does the final <code>println</code> cause a compiler error? If you really needed to know the final value of <code>i</code> after the loop, how would you rewrite this code to make it work?</p>
+</div>
+
+<h2>Application: Inventory Display</h2>
+
+<pre><code>String[] items = {"Torch", "Sword", "Potion", "Shield", "Key"};
+
+System.out.println("=== INVENTORY ===");
+for (int i = 0; i < items.length; i++) {
+    System.out.println((i + 1) + ". " + items[i]);
+}</code></pre>
+
+<p class="output">=== INVENTORY ===<br>1. Torch<br>2. Sword<br>3. Potion<br>4. Shield<br>5. Key</p>
+
+<div class="callout lab bug-hunt">
+    <h3>🐛 Bug Hunt: The Missing Item</h3>
+    <p>A student wrote this code to print their 5-item inventory:</p>
+<pre><code>String[] items = {"Torch", "Sword", "Potion", "Shield", "Key"};
+for (int i = 1; i <= items.length; i++) {
+    System.out.println(i + ". " + items[i]);
+}</code></pre>
+    <p><strong>Your Task:</strong> Why does this code crash with an error? Also, which item will it completely skip? How should the loop header be changed to fix both issues?</p>
+</div>
+
+<h2>Enhanced for Loop (Preview)</h2>
+
+<p>
+    When you don't need the index, there's a shorter syntax. This is a preview — you'll
+    use it more in later units:
+</p>
+
+<pre><code>for (String item : items) {
+    System.out.println(item);
+}</code></pre>
+
+<h2>Tinker Challenge: Room Generator</h2>
+
+<div class="callout lab tinker">
+    <h3>🛠️ Tinker Challenge: The Gauntlet</h3>
+    <p>Write a <code>for</code> loop that generates exactly 5 consecutive rooms in a dungeon.</p>
+    <ul>
+        <li>For each room, print its number (e.g., "--- Room 1 ---").</li>
+        <li>Inside the loop, roll a d20 to determine the enemy:
+            <ul>
+                <li>1-10: Goblin (10 HP)</li>
+                <li>11-18: Skeleton (15 HP)</li>
+                <li>19-20: Orc (25 HP)</li>
+            </ul>
+        </li>
+        <li>Print the enemy that appears and its HP.</li>
+    </ul>
+    <p><strong>Bonus:</strong> Keep a running total of the <em>combined</em> HP of all 5 monsters and print it at the very end!</p>
+</div>
+
+</body>
+</html>

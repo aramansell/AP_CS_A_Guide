@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compile & Run — Unit 1</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 1</a>
+    <span class="sep">/</span>
+    <span class="here">Compile &amp; Run</span>
+</nav>
+
+<h1>Compile &amp; Run</h1>
+
+<p>
+    Java is a <strong>compiled language</strong>. You write human-readable <code>.java</code> files,
+    then a program called <code>javac</code> translates them into <code>.class</code> files that
+    the computer can execute. The computer runs the <code>.class</code> file — <em>not</em> the
+    <code>.java</code> file.
+</p>
+
+<h2>The Golden Rule</h2>
+
+<div class="callout warn">
+    <strong>Every time you change your .java file, you MUST recompile before running.</strong><br>
+    If you change the code but skip <code>javac</code>, you're running old code.
+    This is the #1 mistake new Java programmers make.
+</div>
+
+<h2>The Two Commands</h2>
+
+<table>
+    <tr><th>Command</th><th>What it does</th><th>When to use it</th></tr>
+    <tr>
+        <td><code>javac MyProgram.java</code></td>
+        <td>Compiles your source code into <code>MyProgram.class</code></td>
+        <td>After every edit</td>
+    </tr>
+    <tr>
+        <td><code>java MyProgram</code></td>
+        <td>Runs the compiled <code>.class</code> file</td>
+        <td>After a successful compile</td>
+    </tr>
+</table>
+
+<p>
+    <strong>Note:</strong> <code>javac</code> uses the full filename with <code>.java</code>.
+    <code>java</code> uses just the class name — no extension.
+</p>
+
+<h2>Example: Hello World</h2>
+
+<p>Create a file called <code>Hello.java</code>:</p>
+
+<pre><code>public class Hello {
+    public static void main(String[] args) {
+        System.out.println("Hello, adventurer!");
+    }
+}</code></pre>
+
+<p>In the terminal, in the same directory as your file:</p>
+
+<pre><code>$ javac Hello.java      <span class="output">(no output = success)</span>
+$ ls                     <span class="output">Hello.class  Hello.java</span>
+$ java Hello             <span class="output">Hello, adventurer!</span></code></pre>
+
+<h2>Common Errors</h2>
+
+<div class="callout lab">
+    <strong>Bug Hunt: The Compiler's Complaints</strong><br>
+    The compiler is your friend, but its messages can be cryptic. Try intentionally making these mistakes in a working <code>Hello.java</code> file and try to compile and run it:
+    <ol>
+        <li>Rename the class inside the file to <code>hello</code> (lowercase) instead of <code>Hello</code>. Try to compile.</li>
+        <li>Fix the class name. Now compile it successfully. Then run <code>java Hello.java</code> instead of <code>java Hello</code>.</li>
+        <li>Delete the semicolon at the end of the <code>println</code> statement. Try to compile.</li>
+    </ol>
+    How does the compiler tell you what went wrong in each case? Discuss with your partner what these error messages mean so you can recognize them later.
+</div>
+
+<h2>The Boilerplate</h2>
+
+<p>
+    Every Java program needs this structure. You'll type it hundreds of times this year:
+</p>
+
+<pre><code>public class ClassName {
+    public static void main(String[] args) {
+        // Your code goes here
+    }
+}</code></pre>
+
+<ul>
+    <li><code>public class</code> — defines a class. The name must match the filename.</li>
+    <li><code>public static void main(String[] args)</code> — the entry point. Java starts here.</li>
+    <li>Curly braces <code>{ }</code> — group statements into blocks.</li>
+    <li>Semicolons <code>;</code> — end each statement.</li>
+</ul>
+
+<p>
+    You don't need to fully understand the boilerplate yet. You will. For now, type it
+    correctly and know that your code goes between the inner curly braces.
+</p>
+
+<h2>Terminal Basics</h2>
+
+<table>
+    <tr><th>Command</th><th>What it does</th></tr>
+    <tr><td><code>pwd</code></td><td>Print Working Directory — shows where you are</td></tr>
+    <tr><td><code>ls</code></td><td>List files in the current directory</td></tr>
+    <tr><td><code>cd folder</code></td><td>Change Directory — move into a folder</td></tr>
+    <tr><td><code>cd ..</code></td><td>Go up one directory</td></tr>
+    <tr><td><code>mkdir name</code></td><td>Make a new directory</td></tr>
+</table>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="variables.html">Variables &amp; Types</a> — what comes after Hello World</li>
+    <li><a href="printing.html">Printing &amp; Concatenation</a> — more about println</li>
+</ul>
+
+</body>
+</html>

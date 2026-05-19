@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leaderboard Walkthrough — Unit 7</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 7</a>
+    <span class="sep">/</span>
+    <span class="here">Leaderboard</span>
+</nav>
+
+<h1>Leaderboard — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    It uses ArrayList with a ScoreEntry class to build a dynamic leaderboard
+    that sorts, inserts, and trims. Use this page as a reference.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Build a leaderboard that accepts any number of scores, keeps them sorted, and displays a top-N list. Unlike the Unit 6 fixed-size version, this grows dynamically.</p>
+
+<pre><code><span class="output">=== LEADERBOARD (Top 5) ===</span>
+<span class="output">1. AAA — 9500</span>
+<span class="output">2. FFF — 6300</span>
+<span class="output">3. BBB — 7200</span>
+<span class="output">4. CCC — 5100</span>
+<span class="output">5. DDD — 3400</span></code></pre>
+
+<h2>Step 1: ScoreEntry Class</h2>
+
+<pre><code>public class ScoreEntry {
+    private String player;
+    private int score;
+
+    public ScoreEntry(String player, int score) {
+        this.player = player;
+        this.score = score;
+    }
+
+    public String getPlayer() { return player; }
+    public int getScore()     { return score; }
+
+    public String toString() {
+        return player + " — " + score;
+    }
+}</code></pre>
+
+<h2>Step 2: ArrayList + Sorted Insert</h2>
+
+<pre><code>ArrayList&lt;ScoreEntry&gt; leaderboard = new ArrayList&lt;&gt;();
+
+public void addScore(String player, int score) {
+    ScoreEntry newEntry = new ScoreEntry(player, score);
+
+    // Find insertion point (keep highest first)
+    int i = 0;
+    while (i < leaderboard.size() && leaderboard.get(i).getScore() > score) {
+        i++;
+    }
+    leaderboard.add(i, newEntry);  // ArrayList handles the shift!
+}</code></pre>
+
+<p>
+    <strong>add(index, element) does the shift for you.</strong>
+    Unlike arrays (where you shift by hand), ArrayList.add(i, e) pushes
+    everything from index i forward and inserts. Clean and readable.
+</p>
+
+<h2>Step 3: Display Top N</h2>
+
+<pre><code>public void displayTop(int n) {
+    System.out.println("=== LEADERBOARD (Top " + n + ") ===");
+    int limit = Math.min(n, leaderboard.size());
+    for (int i = 0; i < limit; i++) {
+        System.out.println((i + 1) + ". " + leaderboard.get(i));
+    }
+    if (leaderboard.isEmpty()) {
+        System.out.println("(No scores yet)");
+    }
+}</code></pre>
+
+<h2>The Full Program</h2>
+
+<pre><code>import java.util.ArrayList;
+
+public class Leaderboard {
+    private ArrayList&lt;ScoreEntry&gt; entries;
+
+    public Leaderboard() {
+        entries = new ArrayList&lt;&gt;();
+    }
+
+    public void addScore(String player, int score) {
+        ScoreEntry entry = new ScoreEntry(player, score);
+        int i = 0;
+        while (i < entries.size() && entries.get(i).getScore() > score) {
+            i++;
+        }
+        entries.add(i, entry);
+    }
+
+    public void displayTop(int n) {
+        System.out.println("=== LEADERBOARD (Top " + n + ") ===");
+        int limit = Math.min(n, entries.size());
+        for (int i = 0; i < limit; i++) {
+            System.out.println((i + 1) + ". " + entries.get(i));
+        }
+    }
+
+    public static void main(String[] args) {
+        Leaderboard lb = new Leaderboard();
+        lb.addScore("AAA", 9500);
+        lb.addScore("BBB", 7200);
+        lb.addScore("FFF", 6300);
+        lb.addScore("CCC", 5100);
+        lb.addScore("DDD", 3400);
+        lb.addScore("EEE", 1200);
+        lb.displayTop(5);
+    }
+}</code></pre>
+
+<h2>Extending the Program</h2>
+<ul>
+    <li>Prevent duplicate player names — keep only the highest score per player.</li>
+    <li>Use Collections.sort() with a custom Comparator instead of sorted insert.</li>
+    <li>Export to CSV for a spreadsheet.</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    The sorted insert is the same logic as adding items to an inventory sorted
+    by value or rarity. ArrayList.add(index, element) replaces your manual
+    array-shift code from Unit 6.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="arraylist-basics.html">ArrayList Basics</a></li>
+    <li><a href="sorting.html">Sorting with ArrayList</a></li>
+    <li><a href="../unit-06/high-score.html">High Score Table (Unit 6)</a></li>
+</ul>
+
+</body>
+</html>

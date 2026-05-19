@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student RPG Guide: Pathfinding — Unit 10</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 10</a>
+    <span class="sep">/</span>
+    <span class="here">Student Guide: Pathfinding</span>
+</nav>
+
+<h1>Student RPG Guide: Dungeon Pathfinding with Backtracking</h1>
+
+<div class="callout">
+    <strong>Monsters that chase the player.</strong> Backtracking explores all possible paths through a dungeon grid to find the shortest one. Unlike flood fill (which never un-visits), backtracking UNDOES visited marks on failure so other branches can try different routes. Three files: <code>Pathfinder.java</code>, <code>PathfinderRunner.java</code>, and <code>MonsterChase.java</code>.
+</div>
+
+<h2>References</h2>
+
+<ul>
+    <li><a href="recursion-basics.html">Recursion Basics</a> — base case + recursive step, call stack unwinding</li>
+    <li><a href="chain-damage.html">Chain Damage</a> — neighbor traversal without un-visiting (permanent marks)</li>
+    <li><a href="flood-fill.html">Flood Fill</a> — exploring all connected cells, visited tracking</li>
+    <li><a href="../unit-08/dungeon-map.html">DungeonMap (Unit 8)</a> — char[][] grid, wall (#) vs floor (.)</li>
+    <li><a href="../unit-08/2d-array-basics.html">2D Array Basics (Unit 8)</a> — grid indexing, bounds</li>
+</ul>
+
+<hr>
+
+<h2>Backtracking vs Flood Fill vs Chain Damage</h2>
+
+<table>
+    <tr><th>Feature</th><th>Chain Damage</th><th>Flood Fill</th><th>Backtracking</th></tr>
+    <tr><td>Visited policy</td><td>Mark once, never un-mark</td><td>Mark once, never un-mark</td><td>Mark on entry, UN-MARK on failure</td></tr>
+    <tr><td>Purpose</td><td>"Hit all reachable enemies (limited hops)"</td><td>"What's reachable?"</td><td>"Is there a path? What's the shortest path?"</td></tr>
+    <tr><td>Visits per cell</td><td>1 time</td><td>1 time</td><td>Many times (different paths)</td></tr>
+    <tr><td>Runtime</td><td>O(N) where N = cells visited</td><td>O(rows × cols)</td><td>O(4^(rows×cols)) — exponential!</td></tr>
+</table>
+
+<p>Think of it like exploring a physical maze: you walk down a corridor, mark the floor with chalk so you don't loop. If you hit a dead end, you walk BACK (erasing the chalk marks), and try the next turn you didn't take. The chalk UN-MARK is what makes backtracking different.</p>
+
+<hr>
+
+<h2>FILE 1: Pathfinder.java</h2>
+
+<p><strong>NEW FILE.</strong> Two static methods. Uses the <code>char[][]</code> map from Unit 8's DungeonMap.</p>
+
+<h3>Part A: hasPath() — Is Any Path Possible?</h3>
+
+<pre><code>public class Pathfinder {
+
+    /**
+     * Returns true if a path exists from (r,c) to (goalR,goalC).
+     * Uses backtracking: marks visited on the way down,
+     * UN-VISITS on the way back if no path found.
+     *
+     * @param map     char[][] dungeon grid ('#' = wall)
+     * @param visited boolean[][] — cells CURRENTLY on the active path
+     * @param r, c    current position being explored
+     * @param goalR   target row
+     * @param goalC   target col
+     */
+    public static boolean hasPath(char[][] map,
+                                  boolean[][] visited,
+                                  int r, int c,
+                                  int goalR, int goalC) {
+
+        // Base case 1: Out of bounds
+        if (r < 0 || r >= map.length
+            || c < 0 || c >= map[0].length)
+            return false;
+
+        // Base case 2: Wall or already on current path
+        if (map[r][c] == '#' || visited[r][c])
+            return false;
+
+        // Base case 3: GOAL REACHED!
+        if (r == goalR && c == goalC)
+            return true;
+
+        // Recursive step: mark cell, try all 4 directions
+        visited[r][c] = true;
+
+        if (hasPath(map, visited, r - 1, c, goalR, goalC)) return true;
+        if (hasPath(map, visited, r + 1, c, goalR, goalC)) return true;
+        if (hasPath(map, visited, r, c - 1, goalR, goalC)) return true;
+        if (hasPath(map, visited, r, c + 1, goalR, goalC)) return true;
+
+        // BACKTRACK: all 4 directions failed → un-mark and return false
+        visited[r][c] = false;
+        return false;
+    }</code></pre>
+
+<p><strong>Why un-visit?</strong> If one recursive branch hits a dead end, other branches need to try cells that were on the failed path. Without un-visiting, the first failed attempt permanently blocks alternative routes.</p>
+
+<p>Example: Suppose the dungeon looks like this:</p>
+
+<pre>    S  .  .  #
+    #  #  .  #
+    .  .  .  G</pre>
+
+<p>S first tries going RIGHT (to (0,1) then (0,2)). It hits the wall at (0,3) and returns false. With NO un-visiting, (0,1) and (0,2) stay marked — so DOWN from S through (1,0)→(2,0)→(2,1)→(2,2)→G fails because (2,2) might need to go UP through (0,2) which is still marked. Un-visiting lets the DOWN path work.</p>
+
+<h3>Part B: hasPath() Wrapper</h3>
+
+<p>Convenience method — the caller shouldn't have to create the visited array themselves:</p>
+
+<pre><code>    /**
+     * Convenience method — caller only provides map and goal.
+     * Creates a fresh visited array so the caller doesn't have to.
+     */
+    public static boolean hasPath(char[][] map,
+                                  int startR, int startC,
+                                  int goalR, int goalC) {
+        boolean[][] visited = new boolean[map.length][map[0].length];
+        return hasPath(map, visited, startR, startC, goalR, goalC);
+    }
+}</code></pre>
+
+<hr>
+
+<h2>FILE 2: PathfinderRunner.java</h2>
+
+<p><strong>NEW FILE.</strong> Tests hasPath on the Unit 8 dungeon map.</p>
+
+<pre><code>public class PathfinderRunner {
+    public static void main(String[] args) {
+
+        // Unit 8 dungeon map (8x8)
+        char[][] map = {
+            {'#', '#', '#', '#', '#', '#', '#', '#'},
+            {'#', '.', '.', '.', '$', '.', 'M', '#'},
+            {'#', '.', '#', '#', '.', '#', '.', '#'},
+            {'#', '.', '.', 'M', '.', '#', '$', '#'},
+            {'#', '#', '.', '#', '#', '#', '.', '#'},
+            {'#', '.', '.', '.', '.', '.', '.', '#'},
+            {'#', '.', '#', 'M', '#', '#', 'X', '#'},
+            {'#', '#', '#', '#', '#', '#', '#'}
+        };
+
+        // Test 1: Can player (1,1) reach exit (6,6)?
+        System.out.println("Path from (1,1) to exit (6,6): "
+            + Pathfinder.hasPath(map, 1, 1, 6, 6));
+        // Expected: true — there's a winding path through the dungeon
+
+        // Test 2: Can player (1,1) reach the isolated corner?
+        // (No — it's all walls around (0,0))
+        System.out.println("Path from (1,1) to (0,0): "
+            + Pathfinder.hasPath(map, 1, 1, 0, 0));
+        // Expected: false
+
+        // Test 3: Can player reach each treasure?
+        System.out.println("Path from (1,1) to treasure (1,4): "
+            + Pathfinder.hasPath(map, 1, 1, 1, 4));
+        // Expected: true — straight line right
+
+        System.out.println("Path from (1,1) to treasure (3,6): "
+            + Pathfinder.hasPath(map, 1, 1, 3, 6));
+        // Expected: false — wall at column 5 blocks access to (3,6)
+
+        // Test 4: Same position (start == goal)
+        System.out.println("Path from (1,1) to (1,1): "
+            + Pathfinder.hasPath(map, 1, 1, 1, 1));
+        // Expected: true — you're already there
+
+        // Test 5: Wall start
+        System.out.println("Path from (0,0) to (1,1): "
+            + Pathfinder.hasPath(map, 0, 0, 1, 1));
+        // Expected: false — starting on a wall
+    }
+}</code></pre>
+
+<hr>
+
+<h2>FILE 3: MonsterChase.java — OPTIONAL Extension</h2>
+
+<p><strong>NEW FILE.</strong> When a monster sees the player, calculate which direction to move to close distance.</p>
+
+<pre><code>import java.util.ArrayList;
+
+public class MonsterChase {
+
+    /**
+     * Returns the direction ("UP"/"DOWN"/"LEFT"/"RIGHT") the monster
+     * should move to get closer to the player, or "STAY" if no path.
+     *
+     * Uses findShortestPath() to get the full path, then returns
+     * the direction of the FIRST step.
+     */
+    public static String chaseDirection(char[][] map,
+                                        int monsterR, int monsterC,
+                                        int playerR, int playerC) {
+
+        ArrayList&lt;String&gt; currentPath = new ArrayList&lt;&gt;();
+        ArrayList&lt;String&gt; bestPath = new ArrayList&lt;&gt;();
+        boolean[][] visited = new boolean[map.length][map[0].length];
+
+        findShortestPath(map, monsterR, monsterC,
+                         playerR, playerC,
+                         currentPath, visited, bestPath);
+
+        // No path to player
+        if (bestPath.isEmpty()) return "STAY";
+
+        // If only one entry, monster is already at player position
+        if (bestPath.size() < 2) return "STAY";
+
+        // Parse the NEXT step (index 1, since index 0 is current position)
+        String next = bestPath.get(1);   // "row,col"
+        String[] parts = next.split(",");
+        int nextR = Integer.parseInt(parts[0]);
+        int nextC = Integer.parseInt(parts[1]);
+
+        if (nextR < monsterR)      return "UP";
+        else if (nextR > monsterR) return "DOWN";
+        else if (nextC < monsterC) return "LEFT";
+        else if (nextC > monsterC) return "RIGHT";
+
+        return "STAY";  // shouldn't happen
+    }
+
+    /**
+     * Finds ALL paths from (r,c) to (goalR,goalC), keeping
+     * the shortest one in bestPath. Uses backtracking.
+     */
+    private static void findShortestPath(char[][] map,
+                                          int r, int c,
+                                          int goalR, int goalC,
+                                          ArrayList&lt;String&gt; currentPath,
+                                          boolean[][] visited,
+                                          ArrayList&lt;String&gt; bestPath) {
+
+        // Out of bounds, wall, or already on path
+        if (r < 0 || r >= map.length
+            || c < 0 || c >= map[0].length
+            || map[r][c] == '#'
+            || visited[r][c])
+            return;
+
+        // Add to current path
+        visited[r][c] = true;
+        currentPath.add(r + "," + c);
+
+        // Goal reached — check if this path is the shortest so far
+        if (r == goalR && c == goalC) {
+            if (bestPath.isEmpty()
+                || currentPath.size() < bestPath.size()) {
+                bestPath.clear();
+                bestPath.addAll(currentPath);
+            }
+            // Still need to backtrack — don't return early
+        } else {
+            // Try all 4 directions
+            findShortestPath(map, r - 1, c, goalR, goalC,
+                             currentPath, visited, bestPath);
+            findShortestPath(map, r + 1, c, goalR, goalC,
+                             currentPath, visited, bestPath);
+            findShortestPath(map, r, c - 1, goalR, goalC,
+                             currentPath, visited, bestPath);
+            findShortestPath(map, r, c + 1, goalR, goalC,
+                             currentPath, visited, bestPath);
+        }
+
+        // BACKTRACK: remove from path and un-visit
+        currentPath.remove(currentPath.size() - 1);
+        visited[r][c] = false;
+    }
+}</code></pre>
+
+<p><strong>Why NOT return early at the goal?</strong> Even after finding the goal, keep exploring — there might be a shorter path through a different route. Return early only if you find a path that is clearly optimal (but proving optimality on grid mazes without heuristics requires full exploration).</p>
+
+<p><strong>Why ArrayList and not String[]?</strong> Path length is unknown. An ArrayList grows as more cells are added to the path. A fixed-size array would need a guess at max path length.</p>
+
+<p><strong>Important:</strong> This is exponential — O(4^N) in the worst case. For an 8×8 dungeon it's fine. For a 100×100 maze, use BFS. This implementation is for learning backtracking, not production pathfinding.</p>
+
+<hr>
+
+<h2>Integrate Into Your RPG</h2>
+
+<table>
+    <tr><th>Before</th><th>After</th></tr>
+    <tr><td>Monsters stand still</td><td>Monsters chase the player each turn</td></tr>
+    <tr><td>No path awareness</td><td>Path validation: is this maze solvable? Can player reach the treasure?</td></tr>
+    <tr><td>Dungeon has no strategy</td><td>Players plan routes, dodge monsters, use corridors tactically</td></tr>
+</table>
+
+<p>This is the most algorithmically sophisticated piece of the RPG. The backtracking pattern (mark, recurse, un-mark) appears in puzzle solvers, maze generators, constraint satisfaction, and AI game trees at every level of CS beyond this course.</p>
+
+</body>
+</html>

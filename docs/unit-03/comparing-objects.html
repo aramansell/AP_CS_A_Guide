@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparing Objects — Unit 3</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 3</a>
+    <span class="sep">/</span>
+    <span class="here">Comparing Objects</span>
+</nav>
+
+<h1>Comparing Objects in Conditions</h1>
+
+<h2>The Golden Rule (Again)</h2>
+
+<p>
+    <strong>Primitives use ==. Objects use .equals().</strong><br>
+    You learned this in Unit 2. Now you need it in conditions.
+</p>
+
+<pre><code>// PRIMITIVES — use ==
+int hp = 10;
+if (hp == 0) { ... }          // correct
+
+// OBJECTS (String) — use .equals()
+String weapon = "sword";
+if (weapon.equals("sword"))   // correct
+if (weapon == "sword")        // WRONG — unreliable!</code></pre>
+
+<h2>Null-Safe Comparisons</h2>
+
+<pre><code>String name = null;
+
+// THIS CRASHES (NullPointerException):
+if (name.equals("Frodo")) { ... }
+
+// THIS IS SAFE:
+if ("Frodo".equals(name)) { ... }
+
+// OR check for null first:
+if (name != null && name.equals("Frodo")) { ... }
+// Short-circuit saves us: if name is null, .equals() never runs.</code></pre>
+
+<h2>compareTo for Ordering</h2>
+
+<pre><code>// compareTo returns int: negative, zero, or positive
+String item = "potion";
+int result = item.compareTo("shield");
+
+if (result < 0) {
+    // "potion" comes before "shield" alphabetically
+} else if (result > 0) {
+    // "potion" comes after
+} else {
+    // they're equal (result == 0)
+}
+</code></pre>
+
+<h2>Switch Statement (Preview)</h2>
+
+<p>
+    When comparing one variable against many possible values, switch can be cleaner
+    than long if/else chains. AP exam covers this minimally, but it's useful.
+</p>
+
+<pre><code>String action = input.nextLine();
+
+switch (action.toLowerCase()) {
+    case "attack":
+        combat();
+        break;
+    case "defend":
+        defend();
+        break;
+    case "flee":
+        flee();
+        break;
+    default:
+        System.out.println("Unknown command.");
+}</code></pre>
+
+<div class="lab bug-hunt">
+    <h3>Bug Hunt: The Fall-Through Trap</h3>
+    <p>A student wrote this switch statement for a shop menu:</p>
+<pre><code>String choice = "buy";
+switch (choice) {
+    case "buy":
+        System.out.println("You bought an item!");
+    case "sell":
+        System.out.println("You sold an item!");
+    default:
+        System.out.println("Thanks for visiting.");
+}</code></pre>
+    <p>When the user chooses "buy", the program prints:</p>
+    <pre><code>You bought an item!
+You sold an item!
+Thanks for visiting.</code></pre>
+    <p>Why did it print all three? What keyword is missing from the <code>case</code> blocks?</p>
+</div>
+
+<div class="lab tinker-challenge">
+    <h3>Tinker Challenge: Combat Command Parser</h3>
+    <p>Build a program that reads a string command from the user using <code>Scanner</code> and executes the corresponding action:</p>
+    <ul>
+        <li><code>"attack"</code>: print "You swing your weapon!"</li>
+        <li><code>"defend"</code>: print "You brace for impact. Next hit does half damage."</li>
+        <li><code>"potion"</code>: print "You heal for 10 HP."</li>
+        <li><code>"flee"</code>: print "You try to run away..."</li>
+    </ul>
+    <p>If they type anything else, print "Unknown command."</p>
+    
+    <div class="socratic">
+        <h4>Socratic Checkpoint</h4>
+        <p>What happens if the user types "Attack" (with a capital A) instead of "attack"? How can you use string methods to make your parser case-insensitive?</p>
+    </div>
+</div>
+
+<h2>Want More?</h2>
+<ul>
+    <li><a href="relational-operators.html">Relational Operators</a> — comparing primitives</li>
+    <li><a href="combat-system.html">Combat System Walkthrough</a> — command parsing in combat</li>
+</ul>
+
+</body>
+</html>

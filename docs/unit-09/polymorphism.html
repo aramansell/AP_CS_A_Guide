@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polymorphism — Unit 9</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 9</a>
+    <span class="sep">/</span>
+    <span class="here">Polymorphism</span>
+</nav>
+
+<h1>Polymorphism</h1>
+
+<p>
+    <strong>Polymorphism</strong> = "many forms." A <code>Character</code> variable
+    can hold a Warrior, a Mage, a Goblin, or a Dragon. When you call
+    <code>attack()</code> on that variable, the RIGHT version runs based on
+    the actual object type — not the variable type. This is the single most
+    powerful feature of inheritance.
+</p>
+
+<h2>The Big Idea</h2>
+
+<pre><code>// Three different objects, one variable type:
+Character c1 = new Warrior("Thorn");   // Character ref → Warrior object
+Character c2 = new Mage("Elara");      // Character ref → Mage object
+Character c3 = new Goblin();           // Character ref → Goblin object
+
+// Same method call, different behavior:
+c1.attack(enemy);   // Warrior swings axe
+c2.attack(enemy);   // Mage casts magic bolt
+c3.attack(hero);    // Goblin claws</code></pre>
+
+<p>
+    This is <strong>dynamic binding</strong>. Java doesn't decide which
+    <code>attack()</code> to run until runtime, when it can look at the
+    actual object.
+</p>
+
+<h2>Superclass References</h2>
+
+<p>
+    A variable declared as <code>Character</code> can reference ANY object
+    whose class extends Character:
+</p>
+
+<pre><code>Character someone;
+someone = new Player("Aria", 100, 16, 10, 8);   // Player IS-A Character ✓
+someone = new Monster("Goblin", 20, 10, "");     // Monster IS-A Character ✓
+someone = new Warrior("Thorn");                   // Warrior IS-A Player IS-A Character ✓
+someone = new String("hello");                    // COMPILE ERROR — String is NOT a Character</code></pre>
+
+<h2>Compile-Time vs Runtime</h2>
+
+<p>This is the trickiest part of polymorphism. Two steps:</p>
+
+<ol>
+    <li><strong>Compile time:</strong> Can I call this method? → Look at the VARIABLE type.</li>
+    <li><strong>Runtime:</strong> Which version runs? → Look at the OBJECT type.</li>
+</ol>
+
+<pre><code>Character c = new Warrior("Thorn");
+
+c.getName();        // Compile: getName() exists in Character? YES → compiles
+                    // Runtime: c is actually a Warrior → runs Character version (or Warrior's if overridden)
+
+c.powerStrike(x);   // Compile: powerStrike() exists in Character? NO → COMPILE ERROR
+                    // Even though the object IS a Warrior and HAS powerStrike,
+                    // the compiler only knows about the VARIABLE type (Character).</code></pre>
+
+<div class="callout">
+    <strong>Memory aid:</strong> The compiler trusts the VARIABLE type.
+    The JVM respects the OBJECT type. The compiler checks the door — the
+    JVM decides which room you enter.
+</div>
+
+<h2>Polymorphic Arrays</h2>
+
+<p>The real power: treating different objects uniformly in loops.</p>
+
+<pre><code>// Mixed party — any Character subclass:
+ArrayList&lt;Character&gt; party = new ArrayList&lt;&gt;();
+party.add(new Warrior("Thorn"));
+party.add(new Mage("Elara"));
+party.add(new Rogue("Shade"));
+
+// One loop handles them all:
+for (Character hero : party) {
+    hero.attack(randomEnemy);    // RIGHT version runs for each hero
+    System.out.println(hero);     // RIGHT toString() for each class
+}</code></pre>
+
+<p>
+    No if-statements needed. No type checking. One loop, polymorphic dispatch
+    handles everything.
+</p>
+
+<h2>instanceof and Casting</h2>
+
+<p>
+    Sometimes you DO need to call a method that only exists on a specific
+    subclass. That's what <code>instanceof</code> and casting are for:
+</p>
+
+<pre><code>for (Character hero : party) {
+    hero.attack(enemy);   // Works for all Characters
+
+    // But special abilities are class-specific...
+    if (hero instanceof Warrior) {
+        Warrior w = (Warrior) hero;      // Safe cast — we checked first
+        w.powerStrike(boss);             // Only Warrior has this
+    } else if (hero instanceof Mage) {
+        Mage m = (Mage) hero;
+        m.fireball(allEnemies);          // Only Mage has this
+    }
+}</code></pre>
+
+<table>
+    <tr><th>Expression</th><th>Meaning</th></tr>
+    <tr><td><code>hero instanceof Warrior</code></td><td>"Is the object that hero references actually a Warrior?" Returns <code>true</code> or <code>false</code></td></tr>
+    <tr><td><code>(Warrior) hero</code></td><td>"Treat this Character reference AS a Warrior reference" — casting</td></tr>
+</table>
+
+<div class="callout">
+    <strong>Danger:</strong> Casting without <code>instanceof</code> is a gamble:
+    <pre><code>Character c = new Monster("Goblin", 10);
+Player p = (Player) c;   // RUNTIME ERROR: ClassCastException</code></pre>
+    Always check with <code>instanceof</code> before casting unless you are
+    absolutely certain of the type.
+</div>
+
+<h2>RPG Combat with Polymorphism</h2>
+
+<p>Polymorphism transforms combat from this:</p>
+
+<pre><code>if (turn == "warrior") {
+    warrior.attack(goblin);
+} else if (turn == "mage") {
+    mage.attack(goblin);
+} else if (turn == "rogue") {
+    rogue.attack(goblin);
+}</code></pre>
+
+<p>Into this:</p>
+
+<pre><code>ArrayList&lt;Character&gt; party = new ArrayList&lt;&gt;();
+// ... fill party ...
+
+for (Character hero : party) {
+    if (hero.isAlive()) {
+        hero.attack(target);    // One line. Always correct.
+    }
+}</code></pre>
+
+<p>
+    And adding a new class — say, a Paladin — requires zero changes to the
+    combat loop. Just write the Paladin class extending Player, override
+    <code>attack()</code>, and the loop handles it automatically.
+</p>
+
+<h2>Why Polymorphism Matters</h2>
+
+<p>Without polymorphism, your code has:</p>
+<ul>
+    <li>Long if-else chains checking types</li>
+    <li>Duplicated loops for each subclass</li>
+    <li>Changes in every file when you add a new class</li>
+</ul>
+
+<p>With polymorphism, your code:</p>
+<ul>
+    <li>Has short, clean loops</li>
+    <li>Treats all subclasses uniformly</li>
+    <li>Grows painlessly — add a class, inherit, override, done</li>
+</ul>
+
+<p>This is the entire reason inheritance exists. Not to save typing — to make your code open for extension without modification.</p>
+
+<h2>Common Traps</h2>
+
+<table>
+    <tr><th>What you did</th><th>Result</th><th>Fix</th></tr>
+    <tr>
+        <td>Called subclass-only method on superclass ref</td>
+        <td>Compile error: "cannot find symbol"</td>
+        <td>Cast: <code>((Player) c).getGold()</code> (with instanceof check)</td>
+    </tr>
+    <tr>
+        <td>Cast without <code>instanceof</code></td>
+        <td><code>ClassCastException</code> at runtime</td>
+        <td>Always check <code>instanceof</code> first</td>
+    </tr>
+    <tr>
+        <td>Declared variable as concrete type instead of superclass</td>
+        <td>Can't hold other subclass types</td>
+        <td>Use superclass type: <code>Character c</code> not <code>Warrior c</code></td>
+    </tr>
+    <tr>
+        <td>Expected parent's version to run from superclass ref</td>
+        <td>Child's override runs — dynamic binding always uses object type</td>
+        <td>Dynamic binding is correct — if you need parent's version, don't override</td>
+    </tr>
+</table>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Dual Personality of an Object</h3>
+    <p>In the line of code <code>Character hero = new Warrior("Arthur");</code>, we see two different types. What is the <strong>reference type</strong> of <code>hero</code>? What is the <strong>object type</strong> of <code>hero</code>? Which of these two types is checked by the compiler to decide if you are allowed to call a method? Which of these two types is checked by the JVM at runtime to decide which version of the method actually runs?</p>
+
+    <h3>2. The Cleric's Silent Inheritance</h3>
+    <p>Suppose the parent class <code>Character</code> has a method <code>public void speak()</code>. The subclass <code>Wizard</code> overrides <code>speak()</code> with a custom chant, but the subclass <code>Cleric</code> does not write a <code>speak()</code> method at all. If you have a polymorphic array <code>Character[] party</code> containing both a <code>Wizard</code> and a <code>Cleric</code>, and you loop through and call <code>party[i].speak()</code> on both, what happens? How does the JVM trace up the inheritance tree at runtime to find the method for the <code>Cleric</code>?</p>
+</div>
+
+<h2>Bug Hunt: The Blind Compiler</h2>
+
+<div class="bug-hunt">
+    <p>A student writes code to make a character roar. They are positive that their <code>Monster</code> class has a <code>public void roar()</code> method. However, their code refuses to compile, showing a frustrating <code>cannot find symbol - method roar()</code> error on the second line.</p>
+    <pre><code>Character actor = new Monster("Orc", 80);
+actor.roar(); // Compile error occurs here!</code></pre>
+    <p><strong>Question:</strong> Find the compile bug! Why can't the compiler find the <code>roar()</code> method on <code>actor</code> even though <code>actor</code> holds a <code>Monster</code> at runtime? How can you write a safe type guard and cast to make this compile and run successfully?</p>
+</div>
+
+<h2>Tinker Challenge: Polymorphic Party Utilities & Cast Guards</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Manage groups of distinct subclasses uniformly while safely querying unique behaviors.</p>
+    <ol>
+        <li><strong>Polymorphic Action Dispatcher:</strong> Write a utility method <code>public static void prepareForBattle(Character[] party)</code>. Loop through the party and:
+            <ul>
+                <li>If the character is an instance of a <code>Wizard</code>, downcast it and call their subclass-exclusive <code>meditate()</code> method.</li>
+                <li>If the character is an instance of a <code>Warrior</code>, downcast it and call their subclass-exclusive <code>sharpenSword()</code> method.</li>
+                <li>For any other general <code>Character</code>, call their standard <code>rest()</code> method.</li>
+            </ul>
+            <div class="callout warn">
+                <strong>Safety First:</strong> Never downcast a superclass reference to a subclass type without placing an explicit <code>instanceof</code> check directly beforehand! A blind cast will inevitably throw a <code>java.lang.ClassCastException</code> at runtime if the object happens to be a different subclass.
+            </div>
+        </li>
+        <li><strong>Polymorphic Driver Trace:</strong> Write a driver method that sets up an array of three mixed characters (a general Character, a Wizard, and a Warrior), passes it to <code>prepareForBattle</code>, and demonstrates that the correct subclass actions fire without any compile or runtime issues!</li>
+    </ol>
+</div>
+
+</body>
+</html>

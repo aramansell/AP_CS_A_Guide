@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choose Your Adventure Walkthrough — Unit 3</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 3</a>
+    <span class="sep">/</span>
+    <span class="here">Choose Your Adventure</span>
+</nav>
+
+<h1>Choose Your Own Adventure — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    It uses nested if/else to create branching story paths.
+    Use this page as a reference when building your own projects.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Present the player with choices. Each choice leads to a different branch of the story. Use nested if/else to build a tree of possibilities.</p>
+
+<pre><code><span class="output">You enter a dark dungeon. Two tunnels stretch ahead.</span>
+<span class="output">Do you go LEFT or RIGHT? left</span>
+<span class="output">
+You go left. The tunnel opens into a treasure room!</span>
+<span class="output">A chest sits in the corner. Do you OPEN it or LEAVE it? open</span>
+<span class="output">
+You open the chest and find 100 gold coins!
+Your adventure ends... for now.</span></code></pre>
+
+<h2>Step 1: Read the First Choice</h2>
+
+<pre><code>import java.util.Scanner;
+
+Scanner input = new Scanner(System.in);
+
+System.out.println("You enter a dark dungeon. Two tunnels stretch ahead.");
+System.out.println("Do you go LEFT or RIGHT?");
+String choice1 = input.nextLine().toLowerCase();</code></pre>
+
+<h2>Step 2: Branch Based on First Choice</h2>
+
+<pre><code>if (choice1.equals("left")) {
+    System.out.println("You go left. The tunnel opens into a treasure room!");
+    // Second choice inside this branch
+
+} else if (choice1.equals("right")) {
+    System.out.println("You go right. A dragon blocks the path!");
+    // Different second choice here
+
+} else {
+    System.out.println("Paralyzed by indecision, you turn back.");
+}</code></pre>
+
+<p>
+    <strong>Nesting:</strong> Each branch is its own mini-adventure. Put more if/else
+    inside each branch to give the player a second choice — and a third, and a fourth.
+    This is the same structure as a "choose your own adventure" book.
+</p>
+
+<h2>Step 3: Add Second and Third Layers</h2>
+
+<pre><code>if (choice1.equals("left")) {
+    System.out.println("You go left. The tunnel opens into a treasure room!");
+    System.out.println("A chest sits in the corner. Do you OPEN it or LEAVE it?");
+    String choice2 = input.nextLine().toLowerCase();
+
+    if (choice2.equals("open")) {
+        System.out.println("You open the chest and find 100 gold coins!");
+        // Could add a THIRD layer here...
+
+    } else if (choice2.equals("leave")) {
+        System.out.println("You leave the chest. A trap avoids you. Wise choice.");
+    }
+}</code></pre>
+
+<h2>The Full Program</h2>
+
+<pre><code>import java.util.Scanner;
+
+public class ChooseAdventure {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("You enter a dark dungeon. Two tunnels stretch ahead.");
+        System.out.print("Do you go LEFT or RIGHT? ");
+        String choice1 = input.nextLine().toLowerCase();
+
+        if (choice1.equals("left")) {
+            System.out.println("\nYou enter a treasure room!");
+            System.out.print("A chest sits in the corner. OPEN it or LEAVE it? ");
+            String choice2 = input.nextLine().toLowerCase();
+
+            if (choice2.equals("open")) {
+                System.out.println("\nYou open the chest. 100 gold coins!");
+                System.out.println("A passage opens behind the chest...");
+                System.out.print("GO through it or RETURN? ");
+                String choice3 = input.nextLine().toLowerCase();
+
+                if (choice3.equals("go")) {
+                    System.out.println("\nYou emerge into sunlight. Freedom!");
+                } else {
+                    System.out.println("\nYou return. The chest was the best part anyway.");
+                }
+            } else {
+                System.out.println("\nYou leave the chest. A trap clicks harmlessly.");
+                System.out.println("You exit safely with nothing... but alive.");
+            }
+        } else if (choice1.equals("right")) {
+            System.out.println("\nA dragon blocks the path!");
+            System.out.print("FIGHT it or RUN? ");
+            String choice2 = input.nextLine().toLowerCase();
+
+            if (choice2.equals("fight")) {
+                System.out.println("\nYou charge! The dragon breathes fire.");
+                System.out.println("GAME OVER — you're toast.");
+            } else {
+                System.out.println("\nYou run back to the entrance. Safety first.");
+            }
+        } else {
+            System.out.println("\nYou stand frozen. The ceiling collapses.");
+            System.out.println("GAME OVER — indecision kills.");
+        }
+
+        System.out.println("Your adventure ends... for now.");
+    }
+}</code></pre>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: The Shape of Logic</h3>
+    <p>Look at the full program above. What does the shape of the indentation look like?</p>
+    <p>If we did not indent the code properly, would the program still run? If so, why is indentation considered mandatory by professional programmers?</p>
+</div>
+
+<h2>Extending the Program</h2>
+<ul>
+    <li>Draw a story map on paper first — a tree diagram helps.</li>
+    <li>Add more than two choices at each branch (if / else-if / else).</li>
+    <li>Reuse branches: two different paths could lead to the same ending.</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    Your Combat System uses the same if/else chain to determine hit/miss/crit.
+    Choose Your Adventure stretches that chain into a tree. The RPG's "dungeon crawl"
+    structure is essentially a Choose Your Adventure with combat mixed in.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="boolean-logic.html">Boolean Logic (&&, ||)</a> — useful for combining conditions</li>
+    <li><a href="else-if-chains.html">Else-If Chains</a> — the core pattern</li>
+    <li><a href="comparing-objects.html">Comparing Objects (.equals)</a></li>
+</ul>
+
+</body>
+</html>

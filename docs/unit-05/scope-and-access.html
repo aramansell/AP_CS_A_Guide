@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scope & Access — Unit 5</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 5</a>
+    <span class="sep">/</span>
+    <span class="here">Scope &amp; Access</span>
+</nav>
+
+<h1>Scope and Access: Where Variables Live</h1>
+
+<p>
+    Every variable in Java has a <strong>scope</strong> — the lines of code where it
+    exists and can be used. Outside its scope: dead. Doesn't exist. Can't be referenced.
+</p>
+
+<h2>Three Kinds of Variables</h2>
+
+<h3>1. Local Variables</h3>
+
+<pre><code>public void doSomething() {
+    int x = 5;        // 'x' is local to this method
+    System.out.println(x);  // works
+}   // ← x DIES here
+// x no longer exists</code></pre>
+
+<p>
+    Declared inside a method (or a loop/if block). Lives from the declaration line
+    to the closing <code>}</code>. Only that method can see it.
+</p>
+
+<h3>2. Parameters</h3>
+
+<pre><code>public void setDamage(int dmg) {   // 'dmg' is a parameter
+    damage = dmg;                  // works inside this method
+}                                  // 'dmg' dies here</code></pre>
+
+<p>
+    Declared in the method parentheses. Gets its value from the caller.
+    Scope: the entire method body.
+</p>
+
+<h3>3. Instance Variables</h3>
+
+<pre><code>public class Player {
+    private String name;      // instance variable
+    private int hp;           // instance variable
+
+    public void takeDamage(int dmg) {
+        hp -= dmg;            // visible in any method of this class
+    }
+}</code></pre>
+
+<p>
+    Declared in the class (outside methods). Scope: the <strong>entire class</strong>.
+    Every method can see them. Live as long as the object lives.
+</p>
+
+<h2>Visibility Table</h2>
+
+<table>
+    <tr><th>Variable Type</th><th>Same method?</th><th>Other method, same class?</th><th>Other class?</th></tr>
+    <tr><td>Local</td><td>✅ (inside block)</td><td>❌</td><td>❌</td></tr>
+    <tr><td>Parameter</td><td>✅ (inside method)</td><td>❌</td><td>❌</td></tr>
+    <tr><td>Instance (private)</td><td>✅</td><td>✅</td><td>❌ (need getter)</td></tr>
+</table>
+
+<h2>The Block Rule</h2>
+
+<p>A variable declared inside <code>{ }</code> dies at the matching <code>}</code>:</p>
+
+<pre><code>for (int i = 0; i < 10; i++) {  // 'i' born here
+    System.out.println(i);
+}                                // 'i' dies here
+// System.out.println(i);   // ERROR: i is out of scope
+
+if (hp > 0) {
+    String msg = "Alive!";       // 'msg' born here
+    System.out.println(msg);
+}                                // 'msg' dies here
+// System.out.println(msg);  // ERROR!</code></pre>
+
+<h2>Fix: Declare Before the Block</h2>
+
+<pre><code>String msg = "";           // declared OUTSIDE
+if (hp > 0) {
+    msg = "Alive!";        // ASSIGN inside
+} else {
+    msg = "Dead...";       // ASSIGN inside
+}
+System.out.println(msg);   // works — msg still alive</code></pre>
+
+<h2>The this Keyword</h2>
+
+<p>
+    <code>this</code> means "the current object." It resolves shadowing:
+</p>
+
+<pre><code>public class Player {
+    private String name;        // instance variable
+
+    public Player(String name) {  // parameter shadows instance var
+        this.name = name;    // this.name = instance, name = parameter
+    }
+
+    public String getName() {
+        return this.name;     // 'this.' optional here (no shadowing)
+    }
+}</code></pre>
+
+<h2>Access Modifiers</h2>
+
+<table>
+    <tr><th>Modifier</th><th>Same class</th><th>Same package</th><th>Anywhere</th></tr>
+    <tr><td><code>private</code></td><td>✅</td><td>❌</td><td>❌</td></tr>
+    <tr><td>(none/default)</td><td>✅</td><td>✅</td><td>❌</td></tr>
+    <tr><td><code>public</code></td><td>✅</td><td>✅</td><td>✅</td></tr>
+</table>
+
+<p><strong>Rule: instance variables = always private.</strong></p>
+
+<h2>Common Errors</h2>
+
+<table>
+    <tr><th>Error</th><th>Cause</th><th>Fix</th></tr>
+    <tr><td>"cannot find symbol"</td><td>Variable used outside scope</td><td>Declare it earlier/wider</td></tr>
+    <tr><td>"not initialized"</td><td>Local var declared, not assigned</td><td>Give it a value</td></tr>
+    <tr><td>"non-static... static context"</td><td>Instance var in static method</td><td>Make method non-static</td></tr>
+    <tr><td>"private access"</td><td>Accessing private from outside</td><td>Use the getter/setter</td></tr>
+</table>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: The Short-Lived Variable</h3>
+    <p>A student writes a loop to calculate the total damage of 3 sword strikes, but it won't compile. What is the exact scope of the <code>total</code> variable? Where does it die, and how must the student fix it?</p>
+    <pre><code>for (int i = 0; i < 3; i++) {
+    int total = 0;
+    total += sword.attack();
+}
+System.out.println("Total damage: " + total);</code></pre>
+</div>
+
+<div class="bug-hunt">
+    <h3>Bug Hunt: Shadow Strike</h3>
+    <p>The developer meant to update the player's gold, but when they pick up a coin, their overall gold never changes! Find the scoping error (shadowing) that is causing the gold to vanish into thin air:</p>
+    <pre><code>public class Player {
+    private int gold = 0;
+
+    public void pickupCoin() {
+        int gold = this.gold; // look closely here!
+        gold += 10;
+        System.out.println("Picked up 10 gold!");
+    }
+}</code></pre>
+</div>
+
+<div class="tinker">
+    <h3>Tinker Challenge: Scope Gauntlet</h3>
+    <p>Write a method <code>public String evaluateRoom(int monsterCount, boolean hasTrap)</code> inside a <code>Dungeon</code> class that correctly manages scope.</p>
+    <ol>
+        <li><strong>Rule 1:</strong> Declare a single <code>String result;</code> at the very top of the method. Do not declare any other String variables.</li>
+        <li><strong>Rule 2:</strong> Use an <code>if/else if/else</code> block to determine the danger level. If <code>monsterCount > 3</code> and <code>hasTrap</code> is true, assign "DEADLY" to <code>result</code>. If only one is true, assign "DANGEROUS". Otherwise, assign "SAFE".</li>
+        <li><strong>Rule 3:</strong> At the very end of the method, return <code>result</code>.</li>
+        <li><strong>The Test:</strong> Try declaring <code>String result = "DEADLY";</code> <em>inside</em> the first if block instead of reusing the outer variable. Watch the compiler complain when you try to return it at the end! Understand why it fails.</li>
+    </ol>
+</div>
+
+</body>
+</html>

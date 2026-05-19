@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BankAccount Class Walkthrough — Unit 5</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 5</a>
+    <span class="sep">/</span>
+    <span class="here">BankAccount Class</span>
+</nav>
+
+<h1>Writing a BankAccount Class — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    Unlike the immutability of Card, BankAccount has state that changes:
+    deposits, withdrawals, interest. This is where mutators (setters) shine.
+    Use this as a reference when building your own classes.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Create a BankAccount class with balance tracking, deposits, withdrawals with a minimum-balance guard, and interest calculation.</p>
+
+<pre><code><span class="output">Created account #1001 for Alice with $500.00</span>
+<span class="output">Deposited $200.00 — new balance: $700.00</span>
+<span class="output">Withdrew $150.00 — new balance: $550.00</span>
+<span class="output">Withdrew $600.00? Insufficient funds!</span>
+<span class="output">After 5% interest: $577.50</span></code></pre>
+
+<h2>Step 1: Instance Variables + Constructor</h2>
+
+<pre><code>public class BankAccount {
+    private int accountNumber;
+    private String ownerName;
+    private double balance;
+    private static int nextAccountNumber = 1001;
+
+    public BankAccount(String ownerName, double initialDeposit) {
+        this.ownerName = ownerName;
+        this.balance = initialDeposit;
+        this.accountNumber = nextAccountNumber;
+        nextAccountNumber++;  // auto-generate unique account numbers
+    }</code></pre>
+
+<p>
+    <strong>Static counter pattern.</strong> nextAccountNumber belongs to the class,
+    not individual objects. Every new account gets an incremented number.
+    Same pattern as Monster's defeatedCount.
+</p>
+
+<h2>Step 2: Getters + Display</h2>
+
+<pre><code>    public int getAccountNumber() { return accountNumber; }
+    public String getOwnerName()  { return ownerName; }
+    public double getBalance()    { return balance; }
+
+    public String toString() {
+        return "Account #" + accountNumber + " (" + ownerName
+               + "): $" + String.format("%.2f", balance);
+    }</code></pre>
+
+<p>
+    <strong>String.format("%.2f", balance)</strong> rounds to two decimal places.
+    Without it, you might see $577.5000000000001. With it: $577.50. Clean money.
+</p>
+
+<h2>Step 3: Mutators — Deposit and Withdraw</h2>
+
+<pre><code>    public void deposit(double amount) {
+        if (amount <= 0) {
+            System.out.println("Deposit must be positive.");
+            return;   // exit early — do nothing
+        }
+        balance += amount;
+        System.out.println("Deposited $" + String.format("%.2f", amount));
+    }
+
+    public boolean withdraw(double amount) {
+        if (amount <= 0) {
+            System.out.println("Withdrawal must be positive.");
+            return false;
+        }
+        if (amount > balance) {
+            System.out.println("Insufficient funds!");
+            return false;
+        }
+        balance -= amount;
+        System.out.println("Withdrew $" + String.format("%.2f", amount));
+        return true;  // success
+    }</code></pre>
+
+<p>
+    <strong>Guard clauses.</strong> Check for bad input FIRST and bail out.
+    This keeps the happy path (the actual withdrawal logic) clean and un-nested.
+    Returning boolean lets the caller check if the operation succeeded.
+</p>
+
+<h2>Step 4: Interest (Another Mutator)</h2>
+
+<pre><code>    public void applyInterest(double rate) {
+        balance += balance * (rate / 100.0);  // rate is a percentage
+    }
+}</code></pre>
+
+<h2>The Full Class + Test</h2>
+
+<pre><code>public class BankAccount {
+    private int accountNumber;
+    private String ownerName;
+    private double balance;
+    private static int nextAccountNumber = 1001;
+
+    public BankAccount(String ownerName, double initialDeposit) {
+        this.ownerName = ownerName;
+        this.balance = initialDeposit;
+        this.accountNumber = nextAccountNumber++;
+    }
+
+    public int getAccountNumber() { return accountNumber; }
+    public String getOwnerName()  { return ownerName; }
+    public double getBalance()    { return balance; }
+
+    public String toString() {
+        return "Account #" + accountNumber + " (" + ownerName
+               + "): $" + String.format("%.2f", balance);
+    }
+
+    public void deposit(double amount) {
+        if (amount <= 0) {
+            System.out.println("Deposit must be positive.");
+            return;
+        }
+        balance += amount;
+    }
+
+    public boolean withdraw(double amount) {
+        if (amount <= 0 || amount > balance) return false;
+        balance -= amount;
+        return true;
+    }
+
+    public void applyInterest(double rate) {
+        balance += balance * (rate / 100.0);
+    }
+}
+
+// Test:
+public class BankTest {
+    public static void main(String[] args) {
+        BankAccount alice = new BankAccount("Alice", 500.0);
+        System.out.println(alice);
+
+        alice.deposit(200);
+        alice.withdraw(150);
+        alice.applyInterest(5.0);
+        System.out.println(alice);
+    }
+}</code></pre>
+
+<h2>Extending the Program</h2>
+<ul>
+    <li>Add a transfer(BankAccount destination, double amount) method.</li>
+    <li>Add a transaction history — every deposit/withdrawal recorded.</li>
+    <li>Add minimum-balance fees if balance drops below $100.</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    BankAccount is the closest match to Player's HP management: setHP, takeDamage, heal.
+    The guard-clause pattern (check for bad input, bail early) is identical.
+    The static counter maps to Monster's defeatedCount.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="accessors-mutators.html">Accessors &amp; Mutators</a></li>
+    <li><a href="methods-and-static.html">Methods &amp; Static</a></li>
+    <li><a href="scope-and-access.html">Scope &amp; Access</a> — private, public, return</li>
+</ul>
+
+</body>
+</html>

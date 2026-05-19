@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>while Loops — Unit 4</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 4</a>
+    <span class="sep">/</span>
+    <span class="here">while Loops</span>
+</nav>
+
+<h1>while Loops</h1>
+
+<p>
+    A <code>while</code> loop repeats a block of code <strong>as long as a condition
+    is true</strong>. It's an if statement that runs again and again.
+</p>
+
+<h2>Syntax</h2>
+
+<pre><code>while (condition) {
+    // body — runs REPEATEDLY while condition is true
+}</code></pre>
+
+<p>
+    Before each iteration, Java checks the condition. If true → run the body.
+    Then check again. When the condition becomes false → stop. Skip to the code below.
+</p>
+
+<div class="callout lab bug-hunt">
+    <h3>🐛 Bug Hunt: The Frozen Game</h3>
+    <p>A student wrote this health regeneration loop, but the game freezes every time they run it. Pressing Ctrl+C is the only way to stop it!</p>
+<pre><code>int hp = 10;
+int maxHp = 20;
+while (hp < maxHp) {
+    System.out.println("Regenerating... HP is now " + hp);
+}</code></pre>
+    <p><strong>Your Task:</strong> Why does this code freeze the program? What exact line of code needs to be added, and where, to fix the infinite loop?</p>
+</div>
+
+<h2>Example: Countdown</h2>
+
+<pre><code>int hp = 5;
+while (hp > 0) {
+    System.out.println("HP: " + hp);
+    hp--;  // WITHOUT THIS → infinite loop!
+}
+System.out.println("Defeated!");</code></pre>
+
+<p class="output">HP: 5<br>HP: 4<br>HP: 3<br>HP: 2<br>HP: 1<br>Defeated!</p>
+
+<h2>Three Essential Parts</h2>
+
+<p>Every while loop needs these three things:</p>
+
+<ol>
+    <li><strong>Initialize</strong> — set up the variable before the loop.</li>
+    <li><strong>Test</strong> — the condition checked at the top.</li>
+    <li><strong>Update</strong> — change something inside the body so the loop eventually ends.</li>
+</ol>
+
+<pre><code>// 1. INITIALIZE
+int round = 1;
+
+// 2. TEST                     3. UPDATE
+while (round <= 5) {           round++;  // ← without this, infinite loop!
+    System.out.println("Round " + round);
+}</code></pre>
+
+<h2>Application: Combat Rounds</h2>
+
+<p>Replace your single-round Combat.java with a loop:</p>
+
+<pre><code>int playerHP = 20;
+int enemyHP = 12;
+int round = 1;
+
+while (playerHP > 0 && enemyHP > 0) {
+    System.out.println("--- Round " + round + " ---");
+
+    // Player attacks (your U3 code here)
+    int pRoll = Dice.roll(20);
+    if (pRoll == 20) {
+        int dmg = (Dice.roll(8) + 3) * 2;
+        enemyHP -= dmg;
+        System.out.println("CRIT! " + dmg + " damage!");
+    } else if (pRoll + 3 >= 12) {
+        int dmg = Dice.roll(8) + 3;
+        enemyHP -= dmg;
+        System.out.println("Hit! " + dmg + " damage!");
+    } else {
+        System.out.println("Miss!");
+    }
+
+    if (enemyHP <= 0) break;  // enemy dead → stop
+
+    // Enemy attacks
+    int eRoll = Dice.roll(20);
+    if (eRoll >= 14) {
+        int dmg = Dice.roll(6) + 2;
+        playerHP -= dmg;
+        System.out.println("Goblin hits! " + dmg + " damage!");
+    } else {
+        System.out.println("Goblin misses!");
+    }
+
+    System.out.println("You: " + playerHP + " HP | Goblin: " + enemyHP + " HP");
+    round++;
+}
+
+if (playerHP > 0) {
+    System.out.println("Victory!");
+} else {
+    System.out.println("Defeat...");
+}</code></pre>
+
+<p>
+    <strong>Why <code>break</code>?</strong> After the player's turn, the enemy might
+    already be dead. <code>break</code> exits the loop immediately — no need for the
+    enemy to attack a corpse.
+</p>
+
+<h2>Sentinel Loops</h2>
+
+<p>
+    A sentinel loop keeps going until the user enters a special value to stop.
+    Useful for: "Attack, defend, or flee?" menus that repeat until "quit."
+</p>
+
+<pre><code>Scanner input = new Scanner(System.in);
+String command = "";
+
+while (!command.equals("quit")) {
+    System.out.print("> ");
+    command = input.nextLine();
+
+    if (command.equals("attack")) {
+        System.out.println("You swing your sword!");
+    } else if (command.equals("look")) {
+        System.out.println("A dark corridor stretches ahead.");
+    }
+}
+System.out.println("Goodbye.");</code></pre>
+
+<h2>while vs if — Key Difference</h2>
+
+<table>
+    <tr><th></th><th>if</th><th>while</th></tr>
+    <tr><td>Checks condition?</td><td>Once</td><td>Repeatedly</td></tr>
+    <tr><td>Body runs...</td><td>0 or 1 time</td><td>0, 1, 2, ... many times</td></tr>
+    <tr><td>Use for</td><td>Decisions</td><td>Repetition</td></tr>
+</table>
+
+<div class="callout lab socratic">
+    <h3>🧠 Socratic Checkpoint: The Zero-Iteration Loop</h3>
+    <p>Look at the code below:</p>
+<pre><code>int potions = 0;
+while (potions > 0) {
+    System.out.println("Drinking potion...");  // NEVER runs
+    potions--;
+}</code></pre>
+    <p><strong>Think about it:</strong> How many times will "Drinking potion..." print? Why is it sometimes useful to have a loop that might run zero times (for example, in an inventory system)?</p>
+</div>
+
+<h2>Tinker Challenge: Endless Exploring</h2>
+
+<div class="callout lab tinker">
+    <h3>🛠️ Tinker Challenge: The Sentinel Room</h3>
+    <p>Create a basic exploration loop using a <code>while</code> loop that acts as a "sentinel."</p>
+    <ul>
+        <li>Ask the user what they want to do (e.g., "attack", "look", "run").</li>
+        <li>Use a <code>Scanner</code> to read their command.</li>
+        <li>Print a different response for at least 3 different commands using <code>if/else if</code> inside the loop.</li>
+        <li><strong>The Sentinel:</strong> The loop must ONLY end when the user types exactly <code>"quit"</code>.</li>
+    </ul>
+    <p><em>Testing:</em> What happens if they type "Quit" with a capital Q? How could you use String methods to fix that?</p>
+</div>
+
+</body>
+</html>

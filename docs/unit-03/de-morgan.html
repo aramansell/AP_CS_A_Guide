@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De Morgan's Laws — Unit 3</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 3</a>
+    <span class="sep">/</span>
+    <span class="here">De Morgan's Laws</span>
+</nav>
+
+<h1>De Morgan's Laws — Flipping Conditions</h1>
+
+<h2>The Problem</h2>
+
+<pre><code>// You want to say "neither A nor B":
+// "I don't have a sword AND I don't have a bow" — wordy
+// "I don't have a sword OR a bow" — natural language is ambiguous
+
+// Enter De Morgan:
+!(A || B)  ==  !A && !B
+!(A && B)  ==  !A || !B</code></pre>
+
+<h2>The Two Laws</h2>
+
+<p><strong>Law 1:</strong> NOT (A OR B) = NOT A AND NOT B</p>
+
+<pre><code>// "You can't enter if you're a goblin OR a troll."
+// Flip it with De Morgan:
+if (!(isGoblin || isTroll))
+
+// Is the same as:
+if (!isGoblin && !isTroll)</code></pre>
+
+<p><strong>Law 2:</strong> NOT (A AND B) = NOT A OR NOT B</p>
+
+<pre><code>// "You can't open the chest without BOTH the key AND the password."
+if (!(hasKey && knowsPassword))
+
+// Is the same as:
+if (!hasKey || !knowsPassword)
+// Missing EITHER one = failure.</code></pre>
+
+<h2>Why This Matters</h2>
+
+<p>
+    Both versions compile to the same thing. Pick the one that's easier to <em>read</em>.
+    Sometimes the flipped version is much clearer.
+</p>
+
+<pre><code>// AWKWARD:
+if (!(score < 0 || score > 100))
+
+// CLEARER (flip with De Morgan):
+if (score >= 0 && score <= 100)
+
+// EVEN CLEARER FOR SOME (valid range):
+if (0 <= score && score <= 100)  // math notation style</code></pre>
+
+<div class="lab tinker-challenge">
+    <h3>Tinker Challenge: Flipping the Script</h3>
+    <p>Rewrite the following conditions using De Morgan's Laws to remove the outer <code>!</code>. <strong>Write them down on paper first.</strong></p>
+<pre><code>// 1. Rewrite this:
+if (!(hp <= 0 || armorBroken))
+
+// 2. Rewrite this:
+if (!(enemyAlive && hasAmmo))</code></pre>
+</div>
+
+<div class="lab bug-hunt">
+    <h3>Bug Hunt: The Range Trap</h3>
+    <p>A student wants to check if a d20 roll is an extreme value (a 1 or a 20). They wrote this condition:</p>
+<pre><code>if (!(roll > 1 && roll < 20)) {
+    System.out.println("Critical extreme!"); 
+}</code></pre>
+    <p>Later, they decide they hate using the <code>!</code> operator and rewrite it like this:</p>
+<pre><code>if (roll < 1 && roll > 20) {
+    System.out.println("Critical extreme!"); 
+}</code></pre>
+    <ol>
+        <li>Why will the rewritten code <strong>never</strong> print "Critical extreme!"?</li>
+        <li>How should they have applied De Morgan's Law to correctly flip the <code>&&</code> and the relational operators?</li>
+    </ol>
+</div>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: Double Negatives</h3>
+    <p>What happens if you write <code>!!isPoisoned</code>? Why is this considered bad practice in programming?</p>
+</div>
+
+<h2>Want More?</h2>
+<ul>
+    <li><a href="boolean-logic.html">Boolean Logic</a> — the operators being flipped</li>
+    <li><a href="combat-system.html">Combat System Walkthrough</a> — see De Morgan used in combat validation</li>
+</ul>
+
+</body>
+</html>

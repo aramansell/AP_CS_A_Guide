@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recursive Search — Unit 10</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 10</a>
+    <span class="sep">/</span>
+    <span class="here">Recursive Search</span>
+</nav>
+
+<h1>Recursive Search</h1>
+
+<p>
+    You've searched arrays with <strong>for loops</strong> since Unit 6. Now: the same
+    problem, solved with recursion. Each call checks one element; if it's not the target,
+    the call passes the rest of the array to itself.
+</p>
+
+<h2>Recursive Linear Search</h2>
+
+<pre><code>// Public API — clean, no index parameter exposed
+public static int search(int[] arr, int target) {
+    return searchHelper(arr, target, 0);
+}
+
+// Private helper does the real work
+private static int searchHelper(int[] arr, int target, int index) {
+    if (index >= arr.length) return -1;     // BASE: fell off the end
+    if (arr[index] == target) return index; // BASE: found it!
+    return searchHelper(arr, target, index + 1); // RECURSIVE: check next
+}</code></pre>
+
+<p>
+    <code>search([10, 20, 30, 40], target=30)</code> → <code>2</code><br>
+    <code>search([10, 20, 30, 40], target=99)</code> → <code>-1</code>
+</p>
+
+<div class="callout">
+    <strong>The Helper Pattern:</strong> The public method has a clean signature
+    — just the array and target. The private helper adds an <code>index</code>
+    parameter that tracks progress. This pattern is <em>everywhere</em> in recursive code.
+</div>
+
+<h2>Tracing a Search</h2>
+
+<p>Searching for 30 in [10, 20, 30, 40]:</p>
+
+<pre><code>searchHelper(arr, target=30, index=0)
+  arr[0]=10 → not 30, call index=1
+    searchHelper(arr, target=30, index=1)
+      arr[1]=20 → not 30, call index=2
+        searchHelper(arr, target=30, index=2)
+          arr[2]=30 → FOUND! return 2
+        → return 2
+      → return 2
+    → return 2</code></pre>
+
+<p>
+    Once the answer is found deep in the recursion, it bubbles all the way back up
+    unchanged. Each level just passes the return value along.
+</p>
+
+<h2>Searching ArrayList</h2>
+
+<p>Same pattern, different data structure:</p>
+
+<pre><code>public static int searchList(ArrayList&lt;String&gt; list, String target) {
+    return searchListHelper(list, target, 0);
+}
+
+private static int searchListHelper(ArrayList&lt;String&gt; list,
+                                     String target, int index) {
+    if (index >= list.size()) return -1;
+    if (list.get(index).equals(target)) return index;
+    return searchListHelper(list, target, index + 1);
+}</code></pre>
+
+<p>
+    <strong>Key difference:</strong> <code>.equals()</code> instead of <code>==</code>
+    for String comparison. Same logic otherwise.
+</p>
+
+<h2>Recursive vs Iterative Search</h2>
+
+<table>
+    <tr><th></th><th>Iterative (loop)</th><th>Recursive</th></tr>
+    <tr>
+        <td>Progress</td>
+        <td><code>i++</code> each iteration</td>
+        <td><code>index + 1</code> each call</td>
+    </tr>
+    <tr>
+        <td>Stop condition</td>
+        <td>Loop condition: <code>i &lt; arr.length</code></td>
+        <td>Base case: <code>index &gt;= arr.length</code></td>
+    </tr>
+    <tr>
+        <td>Found target</td>
+        <td><code>return i;</code></td>
+        <td><code>return index;</code></td>
+    </tr>
+    <tr>
+        <td>Memory</td>
+        <td>Constant — no stack growth</td>
+        <td>One stack frame per element (O(n))</td>
+    </tr>
+</table>
+
+<p>
+    For linear search, iteration is <strong>better</strong> — same logic, less memory.
+    Recursion wins with problems that have natural tree structure, like binary search
+    on a sorted array, or flood fill on a grid.
+</p>
+
+<h2>Recursive Binary Search (Challenge)</h2>
+
+<p>
+    Binary search cuts the search space in half each step. This IS naturally recursive —
+    each call searches a smaller subarray.
+</p>
+
+<pre><code>public static int binarySearch(int[] arr, int target) {
+    return binarySearchHelper(arr, target, 0, arr.length - 1);
+}
+
+private static int binarySearchHelper(int[] arr, int target,
+                                       int left, int right) {
+    if (left > right) return -1;           // BASE: empty range
+    int mid = left + (right - left) / 2;
+    if (arr[mid] == target) return mid;    // BASE: found it
+    if (arr[mid] > target)
+        return binarySearchHelper(arr, target, left, mid - 1); // go left
+    else
+        return binarySearchHelper(arr, target, mid + 1, right); // go right
+}</code></pre>
+
+<p>
+    Binary search is O(log n) — cuts the search space in half each call. Even on a
+    million-element array, it takes about 20 recursive calls. Compare to linear search's
+    million iterations.
+</p>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Wrapper Pattern API</h3>
+    <p>We notice that both recursive linear search and recursive binary search use a public method (e.g., <code>binarySearch(int[] arr, int target)</code>) that delegates to a private helper method (e.g., <code>binarySearchHelper(...)</code>). Why do we hide the index parameters from the outside world? Why is forcing a caller to type <code>search(myArray, target, 0)</code> instead of just <code>search(myArray, target)</code> considered a poor API design practice?</p>
+
+    <h3>2. Binary Search Stack Execution</h3>
+    <p>Suppose you call <code>binarySearch</code> for the target value <code>7</code> on the sorted array <code>arr = {1, 3, 5, 7, 9, 11}</code>. Trace the values of <code>left</code>, <code>right</code>, and <code>mid</code> for each step of the recursive helper. How many total recursive stack frames are pushed onto the call stack before returning the index?</p>
+</div>
+
+<h2>Bug Hunt: The Infinite Subarray Trap</h2>
+
+<div class="bug-hunt">
+    <p>A developer writes a custom recursive binary search helper. However, when they test it with a target that doesn't exist in the array (e.g., searching for <code>2</code> in <code>{1, 3, 5}</code>), the program hangs and crashes with a <code>StackOverflowError</code>.</p>
+    <pre><code>private static int badBinarySearchHelper(int[] arr, int target, int left, int right) {
+    if (left &gt; right) return -1;
+    
+    int mid = left + (right - left) / 2;
+    if (arr[mid] == target) return mid;
+    
+    if (arr[mid] &gt; target) {
+        return badBinarySearchHelper(arr, target, left, mid); // Potential issue
+    } else {
+        return badBinarySearchHelper(arr, target, mid, right); // Potential issue
+    }
+}</code></pre>
+    <p><strong>Question:</strong> Spot the error! Why does passing <code>mid</code> instead of <code>mid - 1</code> or <code>mid + 1</code> lead to an infinite recursive loop? Show the exact boundary conditions under which <code>left</code> and <code>right</code> will freeze and refuse to move toward the base case.</p>
+</div>
+
+<h2>Tinker Challenge: Recursive Occurrence Counter & Null Safety</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Design count accumulators on lists of objects using clean helper wrappers.</p>
+    <ol>
+        <li><strong>Recursive Occurrence Counter:</strong> Create a class <code>SpellScanner</code> with a public method <code>public static int countSpells(String[] grimoire, String targetSpell)</code>. This method must call a private recursive helper that scans the array starting at index <code>0</code> and returns the total number of times the target spell is found.
+            <div class="callout warn">
+                <strong>Safety First:</strong> In real applications, object arrays can have empty spaces. Make your comparison robust against <code>null</code> elements in the array to prevent the program from crashing with a <code>NullPointerException</code>!
+            </div>
+        </li>
+        <li><strong>Test Driver:</strong> Build a test harness that declares an array of spell names containing some duplicates and null references (e.g., <code>{"Fireball", null, "Heal", "Fireball", "Shield"}</code>), searches for <code>"Fireball"</code>, and prints the result to verify correct counting!</li>
+    </ol>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Array Basics — Unit 6</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 6</a>
+    <span class="sep">/</span>
+    <span class="here">Array Basics</span>
+</nav>
+
+<h1>Array Basics</h1>
+
+<p>
+    An array is a <strong>single variable</strong> that holds <strong>multiple values</strong>
+    of the same type. Think of it as a row of numbered mailboxes. Each mailbox has a number
+    (the index) and can hold one value.
+</p>
+
+<h2>Why Arrays Exist</h2>
+
+<p>Without arrays, tracking 20 inventory items looks like this:</p>
+
+<pre><code>String item1 = "Sword";
+String item2 = "Potion";
+String item3 = "Shield";
+// ... 17 more variables ...
+System.out.println(item1);
+System.out.println(item2);
+// ... 18 more printlns ...</code></pre>
+
+<p>With arrays:</p>
+
+<pre><code>String[] items = new String[20];
+items[0] = "Sword";
+items[1] = "Potion";
+// ...
+for (int i = 0; i < 20; i++) {
+    System.out.println(items[i]);
+}</code></pre>
+
+<p>One variable. One loop. Done.</p>
+
+<h2>Declaring and Creating</h2>
+
+<h3>Method 1: Declare + Allocate (empty)</h3>
+
+<pre><code>type[] name = new type[size];
+
+int[] scores = new int[5];       // 5 zeros: {0, 0, 0, 0, 0}
+String[] names = new String[3];  // 3 nulls: {null, null, null}
+double[] temps = new double[10]; // 10 zeros: {0.0, 0.0, ...}</code></pre>
+
+<h3>Method 2: Declare + Initialize (with values)</h3>
+
+<pre><code>int[] stats = {14, 8, 16, 12, 10};
+String[] party = {"Hero", "Mage", "Rogue", "Cleric"};</code></pre>
+
+<p>
+    Java counts the values and sets <code>length</code> for you. No <code>new</code> needed.
+</p>
+
+<h2>Accessing Elements (Indexing)</h2>
+
+<pre><code>int[] arr = {10, 20, 30, 40, 50};
+
+arr[0]  // → 10    (THE FIRST ELEMENT IS INDEX 0)
+arr[1]  // → 20
+arr[2]  // → 30
+arr[3]  // → 40
+arr[4]  // → 50    (THE LAST ELEMENT IS INDEX length-1)
+
+arr[2] = 99;       // arr is now {10, 20, 99, 40, 50}</code></pre>
+
+<div class="callout trap">
+    <strong>FIRST INDEX IS 0.</strong> Not 1. A 5-element array has indices 0, 1, 2, 3, 4.
+    Accessing <code>arr[5]</code> crashes your program.
+</div>
+
+<h2>The <code>length</code> Property</h2>
+
+<p>Every array has a <code>length</code> field. No parentheses!</p>
+
+<pre><code>int[] arr = new int[5];
+System.out.println(arr.length);  // 5
+
+// NOT arr.length() — that's String!
+// NOT arr.size()  — that's ArrayList!</code></pre>
+
+<table>
+    <tr><th>Type</th><th>How to get size</th></tr>
+    <tr><td>Array</td><td><code>arr.length</code> (no parens)</td></tr>
+    <tr><td>String</td><td><code>str.length()</code> (with parens)</td></tr>
+    <tr><td>ArrayList</td><td><code>list.size()</code> (with parens)</td></tr>
+</table>
+
+<h2>ArrayIndexOutOfBoundsException</h2>
+
+<p>
+    This is the error you'll see most often. It means you tried to access an
+    index that doesn't exist.
+</p>
+
+<pre><code>int[] arr = new int[5];
+
+arr[-1] = 10;   // CRASH! Negative index.
+arr[5] = 10;    // CRASH! Index 5 doesn't exist (valid: 0-4).
+arr[100] = 10;  // CRASH! Way past the end.</code></pre>
+
+<p>Valid indices always: <code>0</code> through <code>arr.length - 1</code>.</p>
+
+<h2>Default Values</h2>
+
+<p>When you use <code>new type[size]</code>, Java fills every slot with a default:</p>
+
+<table>
+    <tr><th>Type</th><th>Default</th></tr>
+    <tr><td><code>int[]</code></td><td>0</td></tr>
+    <tr><td><code>double[]</code></td><td>0.0</td></tr>
+    <tr><td><code>boolean[]</code></td><td>false</td></tr>
+    <tr><td>Object arrays (<code>String[]</code>, <code>Player[]</code>)</td><td>null</td></tr>
+</table>
+
+<div class="callout warn">
+    <strong>Null trap:</strong> <code>String[] names = new String[3];</code> creates
+    three slots, all <code>null</code>. Calling <code>names[0].length()</code> crashes
+    with <code>NullPointerException</code>. Fill the array before using it.
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Uninitialized Trap</h3>
+    <pre><code>int[] playerLevels = new int[5];
+System.out.println(playerLevels[0]);</code></pre>
+    <p>What prints to the console when this runs? Why doesn't it crash?</p>
+
+    <h3>2. The String Length Confusion</h3>
+    <p>If <code>name.length()</code> gets the length of a String, why does <code>arr.length()</code> cause a syntax error for arrays?</p>
+</div>
+
+<h2>Bug Hunt: The Greedy Looter</h2>
+
+<div class="bug-hunt">
+    <p>A player just opened a chest, but the game crashes when adding the final item. Find the bug.</p>
+    <pre><code>String[] inventory = new String[3];
+inventory[0] = "Health Potion";
+inventory[1] = "Iron Sword";
+inventory[2] = "Gold Coin";
+inventory[3] = "Magic Scroll"; // Game crashes here!</code></pre>
+    <p><strong>Question:</strong> How many items can <code>inventory</code> hold? What are its valid index numbers?</p>
+</div>
+
+<h2>Tinker Challenge: Starter Loadout</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Manage a player's starting equipment.</p>
+    <ol>
+        <li>Create a <code>String[]</code> called <code>loadout</code> with exactly 4 slots using the <code>new</code> keyword.</li>
+        <li>Assign items to the slots: "Dagger", "Tunic", "Empty", "Empty".</li>
+        <li>Print the total number of slots using the <code>length</code> property.</li>
+        <li><strong>Boss Move:</strong> Write code to swap the item in index 0 with the item in index 1. Print both to prove they swapped. <em>(Hint: You'll need a temporary variable!)</em></li>
+    </ol>
+</div>
+</body>
+</html>

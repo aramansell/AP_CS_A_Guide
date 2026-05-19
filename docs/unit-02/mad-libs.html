@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mad Libs Walkthrough — Unit 2</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 2</a>
+    <span class="sep">/</span>
+    <span class="here">Mad Libs</span>
+</nav>
+
+<h1>Mad Libs — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    It uses Scanner to read user input and concatenation to build a story.
+    Use this page as a reference when building your own projects.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Prompt the user for words (noun, verb, adjective, etc.), then plug them into a story template and display the result.</p>
+
+<pre><code><span class="output">=== MAD LIBS ===</span>
+<span class="output">Enter a noun: dragon</span>
+<span class="output">Enter a verb ending in -ing: flying</span>
+<span class="output">Enter an adjective: enormous</span>
+<span class="output">Enter a place: castle</span>
+<span class="output">Enter a name: Bob</span>
+<span class="output">--- YOUR STORY ---</span>
+<span class="output">Bob saw an enormous dragon flying over the castle.</span></code></pre>
+
+<h2>Step 1: Declare and Import</h2>
+
+<p>Scanner is in java.util — you must import it. Then declare your word variables.</p>
+
+<pre><code>import java.util.Scanner;
+
+public class MadLibs {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        String noun;
+        String verb;
+        String adjective;
+        String place;
+        String name;</code></pre>
+
+<p><strong>Why all Strings?</strong> Words are text. Scanner.nextLine() returns a String every time.</p>
+
+<h2>Step 2: Prompt and Read</h2>
+
+<p>For each word: print a prompt, read the answer. The pattern repeats.</p>
+
+<pre><code>System.out.print("Enter a noun: ");
+noun = input.nextLine();
+
+System.out.print("Enter a verb ending in -ing: ");
+verb = input.nextLine();
+
+System.out.print("Enter an adjective: ");
+adjective = input.nextLine();
+
+System.out.print("Enter a place: ");
+place = input.nextLine();
+
+System.out.print("Enter a name: ");
+name = input.nextLine();</code></pre>
+
+<p>
+    <strong>Why nextLine() and not next()?</strong> nextLine() reads the entire line including spaces.
+    If the user types "fire-breathing dragon" for the noun, next() would only grab "fire-breathing".
+    nextLine() gets the whole thing.
+</p>
+
+<div class="callout">
+    <strong>Test it.</strong> After each nextLine(), add a temporary print to confirm you got the word right.
+    Then remove the test prints.
+</div>
+
+<h2>Bug Hunt: The Spacing Trap</h2>
+
+<div class="callout lab">
+    <strong>Run the following code:</strong>
+    <pre><code>System.out.println(name + "saw" + adjective + noun);</code></pre>
+    <p>What does the output look like? Why did it run all the words together? How do you fix it using String concatenation?</p>
+</div>
+
+<h2>The Full Program (For Reference)</h2>
+
+<pre><code>import java.util.Scanner;
+
+public class MadLibs {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        // ===== STEP 1: DECLARE =====
+        String noun;
+        String verb;
+        String adjective;
+        String place;
+        String name;
+
+        // ===== STEP 2: INPUT =====
+        System.out.println("=== MAD LIBS ===");
+        System.out.print("Enter a noun: ");
+        noun = input.nextLine();
+
+        System.out.print("Enter a verb ending in -ing: ");
+        verb = input.nextLine();
+
+        System.out.print("Enter an adjective: ");
+        adjective = input.nextLine();
+
+        System.out.print("Enter a place: ");
+        place = input.nextLine();
+
+        System.out.print("Enter a name: ");
+        name = input.nextLine();
+
+        // ===== STEP 3: DISPLAY =====
+        System.out.println("--- YOUR STORY ---");
+        System.out.println(name + " saw " + adjective + " " + noun
+                           + " " + verb + " over the " + place + ".");
+    }
+}</code></pre>
+
+<h2>Tinker Challenge: Extending the Story</h2>
+<div class="callout">
+<ul>
+    <li>Add an adverb ("clumsily"), a number ("three"), and a second adjective. Update the story to include them!</li>
+    <li>Write two or three story templates and let the user pick one (you might need to learn about `if` statements first, or just ask them for a number and use a math trick).</li>
+    <li>Use String methods like `toUpperCase()` to capitalize the first letter of the name or make the whole name shout.</li>
+</ul>
+</div>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    Your Character Creator reads a name from the user — same Scanner pattern.
+    Mad Libs reads five inputs instead of one. More variables, same tool.
+    The RPG also uses random stats; that's the Math.random() bridge from Unit 1.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="scanner.html">Scanner (User Input)</a> — nextLine() vs next(), pitfalls</li>
+    <li><a href="string.html">String Concatenation</a> — building text from pieces</li>
+    <li><a href="objects-and-classes.html">Objects &amp; Classes</a> — why Scanner is an object</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 3: Boolean Expressions & if — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <span class="here">Unit 3: Boolean Expressions &amp; if</span>
+</nav>
+
+<h1>Unit 3: Boolean Expressions &amp; if Statements</h1>
+
+<p>
+    Everything you've written so far runs the same way every time: declare, calculate,
+    display. But games don't work that way. Sometimes you hit. Sometimes you miss.
+    Sometimes the enemy is a goblin (easy). Sometimes it's a dragon (run).
+</p>
+
+<p>
+    This unit gives your programs the power to <strong>make decisions</strong>.
+    By the end, you'll build a <strong>Combat System</strong>: attack rolls, hit/miss
+    checks, critical hits, damage calculation, and enemy AI — all driven by conditions.
+</p>
+
+<h2>Concepts</h2>
+
+<table>
+    <tr><th>Topic</th><th>What you'll learn</th></tr>
+    <tr>
+        <td><a href="relational-operators.html">Relational Operators &amp; if</a></td>
+        <td>&lt;, &gt;, &lt;=, &gt;=, ==, != — asking questions about your data.</td>
+    </tr>
+    <tr>
+        <td><a href="boolean-logic.html">Boolean Logic</a></td>
+        <td>&amp;&amp;, ||, ! — combining conditions. Short-circuit evaluation.</td>
+    </tr>
+    <tr>
+        <td><a href="else-if-chains.html">else-if Chains</a></td>
+        <td>Multi-way decisions. The order matters trap.</td>
+    </tr>
+    <tr>
+        <td><a href="comparing-objects.html">Comparing Objects</a></td>
+        <td>equals() and compareTo() in conditions. String comparisons in combat.</td>
+    </tr>
+    <tr>
+        <td><a href="de-morgan.html">De Morgan's Laws</a></td>
+        <td>Flipping conditions. "Not (A or B)" = "Not A and Not B."</td>
+    </tr>
+</table>
+
+<h2>Teacher Projects (Standalone Demos)</h2>
+
+<table>
+    <tr><th>Project</th><th>What it demonstrates</th></tr>
+    <tr>
+        <td><a href="number-guessing.html">Number Guessing Game</a></td>
+        <td>Math.random(), if/else chains, Scanner input. High/low hints.</td>
+    </tr>
+    <tr>
+        <td><a href="hangman.html">Hangman</a></td>
+        <td>String methods, boolean flags, loops with conditionals. Word-guessing game.</td>
+    </tr>
+    <tr>
+        <td><a href="choose-your-adventure.html">Choose Your Adventure</a></td>
+        <td>Nested if/else chains, Scanner input, branching narratives.</td>
+    </tr>
+</table>
+
+<h2>Your RPG Project</h2>
+
+<p>
+    <strong><a href="combat-system.html">Combat System (Student RPG Guide)</a></strong> —
+    Your Player (from Unit 2) now fights. Roll d20 to attack. Compare against AC to hit.
+    Roll damage on hit. Check for critical (natural 20). Enemy fights back. Your Dice.java
+    from Unit 1 is the engine. Your Character Creator stats determine outcomes.
+</p>
+
+<h2>RPG Thread</h2>
+
+<p>
+    Combat.java is the first RPG class that makes decisions. It checks: did I hit?
+    Was it a critical? Is the monster still alive? In Unit 4, you wrap this combat
+    logic in a while loop — the same hit/miss checks run every round until someone
+    falls. In Unit 5, these methods move inside the Player and Monster classes. In
+    Unit 9, polymorphic combat lets different enemy types use different tactics.
+</p>
+
+<h2>Prerequisites</h2>
+
+<p>Before starting this unit, you should be comfortable with:</p>
+<ul>
+    <li>Primitive types, variables, and arithmetic: <a href="../unit-01/index.html">Unit 1</a></li>
+    <li>Objects, Scanner, and String methods: <a href="../unit-02/index.html">Unit 2</a></li>
+    <li>Writing and running a simple Java program</li>
+</ul>
+
+<h2>Reference Materials</h2>
+
+<ul>
+    <li><strong>Quick Reference:</strong> <code>reference/BooleanIfQuickRef.md</code> — relational operators, boolean logic tables, if/else-if syntax, De Morgan's laws</li>
+</ul>
+
+<h2>Assessment</h2>
+
+<ul>
+    <li><strong>Part A:</strong> Knowledge — relational operators, boolean logic (&&, ||, !), De Morgan's</li>
+    <li><strong>Part B:</strong> Code trace — predict output of if/else-if chains and boolean expressions</li>
+    <li><strong>Part C:</strong> Write code — implement a decision tree with multiple conditions</li>
+</ul>
+
+</body>
+</html>

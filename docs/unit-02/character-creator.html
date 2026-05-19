@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student RPG Guide: Character Creator — Unit 2</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 2</a>
+    <span class="sep">/</span>
+    <span class="here">Student Guide: Character Creator</span>
+</nav>
+
+<h1>Student RPG Guide: Character Creator</h1>
+
+<div class="callout">
+    <strong>This is YOUR guide.</strong> The teacher built Mad Libs and Rock-Paper-Scissors
+    with you. Now you use those same skills — Scanner, String concatenation, Dice.roll() —
+    to build a character generator on your own. Instead of code blanks, you are provided
+    with <strong>Acceptance Criteria</strong>: if your code passes every test, it works.
+</div>
+
+<h2>The Setup</h2>
+
+<p>
+    Create a new file called <code>CharacterCreator.java</code>. You will write four
+    methods and a main driver. Your program reads the player's name with Scanner, rolls
+    four RPG stats (Strength, Dexterity, Intelligence, Constitution) using your
+    <code>Dice.java</code> engine from Unit 1, and prints a formatted character sheet.
+</p>
+
+<hr>
+
+<h2>Part 1: readName() — Get the Player's Name</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static String readName(Scanner input)</code></li>
+    <li>Prints a prompt (use <code>System.out.print</code> — no newline — so the user types on the same line)</li>
+    <li>Calls <code>input.nextLine()</code> to read whatever the user types</li>
+    <li>Returns the name as a String</li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>Why use <code>System.out.print</code> instead of <code>System.out.println</code> for the prompt? What would happen visually if you used println?</p>
+
+<h3>Acceptance Test:</h3>
+<p>Add this to a tester:</p>
+<pre><code>Scanner sc = new Scanner(System.in);
+String name = CharacterCreator.readName(sc);
+System.out.println("Got: " + name);</code></pre>
+<p>Run it. Verify the prompt appears correctly and whatever you type is returned.</p>
+
+<hr>
+
+<h2>Part 2: rollStats() — Roll Four Ability Scores</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static int[] rollStats()</code></li>
+    <li>Rolls four stats using your Dice.java engine from Unit 1</li>
+    <li>Each stat uses 3d6: <code>Dice.rollDice(3, 6)</code></li>
+    <li>Returns an int array in this order: <code>{strength, dexterity, intelligence, constitution}</code></li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>Why is <code>Dice.rollDice(3, 6)</code> used instead of <code>Dice.roll(18)</code> for a stat? What does 3d6 mean, and why does the sum distribution matter in a game?</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>int[] stats = CharacterCreator.rollStats();
+System.out.println("STR: " + stats[0]);
+System.out.println("DEX: " + stats[1]);
+System.out.println("INT: " + stats[2]);
+System.out.println("CON: " + stats[3]);
+// Each stat should be between 3 and 18 (3d6 range)
+// Run multiple times to verify the range</code></pre>
+
+<hr>
+
+<h2>Part 3: printSheet() — Display the Character Sheet</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static void printSheet(String name, int[] stats)</code></li>
+    <li>Prints a formatted character sheet matching this template:</li>
+</ul>
+<pre><code>--- CHARACTER SHEET ---
+Name: [name]
+STR: [stats[0]]
+DEX: [stats[1]]
+INT: [stats[2]]
+CON: [stats[3]]
+-----------------------</code></pre>
+
+<h3>Socratic Checkpoint:</h3>
+<p>The <code>stats</code> parameter is an array. What do <code>stats[0]</code>, <code>stats[1]</code>, etc. represent? What happens if you pass an array that only has 2 elements?</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>int[] testStats = {14, 12, 16, 10};
+CharacterCreator.printSheet("Thorn Ironvein", testStats);
+// Verify the output matches the template exactly</code></pre>
+
+<hr>
+
+<h2>Part 4: main() — Tie It All Together</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Creates a <code>Scanner</code> connected to <code>System.in</code></li>
+    <li>Calls <code>readName(input)</code> to get the player's name</li>
+    <li>Calls <code>rollStats()</code> to get the stat array</li>
+    <li>Calls <code>printSheet(name, stats)</code> to display the character sheet</li>
+    <li>Closes the Scanner with <code>input.close()</code></li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>Why is the Scanner closed at the end? What would happen if you tried to call <code>input.nextLine()</code> after closing it?</p>
+
+<h3>Acceptance Test:</h3>
+<p>Run <code>CharacterCreator.main()</code>. Type a name when prompted. Verify the full character sheet prints with all four stats between 3 and 18.</p>
+
+<hr>
+
+<h2>Full Method Summary</h2>
+
+<p>When complete, your class should have this shape:</p>
+
+<pre><code>import java.util.Scanner;
+
+public class CharacterCreator {
+
+    public static String readName(Scanner input) { ... }
+
+    public static int[] rollStats() { ... }
+
+    public static void printSheet(String name, int[] stats) { ... }
+
+    public static void main(String[] args) { ... }
+}</code></pre>
+
+</body>
+</html>

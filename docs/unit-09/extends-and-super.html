@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>extends and super — Unit 9</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 9</a>
+    <span class="sep">/</span>
+    <span class="here">extends and super</span>
+</nav>
+
+<h1>extends and super</h1>
+
+<p>
+    Inheritance lets one class <strong>gain everything</strong> another class has — fields,
+    methods, everything. The parent gives. The child receives, then adds its own stuff.
+</p>
+
+<h2>The IS-A Rule</h2>
+
+<p>
+    Only use <code>extends</code> when the child truly IS-A parent:
+</p>
+
+<ul>
+    <li>A <strong>Warrior</strong> IS-A <strong>Player</strong> — yes, extend Player</li>
+    <li>A <strong>Goblin</strong> IS-A <strong>Monster</strong> — yes, extend Monster</li>
+    <li>A <strong>Player</strong> IS-A <strong>Monster</strong> — no! Don't do this</li>
+    <li>A <strong>Sword</strong> IS-A <strong>Player</strong> — no! Don't do this</li>
+</ul>
+
+<div class="callout">
+    <strong>Test:</strong> Say the sentence aloud: "A [Child] IS-A [Parent]." If
+    it sounds true, inheritance works. If it sounds wrong, find a different relationship.
+</div>
+
+<h2>Basic Syntax</h2>
+
+<pre><code>// Parent class — the giver
+public class Character {
+    protected String name;
+    protected int hp;
+
+    public Character(String name, int hp) {
+        this.name = name;
+        this.hp = hp;
+    }
+
+    public String getName() { return name; }
+    public int getHp() { return hp; }
+
+    public void takeDamage(int damage) {
+        hp -= damage;
+        if (hp <= 0) {
+            System.out.println(name + " is defeated!");
+        }
+    }
+}
+
+// Child class — the receiver
+public class Player extends Character {
+    private int gold;
+
+    public Player(String name, int hp) {
+        super(name, hp);       // &lt;-- call parent constructor
+        this.gold = 0;
+    }
+
+    public int getGold() { return gold; }
+}</code></pre>
+
+<p>
+    After writing <code>Player extends Character</code>, a Player object has:
+</p>
+
+<ul>
+    <li><code>name</code> and <code>hp</code> — inherited from Character</li>
+    <li><code>getName()</code>, <code>getHp()</code>, <code>takeDamage()</code> — inherited from Character</li>
+    <li><code>gold</code> and <code>getGold()</code> — Player's own additions</li>
+</ul>
+
+<h2>super() — Constructor Chaining</h2>
+
+<p>
+    Every child constructor MUST call a parent constructor. <code>super(args)</code>
+    does this. And it <strong>must be the first line</strong> — no exceptions.
+</p>
+
+<pre><code>public class Monster extends Character {
+    private int armorClass;
+
+    public Monster(String name, int hp, int ac) {
+        super(name, hp);          // ALWAYS first — calls Character(String, int)
+        this.armorClass = ac;     // THEN do Monster-specific setup
+    }
+}</code></pre>
+
+<table>
+    <tr><th>super() form</th><th>Calls</th></tr>
+    <tr><td><code>super()</code></td><td>Parent's no-argument constructor</td></tr>
+    <tr><td><code>super(name, hp)</code></td><td>Parent's two-argument constructor</td></tr>
+    <tr><td><code>super(name, hp, 12)</code></td><td>Parent's three-argument constructor</td></tr>
+</table>
+
+<div class="callout">
+    <strong>If you don't write super():</strong> Java inserts <code>super()</code>
+    for you. But that only works if the parent HAS a no-argument constructor.
+    If the parent requires arguments (like our Character class), you'll get a
+    compile error until you write an explicit <code>super(name, hp)</code>.
+</div>
+
+<h2>The Constructor Chain</h2>
+
+<p>Every constructor call ripples up the tree:</p>
+
+<pre><code>new Warrior("Thorn")
+    → Warrior("Thorn") calls super("Thorn", 120, 16, 10, 8)
+        → Player(...) calls super("Thorn", 120)
+            → Character("Thorn", 120) calls super()
+                → Object() — the root of ALL Java classes</code></pre>
+
+<p>
+    <strong>Object</strong> is the ultimate parent. Every class in Java ultimately
+    extends Object. That's why even an empty class has <code>toString()</code>,
+    <code>equals()</code>, and <code>hashCode()</code> — they're inherited from Object.
+</p>
+
+<h2>Access Modifiers: private vs protected vs public</h2>
+
+<pre><code>public class Character {
+    private String secretName;     // ONLY Character can touch this
+    protected int hp;              // Character + children + same package
+    public int getLevel() { }      // EVERYONE can touch this
+}</code></pre>
+
+<table>
+    <tr><th>Modifier</th><th>Class itself</th><th>Subclasses</th><th>Same package</th><th>Everyone</th></tr>
+    <tr><td><code>private</code></td><td>yes</td><td>no</td><td>no</td><td>no</td></tr>
+    <tr><td>(none)</td><td>yes</td><td>same package only</td><td>yes</td><td>no</td></tr>
+    <tr><td><code>protected</code></td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr>
+    <tr><td><code>public</code></td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
+</table>
+
+<p>
+    <strong>When to use protected:</strong> Use it for fields that subclasses
+    genuinely need direct access to. For everything else, use <code>private</code>
+    with getters/setters. Protected is a deliberate choice — it says "this field
+    is part of the family's shared knowledge."
+</p>
+
+<h2>What Children CAN'T Inherit</h2>
+
+<ul>
+    <li><strong>Private fields and methods</strong> — they're invisible to children. Only accessible through public/protected getters.</li>
+    <li><strong>Constructors</strong> — constructors are NOT inherited. Each class writes its own. (But they must chain up with <code>super()</code>.)</li>
+</ul>
+
+<h2>Common Traps</h2>
+
+<table>
+    <tr><th>What you wrote</th><th>What happens</th><th>Fix</th></tr>
+    <tr>
+        <td>Forgot <code>super(args)</code></td>
+        <td>Compile error: "no suitable constructor found"</td>
+        <td>Add <code>super(name, hp)</code> as first line</td>
+    </tr>
+    <tr>
+        <td><code>super()</code> not first</td>
+        <td>Compile error: "call to super must be first"</td>
+        <td>Move it to line 1</td>
+    </tr>
+    <tr>
+        <td>Tried to extend two classes</td>
+        <td>Compile error — Java has single inheritance</td>
+        <td>A class can only extend ONE parent</td>
+    </tr>
+    <tr>
+        <td>Accessing <code>name</code> from child when it's private</td>
+        <td>Compile error: "name has private access"</td>
+        <td>Use <code>getName()</code> or change to <code>protected</code></td>
+    </tr>
+</table>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Invisible Compiler Hand</h3>
+    <p>Suppose you have a class <code>GameEntity</code> with only one constructor: <code>public GameEntity(String id)</code>. If you write a subclass <code>NPC extends GameEntity</code> and define an empty constructor <code>public NPC() {}</code>, it will refuse to compile. Why does this compile error happen even though the constructor is completely empty? What is Java implicitly injecting, and how do you resolve it?</p>
+
+    <h3>2. The Lifecycle of an Object</h3>
+    <p>Why does Java structurally mandate that <code>super()</code> must be the absolute first statement in a constructor? If Java allowed subclass initialization or method calls before the parent constructor executed, what would happen if the subclass constructor tried to read an inherited field that had not yet been set up by the parent constructor?</p>
+</div>
+
+<h2>Bug Hunt: The Premature Setup</h2>
+
+<div class="bug-hunt">
+    <p>A designer creates a custom <code>Rogue</code> class extending our <code>Player</code> class, intending to initialize a custom <code>stealthLevel</code>. However, the Java compiler raises a red flag: <code>call to super must be first statement in constructor</code>.</p>
+    <pre><code>public class Rogue extends Player {
+    private int stealthLevel;
+
+    public Rogue(String name, int hp, int stealthLevel) {
+        this.stealthLevel = stealthLevel;
+        super(name, hp); // Compilation fails here!
+    }
+}</code></pre>
+    <p><strong>Question:</strong> Identify why the compiler rejects this arrangement. How does initializing <code>this.stealthLevel</code> before <code>super()</code> violate Java's constructor rules? Correct the code so it compiles cleanly.</p>
+</div>
+
+<h2>Tinker Challenge: Paladin Class Hierarchy & Protected Fields</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Extend the inheritance tree and implement robust, protected boundaries.</p>
+    <ol>
+        <li><strong>Multi-Level Inheritance Chain:</strong> Create a new class <code>Paladin</code> that extends <code>Player</code>, which itself extends <code>Character</code>. Add a unique field <code>shieldStrength</code>. Write the constructor for <code>Paladin</code> so it correctly forwards the name and HP up to <code>Player</code> using <code>super(...)</code> and initializes the shield.</li>
+        <li><strong>Protected Health Cap:</strong>
+            <div class="callout warn">
+                <strong>Safety First:</strong> Direct field modification should always respect business rules!
+            </div>
+            Suppose <code>Character</code> has a <code>protected int hp</code>. Write a method in <code>Paladin</code> called <code>public void directHeal(int amount)</code> that directly increments <code>hp</code> but prevents it from exceeding a hard cap of <code>150</code>.
+        </li>
+        <li><strong>Chain Trace:</strong> Write a short main test class that creates a <code>Paladin</code> instance, prints out the constructor execution path using diagnostic <code>System.out.println()</code> statements inside each constructor in the hierarchy, and demonstrates the custom healing rule.</li>
+    </ol>
+</div>
+
+</body>
+</html>

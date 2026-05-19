@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Designing Classes — Unit 5</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 5</a>
+    <span class="sep">/</span>
+    <span class="here">Designing Classes</span>
+</nav>
+
+<h1>Designing a Class from a Spec</h1>
+
+<p>
+    So far, you've built classes following step-by-step instructions. But real software
+    starts with a <strong>specification</strong> — a description of what the class should do.
+    You decide: what variables? What methods? What's public? What's private?
+</p>
+
+<h2>The Design Process</h2>
+
+<ol>
+    <li><strong>Identify the data (instance variables).</strong> What does this object need to know?</li>
+    <li><strong>Decide: mutable or immutable?</strong> Does the data change after creation? If not → final.</li>
+    <li><strong>Write the constructors.</strong> How should other code create objects of this type?</li>
+    <li><strong>Write the getters.</strong> What data does other code need to read?</li>
+    <li><strong>Write the methods.</strong> What actions does this object perform?</li>
+    <li><strong>Write toString().</strong> How does this object describe itself?</li>
+</ol>
+
+<h2>Example: Item Class</h2>
+
+<p>The spec: <strong>Build an Item class for a fantasy RPG.</strong></p>
+<ul>
+    <li>An item has: name, weight (1-50 lbs), gold value, and rarity (Common, Uncommon, Rare, Epic, Legendary)</li>
+    <li>You need to: create items, check if they can be carried (total weight matters), compare rarity, print descriptions</li>
+    <li>Items are <strong>immutable</strong> — once created, they don't change</li>
+</ul>
+
+<h3>Step 1: Identify data</h3>
+<ul>
+    <li><code>name</code> — String</li>
+    <li><code>weight</code> — int (1-50)</li>
+    <li><code>goldValue</code> — int</li>
+    <li><code>rarity</code> — String ("Common", "Uncommon", "Rare", "Epic", "Legendary")</li>
+</ul>
+
+<h3>Step 2: Immutable → all final</h3>
+<pre><code>private final String name;
+private final int weight;
+private final int goldValue;
+private final String rarity;</code></pre>
+
+<h3>Step 3: Constructor(s)</h3>
+<pre><code>// Full constructor — weight clamped 1-50
+public Item(String name, int weight, int value, String rarity) {
+    this.name = name;
+    this.weight = Math.max(1, Math.min(50, weight));
+    this.goldValue = Math.max(0, value);
+    this.rarity = rarity;
+}
+
+// Name + value only — defaults: weight=1, rarity="Common"
+public Item(String name, int value) {
+    this(name, 1, value, "Common");
+}</code></pre>
+
+<h3>Step 4-5: Getters + Methods</h3>
+<pre><code>// Getters (no setters — immutable!)
+public String getName() { return name; }
+public int getWeight() { return weight; }
+public int getGoldValue() { return goldValue; }
+public String getRarity() { return rarity; }
+
+// Methods
+public boolean isHeavy() { return weight > 25; }
+
+public boolean isRarerThan(Item other) {
+    // Higher rarity index = rarer
+    return rarityIndex() > other.rarityIndex();
+}
+
+private int rarityIndex() {
+    if (rarity.equals("Legendary")) return 4;
+    if (rarity.equals("Epic"))      return 3;
+    if (rarity.equals("Rare"))      return 2;
+    if (rarity.equals("Uncommon"))  return 1;
+    return 0;  // Common
+}</code></pre>
+
+<h3>Step 6: toString()</h3>
+<pre><code>public String toString() {
+    return name + " [" + rarity + "] — " + goldValue + " gold, " + weight + " lbs";
+}</code></pre>
+
+<h2>public vs private: Design Heuristic</h2>
+
+<table>
+    <tr><th>public</th><th>private</th></tr>
+    <tr><td>Constructors</td><td>Instance variables</td></tr>
+    <tr><td>Getters (most)</td><td>Helper methods (internal only)</td></tr>
+    <tr><td>Setters (some)</td><td>Constants used internally</td></tr>
+    <tr><td>Main behavior methods</td><td>Anything that could be misused if public</td></tr>
+    <tr><td>toString()</td><td>—</td></tr>
+</table>
+
+<p>
+    <strong>Start private.</strong> Make something public only when another class
+    actually needs to call it. You can always open things up later. You can't take
+    public back once code depends on it.
+</p>
+
+<h2>UML Lite: Class Diagram</h2>
+
+<p>A box diagram helps you think before you code:</p>
+
+<pre><code>┌─────────────────────────┐
+│         Item            │  ← class name
+├─────────────────────────┤
+│ - name: String          │  ← instance vars (private = -)
+│ - weight: int           │
+│ - goldValue: int        │
+│ - rarity: String        │
+├─────────────────────────┤
+│ + Item(String, int, int, String) │ ← constructors & methods
+│ + Item(String, int)              │    (public = +)
+│ + getName(): String     │
+│ + getWeight(): int      │
+│ + isHeavy(): boolean    │
+│ + isRarerThan(Item): boolean │
+│ + toString(): String    │
+└─────────────────────────┘</code></pre>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: The Immutable Rule</h3>
+    <p>We declared the variables in the <code>Item</code> class as <code>final</code>, meaning they can never change once the constructor finishes. Why does this design make sense for an item like a "Health Potion" or "Bronze Sword"? When would you definitely NOT want to use <code>final</code> for your instance variables?</p>
+</div>
+
+<div class="bug-hunt">
+    <h3>Bug Hunt: The Leaky Shield</h3>
+    <p>A student tried to build an immutable <code>Shield</code> class, but their code failed the peer review. Find the two structural errors that ruin the immutability of this class:</p>
+    <pre><code>public class Shield {
+    private String name;
+    private int defense;
+
+    public Shield(String name, int defense) {
+        this.name = name;
+        this.defense = defense;
+    }
+
+    public void setDefense(int newDefense) {
+        this.defense = newDefense;
+    }
+}</code></pre>
+</div>
+
+<div class="tinker">
+    <h3>Tinker Challenge: The Spellbook</h3>
+    <p>Design and build a <code>Spell</code> class from scratch following this exact spec:</p>
+    <ol>
+        <li><strong>Variables:</strong> <code>name</code> (String), <code>damage</code> (int, 1-50), <code>manaCost</code> (int, 1-100). The spell's properties should be completely immutable!</li>
+        <li><strong>Constructors:</strong> Write a full constructor with validation (enforcing the damage and mana ranges above). Write a second constructor that takes only <code>name</code> and <code>damage</code>, defaulting <code>manaCost</code> to 10 (use constructor chaining).</li>
+        <li><strong>Getters:</strong> Write getters for all three variables. Do not write setters.</li>
+        <li><strong>Methods:</strong> Write a method <code>public boolean canCast(int currentMana)</code> that returns true if the player has enough mana to cast the spell, and false otherwise.</li>
+        <li><strong>toString:</strong> Make it describe the spell nicely, like this: <code>"Fireball [Cost: 10] - 25 dmg"</code></li>
+    </ol>
+</div>
+
+</body>
+</html>

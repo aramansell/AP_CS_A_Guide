@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Math Class — Unit 2</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 2</a>
+    <span class="sep">/</span>
+    <span class="here">The Math Class</span>
+</nav>
+
+<h1>The Math Class</h1>
+
+<p>
+    In Unit 1, you learned arithmetic: +, -, *, /, %. The Math class gives you
+    more powerful operations. All Math methods are <code>static</code> — you call
+    them on the class itself, not on an object.
+</p>
+
+<h2>How Static Methods Work</h2>
+
+<pre><code>// With a regular object:
+Scanner input = new Scanner(System.in);  // make an object
+String s = input.nextLine();             // call method on the object
+
+// With a static method:
+double result = Math.sqrt(25);           // call on the CLASS, no "new"</code></pre>
+
+<p>
+    You never write <code>new Math()</code>. Math methods are tools you use directly.
+    Think of Math as a toolbox — you don't build a new toolbox, you just reach in.
+</p>
+
+<h2>Essential Methods</h2>
+
+<h3>Math.random() — you already know this one</h3>
+<pre><code>double r = Math.random();  // 0.0 to 0.999...
+// Combine with multiply/add/cast for any range</code></pre>
+
+<h3>Math.abs(x) — absolute value</h3>
+<pre><code>Math.abs(-5);    // 5
+Math.abs(5);     // 5
+Math.abs(-3.7);  // 3.7
+
+// Useful for: "how far apart are two numbers?"
+int diff = Math.abs(playerX - enemyX);</code></pre>
+
+<h3>Math.pow(base, exponent) — raise to a power</h3>
+<pre><code>Math.pow(2, 3);   // 8.0  (2³)
+Math.pow(10, 2);  // 100.0
+// Returns double — cast to int if you need an integer</code></pre>
+
+<h3>Math.sqrt(x) — square root</h3>
+<pre><code>Math.sqrt(25);    // 5.0
+Math.sqrt(2);     // 1.414...
+// Distance formula: Math.sqrt(x*x + y*y)</code></pre>
+
+<h3>Math.min(a, b) and Math.max(a, b)</h3>
+<pre><code>Math.min(3, 7);   // 3
+Math.max(3, 7);   // 7
+
+// Clamp a value between min and max:
+int clamped = Math.max(0, Math.min(value, 100));</code></pre>
+
+<h2>Tinker Challenge: Math Predictions</h2>
+
+<div class="callout lab">
+<pre><code>// What prints?
+System.out.println(Math.abs(-12));
+System.out.println(Math.pow(3, 2));
+System.out.println(Math.max(Math.min(7, 3), 5));
+System.out.println((int) Math.sqrt(10));</code></pre>
+<p>Write down your prediction for each line before running it. Did any of them surprise you? Why does the square root of 10 print as 3?</p>
+</div>
+
+<h2>RPG Connection</h2>
+
+<p>
+    Where does this show up in your game?
+</p>
+<ul>
+    <li><strong>Damage calculation:</strong> <code>Math.max(1, baseDamage + modifier)</code> — minimum 1 damage</li>
+    <li><strong>Distance:</strong> <code>Math.abs(playerX - treasureX)</code> — how close are you?</li>
+    <li><strong>Stat caps:</strong> <code>Math.min(20, strength + bonus)</code> — max 20 strength</li>
+</ul>
+
+<h2>Want More?</h2>
+<ul>
+    <li><a href="wrapper-classes.html">Wrapper Classes</a> — Integer.MAX_VALUE, Double.parseDouble()</li>
+    <li><a href="character-creator.html">Character Creator Walkthrough</a> — see Math in action</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student RPG Guide: Dungeon Map — Unit 8</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 8</a>
+    <span class="sep">/</span>
+    <span class="here">Student Guide: Dungeon Map</span>
+</nav>
+
+<h1>Student RPG Guide: Grid-Based Dungeon Map</h1>
+
+<div class="callout">
+    <strong>Your dungeon becomes a real 2D grid.</strong> No more linear room sequences. The player moves with WASD across a char[][] grid of walls, floors, treasure, and monsters. Two files: <code>DungeonMap.java</code> and a runner. You design the map layout. You handle collisions. You wire it to Player and Monster from past units.
+</div>
+
+<h2>References</h2>
+
+<ul>
+    <li><a href="tic-tac-toe.html">Tic-Tac-Toe</a> — 2D array board, display with nested loops, row/col validation, win-check patterns</li>
+    <li><a href="connect-four.html">Connect Four</a> — 2D array traversal, boundary checks before accessing cells, gravity logic (bottom-up search)</li>
+    <li><a href="2d-array-basics.html">2D Array Basics</a> — declare, initialize, access <code>grid[r][c]</code>, <code>.length</code> vs <code>[r].length</code></li>
+    <li><a href="2d-array-traversal.html">2D Array Traversal</a> — nested for loops, row-major traversal, boundary guards</li>
+    <li><a href="../unit-05/player-builder.html">Player.java (Unit 5)</a> — your player object, moves on the map</li>
+    <li><a href="../unit-05/monster-builder.html">Monster.java (Unit 5)</a> — enemies on the map, trigger combat</li>
+</ul>
+
+<hr>
+
+<h2>Tile Legend</h2>
+
+<p>Every cell in the grid is one of these <code>char</code> values:</p>
+
+<table>
+    <tr><th>Char</th><th>Meaning</th><th>Walkable?</th><th>Effect on entry</th></tr>
+    <tr><td><code>'#'</code></td><td>Wall</td><td>No</td><td>Blocked — can't enter</td></tr>
+    <tr><td><code>'.'</code></td><td>Floor</td><td>Yes</td><td>Nothing</td></tr>
+    <tr><td><code>'$'</code></td><td>Treasure</td><td>Yes</td><td>Collect gold. Cell becomes '.'</td></tr>
+    <tr><td><code>'M'</code></td><td>Monster</td><td>Yes</td><td>Trigger combat. Cell becomes '.' on kill</td></tr>
+    <tr><td><code>'X'</code></td><td>Exit</td><td>Yes</td><td>Win condition (optional — you decide)</td></tr>
+</table>
+
+<p><strong>Player position</strong> is tracked separately with <code>playerRow</code> and <code>playerCol</code> — not stored in the grid. When displaying, overlay 'P' at (playerRow, playerCol).</p>
+
+<hr>
+
+<h2>FILE 1: DungeonMap.java</h2>
+
+<h3>Instance Variables</h3>
+
+<table>
+    <tr><th>Variable</th><th>Type</th><th>Purpose</th></tr>
+    <tr><td><code>map</code></td><td><code>char[][]</code></td><td>The dungeon grid</td></tr>
+    <tr><td><code>playerRow</code></td><td><code>int</code></td><td>Player's current row</td></tr>
+    <tr><td><code>playerCol</code></td><td><code>int</code></td><td>Player's current column</td></tr>
+    <tr><td><code>player</code></td><td><code>Player</code></td><td>The Player object from Unit 5</td></tr>
+    <tr><td><code>goldCollected</code></td><td><code>int</code></td><td>Total gold collected this dungeon run</td></tr>
+</table>
+
+<h3>Constructor</h3>
+
+<ul>
+    <li>Parameters: <code>char[][] map, Player player</code></li>
+    <li>Store the map reference and player object</li>
+    <li><strong>Find 'P' on the map:</strong> Loop through every cell. When you find 'P', set <code>playerRow</code> and <code>playerCol</code>. Replace 'P' with '.' — that tile is now just floor.</li>
+    <li>Initialize <code>goldCollected = 0</code></li>
+</ul>
+
+<h3>display()</h3>
+
+<ul>
+    <li>Print header: "=== DUNGEON MAP ==="</li>
+    <li>Print status line: "HP: X/Y | Gold: Z"</li>
+    <li>Nested for-loop over every row and column</li>
+    <li>If (r,c) == player position → print 'P'. Otherwise print <code>map[r][c]</code></li>
+    <li>No spaces between characters on the grid line</li>
+    <li>Newline after each row</li>
+</ul>
+
+<h3>move(char direction)</h3>
+
+<p><strong>Returns String</strong> — a description of what happened: "moved", "blocked", "treasure found", "monster defeated", "player died", "exit found".</p>
+
+<p><strong>Direction mapping (WASD):</strong></p>
+
+<table>
+    <tr><th>Key</th><th>Row change</th><th>Col change</th></tr>
+    <tr><td>W</td><td>-1</td><td>0</td></tr>
+    <tr><td>A</td><td>0</td><td>-1</td></tr>
+    <tr><td>S</td><td>+1</td><td>0</td></tr>
+    <tr><td>D</td><td>0</td><td>+1</td></tr>
+</table>
+
+<p><strong>Validation (check in this order):</strong></p>
+
+<ol>
+    <li><strong>Bounds check:</strong> newRow in [0, map.length-1]? newCol in [0, map[0].length-1]? If not → return "blocked"</li>
+    <li><strong>Wall check:</strong> <code>map[newRow][newCol] == '#'</code> → return "blocked"</li>
+</ol>
+
+<p><strong>If valid, update position:</strong> <code>playerRow = newRow; playerCol = newCol;</code></p>
+
+<p><strong>Check what's on the new tile:</strong></p>
+
+<ul>
+    <li><strong>'$' (Treasure):</strong> Roll gold: <code>(int)(Math.random() * 50) + 10</code>. Add to goldCollected. Set cell to '.'. Return "treasure found".</li>
+    <li><strong>'M' (Monster):</strong> Create a Monster. Run combat (use your existing combat code from earlier units). If monster dies: set cell to '.', increment defeatedCount. If player dies: return "player died". Return "monster defeated" or "fled".</li>
+    <li><strong>'X' (Exit):</strong> Return "exit found" — the runner handles win condition.</li>
+    <li><strong>'.' (Floor):</strong> Return "moved".</li>
+</ul>
+
+<h3>Getters / Status</h3>
+
+<ul>
+    <li><code>isPlayerAlive()</code> → delegates to <code>player.isAlive()</code></li>
+    <li><code>getGoldCollected()</code></li>
+    <li><code>getPlayerHP()</code> / <code>getPlayerMaxHP()</code></li>
+</ul>
+
+<hr>
+
+<h2>FILE 2: DungeonMapRunner.java</h2>
+
+<p>Your <code>main()</code> ties everything together:</p>
+
+<ol>
+    <li>Create a <code>Player</code></li>
+    <li>Define a <code>char[][]</code> dungeon layout (use the test map below)</li>
+    <li>Create <code>DungeonMap</code></li>
+    <li><strong>Game loop:</strong> while player is alive:
+        <ul>
+            <li>Display map</li>
+            <li>Read input (W/A/S/D or Q to quit)</li>
+            <li>Call <code>dungeon.move(input)</code></li>
+            <li>Check result: "player died" → print, break. "exit found" → win, break.</li>
+        </ul>
+    </li>
+    <li>Print final summary: gold collected, monsters killed, victory/defeat</li>
+</ol>
+
+<hr>
+
+<h2>Test Map</h2>
+
+<p>Use this 8×8 layout. 'P' marks the player start.</p>
+
+<pre><code>char[][] dungeonLayout = {
+    {'#', '#', '#', '#', '#', '#', '#', '#'},
+    {'#', 'P', '.', '.', '$', '.', 'M', '#'},
+    {'#', '.', '#', '#', '.', '#', '.', '#'},
+    {'#', '.', '.', 'M', '.', '#', '$', '#'},
+    {'#', '#', '.', '#', '#', '#', '.', '#'},
+    {'#', '.', '.', '.', '.', '.', '.', '#'},
+    {'#', '.', '#', 'M', '#', '#', 'X', '#'},
+    {'#', '#', '#', '#', '#', '#', '#', '#'}
+};</code></pre>
+
+<hr>
+
+<h2>Test It</h2>
+
+<pre><code>// === Test 1: Constructor finds P ===
+Player hero = new Player("Hero", 25, 14, 12, 16, 10);
+DungeonMap dungeon = new DungeonMap(dungeonLayout, hero);
+System.out.println(dungeon.getPlayerRow());  // 1
+System.out.println(dungeon.getPlayerCol());  // 1
+
+// === Test 2: Walking onto floor ===
+System.out.println(dungeon.move('D'));  // "moved"
+System.out.println(dungeon.getPlayerCol());  // 2
+
+// === Test 3: Walking into wall ===
+dungeon.move('W');  // row 0 is all walls
+System.out.println(dungeon.getPlayerRow());  // still 1 — didn't move
+
+// === Test 4: Walking onto treasure ===
+dungeon.move('D');  // move to '.'
+dungeon.move('D');  // move to '$'
+// Should print treasure message and gold
+System.out.println(dungeon.getGoldCollected());  // > 0
+
+// === Test 5: Walking onto monster ===
+dungeon.move('S');  // move down
+// Should trigger combat. Player may win or die.
+System.out.println(dungeon.isPlayerAlive());
+
+// === Test 6: Bounds check ===
+for (int i = 0; i < 10; i++) dungeon.move('A');  // smash into left wall
+System.out.println(dungeon.getPlayerCol());  // 0 or 1 — clamped by wall</code></pre>
+
+<hr>
+
+<h2>Integrate Into Your RPG</h2>
+
+<table>
+    <tr><th>Before</th><th>After</th></tr>
+    <tr><td>Linear room sequence (for loop + random)</td><td>2D grid, player chooses path</td></tr>
+    <tr><td>Every room forces combat</td><td>Player can dodge monsters, grab treasure</td></tr>
+    <tr><td>No map</td><td>char[][] displayed every turn</td></tr>
+    <tr><td>No backtracking</td><td>WASD in any direction</td></tr>
+</table>
+
+<p>In Unit 10, the recursion algorithms (flood fill, pathfinding) operate on this exact grid structure.</p>
+
+</body>
+</html>

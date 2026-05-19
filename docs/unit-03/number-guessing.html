@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Number Guessing Game Walkthrough — Unit 3</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 3</a>
+    <span class="sep">/</span>
+    <span class="here">Number Guessing Game</span>
+</nav>
+
+<h1>Number Guessing Game — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    It uses conditionals and comparison operators to give the player feedback.
+    Use this page as a reference when building your own projects.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Generate a secret number (1–100), read the player's guess, and tell them if they're too high, too low, or correct.</p>
+
+<pre><code><span class="output">I'm thinking of a number between 1 and 100.</span>
+<span class="output">Your guess: 50</span>
+<span class="output">Too high! Guess lower.</span>
+<span class="output">Your guess: 25</span>
+<span class="output">Too low! Guess higher.</span>
+<span class="output">Your guess: 37</span>
+<span class="output">Correct! The number was 37.</span></code></pre>
+
+<h2>Step 1: Generate the Secret Number</h2>
+
+<pre><code>int secret = (int) (Math.random() * 100) + 1;</code></pre>
+
+<p>
+    <strong>Why + 1?</strong> Math.random() * 100 gives [0, 100). Cast to int: 0–99.
+    Add 1: 1–100. Exactly the range we want.
+</p>
+
+<h2>Step 2: Read the Guess</h2>
+
+<pre><code>Scanner input = new Scanner(System.in);
+
+System.out.println("I'm thinking of a number between 1 and 100.");
+System.out.print("Your guess: ");
+int guess = input.nextInt();</code></pre>
+
+<p>
+    <strong>Why nextInt() and not nextLine()?</strong> The guess is a number.
+    nextInt() reads an int directly — no need to parse with Integer.parseInt().
+    Cleaner code.
+</p>
+
+<h2>Step 3: Give Feedback with If/Else</h2>
+
+<pre><code>if (guess > secret) {
+    System.out.println("Too high! Guess lower.");
+} else if (guess < secret) {
+    System.out.println("Too low! Guess higher.");
+} else {
+    System.out.println("Correct! The number was " + secret + ".");
+}</code></pre>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: Mutual Exclusivity</h3>
+    <p>Look at the code above. Why did we use <code>else if</code> and <code>else</code> instead of three separate <code>if</code> statements?</p>
+    <p>What would happen if we used three independent <code>if</code> statements and the user guessed the exact secret number? Trace the logic to find out.</p>
+</div>
+
+<h2>The Full Program</h2>
+
+<pre><code>import java.util.Scanner;
+
+public class NumberGuessing {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        // ===== STEP 1: GENERATE SECRET =====
+        int secret = (int) (Math.random() * 100) + 1;
+
+        // ===== STEP 2: GET GUESS =====
+        System.out.println("I'm thinking of a number between 1 and 100.");
+        System.out.print("Your guess: ");
+        int guess = input.nextInt();
+
+        // ===== STEP 3: FEEDBACK =====
+        if (guess > secret) {
+            System.out.println("Too high! Guess lower.");
+        } else if (guess < secret) {
+            System.out.println("Too low! Guess higher.");
+        } else {
+            System.out.println("Correct! The number was " + secret + ".");
+        }
+    }
+}</code></pre>
+
+<h2>From One Guess to Many</h2>
+
+<p>
+    One guess is a fine start. But a real guessing game lets the player keep trying.
+    In Unit 4, you'll wrap this in a while loop so the player guesses until they get it right.
+    The conditional logic stays exactly the same — you just put it inside a loop.
+</p>
+
+<p>Preview — this is what Unit 4 will enable:</p>
+<pre><code>while (guess != secret) {
+    if (guess > secret) {
+        System.out.print("Too high! Try again: ");
+    } else {
+        System.out.print("Too low! Try again: ");
+    }
+    guess = input.nextInt();
+}
+System.out.println("Correct! The number was " + secret + ".");</code></pre>
+
+<h2>Extending the Program</h2>
+<ul>
+    <li>Track the number of guesses and display it at the end.</li>
+    <li>Add difficulty levels: easy (1–50), medium (1–100), hard (1–500).</li>
+    <li>Give "warm" (within 10) and "cold" (more than 20 away) hints.</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    Your Combat System uses the same comparison operators (>=, <) to check if an attack roll beats armor class.
+    Number Guessing isolates the comparison pattern — no combat, no stats, just pure logic.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="relational-operators.html">Relational Operators</a> — >, <, >=, etc.</li>
+    <li><a href="boolean-logic.html">Boolean Logic</a> — combining conditions</li>
+    <li><a href="combat-system.html">Combat System</a> — RPG project using the same logic</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student RPG Guide: Combat System — Unit 3</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 3</a>
+    <span class="sep">/</span>
+    <span class="here">Student Guide: Combat System</span>
+</nav>
+
+<h1>Student RPG Guide: Combat System</h1>
+
+<div class="callout">
+    <strong>This is YOUR guide.</strong> The teacher built Number Guessing,
+    Hangman, and Choose Your Adventure with you. Now you use those same
+    if/else patterns — plus your Dice.java engine — to make your character fight.
+    Instead of code blanks, you are provided with <strong>Acceptance Criteria</strong>.
+</div>
+
+<h2>The Setup</h2>
+
+<p>
+    Create a new file called <code>Combat.java</code> and another called <code>CombatTester.java</code>.
+    In <code>Combat.java</code>, you will write methods to handle fighting. You do not need to store state (like HP) inside the <code>Combat</code> class itself; instead, the methods will take HP as a parameter and return the new HP.
+</p>
+
+<hr>
+
+<h2>Part 1: playerAttack()</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static int playerAttack(int attackBonus, int targetAC, int damageDie, String targetName)</code></li>
+    <li>Behavior:
+        <ol>
+            <li>Rolls a d20.</li>
+            <li><strong>Critical Hit:</strong> If the d20 is a 20, it's an automatic hit. Print a dramatic message. Roll the <code>damageDie</code>, multiply it by 2, print the damage, and return the damage.</li>
+            <li><strong>Critical Miss:</strong> If the d20 is a 1, it's an automatic miss. Print a failure message. Return 0.</li>
+            <li><strong>Standard Attack:</strong> Add the d20 roll to the <code>attackBonus</code>. Compare the total to the <code>targetAC</code>.
+                <ul>
+                    <li>If total >= targetAC, it's a hit. Roll the <code>damageDie</code>, print a success message with the damage, and return the damage.</li>
+                    <li>If total < targetAC, it's a miss. Print a miss message. Return 0.</li>
+                </ul>
+            </li>
+        </ol>
+    </li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>In a standard attack, why do we use <code>&gt;=</code> instead of <code>==</code> when comparing the total to the <code>targetAC</code>? What would happen if we used <code>==</code>?</p>
+
+<h3>Acceptance Test:</h3>
+<p>Add this to <code>CombatTester.java</code>:</p>
+<pre><code>int dmg = Combat.playerAttack(3, 14, 8, "Goblin");
+System.out.println("Damage returned: " + dmg);</code></pre>
+<p>Run it many times. Verify that a natural 20 always hits (even if 20+3 &lt; AC, though 23 is usually high enough), a natural 1 always misses, and standard rolls behave correctly. Ensure the returned damage matches the printed message.</p>
+
+<hr>
+
+<h2>Part 2: monsterAttack()</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static int monsterAttack(int attackBonus, int targetAC, int damageDie, String monsterName)</code></li>
+    <li>Behavior: Monsters don't get critical hits or misses in our system (to keep it simple). They only do standard attacks.
+        <ol>
+            <li>Roll a d20.</li>
+            <li>Add the <code>attackBonus</code>.</li>
+            <li>If the total >= <code>targetAC</code>, roll <code>damageDie</code>, print a message, and return the damage.</li>
+            <li>Otherwise, print a miss message and return 0.</li>
+        </ol>
+    </li>
+</ul>
+
+<h3>Tinker Challenge:</h3>
+<p>How much of the logic from <code>playerAttack</code> can you reuse here? Is there a way to write this without copying and pasting the standard attack logic? (If you can't figure it out, copy-pasting is okay for now, but we will optimize it later).</p>
+
+<hr>
+
+<h2>Part 3: combatRound() — One Full Exchange</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static int combatRound(int playerAtk, int monsterAC, int playerDmg, int monsterAtk, int playerAC, int monsterDmg, String monsterName, int monsterHP)</code></li>
+    <li>Behavior:
+        <ol>
+            <li>Print a header like "--- Combat Round ---".</li>
+            <li>The player attacks the monster (call <code>playerAttack</code>).</li>
+            <li>Subtract the returned damage from <code>monsterHP</code>. Print the monster's remaining HP.</li>
+            <li><strong>Conditional Counterattack:</strong> The monster should ONLY attack the player if the monster is still alive (HP > 0). If the monster is alive, call <code>monsterAttack</code> and print how much damage the player took. If the monster is dead, print a victory message.</li>
+            <li>Return the <code>monsterHP</code>.</li>
+        </ol>
+    </li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>Why does <code>combatRound</code> need to return <code>monsterHP</code>? Look at the parameters. If we didn't return it, how would the next round of combat know the monster's new HP?</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>int goblinHP = 15;
+goblinHP = Combat.combatRound(3, 14, 8, 2, 13, 6, "Goblin", goblinHP);
+System.out.println("Goblin HP after round 1: " + goblinHP);
+goblinHP = Combat.combatRound(3, 14, 8, 2, 13, 6, "Goblin", goblinHP);
+System.out.println("Goblin HP after round 2: " + goblinHP);</code></pre>
+<p>Run it. If the player kills the Goblin in round 1, does the Goblin still attack back? (It shouldn't!). Does the HP properly carry over from round 1 to round 2?</p>
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rock-Paper-Scissors Walkthrough — Unit 2</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 2</a>
+    <span class="sep">/</span>
+    <span class="here">Rock-Paper-Scissors</span>
+</nav>
+
+<h1>Rock-Paper-Scissors — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    It combines Scanner (Unit 2) with conditionals (Unit 3 preview) to make a playable game.
+    Use this page as a reference when building your own projects.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Read the player's choice, generate a random choice for the computer, then determine the winner.</p>
+
+<pre><code><span class="output">Rock, Paper, or Scissors? rock</span>
+<span class="output">You chose: rock</span>
+<span class="output">Computer chose: scissors</span>
+<span class="output">You win! Rock crushes scissors.</span></code></pre>
+
+<h2>Step 1: Declare Variables</h2>
+
+<pre><code>Scanner input = new Scanner(System.in);
+
+String playerChoice;
+int computerNum;
+String computerChoice;</code></pre>
+
+<p>
+    <strong>Why int for the computer?</strong> Generate a random 0/1/2 first,
+    then map to a string. Same pattern as the Slot Machine. Easier to generate random numbers than random strings.
+</p>
+
+<h2>Step 2: Read Player, Generate Computer</h2>
+
+<pre><code>System.out.print("Rock, Paper, or Scissors? ");
+playerChoice = input.nextLine().toLowerCase();
+
+computerNum = (int) (Math.random() * 3);
+
+if (computerNum == 0) {
+    computerChoice = "rock";
+} else if (computerNum == 1) {
+    computerChoice = "paper";
+} else {
+    computerChoice = "scissors";
+}
+
+System.out.println("You chose: " + playerChoice);
+System.out.println("Computer chose: " + computerChoice);</code></pre>
+
+<p>
+    <strong>Why toLowerCase()?</strong> Makes the comparison reliable.
+    "Rock" and "rock" should be the same choice. toLowerCase() standardizes before we check.
+</p>
+
+<h2>Step 3: Determine the Winner</h2>
+
+<pre><code>if (playerChoice.equals(computerChoice)) {
+    System.out.println("It's a tie!");
+} else if (playerChoice.equals("rock") && computerChoice.equals("scissors")) {
+    System.out.println("You win! Rock crushes scissors.");
+} else if (playerChoice.equals("paper") && computerChoice.equals("rock")) {
+    System.out.println("You win! Paper covers rock.");
+} else if (playerChoice.equals("scissors") && computerChoice.equals("paper")) {
+    System.out.println("You win! Scissors cut paper.");
+} else {
+    System.out.println("Computer wins!");
+}</code></pre>
+
+<p>
+    <strong>Why .equals() and not ==?</strong> Strings are objects.
+    == compares memory addresses, not content. .equals() compares the actual text.
+    This is covered in detail in the <a href="string.html">String</a> reference.
+</p>
+
+<div class="callout">
+    <strong>Alternative approach:</strong> Instead of 5 if/else branches,
+    you could chain conditions: check ties, then check the three ways the player wins,
+    and everything else is a computer win. Cleaner code.
+</div>
+
+<h2>The Full Program</h2>
+
+<pre><code>import java.util.Scanner;
+
+public class RockPaperScissors {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        // ===== STEP 1: DECLARE =====
+        String playerChoice;
+        int computerNum;
+        String computerChoice;
+
+        // ===== STEP 2: INPUT + GENERATE =====
+        System.out.print("Rock, Paper, or Scissors? ");
+        playerChoice = input.nextLine().toLowerCase();
+
+        computerNum = (int) (Math.random() * 3);
+        if (computerNum == 0) computerChoice = "rock";
+        else if (computerNum == 1) computerChoice = "paper";
+        else computerChoice = "scissors";
+
+        System.out.println("You chose: " + playerChoice);
+        System.out.println("Computer chose: " + computerChoice);
+
+        // ===== STEP 3: JUDGE =====
+        if (playerChoice.equals(computerChoice)) {
+            System.out.println("It's a tie!");
+        } else if (playerChoice.equals("rock") && computerChoice.equals("scissors")) {
+            System.out.println("You win! Rock crushes scissors.");
+        } else if (playerChoice.equals("paper") && computerChoice.equals("rock")) {
+            System.out.println("You win! Paper covers rock.");
+        } else if (playerChoice.equals("scissors") && computerChoice.equals("paper")) {
+            System.out.println("You win! Scissors cut paper.");
+        } else {
+            System.out.println("Computer wins!");
+        }
+    }
+}</code></pre>
+
+<h2>Extending the Program</h2>
+<ul>
+    <li>Add a loop (Unit 4) so the player can play again without restarting.</li>
+    <li>Track win/loss/tie counts across multiple rounds.</li>
+    <li>Add "lizard" and "Spock" for five options instead of three.</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    Your Combat System does exactly this: player input → random generation → logic to determine outcome.
+    Rock-Paper-Scissors is a simpler version. Replace "rock beats scissors" with "roll 15 beats AC 12" and
+    you have combat.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="scanner.html">Scanner (User Input)</a></li>
+    <li><a href="string.html">String Methods &amp; .equals()</a></li>
+    <li><a href="math-class.html">Math.random()</a></li>
+    <li><a href="mad-libs.html">Mad Libs</a> — another Unit 2 project</li>
+</ul>
+
+</body>
+</html>

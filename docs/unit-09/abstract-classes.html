@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abstract Classes — Unit 9</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 9</a>
+    <span class="sep">/</span>
+    <span class="here">Abstract Classes</span>
+</nav>
+
+<h1>Abstract Classes</h1>
+
+<p>
+    A <code>Character</code> should never exist on its own. You should never
+    create a generic "Character" object. A character is ALWAYS a Player or a
+    Monster — something specific. <strong>Abstract classes</strong> enforce this
+    rule at the compiler level.
+</p>
+
+<h2>The Problem: Vague Objects</h2>
+
+<pre><code>Character someone = new Character("???", 50);
+someone.attack(enemy);
+// What does this even mean? A generic blob attacks?
+// This makes no sense in our game world.</code></pre>
+
+<p>
+    <code>new Character()</code> creates a vague, meaningless object. We want
+    to FORBID it. Solution: make Character <strong>abstract</strong>.
+</p>
+
+<h2>Making a Class Abstract</h2>
+
+<pre><code>public abstract class Character {      // ← abstract keyword
+    protected String name;
+    protected int hp;
+    protected int maxHp;
+    protected boolean alive;
+
+    public Character(String name, int hp) {
+        this.name = name;
+        this.hp = hp;
+        this.maxHp = hp;
+        this.alive = true;
+    }
+
+    public abstract void attack(Character target);   // ← abstract method — no body!
+}</code></pre>
+
+<h2>What Abstract Changes</h2>
+
+<table>
+    <tr><th>Concrete class</th><th>Abstract class</th></tr>
+    <tr>
+        <td><code>Character c = new Player(...);</code> ✓</td>
+        <td>Same — superclass refs still work</td>
+    </tr>
+    <tr>
+        <td><code>new Character("???", 50);</code> — possible but bad design</td>
+        <td><code>new Character("???", 50);</code> — COMPILE ERROR. Can't instantiate.</td>
+    </tr>
+    <tr>
+        <td>Child classes CAN override methods</td>
+        <td>Child classes MUST implement abstract methods (or be abstract themselves)</td>
+    </tr>
+    <tr>
+        <td>Methods have bodies</td>
+        <td>Abstract methods have NO body — just a semicolon</td>
+    </tr>
+</table>
+
+<div class="callout">
+    <strong>Abstract = "I'm a category, not a thing."</strong> An abstract
+    class exists to organize shared code and enforce what subclasses must do.
+    It is intentionally incomplete.
+</div>
+
+<h2>Abstract Methods — Enforcing a Contract</h2>
+
+<p>
+    An abstract method has NO body. It's a PROMISE that subclasses must keep:
+</p>
+
+<pre><code>public abstract class Character {
+    public abstract void attack(Character target);    // No { } — just ;
+    public abstract String getBattleCry();             // Another contract
+}
+
+// CONCRETE subclass — MUST implement ALL abstract methods:
+public class Warrior extends Player {
+    @Override
+    public void attack(Character target) {      // MUST have this
+        // warrior-specific attack
+    }
+
+    @Override
+    public String getBattleCry() {              // MUST have this
+        return "For glory!";
+    }
+}</code></pre>
+
+<p>
+    If you forget to implement an abstract method, the COMPILER catches it:
+    <code>"Warrior is not abstract and does not override abstract method getBattleCry()"</code>
+</p>
+
+<h2>Abstract Classes Can Have Concrete Methods Too</h2>
+
+<p>Abstract doesn't mean "everything is abstract." Most methods can be concrete:</p>
+
+<pre><code>public abstract class Character {
+    protected String name;
+    protected int hp;
+
+    public Character(String name, int hp) {     // Concrete constructor — children call with super()
+        this.name = name;
+        this.hp = hp;
+    }
+
+    public String getName() { return name; }    // Concrete method — works for all subclasses
+
+    public void takeDamage(int damage) {        // Concrete method
+        hp -= damage;
+        if (hp <= 0) {
+            System.out.println(name + " defeated!");
+        }
+    }
+
+    public abstract void attack(Character target);  // Abstract — subclasses must provide this
+}</code></pre>
+
+<p>
+    Abstract = "I have SOME parts that are abstract." The concrete parts are
+    inherited normally. Only the abstract parts must be provided by subclasses.
+</p>
+
+<h2>When to Use Abstract</h2>
+
+<table>
+    <tr><th>Scenario</th><th>Use abstract?</th></tr>
+    <tr>
+        <td>The class represents a category, never a specific thing (Character, Vehicle, Shape)</td>
+        <td>YES — make it abstract</td>
+    </tr>
+    <tr>
+        <td>You want to FORCE all subclasses to provide a method</td>
+        <td>YES — make that method abstract</td>
+    </tr>
+    <tr>
+        <td>You want a default method that subclasses CAN override if they want</td>
+        <td>NO — make it a concrete method. Subclasses can still override it.</td>
+    </tr>
+    <tr>
+        <td>The class is fully functional and should be instantiated directly (Goblin, Warrior)</td>
+        <td>NO — leave it concrete</td>
+    </tr>
+</table>
+
+<h2>The Hierarchy in Our RPG</h2>
+
+<pre><code>Character (abstract)
+├── Player (abstract — you don't make a generic "Player," you pick a class)
+│   ├── Warrior (concrete)
+│   ├── Mage (concrete)
+│   └── Rogue (concrete)
+└── Monster (concrete? or abstract — depends on design)
+    ├── Goblin (concrete)
+    ├── Skeleton (concrete)
+    └── Dragon (concrete)</code></pre>
+
+<p>
+    Character is abstract because "new Character()" is meaningless.
+    Player could also be abstract if you want to force hero class selection.
+    The leaf classes — Warrior, Goblin, Dragon — are concrete because
+    they are specific, playable things.
+</p>
+
+<h2>RPG Example: The Full Character Class</h2>
+
+<pre><code>public abstract class Character {
+    protected String name;
+    protected int hp;
+    protected int maxHp;
+    protected boolean alive;
+
+    public Character(String name, int hp) {
+        this.name = name;
+        this.hp = hp;
+        this.maxHp = hp;
+        this.alive = true;
+    }
+
+    // Concrete — works for everyone
+    public String getName()  { return name; }
+    public int getHp()       { return hp; }
+    public int getMaxHp()    { return maxHp; }
+    public boolean isAlive() { return alive; }
+
+    // Concrete — shared behavior
+    public void takeDamage(int damage) {
+        hp -= damage;
+        System.out.println(name + " takes " + damage + " damage. (" + hp + "/" + maxHp + ")");
+        if (hp <= 0) {
+            hp = 0;
+            alive = false;
+            System.out.println("  >>> " + name + " has been defeated!");
+        }
+    }
+
+    // Concrete — children can override for custom display
+    @Override
+    public String toString() {
+        return name + " [" + hp + "/" + maxHp + "]";
+    }
+
+    // Abstract — every subclass MUST define how it attacks
+    public abstract void attack(Character target);
+}</code></pre>
+
+<h2>Common Traps</h2>
+
+<table>
+    <tr><th>What you did</th><th>Result</th><th>Fix</th></tr>
+    <tr>
+        <td>Tried <code>new AbstractClass()</code></td>
+        <td>Compile error: "abstract class cannot be instantiated"</td>
+        <td>Use a concrete subclass: <code>new Warrior(...)</code></td>
+    </tr>
+    <tr>
+        <td>Abstract method has a body <code>{ }</code></td>
+        <td>Compile error: "abstract methods cannot have a body"</td>
+        <td>Remove the body, end with <code>;</code></td>
+    </tr>
+    <tr>
+        <td>Concrete subclass missing abstract method</td>
+        <td>Compile error: "not abstract and does not override..."</td>
+        <td>Implement the method, or make the subclass abstract too</td>
+    </tr>
+    <tr>
+        <td>Made a class abstract that should be concrete</td>
+        <td>Can't create instances you need</td>
+        <td>Remove <code>abstract</code> — leaf classes should be concrete</td>
+    </tr>
+    <tr>
+        <td>Made EVERY method abstract</td>
+        <td>No shared behavior inherited — what's the point?</td>
+        <td>Use abstract only for methods that MUST differ per subclass</td>
+    </tr>
+</table>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Partial Blueprint</h3>
+    <p>We often call an abstract class a "partial blueprint." It provides some concrete implementations (like <code>takeDamage()</code>) but leaves others as abstract method stubs (like <code>attack()</code>). Why is this hybrid design so powerful? How does this force subclasses to align to a specific behavior contract while still letting them share standard code?</p>
+
+    <h3>2. Abstract Classes vs. Interfaces</h3>
+    <p>An abstract class is allowed to have instance variables (such as <code>protected int hp;</code>), whereas a Java interface is not allowed to have mutable instance state. In what scenario is an abstract class a much better architectural choice than a standard interface? How does having inherited fields change what a child class receives for free?</p>
+</div>
+
+<h2>Bug Hunt: The Broken Contract</h2>
+
+<div class="bug-hunt">
+    <p>A programmer is building an NPC system. They write a concrete subclass <code>NPC</code> that extends their abstract <code>GameCharacter</code> class. However, the compiler throws a heavy red error: <code>NPC is not abstract and does not override abstract method attack(Character) in GameCharacter</code>.</p>
+    <pre><code>public abstract class GameCharacter {
+    public abstract void attack(Character target);
+}
+
+public class NPC extends GameCharacter {
+    private String dialogue;
+
+    public NPC(String name, String dialogue) {
+        // Assume super setup works
+        this.dialogue = dialogue;
+    }
+
+    public void talk() {
+        System.out.println(dialogue);
+    }
+}</code></pre>
+    <p><strong>Question:</strong> Spot the issue! Why did the compiler fail to compile the <code>NPC</code> class? What are the <strong>two</strong> distinct options a developer has to resolve this specific compilation failure?</p>
+</div>
+
+<h2>Tinker Challenge: The Peaceful Healer & Subclass Contracts</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Implement and experiment with abstract methods under unique semantic constraints.</p>
+    <ol>
+        <li><strong>Creative Contract Fulfillment:</strong> Create a new concrete subclass <code>Healer</code> that extends <code>Character</code> (or <code>GameCharacter</code>). The parent class forces you to override <code>public void attack(Character target)</code>. However, Healers do not deal damage! Provide an implementation of <code>attack</code> that instead <strong>adds 15 HP</strong> to the target, representing a healing spell.
+            <div class="callout warn">
+                <strong>Safety First:</strong> You cannot change the parent's signature to <code>heal(Character)</code> to make it fit your subclass style. A concrete class <strong>must</strong> implement all abstract methods with the exact signature defined by the parent, even if the internal behavior differs from the method's name!
+            </div>
+        </li>
+        <li><strong>Verify the Healing "Attack":</strong> Write a short driver class. Create a <code>Warrior</code> with 50/100 HP and a <code>Healer</code>. Put both in a polymorphic array: <code>Character[] battlefield = {warrior, healer};</code>. Loop through the array, having each character call <code>attack(warrior)</code>, and print the warrior's HP after each round to prove that the healer successfully healed them!</li>
+    </ol>
+</div>
+
+</body>
+</html>

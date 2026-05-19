@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>High Score Table Walkthrough — Unit 6</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 6</a>
+    <span class="sep">/</span>
+    <span class="here">High Score Table</span>
+</nav>
+
+<h1>High Score Table — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    It uses arrays to store scores, find the best one, sort entries,
+    and add new scores. Use this page as a reference.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Store player initials and scores in parallel arrays. Find the highest score, sort the leaderboard, and allow inserting new entries.</p>
+
+<pre><code><span class="output">=== HIGH SCORES ===</span>
+<span class="output">1. AAA — 9500</span>
+<span class="output">2. BBB — 7200</span>
+<span class="output">3. CCC — 5100</span>
+<span class="output">4. DDD — 3400</span>
+<span class="output">5. EEE — 1200</span>
+<span class="output">---</span>
+<span class="output">Top score: AAA (9500)</span>
+<span class="output">Average: 5280</span></code></pre>
+
+<h2>Step 1: Declare Parallel Arrays</h2>
+
+<pre><code>String[] players = new String[5];
+int[] scores = new int[5];
+
+// Populate with sample data
+players[0] = "AAA";  scores[0] = 9500;
+players[1] = "BBB";  scores[1] = 7200;
+players[2] = "CCC";  scores[2] = 5100;
+players[3] = "DDD";  scores[3] = 3400;
+players[4] = "EEE";  scores[4] = 1200;</code></pre>
+
+<p>
+    <strong>Parallel arrays:</strong> players[i] and scores[i] belong to the same entry.
+    They stay linked by index. This is simpler than a class for small problems,
+    though you could also make a HighScoreEntry class.
+</p>
+
+<h2>Step 2: Find the Top Score</h2>
+
+<pre><code>int maxScore = scores[0];
+int maxIndex = 0;
+
+for (int i = 1; i < scores.length; i++) {
+    if (scores[i] > maxScore) {
+        maxScore = scores[i];
+        maxIndex = i;
+    }
+}
+System.out.println("Top score: " + players[maxIndex] + " (" + maxScore + ")");</code></pre>
+
+<p>
+    <strong>Track the index, not just the value.</strong> If you only track maxScore,
+    you can't print the player's name. Track the index and you get both for free.
+</p>
+
+<h2>Step 3: Calculate Average</h2>
+
+<pre><code>int sum = 0;
+for (int i = 0; i < scores.length; i++) {
+    sum += scores[i];
+}
+double average = (double) sum / scores.length;
+System.out.println("Average: " + (int) average);</code></pre>
+
+<p>
+    <strong>Cast to double before dividing.</strong> sum / scores.length is integer
+    division — 26400/5 = 5280 is fine here, but if average had a decimal, it would be lost.
+    Cast to double first to be safe.
+</p>
+
+<h2>Step 4: Insert a New Score (Sorted Order)</h2>
+
+<pre><code>// Given newPlayer and newScore, insert while keeping sorted (highest first)
+String newPlayer = "FFF";
+int newScore = 6300;
+
+// Find the insertion point
+int insertAt = 0;
+while (insertAt < scores.length && scores[insertAt] > newScore) {
+    insertAt++;
+}
+
+// Shift everything down from insertAt onward
+for (int i = scores.length - 1; i > insertAt; i--) {
+    players[i] = players[i - 1];
+    scores[i] = scores[i - 1];
+}
+
+// Insert
+players[insertAt] = newPlayer;
+scores[insertAt] = newScore;
+
+// Note: the last entry (EEE, 1200) falls off the end</code></pre>
+
+<h2>The Full Program</h2>
+
+<pre><code>public class HighScoreTable {
+    public static void main(String[] args) {
+        String[] players = {"AAA", "BBB", "CCC", "DDD", "EEE"};
+        int[] scores = {9500, 7200, 5100, 3400, 1200};
+
+        // Display leaderboard
+        System.out.println("=== HIGH SCORES ===");
+        for (int i = 0; i < players.length; i++) {
+            System.out.println((i + 1) + ". " + players[i] + " — " + scores[i]);
+        }
+
+        // Top score
+        int maxIndex = 0;
+        for (int i = 1; i < scores.length; i++) {
+            if (scores[i] > scores[maxIndex]) maxIndex = i;
+        }
+        System.out.println("Top score: " + players[maxIndex]
+                           + " (" + scores[maxIndex] + ")");
+
+        // Average
+        int sum = 0;
+        for (int s : scores) sum += s;
+        System.out.println("Average: " + (sum / scores.length));
+    }
+}</code></pre>
+
+<h2>Extending the Program</h2>
+<ul>
+    <li>Sort the entire table (bubble sort or selection sort).</li>
+    <li>Read new scores from user input with Scanner.</li>
+    <li>Write to a file so scores persist between runs (AP extension).</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    Your inventory system uses the same array patterns. The top-score search is
+    identical to finding the most valuable item in inventory. The insert-with-shift
+    is the same pattern as adding items to a sorted inventory.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="array-basics.html">Array Basics</a></li>
+    <li><a href="array-traversal.html">Array Traversal</a></li>
+    <li><a href="array-algorithms.html">Array Algorithms</a> — max, sum, shift</li>
+</ul>
+
+</body>
+</html>

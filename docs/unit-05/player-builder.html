@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student RPG Guide: Player.java — Unit 5</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 5</a>
+    <span class="sep">/</span>
+    <span class="here">Student Guide: Player.java</span>
+</nav>
+
+<h1>Student RPG Guide: Building Player.java</h1>
+
+<div class="callout">
+    <strong>Since Unit 2, you've been typing <code>Player p = new Player("Hero", 14, 12);</code></strong>
+    without knowing what's inside. Now you write the file that makes it all work.
+    No blanks. No starter code. Just the spec. You figure out the implementation.
+</div>
+
+<h2>What You're Building</h2>
+
+<p>
+    The <code>Player</code> class — the data structure that holds your character's
+    name, stats, and HP. Methods to take damage, heal, and report status.
+    This replaces all those scattered <code>int playerHP</code> variables from
+    previous units. One file: <code>Player.java</code>.
+</p>
+
+<h2>References</h2>
+
+<p>
+    You've already built these classes with your teacher. They show you
+    <em>how</em> — now you apply the same patterns to your own class:
+</p>
+<ul>
+    <li><a href="card.html">Card</a> — immutable data, private fields, getters, toString</li>
+    <li><a href="bank-account.html">BankAccount</a> — mutable state, guard clauses, validation, static counter</li>
+    <li><a href="class-anatomy.html">Class Anatomy</a> — the four sections of every class</li>
+    <li><a href="constructors.html">Constructors</a> — parameters, this keyword, validation</li>
+    <li><a href="accessors-mutators.html">Getters &amp; Setters</a> — encapsulation, clamp patterns</li>
+    <li><a href="methods-and-static.html">Methods &amp; Static</a> — toString, instance vs static</li>
+</ul>
+
+<hr>
+
+<h2>Spec</h2>
+
+<h3>Instance Variables</h3>
+
+<p>All <code>private</code>. None are <code>static</code>.</p>
+
+<table>
+    <tr><th>Variable</th><th>Type</th><th>Purpose</th></tr>
+    <tr><td><code>name</code></td><td><code>String</code></td><td>Character name, e.g. "Hero"</td></tr>
+    <tr><td><code>hitPoints</code></td><td><code>int</code></td><td>Current health</td></tr>
+    <tr><td><code>maxHitPoints</code></td><td><code>int</code></td><td>Maximum health (set at creation, never changes)</td></tr>
+    <tr><td><code>strength</code></td><td><code>int</code></td><td>Physical power</td></tr>
+    <tr><td><code>dexterity</code></td><td><code>int</code></td><td>Agility and reflexes</td></tr>
+    <tr><td><code>intelligence</code></td><td><code>int</code></td><td>Mental acuity</td></tr>
+    <tr><td><code>constitution</code></td><td><code>int</code></td><td>Toughness and endurance</td></tr>
+</table>
+
+<h3>Constructor</h3>
+
+<ul>
+    <li>Parameters: <code>String name, int hp, int str, int dex, int intel, int con</code></li>
+    <li>Store each parameter into its instance variable using <code>this</code></li>
+    <li><code>maxHitPoints</code> gets the same value as <code>hp</code></li>
+</ul>
+
+<h3>Getters</h3>
+
+<p>One getter per instance variable. Standard pattern from Card and BankAccount.</p>
+
+<h3>HP Management</h3>
+
+<p>These are mutators — they change <code>hitPoints</code>. Use the guard-clause pattern from BankAccount's <code>withdraw()</code>.</p>
+
+<table>
+    <tr><th>Method</th><th>What It Does</th></tr>
+    <tr>
+        <td><code>setHP(int newHP)</code></td>
+        <td>
+            Sets <code>hitPoints</code> to <code>newHP</code>.<br>
+            <strong>Clamp:</strong> if <code>newHP &lt; 0</code>, set to 0. If <code>newHP &gt; maxHitPoints</code>, set to <code>maxHitPoints</code>.
+        </td>
+    </tr>
+    <tr>
+        <td><code>takeDamage(int amount)</code></td>
+        <td>
+            Reduces HP by <code>amount</code>. Delegate to <code>setHP()</code> — don't modify <code>hitPoints</code> directly.<br>
+            Print: <code>"&lt;name&gt; takes &lt;amount&gt; damage! HP: &lt;current&gt;/&lt;max&gt;"</code>
+        </td>
+    </tr>
+    <tr>
+        <td><code>heal(int amount)</code></td>
+        <td>
+            Increases HP by <code>amount</code>. Delegate to <code>setHP()</code>.<br>
+            Print: <code>"&lt;name&gt; heals &lt;amount&gt; HP! HP: &lt;current&gt;/&lt;max&gt;"</code>
+        </td>
+    </tr>
+    <tr>
+        <td><code>isAlive()</code></td>
+        <td>
+            Returns <code>true</code> if <code>hitPoints &gt; 0</code>, <code>false</code> otherwise.
+        </td>
+    </tr>
+</table>
+
+<h3>toString()</h3>
+
+<p>
+    Returns a single-line string representation. When you call
+    <code>System.out.println(player)</code>, Java calls <code>toString()</code> automatically.
+</p>
+
+<p>Format:</p>
+
+<pre><code>"&lt;name&gt; — HP: &lt;current&gt;/&lt;max&gt;, STR:&lt;str&gt; DEX:&lt;dex&gt; INT:&lt;int&gt; CON:&lt;con&gt;"</code></pre>
+
+<hr>
+
+<h2>Test It</h2>
+
+<p>Write a <code>main()</code> in a separate runner class (or in Player.java itself). Verify every behavior:</p>
+
+<pre><code>// === Test 1: Constructor + toString ===
+Player hero = new Player("Hero", 25, 14, 12, 16, 10);
+System.out.println(hero);
+// Expected: "Hero — HP: 25/25, STR:14 DEX:12 INT:16 CON:10"
+
+// === Test 2: Getters ===
+System.out.println(hero.getName());        // "Hero"
+System.out.println(hero.getHitPoints());    // 25
+System.out.println(hero.getMaxHitPoints()); // 25
+System.out.println(hero.getStrength());     // 14
+
+// === Test 3: takeDamage (normal) ===
+hero.takeDamage(8);
+System.out.println(hero.getHitPoints());    // 17
+// Expected output: "Hero takes 8 damage! HP: 17/25"
+
+// === Test 4: takeDamage (clamp to 0) ===
+hero.takeDamage(100);
+System.out.println(hero.getHitPoints());    // 0 — clamped!
+System.out.println(hero.isAlive());         // false
+
+// === Test 5: heal (normal) ===
+hero.heal(15);
+System.out.println(hero.getHitPoints());    // 15
+
+// === Test 6: heal (clamp to max) ===
+hero.heal(500);
+System.out.println(hero.getHitPoints());    // 25 — clamped to max!
+System.out.println(hero.isAlive());         // true
+
+// === Test 7: isAlive boundary ===
+Player dead = new Player("Ghost", 0, 10, 10, 10, 10);
+System.out.println(dead.isAlive());         // false
+dead.heal(1);
+System.out.println(dead.isAlive());         // true</code></pre>
+
+<hr>
+
+<h2>Integrate Into Your RPG</h2>
+
+<p>
+    Go back to <code>DungeonCrawl.java</code> and replace all individual
+    player variables with ONE <code>Player</code> object.
+</p>
+
+<table>
+    <tr><th>Before</th><th>After</th></tr>
+    <tr>
+        <td><code>int playerHP = 25;<br>int playerMaxHP = 25;<br>int playerAC = 14;<br>String playerName = "Hero";</code></td>
+        <td><code>Player player = new Player("Hero", 25, 14, 12, 16, 10);</code></td>
+    </tr>
+    <tr>
+        <td><code>playerHP -= damage;</code></td>
+        <td><code>player.takeDamage(damage);</code></td>
+    </tr>
+    <tr>
+        <td><code>if (playerHP &gt; 0)</code></td>
+        <td><code>if (player.isAlive())</code></td>
+    </tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2D Array Basics — Unit 8</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 8</a>
+    <span class="sep">/</span>
+    <span class="here">2D Array Basics</span>
+</nav>
+
+<h1>2D Array Basics</h1>
+
+<p>
+    A <strong>2D array</strong> is an array of arrays — a grid with rows and columns.
+    Think of a spreadsheet, a chess board, a pixel screen, or a dungeon map.
+    Every cell is accessed with <strong>two</strong> indices: <code>[row][col]</code>.
+</p>
+
+<h2>The Grid Metaphor</h2>
+
+<pre><code>int[][] grid = new int[3][4];</code></pre>
+
+<p>This creates a grid with <strong>3 rows</strong> and <strong>4 columns</strong>:</p>
+
+<pre><code>         col 0   col 1   col 2   col 3
+row 0:  [0][0]  [0][1]  [0][2]  [0][3]
+row 1:  [1][0]  [1][1]  [1][2]  [1][3]
+row 2:  [2][0]  [2][1]  [2][2]  [2][3]</code></pre>
+
+<p>
+    <strong>Rows go top-to-bottom</strong> (0 = top). <strong>Columns go left-to-right</strong> (0 = left).
+    The first index is ALWAYS the row. The second index is ALWAYS the column.
+</p>
+
+<div class="callout">
+    <strong>Mental model:</strong> <code>grid</code> is an array where each element
+    is itself an array. <code>grid[0]</code> is the entire first row (a 1D array).
+    <code>grid[0][2]</code> is the cell in row 0, column 2.
+</div>
+
+<h2>Declaration and Allocation</h2>
+
+<pre><code>// Declare and allocate in one step (most common):
+int[][] grid = new int[3][4];      // 3 rows, 4 columns
+
+// Step by step:
+double[][] matrix;                  // declares the variable
+matrix = new double[5][5];         // allocates a 5x5 grid
+
+// Initialize with values inline:
+int[][] scores = {
+    {95, 88, 92},
+    {76, 84, 90},
+    {88, 91, 86}
+};
+
+// Different types:
+char[][] map = new char[10][10];           // dungeon map
+String[][] roster = new String[4][3];      // seating chart
+boolean[][] visited = new boolean[8][8];   // chess-board tracking</code></pre>
+
+<h2>The Two Lengths</h2>
+
+<p>
+    A 2D array has TWO length values. This is the most important concept in the unit:
+</p>
+
+<pre><code>int[][] grid = new int[4][6];
+
+grid.length          // → 4  (number of ROWS)
+grid[0].length       // → 6  (number of COLUMNS)
+grid[3].length       // → 6  (any row gives the same column count)</code></pre>
+
+<p>
+    <code>grid.length</code> tells you how many rows. Each row is a 1D array — and
+    <code>grid[0].length</code> (or <code>grid[anyRow].length</code>) tells you how
+    many elements are in that row, which is the number of columns.
+</p>
+
+<div class="callout trap">
+    <strong>Trap:</strong> Thinking <code>grid.length</code> gives columns.
+    It doesn't. <code>grid.length</code> = rows. <code>grid[0].length</code> = columns.
+</div>
+
+<h2>Accessing and Modifying Elements</h2>
+
+<pre><code>int[][] grid = new int[3][4];
+
+grid[0][0] = 7;         // row 0, col 0 = 7
+grid[1][2] = 42;        // row 1, col 2 = 42
+grid[2][3] = grid[0][0] + grid[1][2];  // read two cells, assign to another
+
+int value = grid[1][2];  // value = 42</code></pre>
+
+<h2>Default Values</h2>
+
+<p>When you allocate a 2D array with <code>new</code>, every cell gets a default value:</p>
+
+<table>
+    <tr><th>Type</th><th>Default</th></tr>
+    <tr><td><code>int[][]</code></td><td><code>0</code></td></tr>
+    <tr><td><code>double[][]</code></td><td><code>0.0</code></td></tr>
+    <tr><td><code>boolean[][]</code></td><td><code>false</code></td></tr>
+    <tr><td><code>char[][]</code></td><td><code>'\0'</code> (null character)</td></tr>
+    <tr><td><code>String[][]</code> / object arrays</td><td><code>null</code></td></tr>
+</table>
+
+<div class="callout trap">
+    <strong>Char trap:</strong> <code>char[][] map = new char[5][5];</code> fills
+    every cell with <code>'\0'</code> (the null character), NOT a space <code>' '</code>.
+    If you check <code>map[0][0] == ' '</code> on a fresh grid, it returns false.
+</div>
+
+<h2>Row-Major vs Column-Major (Preview)</h2>
+
+<p>
+    A 2D array can be traversed in two orders. The <strong>outer loop</strong> decides
+    the order:
+</p>
+
+<pre><code>// Row-major: process row 0 completely, then row 1, then row 2...
+for (int row = 0; row < grid.length; row++) {
+    for (int col = 0; col < grid[row].length; col++) {
+        // process grid[row][col]
+    }
+}
+
+// Column-major: process column 0 completely, then column 1...
+for (int col = 0; col < grid[0].length; col++) {
+    for (int row = 0; row < grid.length; row++) {
+        // process grid[row][col]
+    }
+}</code></pre>
+
+<p>Full details on the <a href="2d-array-traversal.html">Traversal page</a>.</p>
+
+<h2>Using Enhanced For Loops</h2>
+
+<pre><code>int[][] grid = {{1, 2}, {3, 4}, {5, 6}};
+
+// Outer enhanced for: each element is a 1D array (a row)
+for (int[] row : grid) {
+    // Inner enhanced for: each element is a cell value
+    for (int value : row) {
+        System.out.print(value + " ");
+    }
+    System.out.println();
+}
+// Output:
+// 1 2
+// 3 4
+// 5 6</code></pre>
+
+<div class="callout warn">
+    <strong>Enhanced for = read-only (mostly).</strong> You get the VALUE, not the
+    position. You can't check neighbors, and you can't easily modify cells unless
+    the value is an object. Use standard for loops for anything involving indices.
+</div>
+
+<h2>Ragged Arrays</h2>
+
+<p>
+    A 2D array where rows have <strong>different lengths</strong> is called
+    a <strong>ragged array</strong>. The AP exam assumes rectangular grids,
+    but it's worth knowing they exist:
+</p>
+
+<pre><code>int[][] ragged = new int[3][];  // allocate rows, not columns yet
+ragged[0] = new int[4];        // row 0 has 4 columns
+ragged[1] = new int[2];        // row 1 has 2 columns
+ragged[2] = new int[5];        // row 2 has 5 columns
+
+// Or inline:
+int[][] triangle = {
+    {1},
+    {2, 3},
+    {4, 5, 6}
+};</code></pre>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Dimension Breakdown</h3>
+    <pre><code>double[][] battlefield = new double[5][8];</code></pre>
+    <p>What is the exact value returned by <code>battlefield.length</code>? What is the exact value returned by <code>battlefield[0].length</code>? Which one represents rows, and which represents columns?</p>
+
+    <h3>2. The Unseen Defaults</h3>
+    <p>If you create a new <code>char[][] dungeonMap = new char[5][5]</code>, what character is stored in <code>dungeonMap[0][0]</code>? If you print it, what do you see? (Hint: It is NOT a space <code>' '</code>!)</p>
+</div>
+
+<h2>Bug Hunt: The Inverted Coordinates</h2>
+
+<div class="bug-hunt">
+    <p>A designer creates a small 2D game board with 3 rows and 5 columns, but when they try to place a treasure chest in the bottom-right corner, the game crashes immediately. Find the bug.</p>
+    <pre><code>int[][] board = new int[3][5];
+// Bottom-right corner is at row index 2, column index 4
+board[4][2] = 99; // Game crashes here with ArrayIndexOutOfBoundsException!</code></pre>
+    <p><strong>Question:</strong> Why did <code>board[4][2]</code> crash the program? What index order must always be used when accessing cells in a 2D array?</p>
+</div>
+
+<h2>Tinker Challenge: Mini-Map Builder</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Generate a simple text-based radar screen for a dungeon crawler.</p>
+    <ol>
+        <li>Create a <code>char[][]</code> grid called <code>radar</code> with exactly 4 rows and 4 columns.</li>
+        <li>Write a nested loop to fill every single cell with the empty space character <code>'.'</code> (do not leave them as the null character default!).</li>
+        <li>Manually place the Player <code>'P'</code> at row 1, col 2.</li>
+        <li>Manually place an Enemy <code>'E'</code> at row 2, col 1.</li>
+        <li>Use nested enhanced <code>for</code> loops to print out the radar screen so it looks like a clean 4x4 grid in the console.</li>
+        <li><strong>Boss Move:</strong> Write a check to see if the player is in row 0. If they are, print "Danger! Close to the edge!"</li>
+    </ol>
+</div>
+
+</body>
+</html>

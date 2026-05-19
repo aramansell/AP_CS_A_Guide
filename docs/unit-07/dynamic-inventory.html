@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student RPG Guide: Dynamic Inventory — Unit 7</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 7</a>
+    <span class="sep">/</span>
+    <span class="here">Student Guide: Dynamic Inventory</span>
+</nav>
+
+<h1>Student RPG Guide: DynamicInventory.java</h1>
+
+<div class="callout">
+    <strong>Rewrite your inventory using ArrayList.</strong> Your FixedInventory from Unit 6 works — but it has a hard capacity limit and you wrote manual shift logic for remove(). ArrayList removes both problems. Same behavior. Less code. One file: <code>DynamicInventory.java</code>.
+</div>
+
+<h2>References</h2>
+
+<ul>
+    <li><a href="../unit-06/inventory-builder.html">FixedInventory + Item.java (Unit 6)</a> — your existing inventory. Same methods, new backing store.</li>
+    <li><a href="leaderboard.html">Leaderboard</a> — ArrayList, sorted insert with <code>add(index, element)</code></li>
+    <li><a href="music-playlist.html">Music Playlist</a> — ArrayList add, remove by title, search, enhanced for-loop</li>
+    <li><a href="arraylist-basics.html">ArrayList Basics</a> — methods reference: add, get, remove, size, isEmpty, contains</li>
+    <li><a href="arraylist-traversal.html">ArrayList Traversal</a> — regular vs enhanced for-loops, when to use each</li>
+    <li><a href="sorting.html">Sorting</a> — <code>Collections.sort()</code> with <code>Comparator</code></li>
+</ul>
+
+<hr>
+
+<h2>Spec: DynamicInventory.java</h2>
+
+<p><strong>Import:</strong> <code>java.util.ArrayList</code>. If you do sorting: <code>java.util.Collections</code> and <code>java.util.Comparator</code>.</p>
+
+<p><strong>Reuse <code>Item.java</code> from Unit 6.</strong> No changes needed. Copy it into your Unit 7 folder.</p>
+
+<h3>Instance Variable</h3>
+
+<p>ONE field. No capacity limit. No <code>itemCount</code>. ArrayList tracks its own size.</p>
+
+<table>
+    <tr><th>Variable</th><th>Type</th></tr>
+    <tr><td><code>items</code></td><td><code>ArrayList&lt;Item&gt;</code></td></tr>
+</table>
+
+<h3>Constructor</h3>
+
+<ul>
+    <li>No parameters — no capacity needed</li>
+    <li>Initialize: <code>items = new ArrayList&lt;&gt;();</code></li>
+</ul>
+
+<h3>Methods</h3>
+
+<table>
+    <tr><th>Method</th><th>Returns</th><th>What It Does</th></tr>
+    <tr>
+        <td><code>add(Item item)</code></td>
+        <td><code>boolean</code></td>
+        <td>If item is null → return false. Otherwise <code>items.add(item)</code> → return true. No capacity check.</td>
+    </tr>
+    <tr>
+        <td><code>remove(int index)</code></td>
+        <td><code>Item</code></td>
+        <td>Check index in [0, items.size()-1]. Call <code>items.remove(index)</code>. ArrayList shifts automatically — no manual loop. Return the removed item (which <code>remove(index)</code> returns).</td>
+    </tr>
+    <tr>
+        <td><code>removeByName(String name)</code></td>
+        <td><code>Item</code></td>
+        <td><strong>Use a regular for loop</strong> — you can't remove during enhanced for. Find first match by <code>equalsIgnoreCase</code>. Call <code>items.remove(i)</code>. Return the item. Return null if not found.</td>
+    </tr>
+    <tr>
+        <td><code>contains(String name)</code></td>
+        <td><code>boolean</code></td>
+        <td>Enhanced for loop. Compare <code>item.getName().equalsIgnoreCase(name)</code>. Return true if found.</td>
+    </tr>
+    <tr>
+        <td><code>getTotalValue()</code></td>
+        <td><code>int</code></td>
+        <td>Sum all gold values. Enhanced for loop.</td>
+    </tr>
+    <tr>
+        <td><code>getTotalWeight()</code></td>
+        <td><code>int</code></td>
+        <td>Sum all weights. Enhanced for loop.</td>
+    </tr>
+    <tr>
+        <td><code>countByRarity(String rarity)</code></td>
+        <td><code>int</code></td>
+        <td>Count items matching rarity. Enhanced for loop.</td>
+    </tr>
+    <tr>
+        <td><code>display()</code></td>
+        <td><code>void</code></td>
+        <td>Regular for loop (need index numbers). Print <code>[i] &lt;item.toString()&gt;</code>. If <code>items.isEmpty()</code>: print "(empty)".</td>
+    </tr>
+    <tr>
+        <td><code>size()</code></td>
+        <td><code>int</code></td>
+        <td><code>return items.size();</code></td>
+    </tr>
+    <tr>
+        <td><code>sortByValue()</code></td>
+        <td><code>void</code></td>
+        <td>Sort items from highest gold value to lowest. Use <code>Collections.sort()</code> with a Comparator. See Leaderboard walkthrough for the sorted comparison pattern — you want descending order.</td>
+    </tr>
+</table>
+
+<hr>
+
+<h2>Test It</h2>
+
+<pre><code>// === Test 1: Creation + add ===
+DynamicInventory bag = new DynamicInventory();
+System.out.println(bag.size());                         // 0
+bag.display();                                          // "(empty)"
+
+bag.add(new Item("Steel Sword", 10, 250, "Rare"));
+bag.add(new Item("Shield", 15, 100, "Common"));
+bag.add(new Item("Ring", 1, 500, "Epic"));
+System.out.println(bag.size());                         // 3
+bag.display();
+// Expected:
+// [0] Steel Sword (Rare) - Wt:10 Val:250g
+// [1] Shield (Common) - Wt:15 Val:100g
+// [2] Ring (Epic) - Wt:1 Val:500g
+
+// === Test 2: add null ===
+System.out.println(bag.add(null));                      // false
+System.out.println(bag.size());                         // still 3
+
+// === Test 3: contains ===
+System.out.println(bag.contains("ring"));               // true (case-insensitive)
+System.out.println(bag.contains("Wand"));               // false
+
+// === Test 4: totals + rarity count ===
+System.out.println(bag.getTotalValue());                // 850
+System.out.println(bag.getTotalWeight());               // 26
+System.out.println(bag.countByRarity("Epic"));          // 1
+System.out.println(bag.countByRarity("Legendary"));     // 0
+
+// === Test 5: remove by index ===
+Item removed = bag.remove(0);
+System.out.println(removed.getName());                  // "Steel Sword"
+System.out.println(bag.size());                         // 2
+bag.display();
+// Expected: Shield at [0], Ring at [1] — shifted automatically
+
+// === Test 6: removeByName ===
+Item ring = bag.removeByName("Ring");
+System.out.println(ring.getGoldValue());                // 500
+System.out.println(bag.size());                         // 1
+System.out.println(bag.contains("Ring"));               // false
+
+// === Test 7: remove invalid index ===
+System.out.println(bag.remove(99));                     // null
+System.out.println(bag.remove(-1));                     // null
+
+// === Test 8: sortByValue ===
+bag.add(new Item("Potion", 2, 25, "Common"));
+bag.add(new Item("Wand", 3, 200, "Rare"));
+bag.display();  // mixed order
+bag.sortByValue();
+bag.display();  // highest value first: Wand(200), Shield(100), Potion(25)
+
+// === Test 9: No capacity limit ===
+for (int i = 0; i < 100; i++) {
+    bag.add(new Item("Item" + i, 1, 1, "Common"));
+}
+System.out.println(bag.size());                         // 103
+// No "Inventory full!" — ArrayList grows automatically</code></pre>
+
+<hr>
+
+<h2>What Changed vs Unit 6</h2>
+
+<table>
+    <tr><th>FixedInventory (Unit 6)</th><th>DynamicInventory (Unit 7)</th></tr>
+    <tr><td><code>Item[] items = new Item[capacity];</code></td><td><code>ArrayList&lt;Item&gt; items = new ArrayList&lt;&gt;();</code></td></tr>
+    <tr><td><code>int itemCount;</code> (manual tracking)</td><td><code>items.size()</code> (automatic)</td></tr>
+    <tr><td>Check <code>itemCount >= items.length</code></td><td>No capacity check — never full</td></tr>
+    <tr><td>Manual shift loop in remove()</td><td><code>items.remove(index)</code> auto-shifts</td></tr>
+    <tr><td><code>items[itemCount] = item; itemCount++;</code></td><td><code>items.add(item);</code></td></tr>
+    <tr><td>Constructor takes capacity</td><td>Constructor takes nothing</td></tr>
+</table>
+
+<hr>
+
+<h2>Integrate Into Your RPG</h2>
+
+<p>Replace <code>FixedInventory</code> with <code>DynamicInventory</code> in your dungeon crawler. Same method signatures — just switch the constructor call:</p>
+
+<pre><code>// Before:
+FixedInventory inventory = new FixedInventory(20);
+
+// After:
+DynamicInventory inventory = new DynamicInventory();</code></pre>
+
+<p>Everything else (<code>.add()</code>, <code>.contains()</code>, <code>.display()</code>) works the same. Your RPG inventory now grows forever.</p>
+
+</body>
+</html>

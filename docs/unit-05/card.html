@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Class Walkthrough — Unit 5</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 5</a>
+    <span class="sep">/</span>
+    <span class="here">Card Class</span>
+</nav>
+
+<h1>Writing a Card Class — Full Walkthrough</h1>
+
+<p>
+    This is the program your teacher builds live.
+    You'll design a Card class from scratch — instance variables, constructors,
+    getters, toString, and comparison logic. Use this as a reference
+    when building your own classes.
+</p>
+
+<h2>The Goal</h2>
+
+<p>Create a Card class representing a playing card — suit, rank, and point value. Then test it by creating a few cards and comparing them.</p>
+
+<pre><code><span class="output">Card c1 = new Card("Hearts", "Ace", 14);</span>
+<span class="output">Card c2 = new Card("Spades", "King", 13);</span>
+<span class="output">c1: Ace of Hearts (14 pts)</span>
+<span class="output">c2: King of Spades (13 pts)</span>
+<span class="output">c1 beats c2? true</span></code></pre>
+
+<h2>Step 1: The Spec</h2>
+
+<p>Before writing code, define what the class needs:</p>
+<ul>
+    <li>Instance variables: suit (String), rank (String), pointValue (int)</li>
+    <li>Constructor: takes all three, sets them</li>
+    <li>Getters: getSuit(), getRank(), getPointValue()</li>
+    <li>toString(): "Ace of Hearts (14 pts)"</li>
+    <li>Extra: beats(Card other) — returns true if this card's points > other card's points</li>
+</ul>
+
+<h2>Step 2: Instance Variables + Constructor</h2>
+
+<pre><code>public class Card {
+    private String suit;
+    private String rank;
+    private int pointValue;
+
+    public Card(String suit, String rank, int pointValue) {
+        this.suit = suit;
+        this.rank = rank;
+        this.pointValue = pointValue;
+    }</code></pre>
+
+<p>
+    <strong>Why private?</strong> Suit and rank shouldn't change after
+    the card is created. Private protects them. The card is immutable —
+    a feature, not a bug.
+</p>
+
+<h2>Step 3: Getters and toString</h2>
+
+<pre><code>    public String getSuit() {
+        return suit;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public int getPointValue() {
+        return pointValue;
+    }
+
+    public String toString() {
+        return rank + " of " + suit + " (" + pointValue + " pts)";
+    }</code></pre>
+
+<h2>Step 4: Comparison Method</h2>
+
+<pre><code>    public boolean beats(Card other) {
+        return this.pointValue > other.pointValue;
+    }
+}</code></pre>
+
+<p>
+    <strong>this vs other:</strong> The method is called on one card:
+    <code>card1.beats(card2)</code>. Inside the method, <code>this</code>
+    refers to card1, and <code>other</code> is the parameter (card2).
+</p>
+
+<h2>The Full Class + Test</h2>
+
+<pre><code>public class Card {
+    private String suit;
+    private String rank;
+    private int pointValue;
+
+    public Card(String suit, String rank, int pointValue) {
+        this.suit = suit;
+        this.rank = rank;
+        this.pointValue = pointValue;
+    }
+
+    public String getSuit()  { return suit; }
+    public String getRank()  { return rank; }
+    public int getPointValue() { return pointValue; }
+
+    public String toString() {
+        return rank + " of " + suit + " (" + pointValue + " pts)";
+    }
+
+    public boolean beats(Card other) {
+        return this.pointValue > other.pointValue;
+    }
+}
+
+// Test in main():
+public class CardTest {
+    public static void main(String[] args) {
+        Card ace = new Card("Hearts", "Ace", 14);
+        Card king = new Card("Spades", "King", 13);
+
+        System.out.println(ace);       // Ace of Hearts (14 pts)
+        System.out.println(king);      // King of Spades (13 pts)
+        System.out.println("Ace beats King? " + ace.beats(king));  // true
+    }
+}</code></pre>
+
+<h2>Extending the Program</h2>
+<ul>
+    <li>Add an equals() method — two cards are equal if suit AND rank match.</li>
+    <li>Add suit comparison (spades > hearts > diamonds > clubs).</li>
+    <li>Build a Deck class (Unit 6) that holds 52 Cards in an array.</li>
+</ul>
+
+<h2>How This Connects to Your RPG</h2>
+
+<p>
+    Card is the same pattern as Player and Monster: private instance variables,
+    constructor to initialize, getters to access, toString to display.
+    The beats() method is like your combat system's damage comparison — one object
+    comparing itself to another.
+</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="class-anatomy.html">Class Anatomy</a> — the skeleton behind every class</li>
+    <li><a href="constructors.html">Constructors</a> — initializing objects</li>
+    <li><a href="accessors-mutators.html">Accessors &amp; Mutators</a> — getters, this keyword</li>
+</ul>
+
+</body>
+</html>

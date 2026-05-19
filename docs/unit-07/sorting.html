@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sorting — Unit 7</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 7</a>
+    <span class="sep">/</span>
+    <span class="here">Sorting</span>
+</nav>
+
+<h1>Selection Sort and Insertion Sort</h1>
+
+<p>
+    Sorting is rearranging elements into order — smallest to largest, A to Z,
+    weakest to strongest. The AP exam requires you to <strong>trace</strong> and
+    <strong>implement</strong> two sorting algorithms on ArrayList: selection sort
+    and insertion sort.
+</p>
+
+<p>
+    In real code, you'd just call <code>Collections.sort(list)</code>. But understanding
+    how sorting works teaches you nested loops, element comparison, and algorithmic
+    thinking — skills that transfer to every programming problem.
+</p>
+
+<h2>Selection Sort</h2>
+
+<h3>The Idea</h3>
+
+<p>
+    <strong>Find the smallest. Put it at position 0. Find the next smallest. Put it at
+    position 1. Repeat.</strong>
+</p>
+
+<p>Selection sort divides the list into two regions:</p>
+<ul>
+    <li><strong>Left side (sorted):</strong> positions 0 through i-1 — already in order.</li>
+    <li><strong>Right side (unsorted):</strong> positions i through the end — still needs work.</li>
+</ul>
+
+<p>Each pass finds the minimum in the unsorted region and swaps it into position i.</p>
+
+<h3>Step-by-Step Trace</h3>
+
+<p>Starting list: <code>[7, 2, 9, 1, 5]</code></p>
+
+<table>
+    <tr><th>Pass (i)</th><th>Unsorted</th><th>Minimum found</th><th>After swap</th></tr>
+    <tr><td>0</td><td>[7, 2, 9, 1, 5]</td><td>1 (at index 3)</td><td>[1, 2, 9, 7, 5]</td></tr>
+    <tr><td>1</td><td>[2, 9, 7, 5]</td><td>2 (at index 1)</td><td>[1, 2, 9, 7, 5] (no swap needed)</td></tr>
+    <tr><td>2</td><td>[9, 7, 5]</td><td>5 (at index 4)</td><td>[1, 2, 5, 7, 9]</td></tr>
+    <tr><td>3</td><td>[7, 9]</td><td>7 (at index 3)</td><td>[1, 2, 5, 7, 9] (no swap needed)</td></tr>
+</table>
+
+<p>After pass 3, the last element (9) is naturally in place. Done.</p>
+
+<h3>The Code</h3>
+
+<pre><code>public static void selectionSort(ArrayList&lt;Integer&gt; list) {
+    for (int i = 0; i &lt; list.size() - 1; i++) {
+        // Find the index of the minimum in the unsorted region
+        int minIndex = i;
+        for (int j = i + 1; j &lt; list.size(); j++) {
+            if (list.get(j) &lt; list.get(minIndex)) {
+                minIndex = j;
+            }
+        }
+        // Swap the minimum into position i
+        int temp = list.get(i);
+        list.set(i, list.get(minIndex));
+        list.set(minIndex, temp);
+    }
+}</code></pre>
+
+<h3>Why It Works</h3>
+
+<ul>
+    <li>Outer loop: <code>i &lt; list.size() - 1</code> — after sorting n-1 elements, the last one is in place.</li>
+    <li>Inner loop: <code>j = i + 1</code> — everything before i is already sorted; only search the remainder.</li>
+    <li><strong>Always O(n²) comparisons</strong> — no best-case shortcut. Even a sorted list gets the full scan.</li>
+    <li><strong>At most n-1 swaps</strong> — one swap per pass (or zero if already in position).</li>
+</ul>
+
+<h3>Sorting Strings (Using compareTo)</h3>
+
+<pre><code>public static void selectionSortStrings(ArrayList&lt;String&gt; list) {
+    for (int i = 0; i &lt; list.size() - 1; i++) {
+        int minIndex = i;
+        for (int j = i + 1; j &lt; list.size(); j++) {
+            if (list.get(j).compareTo(list.get(minIndex)) &lt; 0) {
+                minIndex = j;
+            }
+        }
+        String temp = list.get(i);
+        list.set(i, list.get(minIndex));
+        list.set(minIndex, temp);
+    }
+}</code></pre>
+
+<h3>Sorting Objects by a Field</h3>
+
+<pre><code>// Sort items by gold value (ascending)
+public static void selectionSortByValue(ArrayList&lt;Item&gt; list) {
+    for (int i = 0; i &lt; list.size() - 1; i++) {
+        int minIndex = i;
+        for (int j = i + 1; j &lt; list.size(); j++) {
+            if (list.get(j).getGoldValue() &lt; list.get(minIndex).getGoldValue()) {
+                minIndex = j;
+            }
+        }
+        Item temp = list.get(i);
+        list.set(i, list.get(minIndex));
+        list.set(minIndex, temp);
+    }
+}</code></pre>
+
+<h2>Insertion Sort</h2>
+
+<h3>The Idea</h3>
+
+<p>
+    <strong>Build the sorted list from left to right. Take each new element and insert
+    it into its correct position among the already-sorted elements.</strong>
+</p>
+
+<p>Like sorting a hand of cards: you pick up each new card and slide it into place.</p>
+
+<h3>Step-by-Step Trace</h3>
+
+<p>Starting list: <code>[7, 2, 9, 1, 5]</code></p>
+
+<table>
+    <tr><th>i</th><th>Key</th><th>Action</th><th>List after</th></tr>
+    <tr><td>1</td><td>2</td><td>2 &lt; 7, shift 7 right, insert 2</td><td>[2, 7, 9, 1, 5]</td></tr>
+    <tr><td>2</td><td>9</td><td>9 &gt; 7, no shift, insert in place</td><td>[2, 7, 9, 1, 5]</td></tr>
+    <tr><td>3</td><td>1</td><td>1 &lt; 9, 7, 2 — shift all right, insert 1</td><td>[1, 2, 7, 9, 5]</td></tr>
+    <tr><td>4</td><td>5</td><td>5 &lt; 9, 7 — shift 9 and 7 right, insert 5</td><td>[1, 2, 5, 7, 9]</td></tr>
+</table>
+
+<h3>The Code</h3>
+
+<pre><code>public static void insertionSort(ArrayList&lt;Integer&gt; list) {
+    for (int i = 1; i &lt; list.size(); i++) {
+        int key = list.get(i);        // the element to insert
+        int j = i - 1;                // start comparing with the element to its left
+
+        // Shift larger elements one position to the right
+        while (j &gt;= 0 &amp;&amp; list.get(j) &gt; key) {
+            list.set(j + 1, list.get(j));
+            j--;
+        }
+
+        // Insert key into its correct position
+        list.set(j + 1, key);
+    }
+}</code></pre>
+
+<h3>Why It Works</h3>
+
+<ul>
+    <li>Starts at <code>i = 1</code> — the first element (index 0) is naturally "sorted" by itself.</li>
+    <li>The inner while loop shifts elements right until it finds where <code>key</code> belongs.</li>
+    <li>If the list is <strong>already sorted</strong>, the while loop never runs: <strong>O(n)</strong> best case.</li>
+    <li><strong>Worst case O(n²)</strong> — every element shifts everything before it (reverse-sorted list).</li>
+</ul>
+
+<h3>Sorting by HP Descending (Objects)</h3>
+
+<pre><code>public static void insertionSortByHP(ArrayList&lt;Player&gt; list) {
+    for (int i = 1; i &lt; list.size(); i++) {
+        Player key = list.get(i);
+        int j = i - 1;
+
+        // Shift players with LOWER HP to the right (descending order)
+        while (j &gt;= 0 &amp;&amp; list.get(j).getHP() &lt; key.getHP()) {
+            list.set(j + 1, list.get(j));
+            j--;
+        }
+
+        list.set(j + 1, key);
+    }
+}</code></pre>
+
+<h2>Selection Sort vs Insertion Sort</h2>
+
+<table>
+    <tr><th></th><th>Selection Sort</th><th>Insertion Sort</th></tr>
+    <tr>
+        <td><strong>Strategy</strong></td>
+        <td>Find minimum, swap to front</td>
+        <td>Insert each element into sorted region</td>
+    </tr>
+    <tr>
+        <td><strong>Comparisons (best)</strong></td>
+        <td>Always ~n²/2</td>
+        <td>n - 1 (already sorted)</td>
+    </tr>
+    <tr>
+        <td><strong>Comparisons (worst)</strong></td>
+        <td>~n²/2</td>
+        <td>~n²/2 (reverse sorted)</td>
+    </tr>
+    <tr>
+        <td><strong>Swaps / Shifts</strong></td>
+        <td>At most n - 1 swaps</td>
+        <td>Up to n²/2 shifts</td>
+    </tr>
+    <tr>
+        <td><strong>Best use case</strong></td>
+        <td>When swaps are expensive (large objects)</td>
+        <td>Nearly-sorted data; small datasets</td>
+    </tr>
+    <tr>
+        <td><strong>Stable?</strong></td>
+        <td>No (swapping can reorder equals)</td>
+        <td>Yes (equals stay in original order)</td>
+    </tr>
+</table>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The "Already Done" Advantage</h3>
+    <p>If you hand an already-sorted list (like <code>[1, 2, 3, 4, 5]</code>) to both Selection Sort and Insertion Sort, which one finishes faster? Explain why.</p>
+
+    <h3>2. The Final Element</h3>
+    <p>In Selection Sort, the outer loop stops at <code>i &lt; list.size() - 1</code>, ignoring the very last index. Why don't we need to run a pass for the final element in the array?</p>
+</div>
+
+<h2>Bug Hunt: The Endless Shift</h2>
+
+<div class="bug-hunt">
+    <p>A student wrote this Insertion Sort, but when they run it, the program completely freezes and never finishes. Find the bug.</p>
+    <pre><code>public static void buggyInsertionSort(ArrayList&lt;Integer&gt; list) {
+    for (int i = 1; i &lt; list.size(); i++) {
+        int key = list.get(i);
+        int j = i - 1;
+        
+        while (j &gt;= 0 &amp;&amp; list.get(j) &gt; key) {
+            list.set(j + 1, list.get(j));
+            // Something is missing here...
+        }
+        list.set(j + 1, key);
+    }
+}</code></pre>
+    <p><strong>Question:</strong> What happens to the <code>while</code> loop if <code>j</code> never changes? How do you fix it?</p>
+</div>
+
+<h2>Tinker Challenge: The Strongest First</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Sort enemies so the most dangerous ones attack first.</p>
+    <ol>
+        <li>Create an <code>ArrayList&lt;Integer&gt;</code> representing enemy attack power: <code>{14, 25, 8, 30, 12, 19}</code>.</li>
+        <li>Implement either Selection Sort or Insertion Sort in your code.</li>
+        <li><strong>Modify the algorithm</strong> so that it sorts in <strong>descending order</strong> (highest to lowest) instead of ascending order. <em>Hint: You only need to change one mathematical symbol!</em></li>
+        <li>Print the list before and after sorting to verify the 30 is at index 0.</li>
+        <li><strong>Boss Move:</strong> Add a print statement inside your outer loop to print the list's current state after every single pass. Watch the sort happen in slow motion!</li>
+    </ol>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student RPG Guide: Character Hierarchy — Unit 9</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 9</a>
+    <span class="sep">/</span>
+    <span class="here">Student Guide: Character Hierarchy</span>
+</nav>
+
+<h1>Student RPG Guide: GameCharacter + Refactored Player/Monster</h1>
+
+<div class="callout">
+    <strong>Three files to rewrite.</strong> Player.java and Monster.java have shared the same HP management code since Unit 5. Extract the overlap into a single abstract parent: <code>GameCharacter.java</code>. Then refactor Player and Monster to extend it. Less duplication. One <code>takeDamage()</code> to maintain.
+</div>
+
+<h2>References</h2>
+
+<ul>
+    <li><a href="abstract-classes.html">Abstract Classes</a> — <code>abstract</code> keyword, abstract methods, why you can't <code>new</code> an abstract class</li>
+    <li><a href="extends-and-super.html">extends and super</a> — inheritance syntax, <code>super()</code> constructor call, <code>super.method()</code></li>
+    <li><a href="overriding.html">Method Overriding</a> — same signature in parent and child, <code>@Override</code>, calling <code>super.toString()</code></li>
+    <li><a href="polymorphism.html">Polymorphism</a> — <code>GameCharacter[]</code> holding both Player and Monster, writing methods that work on any GameCharacter</li>
+    <li><a href="../unit-05/player-builder.html">Player.java (Unit 5)</a> — your existing player class, about to get shorter</li>
+    <li><a href="../unit-05/monster-builder.html">Monster.java (Unit 5)</a> — your existing monster class, about to get shorter</li>
+</ul>
+
+<hr>
+
+<h2>What Moves to GameCharacter</h2>
+
+<p>Open your current Player.java and Monster.java side by side. Here's what's duplicated:</p>
+
+<table>
+    <tr><th>Duplicate Code</th><th>Moves to</th></tr>
+    <tr><td><code>private String name;</code></td><td>GameCharacter (protected)</td></tr>
+    <tr><td><code>private int hitPoints;</code> / <code>private int maxHitPoints;</code></td><td>GameCharacter (protected)</td></tr>
+    <tr><td><code>getName()</code>, <code>getHitPoints()</code>, <code>getMaxHitPoints()</code></td><td>GameCharacter</td></tr>
+    <tr><td><code>isAlive()</code></td><td>GameCharacter</td></tr>
+    <tr><td><code>takeDamage(int amount)</code></td><td>GameCharacter</td></tr>
+    <tr><td><code>heal(int amount)</code></td><td>GameCharacter</td></tr>
+    <tr><td><code>toString()</code> — name and HP part</td><td>GameCharacter (base version)</td></tr>
+</table>
+
+<p>What stays in Player/Monster is what makes them different: Player has stats (str/dex/int/con) and attack bonus calculation. Monster has armor class, damage die, boss flag, and defeated counter.</p>
+
+<hr>
+
+<h2>FILE 1: GameCharacter.java</h2>
+
+<p><strong>NEW FILE.</strong> Abstract class. You can never write <code>new GameCharacter(...)</code> — that's the whole point.</p>
+
+<h3>Class Declaration + Instance Variables</h3>
+
+<pre><code>public abstract class GameCharacter {
+    protected String name;
+    protected int hitPoints;
+    protected int maxHitPoints;
+}</code></pre>
+
+<p><strong>Why protected and not private?</strong> Subclasses (Player, Monster) access these directly. If they were private, subclasses couldn't touch them — they'd need getters for their own data.</p>
+
+<h3>Constructor</h3>
+
+<pre><code>    public GameCharacter(String name, int hp) {
+        this.name = name;
+        this.maxHitPoints = hp;
+        this.hitPoints = hp;
+    }</code></pre>
+
+<p>Abstract classes CAN have constructors. Subclasses call them with <code>super(name, hp)</code>.</p>
+
+<h3>Shared Getters</h3>
+
+<pre><code>    public String getName()         { return name; }
+    public int getHitPoints()       { return hitPoints; }
+    public int getMaxHitPoints()    { return maxHitPoints; }
+
+    public boolean isAlive() {
+        return hitPoints > 0;
+    }</code></pre>
+
+<h3>HP Management</h3>
+
+<pre><code>    public void takeDamage(int amount) {
+        hitPoints -= amount;
+        if (hitPoints < 0) hitPoints = 0;
+        System.out.println(name + " takes " + amount + " damage! HP: "
+                           + hitPoints + "/" + maxHitPoints);
+    }
+
+    public void heal(int amount) {
+        hitPoints += amount;
+        if (hitPoints > maxHitPoints) hitPoints = maxHitPoints;
+        System.out.println(name + " heals " + amount + " HP! HP: "
+                           + hitPoints + "/" + maxHitPoints);
+    }</code></pre>
+
+<h3>Abstract Method</h3>
+
+<pre><code>    public abstract int attack();</code></pre>
+
+<p>No body. No braces. Just a semicolon. Every concrete subclass MUST implement this. Player rolls a d8. Monster rolls its damage die (advantage for bosses). The parent class doesn't care HOW — it only declares "you must have an attack() method."</p>
+
+<h3>toString()</h3>
+
+<pre><code>    public String toString() {
+        return name + " (HP: " + hitPoints + "/" + maxHitPoints + ")";
+    }</code></pre>
+
+<p>Subclasses override this and call <code>super.toString()</code> to prepend the shared part.</p>
+
+<p>Full file: ~50 lines. Half your old Player.java. And you never touch this code again — all future HP changes happen here.</p>
+
+<hr>
+
+<h2>FILE 2: Player.java — Refactored</h2>
+
+<p><strong>REWRITE</strong> your existing Player.java. Most of it disappears — GameCharacter handles name, HP, and damage.</p>
+
+<pre><code>public class Player extends GameCharacter {
+    private int strength;
+    private int dexterity;
+    private int intelligence;
+    private int constitution;
+
+    public Player(String name, int hp, int str, int dex,
+                  int intel, int con) {
+        super(name, hp);          // MUST be the first line
+        this.strength = str;
+        this.dexterity = dex;
+        this.intelligence = intel;
+        this.constitution = con;
+    }
+
+    // Getters (unchanged from Unit 5)
+    public int getStrength()      { return strength; }
+    public int getDexterity()     { return dexterity; }
+    public int getIntelligence()  { return intelligence; }
+    public int getConstitution()  { return constitution; }
+
+    public int getAttackBonus() {
+        return strength / 4;      // integer division
+    }
+
+    // MUST implement the abstract method
+    public int attack() {
+        return Dice.roll(8);     // player rolls a d8
+    }
+
+    // Override to add stats
+    public String toString() {
+        return super.toString()
+            + " STR:" + strength
+            + " DEX:" + dexterity
+            + " INT:" + intelligence
+            + " CON:" + constitution;
+    }
+}</code></pre>
+
+<p><strong>What disappeared:</strong> name field, hp fields, isAlive(), takeDamage(), heal(), getName(), getHitPoints(), getMaxHitPoints() — all inherited for free.</p>
+
+<p><strong>New constraint:</strong> The constructor's first line MUST be <code>super(name, hp)</code>. Java enforces this. If you forget, the compiler says "call to super must be first statement in constructor."</p>
+
+<hr>
+
+<h2>FILE 3: Monster.java — Refactored</h2>
+
+<p><strong>REWRITE</strong> your existing Monster.java. Same deal.</p>
+
+<pre><code>public class Monster extends GameCharacter {
+    private int armorClass;
+    private int damageDie;
+    private boolean isBoss;
+    private static int defeatedCount = 0;
+
+    // Basic constructor
+    public Monster(String name, int hp, int ac, int die) {
+        super(name, hp);
+        this.armorClass = ac;
+        this.damageDie = die;
+        this.isBoss = false;
+    }
+
+    // Boss constructor — chains to basic constructor
+    public Monster(String name, int hp, int ac, int die, boolean boss) {
+        this(name, hp, ac, die);   // calls constructor above
+        this.isBoss = boss;
+    }
+
+    // Getters (unchanged)
+    public int getArmorClass()  { return armorClass; }
+    public int getDamageDie()   { return damageDie; }
+    public boolean isBoss()     { return isBoss; }
+
+    // MUST implement the abstract method
+    public int attack() {
+        int roll = Dice.roll(damageDie);
+        if (isBoss) {
+            int roll2 = Dice.roll(damageDie);
+            if (roll2 > roll) roll = roll2;  // advantage
+        }
+        return roll;
+    }
+
+    // Override to count defeats
+    public void takeDamage(int amount) {
+        super.takeDamage(amount);
+        if (!isAlive()) {
+            defeatedCount++;
+        }
+    }
+
+    public static int getDefeatedCount() {
+        return defeatedCount;
+    }
+
+    // Override toString
+    public String toString() {
+        String result = super.toString()
+            + " AC:" + armorClass + " d" + damageDie;
+        if (isBoss) result = "☆ " + result;
+        return result;
+    }
+}</code></pre>
+
+<p><strong>Chain constructor:</strong> <code>this(name, hp, ac, die)</code> calls the basic constructor, which calls <code>super(name, hp)</code>. Chain of delegation.</p>
+
+<p><strong>Override takeDamage:</strong> Call <code>super.takeDamage(amount)</code> first (the parent does the HP math and printing), then check if dead and increment the counter.</p>
+
+<hr>
+
+<h2>Test It</h2>
+
+<pre><code>// === Test 1: Can't instantiate abstract class ===
+// GameCharacter gc = new GameCharacter("Test", 10);  // COMPILE ERROR
+
+// === Test 2: Player inherits everything ===
+Player hero = new Player("Aragon", 30, 16, 14, 12, 18);
+System.out.println(hero.getName());         // Aragon
+System.out.println(hero.getHitPoints());    // 30
+System.out.println(hero.isAlive());         // true
+System.out.println(hero.getAttackBonus());  // 4 (= 16/4)
+System.out.println(hero);                   // Aragon (HP: 30/30) STR:16 DEX:14 INT:12 CON:18
+
+// === Test 3: Monster inherits everything ===
+Monster goblin = new Monster("Goblin", 12, 10, 6);
+System.out.println(goblin.getName());       // Goblin
+System.out.println(goblin.getArmorClass()); // 10
+System.out.println(goblin);                 // Goblin (HP: 12/12) AC:10 d6
+
+// === Test 4: Boss with advantage attack ===
+Monster boss = new Monster("Dragon", 50, 16, 12, true);
+System.out.println(boss.isBoss());          // true
+System.out.println(boss);                   // ☆ Dragon (HP: 50/50) AC:16 d12
+
+// === Test 5: takeDamage works on both ===
+hero.takeDamage(10);
+System.out.println(hero.getHitPoints());    // 20
+goblin.takeDamage(15);
+System.out.println(goblin.getHitPoints());  // 0
+System.out.println(goblin.isAlive());       // false
+System.out.println(Monster.getDefeatedCount()); // 1
+
+// === Test 6: heal works ===
+hero.heal(5);
+System.out.println(hero.getHitPoints());    // 25
+hero.heal(999);
+System.out.println(hero.getHitPoints());    // 30 (clamped to max)
+
+// === Test 7: Heal doesn't revive ===
+goblin.heal(10);
+System.out.println(goblin.getHitPoints());  // still 0 (dead is dead)
+
+// === Test 8: Polymorphism — GameCharacter array ===
+GameCharacter[] party = new GameCharacter[3];
+party[0] = new Player("Mage", 20, 8, 12, 18, 10);
+party[1] = new Monster("Orc", 18, 12, 8);
+party[2] = new Monster("Troll", 25, 14, 10, true);  // boss
+for (GameCharacter gc : party) {
+    System.out.println(gc.getName() + " attacks for " + gc.attack());
+    // Each calls its OWN attack() — Player rolls d8, Orc rolls d8, Troll rolls d10 (adv)
+}
+
+// === Test 9: Polymorphic damage ===
+for (GameCharacter gc : party) {
+    gc.takeDamage(5);  // works on Player AND Monster — one method call
+}</code></pre>
+
+<hr>
+
+<h2>Integrate Into Your RPG</h2>
+
+<table>
+    <tr><th>Before</th><th>After</th></tr>
+    <tr><td>Player and Monster are unrelated classes</td><td>Both extend GameCharacter — shared behavior</td></tr>
+    <tr><td>Duplicate takeDamage() in two places</td><td>One takeDamage() in GameCharacter</td></tr>
+    <tr><td>Combat.java treats Player and Monster separately</td><td>Combat methods can accept <code>GameCharacter</code></td></tr>
+    <tr><td>Can't store both in one array</td><td><code>GameCharacter[]</code> holds both</td></tr>
+</table>
+
+<p>In Unit 10, chain damage and area-of-effect spells operate on <code>GameCharacter[][]</code> grids — possible only because Player and Monster share a parent type.</p>
+
+</body>
+</html>

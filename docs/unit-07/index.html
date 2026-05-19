@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 7: ArrayList — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <span class="here">Unit 7: ArrayList</span>
+</nav>
+
+<h1>Unit 7: ArrayList</h1>
+
+<p>
+    Arrays from Unit 6 are <strong>fixed-size</strong>. You decide the size when you create
+    them, and that's it. But most collections in real programs grow and shrink. Your inventory
+    shouldn't have a cap. Your spellbook shouldn't be locked at 8 slots. Your leaderboard
+    shouldn't need a pre-determined size.
+</p>
+
+<p>
+    This unit introduces <strong>ArrayList</strong> — a dynamic, resizable list that grows
+    as you add things. You'll also learn sorting (selection sort, insertion sort) to organize
+    your collections, and the standard search pattern for finding items.
+</p>
+
+<h2>Concepts</h2>
+
+<table>
+    <tr><th>Topic</th><th>What you'll learn</th></tr>
+    <tr>
+        <td><a href="arraylist-basics.html">ArrayList Basics</a></td>
+        <td>Declaration, add, remove, get, set, size. Generic types.</td>
+    </tr>
+    <tr>
+        <td><a href="arraylist-traversal.html">Traversal &amp; Algorithms</a></td>
+        <td>For-each loop. Finding, counting, filtering, accumulating with ArrayList.</td>
+    </tr>
+    <tr>
+        <td><a href="sorting.html">Sorting</a></td>
+        <td>Selection sort and insertion sort. Comparing elements.</td>
+    </tr>
+</table>
+
+<h2>Teacher Projects (Standalone Demos)</h2>
+
+<table>
+    <tr><th>Project</th><th>What it demonstrates</th></tr>
+    <tr>
+        <td><a href="leaderboard.html">Leaderboard</a></td>
+        <td>ArrayList of highscores. Add, sort, display top-N. Dynamic sizing.</td>
+    </tr>
+    <tr>
+        <td><a href="music-playlist.html">Music Playlist</a></td>
+        <td>ArrayList of songs. Add, remove, shuffle, search. Full CRUD operations.</td>
+    </tr>
+</table>
+
+<h2>Your RPG Project</h2>
+
+<p>
+    <strong><a href="dynamic-inventory.html">DynamicInventory.java (Student RPG Guide)</a></strong> —
+    Replace your fixed inventory array with an ArrayList. Add items, remove items, search
+    by name, sort by value. No more "inventory full" messages.
+</p>
+
+<h2>RPG Thread</h2>
+
+<p>
+    Your inventory from Unit 6 gets upgraded from Item[] to ArrayList&lt;Item&gt;. The sorting
+    algorithms you learn here (selection sort, insertion sort) are the same ones that sort
+    your inventory by value or your leaderboard by score. In Unit 8, 2D arrays work alongside
+    ArrayList — the dungeon map is a grid, but your party roster is a dynamic list.
+</p>
+
+<h2>Prerequisites</h2>
+
+<p>Before starting this unit, you should be comfortable with:</p>
+<ul>
+    <li>Arrays, traversal, and array algorithms: <a href="../unit-06/index.html">Unit 6</a></li>
+    <li>Writing classes, constructors, and methods: <a href="../unit-05/index.html">Unit 5</a></li>
+    <li>Loops (while, for, for-each): <a href="../unit-04/index.html">Unit 4</a></li>
+</ul>
+
+<h2>Reference Materials</h2>
+
+<ul>
+    <li><strong>Quick Reference:</strong> <code>reference/ArrayListQuickRef.md</code> — ArrayList methods, for-each syntax, selection/insertion sort patterns</li>
+</ul>
+
+<h2>Assessment</h2>
+
+<ul>
+    <li><strong>Part A:</strong> Knowledge — ArrayList vs array, generic types, ArrayList methods</li>
+    <li><strong>Part B:</strong> Code trace — predict output of ArrayList operations and traversal</li>
+    <li><strong>Part C:</strong> Write code — implement an ArrayList-based solution from a specification</li>
+</ul>
+
+</body>
+</html>

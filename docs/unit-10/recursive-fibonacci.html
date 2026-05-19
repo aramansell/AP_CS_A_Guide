@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fibonacci & Efficiency — Unit 10</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 10</a>
+    <span class="sep">/</span>
+    <span class="here">Fibonacci &amp; Efficiency</span>
+</nav>
+
+<h1>Fibonacci &amp; Efficiency</h1>
+
+<p>
+    Recursion can be <strong>beautiful</strong>. It can also be <strong>brutally slow</strong>.
+    Fibonacci is the proof.
+</p>
+
+<h2>The Fibonacci Sequence</h2>
+
+<p>
+    0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, ...
+</p>
+
+<p>
+    Each number is the sum of the two before it: <code>fib(n) = fib(n-1) + fib(n-2)</code>.
+</p>
+
+<pre><code>public static int fib(int n) {
+    if (n <= 1) return n;            // BASE: fib(0)=0, fib(1)=1
+    return fib(n - 1) + fib(n - 2);  // RECURSIVE: two calls!
+}</code></pre>
+
+<p>
+    <strong>Two recursive calls per call</strong>. This is where the trouble begins.
+</p>
+
+<h2>The Tree Explosion</h2>
+
+<p>
+    Tracing <code>fib(5)</code> — draw it as a tree:
+</p>
+
+<pre><code>                        fib(5)
+              ┌───────────┴───────────┐
+            fib(4)                  fib(3)
+       ┌──────┴──────┐         ┌──────┴──────┐
+     fib(3)        fib(2)    fib(2)        fib(1)
+   ┌───┴───┐    ┌───┴───┐  ┌───┴───┐       (→ 1)
+ fib(2)  fib(1) fib(1) fib(0) fib(1) fib(0)
+┌──┴──┐  (→1)  (→1)   (→0)  (→1)   (→0)
+fib(1) fib(0)
+(→1)   (→0)</code></pre>
+
+<p>
+    Count the leaves: <strong>15 calls</strong> to compute an answer you can get with a
+    5-iteration loop. And it gets worse — <em>much</em> worse.
+</p>
+
+<table>
+    <tr><th>n</th><th>Recursive calls</th><th>Time (approx)</th></tr>
+    <tr><td>10</td><td>177</td><td>Instant</td></tr>
+    <tr><td>20</td><td>21,891</td><td>Instant</td></tr>
+    <tr><td>30</td><td>2,692,537</td><td>~0.01s</td></tr>
+    <tr><td>40</td><td>331,160,281</td><td>~3 seconds</td></tr>
+    <tr><td>50</td><td>~40 billion</td><td>Minutes to hours</td></tr>
+</table>
+
+<div class="callout">
+    <strong>Why so many calls?</strong> The recursive Fibonacci recomputes the same values
+    over and over. <code>fib(3)</code> is computed <em>twice</em> for fib(5), and for
+    fib(40) it's computed millions of times. Each call is independent — it doesn't remember
+    previous results. This is <strong>exponential blowup</strong>: O(φ<sup>n</sup>) ≈ O(1.618<sup>n</sup>).
+</div>
+
+<h2>The Iterative Alternative</h2>
+
+<pre><code>public static int fibIterative(int n) {
+    if (n <= 1) return n;
+    int a = 0, b = 1;
+    for (int i = 2; i <= n; i++) {
+        int next = a + b;
+        a = b;
+        b = next;
+    }
+    return b;
+}</code></pre>
+
+<p>
+    <code>fibIterative(50)</code> → <strong>instant</strong>. One loop, 49 iterations.
+    No redundant computation. O(n) time, O(1) memory.
+</p>
+
+<h2>When to Use Recursion vs Iteration</h2>
+
+<table>
+    <tr>
+        <th>Use Recursion When...</th>
+        <th>Use Iteration When...</th>
+    </tr>
+    <tr>
+        <td>The problem has a tree or nested structure (file systems, expression parsing, dungeon exploration)</td>
+        <td>Simple repetition — just count through N items</td>
+    </tr>
+    <tr>
+        <td>Divide-and-conquer: each step splits the problem in half (binary search, merge sort)</td>
+        <td>The recursive version would recompute the same work (Fibonacci)</td>
+    </tr>
+    <tr>
+        <td>Backtracking is needed — try, fail, undo, try again</td>
+        <td>Memory matters — iterative saves the call stack space</td>
+    </tr>
+    <tr>
+        <td>The recursive solution is dramatically simpler to write and read</td>
+        <td>Depth is unknown and could be huge (stack overflow risk)</td>
+    </tr>
+</table>
+
+<h2>The Fix: Memoization</h2>
+
+<p>
+    Store intermediate results so you never compute the same thing twice:
+</p>
+
+<pre><code>private static long[] memo = new long[100]; // cache
+
+public static long fibMemo(int n) {
+    if (n <= 1) return n;
+    if (memo[n] != 0) return memo[n];       // already computed!
+    memo[n] = fibMemo(n - 1) + fibMemo(n - 2);
+    return memo[n];
+}</code></pre>
+
+<p>
+    <code>fibMemo(50)</code> → <strong>instant</strong>, same speed as iterative.
+    Each value is computed exactly once, stored in the array, and looked up on subsequent
+    requests. This transforms O(φ<sup>n</sup>) into O(n).
+</p>
+
+<p>
+    Memoization is the bridge between elegant recursion and efficient execution.
+    The recursive structure stays clean. The array eliminates redundant work.
+</p>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Overlapping Subproblem Tax</h3>
+    <p>Look at the recursion tree for <code>fib(5)</code>. Count how many times <code>fib(2)</code> is evaluated. Now, try to imagine the recursion tree for <code>fib(10)</code>. How does the repetition of subproblems scale? In your own words, explain how memoization turns an exponential number of calculations into a simple, linear sequence of table lookups.</p>
+
+    <h3>2. Time vs. Space Tradeoffs</h3>
+    <p>Raw recursive Fibonacci runs in <strong>exponential time</strong> (O(1.618<sup>n</sup>)) but uses <strong>linear call stack space</strong> (O(n)). The memoized version runs in <strong>linear time</strong> (O(n)) but requires <strong>linear space</strong> (O(n)) for both the call stack and the memoization array. The iterative loop runs in <strong>linear time</strong> (O(n)) and uses <strong>constant space</strong> (O(1)). Given this, why would a developer ever use memoized recursion instead of a simple iterative loop?</p>
+</div>
+
+<h2>Bug Hunt: The Single Base Case Pitfall</h2>
+
+<div class="bug-hunt">
+    <p>An eager student tries to optimize the recursive Fibonacci method to make the code shorter. They reason that since 0 is the starting value, they only need one base case:</p>
+    <pre><code>public static int fib(int n) {
+    if (n == 0) return 0;          // Base case for 0
+    return fib(n - 1) + fib(n - 2); // Recurse!
+}</code></pre>
+    <p>However, when they call <code>fib(1)</code>, their program instantly hangs and crashes with a massive <code>java.lang.StackOverflowError</code>. </p>
+    <p><strong>Question:</strong> Why does omitting the base case for <code>1</code> cause the recursion to spin out of control even when the initial input is a positive number? Trace the first step of calling <code>fib(1)</code> to show how it bypasses the stopping condition.</p>
+</div>
+
+<h2>Tinker Challenge: The Memoization Race &amp; Overflow Alert</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Implement, benchmark, and test the limits of memoized Fibonacci.</p>
+    <ol>
+        <li><strong>Implement and Benchmark:</strong> Write a Java program that implements both the raw recursive <code>fib(n)</code> (returning a <code>long</code>) and the memoized <code>fibMemo(n)</code>. In your <code>main</code> method, time how long it takes to calculate <code>fib(40)</code> using both methods. Use <code>System.currentTimeMillis()</code> or <code>System.nanoTime()</code> to measure the execution time and print the results side-by-side.</li>
+        <li><strong>Analyze the Speedup:</strong> What is the difference in milliseconds? Try raising <code>n</code> to 45 for the raw recursive method. What happens? Now raise <code>n</code> to 90 for the memoized version. How fast does it return?
+            <div class="callout warn">
+                <strong>Integer and Long Overflow:</strong> Fibonacci numbers grow at an astronomical rate. A standard 32-bit signed <code>int</code> overflows at <code>n = 47</code> (turning into negative numbers due to two's complement wrap-around). A 64-bit <code>long</code> overflows at <code>n = 93</code>. Try calculating <code>fibMemo(93)</code> and <code>fibMemo(94)</code>. What happens to the values? How would you modify your program to compute even larger Fibonacci numbers (like <code>n = 200</code>) without overflow? (Hint: Research Java's <code>java.math.BigInteger</code> class).
+            </div>
+        </li>
+    </ol>
+</div>
+
+</body>
+</html>

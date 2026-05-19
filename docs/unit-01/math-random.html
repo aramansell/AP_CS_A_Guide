@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math.random() — Unit 1</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 1</a>
+    <span class="sep">/</span>
+    <span class="here">Math.random()</span>
+</nav>
+
+<h1>Math.random()</h1>
+
+<p>
+    <code>Math.random()</code> is the engine behind every dice roll, loot drop, and random event
+    in your RPG. Rather than telling you how it works, let's consult the official documentation.
+</p>
+
+<h2>Official Documentation</h2>
+
+<div class="callout" style="background: #2d2d2d; color: #e0e0e0; border-left: 4px solid #999; font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;">
+    <strong style="color: #6cbf6c;">public static double random()</strong><br><br>
+    Returns a <code>double</code> value with a positive sign, greater than or equal to <code>0.0</code> and less than <code>1.0</code>. 
+    Returned values are chosen pseudorandomly with (approximately) uniform distribution from that range.<br><br>
+    When this method is first called, it creates a single new pseudorandom-number generator, exactly as if by the expression 
+    <code>new java.util.Random()</code>. This new pseudorandom-number generator is used thereafter for all calls to this method and is used nowhere else.<br><br>
+    <strong style="color: #6cbf6c;">Returns:</strong><br>
+    a pseudorandom <code>double</code> greater than or equal to <code>0.0</code> and less than <code>1.0</code>.
+</div>
+
+<h2>Socratic Checkpoint: Reading the Docs</h2>
+<ol>
+    <li>What data type does this method return?</li>
+    <li>Is it possible for this method to return exactly <code>0.0</code>?</li>
+    <li>Is it possible for this method to return exactly <code>1.0</code>?</li>
+    <li>If you wanted a random integer between 0 and 9 (inclusive), what mathematical operations could you apply to the result of this method?</li>
+</ol>
+
+<h2>Tinker Challenge 1: The Raw Call</h2>
+<p>Create a new file named <code>RandomTest.java</code> with a main method. Run the following code 5 times.</p>
+<pre><code>System.out.println(Math.random());</code></pre>
+<p><em>Observation:</em> Do your results match what the documentation promised? What is the highest value you saw?</p>
+
+<h2>Tinker Challenge 2: Scaling Up</h2>
+<p>Games usually use whole numbers (like rolling a 6 on a die, not a 0.832). Change your code to:</p>
+<pre><code>System.out.println(Math.random() * 6);</code></pre>
+<p><em>Observation:</em> Run it 5 times. What is the new possible range of values? Can it ever output 6.0? Why or why not, based on the documentation?</p>
+
+<h2>Tinker Challenge 3: Chopping the Decimal</h2>
+<p>We only want whole numbers. In Java, we can "cast" a <code>double</code> to an <code>int</code>. Add the cast:</p>
+<pre><code>System.out.println((int) Math.random() * 6);</code></pre>
+<p><em>Observation:</em> Run it 5 times. Wait, what happened? Why does it only print 0?</p>
+<p><strong>Hint:</strong> Think about the order of operations in Java. Does the computer cast the result of <code>Math.random()</code> to an <code>int</code> <em>first</em>, or does it multiply <em>first</em>?</p>
+
+<p>Now fix the code using parentheses so that the multiplication happens <em>before</em> the cast.</p>
+<pre><code>System.out.println((int) (Math.random() * 6));</code></pre>
+<p><em>Observation:</em> Run it 5 times. What is the range of integers you get now?</p>
+
+<h2>Tinker Challenge 4: Shifting the Range</h2>
+<p>You should be getting numbers from 0 to 5. But a standard die rolls from 1 to 6. Modify your print statement to shift the entire range up by 1.</p>
+
+<h2>Synthesis: The General Pattern</h2>
+<p>Based on your experiments above, how would you write a single line of code (a formula) to get a random integer where you define the number of possible values (the "range") and the starting value (the "min")?</p>
+
+<div class="callout trap">
+    <strong>Write your proposed line of code down before asking the teacher to check it!</strong>
+</div>
+
+</body>
+</html>

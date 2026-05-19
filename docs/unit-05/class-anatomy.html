@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class Anatomy — Unit 5</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 5</a>
+    <span class="sep">/</span>
+    <span class="here">Class Anatomy</span>
+</nav>
+
+<h1>Anatomy of a Class</h1>
+
+<p>
+    A class is a <strong>blueprint</strong>. It defines what every object of that type
+    looks like and can do. One class → many objects. Write it once, use it everywhere.
+</p>
+
+<h2>The Four Sections</h2>
+
+<p>Every class you write has these four parts:</p>
+
+<pre><code>public class ClassName {
+    // 1. INSTANCE VARIABLES — the data (each object has its own copy)
+    private type variableName;
+
+    // 2. CONSTRUCTOR(S) — how to build an object (runs when you use new)
+    public ClassName(parameters) {
+        // set up initial values
+    }
+
+    // 3. ACCESSORS (GETTERS) — read the data safely
+    public type getVariable() {
+        return variable;
+    }
+
+    // 4. MUTATORS + METHODS — change the data, perform actions
+    public void setVariable(type newValue) {
+        // validate, then assign
+    }
+
+    public String toString() {
+        // return a readable string representation
+    }
+}</code></pre>
+
+<h2>Section 1: Instance Variables</h2>
+
+<p>
+    Instance variables <strong>store the object's state</strong>. Every object gets
+    its own copy. One <code>Sword</code> might have <code>damage = 12</code>, another
+    <code>damage = 45</code>. Same blueprint. Different values.
+</p>
+
+<pre><code>public class Sword {
+    private String name;      // each sword has its own name
+    private int damage;       // each sword has its own damage
+    private int durability;   // each sword has its own durability
+}</code></pre>
+
+<div class="callout warn">
+    <strong>Always private.</strong> Instance variables are <code>private</code>.
+    Other classes can't touch them directly. They have to use your methods.
+    This is called <strong>encapsulation</strong> — you control how data changes.
+</div>
+
+<h2>Section 2: Constructor</h2>
+
+<p>
+    The constructor runs when you write <code>new</code>. Its job: set up the object
+    so it's ready to use. The constructor name always matches the class name.
+    It has <strong>no return type</strong> (not even <code>void</code>).
+</p>
+
+<pre><code>public Sword(String n, int dmg, int dur) {
+    name = n;
+    damage = dmg;
+    durability = dur;
+}</code></pre>
+
+<h2>Section 3: Accessors (Getters)</h2>
+
+<p>
+    Getters let other code <strong>read</strong> your object's data without touching
+    the private variables directly. They return a value but change nothing.
+</p>
+
+<pre><code>public String getName() {
+    return name;
+}
+
+public int getDamage() {
+    return damage;
+}</code></pre>
+
+<h2>Section 4: Mutators (Setters) and Methods</h2>
+
+<p>
+    Setters let other code <strong>change</strong> your object's data — but only
+    through your rules. This is where validation lives.
+</p>
+
+<pre><code>public void setDurability(int dur) {
+    if (dur < 0) {
+        durability = 0;       // can't go below zero
+    } else if (dur > 100) {
+        durability = 100;     // capped at 100
+    } else {
+        durability = dur;
+    }
+}</code></pre>
+
+<p>
+    Other methods do things: attack, defend, level up, take damage. They use the
+    instance variables to perform actions.
+</p>
+
+<h2>Object vs Class</h2>
+
+<table>
+    <tr><th>Class</th><th>Object (Instance)</th></tr>
+    <tr><td>The blueprint</td><td>One thing built from it</td></tr>
+    <tr><td>Written once in a .java file</td><td>Created with <code>new</code></td></tr>
+    <tr><td>Defines what data and methods exist</td><td>Holds actual data values</td></tr>
+    <tr><td><code>Sword.java</code></td><td><code>new Sword("Excalibur", 25, 100)</code></td></tr>
+</table>
+
+<pre><code>// One class...
+public class Sword { ... }
+
+// ...many objects. Each has its own name and damage.
+Sword s1 = new Sword("Iron", 8, 50);
+Sword s2 = new Sword("Steel", 14, 80);
+Sword s3 = new Sword("Fire Blade", 22, 60);</code></pre>
+
+<div class="socratic">
+    <h3>Socratic Checkpoint: The Wall of Privacy</h3>
+    <p>Look at the <code>Sword</code> class above. Why are variables like <code>damage</code> marked as <code>private</code>? What disaster could happen in our RPG if another programmer (or another part of your code) could write <code>mySword.damage = -9999;</code> directly from a different file?</p>
+</div>
+
+<div class="bug-hunt">
+    <h3>Bug Hunt: The Broken Blueprint</h3>
+    <p>A student tried to write a <code>Shield</code> class, but it has several critical flaws. Find the three structural errors in their blueprint:</p>
+    <pre><code>public class Shield {
+    String name;
+    int defense;
+
+    public void Shield(String n, int def) {
+        name = n;
+        defense = def;
+    }
+
+    public int getDefense() {
+        return def;
+    }
+}</code></pre>
+    <p><em>Hint: Think about privacy rules, what constructors are allowed to return, and variable scope.</em></p>
+</div>
+
+<div class="tinker">
+    <h3>Tinker Challenge: The Potion Vendor</h3>
+    <p>Write a complete <code>Potion</code> class from scratch containing all four structural sections.</p>
+    <ol>
+        <li><strong>Instance Variables:</strong> <code>name</code> (String), <code>healingAmount</code> (int), <code>isEmpty</code> (boolean). Ensure they follow the rule of encapsulation!</li>
+        <li><strong>Constructor:</strong> Takes a name and a healing amount as parameters. Sets <code>isEmpty</code> to false automatically.</li>
+        <li><strong>Getters:</strong> Write accessors to return the name and the healing amount.</li>
+        <li><strong>Action Method:</strong> Write a <code>drink()</code> method. If <code>isEmpty</code> is false, print "You drank the [name]", set <code>isEmpty</code> to true, and return the <code>healingAmount</code>. If it is already empty, print "The bottle is empty" and return 0.</li>
+    </ol>
+</div>
+
+</body>
+</html>
