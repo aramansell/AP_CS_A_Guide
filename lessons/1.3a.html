@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.3a Math.random() Deep Dive — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="1.2c.html">◀ 1.2c</a>
+    <span class="lesson-id">1.3a</span>
+    <a href="1.3b.html">1.3b ▶</a>
+</div>
+
+<h1>1.3a — Math.random() Deep Dive</h1>
+
+<p>
+    <code>Math.random()</code> is the engine behind every dice roll, loot drop,
+    and random event in your RPG. Today you figure out how it works — not by
+    being told, but by running experiments.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~45 min</span>
+    </div>
+
+    <h3>Official Documentation</h3>
+
+    <div class="callout" style="background: #2d2d2d; color: #e0e0e0; border-left: 4px solid #999; font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; padding: 1rem;">
+        <strong style="color: #6cbf6c;">public static double random()</strong><br><br>
+        Returns a <code>double</code> value with a positive sign, greater than or equal
+        to <code>0.0</code> and less than <code>1.0</code>. Returned values are chosen
+        pseudorandomly with (approximately) uniform distribution from that range.<br><br>
+        When this method is first called, it creates a single new pseudorandom-number
+        generator, exactly as if by the expression <code>new java.util.Random()</code>.
+        This new pseudorandom-number generator is used thereafter for all calls to this
+        method and is used nowhere else.<br><br>
+        <strong style="color: #6cbf6c;">Returns:</strong><br>
+        a pseudorandom <code>double</code> greater than or equal to <code>0.0</code>
+        and less than <code>1.0</code>.
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint: Reading the Docs</h3>
+        <p>Answer these before you write any code:</p>
+        <ol>
+            <li>What data type does this method return?</li>
+            <li>Is it possible for this method to return exactly <code>0.0</code>?</li>
+            <li>Is it possible for this method to return exactly <code>1.0</code>?</li>
+            <li>If you wanted a random integer between 0 and 9 (inclusive), what
+                mathematical operations could you apply to the result?</li>
+        </ol>
+    </div>
+
+    <h3>Tinker Challenge 1: The Raw Call</h3>
+    <p>Create a file named <code>RandomTest.java</code> with a main method. Run this 5 times:</p>
+    <pre><code>System.out.println(Math.random());</code></pre>
+    <p><em>Observation:</em> Do your results match what the documentation promised?
+    What is the highest value you saw?</p>
+
+    <h3>Tinker Challenge 2: Scaling Up</h3>
+    <p>Games usually use whole numbers (like rolling a 6, not 0.832). Change your code:</p>
+    <pre><code>System.out.println(Math.random() * 6);</code></pre>
+    <p><em>Observation:</em> Run it 5 times. What is the new possible range of values?
+    Can it ever output 6.0? Why or why not, based on the documentation?</p>
+
+    <h3>Tinker Challenge 3: Chopping the Decimal</h3>
+    <p>We only want whole numbers. In Java, we "cast" a <code>double</code> to an
+    <code>int</code>. Add the cast:</p>
+    <pre><code>System.out.println((int) Math.random() * 6);</code></pre>
+    <p><em>Observation:</em> Run it 5 times. Wait — why does it only print 0?</p>
+    <div class="callout warn">
+        <strong>Hint:</strong> Think about order of operations. Does the computer
+        cast <code>Math.random()</code> to an <code>int</code> <em>first</em>, or
+        does it multiply <em>first</em>?
+    </div>
+    <p>Now fix the code using parentheses so the multiplication happens <em>before</em>
+    the cast:</p>
+    <pre><code>System.out.println((int) (Math.random() * 6));</code></pre>
+    <p><em>Observation:</em> Run it 5 times. What is the range of integers you get now?</p>
+
+    <h3>Tinker Challenge 4: Shifting the Range</h3>
+    <p>You should be getting numbers from 0 to 5. But a standard die rolls from 1 to 6.
+    Modify your print statement to shift the entire range up by 1.</p>
+
+    <div class="socratic">
+        <h3>Synthesis: The General Formula</h3>
+        <p>
+            Based on your experiments above, how would you write a single line of code
+            to get a random integer where you define:
+        </p>
+        <ul>
+            <li>The number of possible values (the "range")</li>
+            <li>The starting value (the "min")</li>
+        </ul>
+        <p>
+            <strong>Write your formula down before checking!</strong> Test it: can
+            you generate a random number from 10 to 99? From 1 to 20? From 3 to 18?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Explain the range of <code>Math.random()</code> (0.0 ≤ x &lt; 1.0)</li>
+            <li>Write the formula: <code>(int)(Math.random() * range) + min</code></li>
+            <li>Explain WHY parentheses are necessary around the multiplication</li>
+            <li>Generate: a d6 (1–6), a d20 (1–20), 3d6 (3–18), a number from 10–99</li>
+            <li>Explain the formula to a partner — in your own words, not memorized</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-01/math-random.html">Math.random()</a> — full reference</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.7a Dice Roller Part 1 — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="1.6c.html">◀ 1.6c</a>
+    <span class="lesson-id">1.7a</span>
+    <a href="1.7b.html">1.7b ▶</a>
+</div>
+
+<h1>1.7a — Dice Roller: roll() &amp; rollDice()</h1>
+
+<p>
+    <strong>Type:</strong> RPG Integration. This is where everything comes together.
+    You've discovered the concepts, built basic applications, and now you apply it
+    all to your RPG project. Instead of giving you code, this guide provides
+    <strong>Acceptance Criteria</strong> — it's up to you to write code that
+    satisfies the spec.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG — Part 1</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <h3>The Setup</h3>
+
+    <p>Create two files in your project:</p>
+    <ol>
+        <li><code>Dice.java</code> — contains all your dice logic</li>
+        <li><code>DiceTester.java</code> — contains a <code>main</code> method to run tests</li>
+    </ol>
+
+    <p>In <code>Dice.java</code>, start with a basic class outline:</p>
+    <pre><code>public class Dice {
+    // Your methods will go here
+}</code></pre>
+
+    <h3>Part 1: roll() — Roll a Single Die</h3>
+
+    <p><strong>Requirements:</strong></p>
+    <ul>
+        <li>Method signature: <code>public static int roll(int sides)</code></li>
+        <li>Generates a random integer between 1 and <code>sides</code> (inclusive)</li>
+        <li>This is the formula you discovered in 1.3 — parameterize it</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>
+            Look back at your Math.random() lab. What is the "range" based on
+            the <code>sides</code> parameter? What is the "min"?
+        </p>
+    </div>
+
+    <p><strong>Acceptance Test:</strong></p>
+    <pre><code>System.out.println("Rolling d20: " + Dice.roll(20));
+System.out.println("Rolling d6: " + Dice.roll(6));</code></pre>
+    <p>
+        Run it many times. Do you ever see 0? Do you ever see a number higher
+        than the sides? If so, your formula is wrong.
+    </p>
+
+    <h3>Part 2: rollDice() — Roll Multiple Dice and Sum</h3>
+
+    <p><strong>Requirements:</strong></p>
+    <ul>
+        <li>Method signature: <code>public static int rollDice(int count, int sides)</code></li>
+        <li>Rolls <code>count</code> dice, each with <code>sides</code>, returns the sum</li>
+        <li>Since we haven't learned loops yet, hardcode it to call
+            <code>roll(sides)</code> three times and add the results</li>
+    </ul>
+
+    <div class="tinker">
+        <h3>Tinker Challenge</h3>
+        <p>
+            How do you store a "running total" across multiple lines? You need
+            a variable that starts at 0 and accumulates each roll.
+        </p>
+    </div>
+
+    <p><strong>Acceptance Test:</strong></p>
+    <pre><code>System.out.println("Rolling 3d6: " + Dice.rollDice(3, 6));</code></pre>
+    <p>Run it. Results should be between 3 and 18.</p>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write a method that parameterizes the random formula</li>
+            <li>Call your own method from another method (<code>roll()</code>
+                from <code>rollDice()</code>)</li>
+            <li>Use a running total to accumulate multiple dice rolls</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-01/dice-roller.html">Student RPG Guide: Dice Roller</a> — full spec</li>
+        <li><a href="../docs/unit-01/math-random.html">Math.random()</a> — the formula</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

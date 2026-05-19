@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.7c Testing &amp; Integration — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="1.7b.html">◀ 1.7b</a>
+    <span class="lesson-id">1.7c</span>
+    <a href="1.8a.html">1.8a ▶</a>
+</div>
+
+<h1>1.7c — Dice Roller: Testing &amp; Integration</h1>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG — Part 3</span>
+        <span class="activity-time">~15 min</span>
+    </div>
+
+    <h3>Testing Protocol</h3>
+
+    <p>For each method in <code>Dice.java</code>, prove it works:</p>
+
+    <ol>
+        <li><strong>roll(sides):</strong> Call it 20 times for a d6. Record min
+            and max. Did you ever get 0? Did you ever get 7?</li>
+        <li><strong>rollDice(count, sides):</strong> Call rollDice(3, 6) 20 times.
+            Verify: min >= 3, max <= 18, never outside range.</li>
+        <li><strong>statRoll():</strong> Generate 6 stats (STR, DEX, CON, INT, WIS, CHA).
+            Print them labeled. Verify each is in the 3–18 range.</li>
+    </ol>
+
+    <p><strong>Write your test results:</strong></p>
+    <pre><code><span class="output">roll(6) test — 20 rolls:
+Min: 1  Max: 6  (range correct? ✓/✗)
+
+rollDice(3, 6) test — 20 rolls:
+Min: ___  Max: ___  (range 3-18? ✓/✗)
+
+statRoll() — 6 stats:
+STR: 12  DEX: 8  CON: 15  INT: 11  WIS: 14  CHA: 9
+All in range 3-18? ✓/✗</span></code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>
+            A classmate's <code>roll(20)</code> occasionally returns 0.
+            Where is the bug? Walk through their formula step by step:
+        </p>
+        <pre><code>return (int) Math.random() * sides;</code></pre>
+        <p>
+            What's happening? Why does it always return 0? Can you explain the
+            fix to them in plain English?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Systematically test every method you write — min, max, edge cases</li>
+            <li>Explain why the parentheses bug in the random formula causes 0</li>
+            <li>Generate a full set of RPG stats (3d6 for each of 6 attributes)</li>
+            <li>Use a Dice.java utility class from another file (DiceTester.java)</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-01/dice-roller.html">Student RPG Guide: Dice Roller</a></li>
+        <li><a href="../docs/unit-01/math-random.html">Math.random()</a> — parentheses trap</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

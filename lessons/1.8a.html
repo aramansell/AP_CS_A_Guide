@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.8a Character Creator — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="1.7c.html">◀ 1.7c</a>
+    <span class="lesson-id">1.8a</span>
+    <a href="1.8b.html">1.8b ▶</a>
+</div>
+
+<h1>1.8a — Character Creator: StatBlock</h1>
+
+<p>
+    <strong>Type:</strong> RPG Integration. You've built a Dice utility class.
+    Now build a Character class. This is where the RPG project comes alive.
+    This is the largest build so far — a full 3-day assignment.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG — Part 1</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Create a <code>Character.java</code> class that represents an RPG character
+    with stats, name, HP, and a formatted display. The dice rolling is powered by
+    the <code>Dice.java</code> utility you finished in 1.7.</p>
+
+    <h3>Part 1: The Fields (What a Character IS)</h3>
+
+    <p>Every character has these properties. Declare them as instance variables:</p>
+
+    <pre><code>public class Character {
+    String name;
+    int hp;
+    int maxHp;
+    int strength;
+    int dexterity;
+    int constitution;
+    int intelligence;
+    int wisdom;
+    int charisma;
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why are these <em>instance</em> variables (not static)? What happens
+                if you make them static?</li>
+            <li>Why does HP need two variables (<code>hp</code> and <code>maxHp</code>)?
+                What's the difference?</li>
+            <li>What data type did you choose for the stats? Why not <code>double</code>?</li>
+        </ol>
+    </div>
+
+    <h3>Part 2: generateStats() — Summon the Dice God</h3>
+
+    <p>
+        Add a method that fills in all six stats automatically using
+        <code>Dice.statRoll()</code>.
+    </p>
+
+    <p><strong>Requirements:</strong></p>
+    <ul>
+        <li>Method signature: <code>public void generateStats()</code></li>
+        <li>Sets each stat (strength through charisma) using <code>Dice.statRoll()</code></li>
+        <li>Sets <code>maxHp</code> to <code>constitution * 2</code> (HP scales with CON)</li>
+        <li>Sets <code>hp = maxHp</code> (character starts at full health)</li>
+    </ul>
+
+    <div class="tinker">
+        <h3>Tinker Challenge</h3>
+        <p>
+            Instead of 3d6 for every stat, give warriors a boost: roll
+            <strong>4d6</strong> for strength and constitution, but only
+            <strong>2d6</strong> for intelligence. Use Dice's methods
+            to build this out.
+        </p>
+    </div>
+
+    <p><strong>Acceptance Test:</strong></p>
+    <pre><code>Character c = new Character();
+c.name = "Grog";
+c.generateStats();
+System.out.println(c.strength); // should be 3-18
+System.out.println(c.maxHp);    // should be constitution * 2</code></pre>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-01/character-creator.html">Student RPG Guide: Character Creator</a></li>
+        <li><a href="../docs/unit-01/dice-roller.html">Student RPG Guide: Dice Roller</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

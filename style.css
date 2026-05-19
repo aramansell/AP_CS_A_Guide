@@ -1,0 +1,398 @@
+/* =============================================
+   AP CS A — Top-Level Site Styles
+   Dashboard, Lessons, Projects, Demos
+   Matches docs/ dark theme.
+   ============================================= */
+
+:root {
+    --bg: #1a1a1a;
+    --surface: #242424;
+    --text: #e0e0e0;
+    --accent: #6cbf6c;
+    --accent-dim: #4a8a4a;
+    --code-bg: #2d2d2d;
+    --border: #3a3a3a;
+    --warn: #e8b84b;
+    --trap: #e05555;
+    --muted: #999;
+    --blue: #5cafff;
+    --purple: #b98eff;
+    --orange: #f0a060;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 15px;
+}
+
+/* ---- Top Navigation Tabs ---- */
+.top-nav {
+    background: #161616;
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+    display: flex;
+    gap: 0;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.top-nav a {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+}
+.top-nav a:hover { color: var(--text); }
+.top-nav a.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+/* ---- Page wrapper ---- */
+.page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 6rem;
+}
+
+/* ---- Headings ---- */
+h1 { font-size: 1.8rem; margin-bottom: 0.5rem; color: #fff; }
+h2 { font-size: 1.3rem; margin: 2rem 0 0.75rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
+h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: #ccc; }
+h4 { font-size: 1rem; margin: 1rem 0 0.25rem; color: var(--muted); }
+
+p { margin-bottom: 0.75rem; }
+a { color: var(--accent); }
+
+/* ---- Code ---- */
+code {
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 13px;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+}
+pre {
+    background: var(--code-bg);
+    padding: 1rem 1.25rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 0.75rem 0 1.25rem;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    line-height: 1.5;
+}
+pre code { background: none; padding: 0; border-radius: 0; }
+
+/* ---- Lists ---- */
+ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.3rem; }
+
+/* ---- Tables ---- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.75rem 0 1.25rem;
+}
+th, td {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+th { color: var(--accent); font-weight: 600; }
+
+
+/* =============================================
+   LESSON PAGE STYLES
+   ============================================= */
+
+/* ---- Lesson Header (prev/next + title) ---- */
+.lesson-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+.lesson-nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: color 0.15s, border-color 0.15s;
+}
+.lesson-nav a:hover { color: var(--accent); border-color: var(--accent); }
+.lesson-nav .lesson-id {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+}
+
+/* ---- Activity Block ---- */
+.activity {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+}
+.activity-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+.activity-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+.activity-time {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* Day-type accent colors */
+.activity.discovery  { border-left-color: var(--accent); }
+.activity.discovery .activity-label { background: rgba(108, 191, 108, 0.15); color: var(--accent); }
+
+.activity.basic-app  { border-left-color: var(--blue); }
+.activity.basic-app .activity-label { background: rgba(92, 175, 255, 0.15); color: var(--blue); }
+
+.activity.expand-app  { border-left-color: var(--purple); }
+.activity.expand-app .activity-label { background: rgba(185, 142, 255, 0.12); color: var(--purple); }
+
+.activity.rpg  { border-left-color: var(--orange); }
+.activity.rpg .activity-label { background: rgba(240, 160, 96, 0.12); color: var(--orange); }
+
+.activity.assessment  { border-left-color: var(--trap); }
+.activity.assessment .activity-label { background: rgba(224, 85, 85, 0.12); color: var(--trap); }
+
+.activity.hybrid  { border-left-color: var(--warn); }
+.activity.hybrid .activity-label { background: rgba(232, 184, 75, 0.12); color: var(--warn); }
+
+.activity h3 { margin: 0 0 0.5rem; color: #fff; font-size: 1rem; }
+.activity p, .activity ul, .activity ol { font-size: 14px; }
+.activity ul:last-child, .activity ol:last-child, .activity p:last-child { margin-bottom: 0; }
+
+/* ---- Resources Footer ---- */
+.resources {
+    margin-top: 2.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+.resources h3 { margin-top: 0; font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.resources ul { margin-bottom: 0; }
+.resources li { font-size: 14px; }
+
+
+/* =============================================
+   DASHBOARD STYLES
+   ============================================= */
+
+/* ---- Unit selector ---- */
+.unit-selector {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+.unit-selector a {
+    display: block;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: border-color 0.15s, color 0.15s;
+}
+.unit-selector a:hover { color: var(--accent); border-color: var(--accent); }
+.unit-selector a.active { color: var(--accent); border-color: var(--accent); background: rgba(108,191,108,0.08); }
+
+/* ---- Lesson list ---- */
+.lesson-list {
+    list-style: none;
+    margin: 0;
+}
+.lesson-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.lesson-list .lesson-num {
+    font-weight: 700;
+    font-size: 13px;
+    min-width: 2.5rem;
+    color: var(--muted);
+}
+.lesson-list .lesson-title {
+    flex: 1;
+    font-size: 15px;
+}
+.lesson-list a {
+    color: var(--text);
+    text-decoration: none;
+}
+.lesson-list a:hover { color: var(--accent); }
+.lesson-list .badge {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15em 0.5em;
+    border-radius: 3px;
+}
+.badge.discovery   { background: rgba(108, 191, 108, 0.12); color: var(--accent); }
+.badge.basic-app   { background: rgba(92, 175, 255, 0.12); color: var(--blue); }
+.badge.expand-app  { background: rgba(185, 142, 255, 0.1); color: var(--purple); }
+.badge.rpg         { background: rgba(240, 160, 96, 0.1); color: var(--orange); }
+.badge.assessment  { background: rgba(224, 85, 85, 0.1); color: var(--trap); }
+
+.lesson-list .current-marker {
+    color: var(--accent);
+    font-size: 16px;
+    margin-left: 0.5rem;
+}
+
+/* ---- Unit preview ---- */
+.unit-preview {
+    margin-top: 2rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+.unit-preview h3 { margin-top: 0; font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.unit-preview p { font-size: 14px; margin-bottom: 0; }
+
+
+/* =============================================
+   PROJECTS PAGE
+   ============================================= */
+
+.project-file {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin: 0.75rem 0;
+}
+.project-file h3 { margin: 0 0 0.25rem; }
+.project-file .file-meta { font-size: 12px; color: var(--muted); margin-bottom: 0.5rem; }
+.project-file .file-meta span { margin-right: 1rem; }
+
+
+/* ---- Callout boxes (ported from docs/style.css) ---- */
+.callout {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+    border-left: 4px solid var(--accent);
+    background: rgba(108, 191, 108, 0.08);
+}
+.callout.trap {
+    border-left-color: var(--trap);
+    background: rgba(224, 85, 85, 0.08);
+}
+.callout.warn {
+    border-left-color: var(--warn);
+    background: rgba(232, 184, 75, 0.08);
+}
+.callout strong { color: #fff; }
+
+/* ---- Output annotation ---- */
+.output {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 13px;
+}
+
+/* ---- Interactive Learning Patterns ---- */
+.socratic {
+    padding: 1.25rem 1.5rem;
+    border-radius: 6px;
+    margin: 1.25rem 0 2rem;
+    border-left: 4px solid #5cafff;
+    background: rgba(92, 175, 255, 0.04);
+    border: 1px solid rgba(92, 175, 255, 0.15);
+    border-left-width: 4px;
+}
+.socratic h3 {
+    color: #5cafff;
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+}
+.bug-hunt {
+    padding: 1.25rem 1.5rem;
+    border-radius: 6px;
+    margin: 1.25rem 0 2rem;
+    border-left: 4px solid var(--trap);
+    background: rgba(224, 85, 85, 0.03);
+    border: 1px solid rgba(224, 85, 85, 0.15);
+    border-left-width: 4px;
+}
+.bug-hunt h3 {
+    color: var(--trap);
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+}
+.tinker {
+    padding: 1.25rem 1.5rem;
+    border-radius: 6px;
+    margin: 1.25rem 0 2rem;
+    border-left: 4px solid var(--accent);
+    background: rgba(108, 191, 108, 0.03);
+    border: 1px solid rgba(108, 191, 108, 0.15);
+    border-left-width: 4px;
+}
+.tinker h3 {
+    color: var(--accent);
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+}
+
+.checklist {
+    padding: 1.25rem 1.5rem;
+    border-radius: 6px;
+    margin: 1.25rem 0 2rem;
+    border-left: 4px solid var(--accent);
+    background: rgba(108, 191, 108, 0.06);
+    border: 1px solid rgba(108, 191, 108, 0.15);
+    border-left-width: 4px;
+}
+.checklist h3 {
+    color: var(--accent);
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+    .page { padding: 1rem 0.75rem 4rem; font-size: 14px; }
+    pre { padding: 0.75rem; font-size: 12px; }
+    h1 { font-size: 1.4rem; }
+    .top-nav a { padding: 0.6rem 0.75rem; font-size: 13px; }
+}

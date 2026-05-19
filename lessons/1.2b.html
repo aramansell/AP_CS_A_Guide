@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.2b StatBlock — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="1.2a.html">◀ 1.2a</a>
+    <span class="lesson-id">1.2b</span>
+    <a href="1.2c.html">1.2c ▶</a>
+</div>
+
+<h1>1.2b — Putting It Together: StatBlock</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <p>
+        Now you combine everything from the last three pages: variables, math,
+        random, and printing. Create a file called <code>StatBlock.java</code>.
+    </p>
+
+    <p><strong>Your Mission:</strong></p>
+    <ol>
+        <li>Declare variables: <code>strength</code>, <code>dexterity</code>,
+            <code>constitution</code>, <code>intelligence</code> — all ints with
+            hardcoded values of your choice.</li>
+        <li>Calculate <code>averageStat</code> — the sum of all four divided by 4.
+            <strong>Watch the integer division trap!</strong></li>
+        <li>Calculate <code>hitPoints</code> = constitution × 5</li>
+        <li>Print a formatted character sheet with labels using concatenation and tabs</li>
+    </ol>
+
+    <p><strong>Your output should look something like:</strong></p>
+    <pre><code><span class="output">=== CHARACTER STATS ===
+STR    15
+DEX    12
+CON    14
+INT    10
+------------------------
+Average: 12.75
+HP:      70</span></code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>
+            When you calculate the average, why can't you just write
+            <code>(str + dex + con + int) / 4</code>? What would happen?
+            Test it. Then fix it.
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker: Make It Random</h3>
+        <p>
+            Instead of hardcoding the stats, generate them randomly using
+            <code>Math.random()</code>. Roll 3d6 for each stat (a 3d6 roll
+            gives a range of 3–18).
+        </p>
+        <p>
+            Now run the program five times. Do you get different characters
+            each time? What's the best stat roll you got? The worst?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write a program that declares variables, calculates with them,
+                and prints formatted output — all in one file</li>
+            <li>Spot and fix the integer division trap in a real calculation</li>
+            <li>Use tabs to create aligned column output</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-01/variables.html">Variables &amp; Types</a></li>
+        <li><a href="../docs/unit-01/arithmetic.html">Arithmetic &amp; Operators</a> — the division trap</li>
+        <li><a href="../docs/unit-01/printing.html">Printing &amp; Concatenation</a></li>
+        <li><a href="../docs/unit-01/math-random.html">Math.random()</a> — for the random stats challenge</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

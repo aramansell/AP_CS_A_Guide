@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.2c The Three-Step Pattern — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="1.2b.html">◀ 1.2b</a>
+    <span class="lesson-id">1.2c</span>
+    <a href="1.3a.html">1.3a ▶</a>
+</div>
+
+<h1>1.2c — The Three-Step Pattern</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~15 min</span>
+    </div>
+
+    <p>
+        Nearly every program you write this year will follow the same structure.
+        Learning to see and use this pattern is the single most important skill
+        from Unit 1.
+    </p>
+
+    <div class="callout">
+        <strong>1. Declare</strong> — create variables to hold your data<br>
+        <strong>2. Calculate</strong> — do the math, generate values, process the data<br>
+        <strong>3. Display</strong> — show the results to the user
+    </div>
+
+    <h3>Why Three Steps?</h3>
+
+    <p>
+        You COULD squash everything into one line. But separating the steps gives
+        you three huge advantages:
+    </p>
+
+    <ol>
+        <li><strong>Test each step independently.</strong> After Step 1, you can
+            print your variables to make sure they're correct. After Step 2, you
+            can print intermediate results. You find bugs early, not after writing
+            30 lines.</li>
+        <li><strong>Reuse the pattern across projects.</strong> Tip Calculator,
+            Dice Roller, Character Creator, Combat Engine — same skeleton,
+            different meat. Once you know the pattern, you can start ANY program
+            by writing three comment blocks.</li>
+        <li><strong>Split work with teammates.</strong> One person handles
+            calculations, another handles display. The steps are independent.</li>
+    </ol>
+
+    <h3>Applied: Tip Calculator</h3>
+
+    <pre><code>public class TipCalculator {
+    public static void main(String[] args) {
+        // ===== STEP 1: DECLARE =====
+        double billAmount = 45.50;
+        double tipPercent = 20;
+        double tip;
+        double total;
+
+        // ===== STEP 2: CALCULATE =====
+        tip = billAmount * (tipPercent / 100.0);
+        total = billAmount + tip;
+
+        // ===== STEP 3: DISPLAY =====
+        System.out.println("===== TIP CALCULATOR =====");
+        System.out.println("Bill: $" + billAmount);
+        System.out.println("Tip:  $" + tip);
+        System.out.println("Total: $" + total);
+        System.out.println("==========================");
+    }
+}</code></pre>
+
+    <h3>Applied: Dice Roller</h3>
+
+    <pre><code>public class DiceRoller {
+    public static void main(String[] args) {
+        // ===== STEP 1: DECLARE =====
+        int roll1;
+        int roll2;
+        int roll3;
+        int total;
+
+        // ===== STEP 2: CALCULATE =====
+        roll1 = (int) (Math.random() * 6) + 1;
+        roll2 = (int) (Math.random() * 6) + 1;
+        roll3 = (int) (Math.random() * 6) + 1;
+        total = roll1 + roll2 + roll3;
+
+        // ===== STEP 3: DISPLAY =====
+        System.out.println("===== DICE ROLLER =====");
+        System.out.println("Die 1: " + roll1);
+        System.out.println("Die 2: " + roll2);
+        System.out.println("Die 3: " + roll3);
+        System.out.println("Total: " + total);
+        System.out.println("=======================");
+    }
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>
+            Try modifying your Tip Calculator to display the <code>total</code>
+            before the calculation step:
+        </p>
+        <pre><code>System.out.println("Total: $" + total);
+total = billAmount + tip;</code></pre>
+        <p>
+            What happens? Can you explain why Java enforces this order?
+        </p>
+    </div>
+
+    <p>
+        The order matters. You can't show a result you haven't computed.
+        <strong>Declare → Calculate → Display.</strong>
+    </p>
+
+    <h3>From Pattern to Template</h3>
+
+    <p>
+        When starting a new project, many programmers write this skeleton first:
+    </p>
+
+    <pre><code>public class ProjectName {
+    public static void main(String[] args) {
+        // STEP 1: Declare variables
+
+
+        // STEP 2: Calculate
+
+
+        // STEP 3: Display
+
+
+    }
+}</code></pre>
+
+    <p>
+        Then fill in each section. A blank screen is intimidating. Three labeled
+        sections are just three small problems.
+    </p>
+
+    <div class="tinker">
+        <h3>Your Turn</h3>
+        <ol>
+            <li>Go back to <code>StatBlock.java</code>. Add the three comment
+                blocks (<code>// STEP 1: DECLARE</code>, etc.). Does it make
+                your code easier to read?</li>
+            <li>Which section did your integer-division bug live in? Which
+                section would a print-formatting bug live in? Why does the
+                pattern help you find bugs faster?</li>
+            <li>On a blank piece of paper, write the three-step skeleton from
+                memory. Can you do it without looking?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write the three-step pattern from memory (Declare → Calculate → Display)</li>
+            <li>Explain why the order matters (you can't display what you haven't computed)</li>
+            <li>Identify where a bug lives based on which step it affects</li>
+            <li>Start any new program by writing the three comment blocks first</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-01/three-step-pattern.html">Three-Step Pattern</a> — full reference</li>
+        <li><a href="../docs/unit-01/tip-calculator.html">Tip Calculator Walkthrough</a> — the pattern in action</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

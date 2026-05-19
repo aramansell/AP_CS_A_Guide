@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects — AP CS A</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="index.html">Dashboard</a>
+    <a href="docs/index.html">Docs</a>
+    <a href="projects.html" class="active">Projects</a>
+    <a href="demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<h1>RPG Project Files</h1>
+
+<p>
+    Throughout the year, you build an RPG piece by piece. Each unit adds one or more
+    files to your project. By the end, everything connects — your Dice engine rolls
+    damage, your Combat system handles fights, your Player class stores stats, and
+    your Dungeon generator creates adventures.
+</p>
+
+<h2>Unit 1 — Primitive Types</h2>
+
+<div class="project-file">
+    <h3>Dice.java</h3>
+    <div class="file-meta">
+        <span>Unit 1.7</span><span>Type: RPG Integration</span>
+    </div>
+    <p>
+        Your dice rolling engine. Contains <code>roll()</code>, <code>rollDice()</code>,
+        <code>rollWithAdvantage()</code>, <code>isCritical()</code>, and
+        <code>displayResult()</code>. Used by every combat and random event in the game.
+    </p>
+    <p><a href="docs/unit-01/dice-roller.html">View Student Guide →</a></p>
+</div>
+
+<div class="project-file">
+    <h3>DiceTester.java</h3>
+    <div class="file-meta">
+        <span>Unit 1.7</span><span>Type: Test Harness</span>
+    </div>
+    <p>
+        A main method that calls every Dice method to verify they work correctly.
+        You run this, not Dice.java itself — Dice has no main method, it's a library.
+    </p>
+</div>
+
+<h2>Unit 2 — Using Objects</h2>
+
+<div class="project-file">
+    <h3>Player.java</h3>
+    <div class="file-meta">
+        <span>Unit 2</span><span>Type: RPG Integration</span>
+    </div>
+    <p>
+        Character creator. Uses Scanner to read the player's name, rolls stats
+        (STR, DEX, CON, INT) with your Dice engine, and prints a formatted
+        character sheet. This player follows you through every unit.
+    </p>
+    <p><a href="docs/unit-02/character-creator.html">View Student Guide →</a></p>
+</div>
+
+<h2>Unit 3 — Booleans &amp; if</h2>
+
+<div class="project-file">
+    <h3>Combat.java</h3>
+    <div class="file-meta">
+        <span>Unit 3</span><span>Type: RPG Integration</span>
+    </div>
+    <p>
+        Combat engine. Single-round combat: attack rolls vs AC, damage calculation,
+        critical hits, hit/miss feedback. Uses your Dice engine for all randomness.
+    </p>
+    <p><a href="docs/unit-03/combat-system.html">View Student Guide →</a></p>
+</div>
+
+<h2>Unit 4 — Iteration</h2>
+
+<div class="project-file">
+    <h3>DungeonLoop.java</h3>
+    <div class="file-meta">
+        <span>Unit 4</span><span>Type: RPG Integration</span>
+    </div>
+    <p>
+        Multi-round combat (while loop) and room exploration (for loop). Combat
+        continues until someone dies. Five rooms with random encounters.
+    </p>
+    <p><a href="docs/unit-04/dungeon-system.html">View Student Guide →</a></p>
+</div>
+
+<div class="project-file">
+    <h3>DungeonCrawl.java</h3>
+    <div class="file-meta">
+        <span>Unit 4</span><span>Type: RPG Integration</span>
+    </div>
+    <p>
+        Multi-floor dungeon with nested loops. Generate rooms per floor, fight a boss,
+        collect treasure and inventory, print end-of-dungeon summary.
+    </p>
+    <p><a href="docs/unit-04/dungeon-crawl.html">View Student Guide →</a></p>
+</div>
+
+<p style="color:var(--muted); margin-top:2rem;">
+    More project files will be added as we progress through Units 5–10
+    (Player class rewrite, Inventory, Dungeon Map, GameCharacter hierarchy, etc.)
+</p>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1b Variables & Types — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="1.1a.html">◀ 1.1a</a>
+    <span class="lesson-id">1.1b</span>
+    <a href="1.1c.html">1.1c ▶</a>
+</div>
+
+<h1>1.1b — Variables &amp; Types</h1>
+
+<p>
+    <strong>Type:</strong> Discovery Lab. Create a test file called
+    <code>VarTest.java</code> and try everything below. Compile after each change.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        A <strong>variable</strong> is a named box that holds a value. You create one
+        by saying what <em>type</em> of value it holds, what <em>name</em> you'll use,
+        and what <em>initial value</em> to put in it.
+    </p>
+
+    <pre><code><em>type</em> <em>name</em> = <em>value</em>;</code></pre>
+
+    <p>The three types you need right now:</p>
+    <table>
+        <tr><th>Type</th><th>Stores</th><th>Example</th><th>RPG uses</th></tr>
+        <tr>
+            <td><code>int</code></td>
+            <td>Whole numbers</td>
+            <td><code>42</code>, <code>-5</code>, <code>0</code></td>
+            <td>HP, score, level, gold</td>
+        </tr>
+        <tr>
+            <td><code>double</code></td>
+            <td>Numbers with decimals</td>
+            <td><code>3.14</code>, <code>0.75</code></td>
+            <td>Percentages, luck, damage multipliers</td>
+        </tr>
+        <tr>
+            <td><code>boolean</code></td>
+            <td>True or false only</td>
+            <td><code>true</code>, <code>false</code></td>
+            <td>isAlive, hasKey, questComplete</td>
+        </tr>
+    </table>
+
+    <p><strong>Declaration vs. Initialization</strong></p>
+    <pre><code>int score;           // declaration — box created
+score = 100;         // initialization — put a value in
+
+int score = 100;     // both at once (most common)</code></pre>
+
+    <p><strong>Assignment (=)</strong></p>
+    <p>
+        In Java, <code>=</code> does <strong>not</strong> mean "equals." It means
+        <strong>"put this value into this box."</strong> Read it right-to-left:
+        take whatever is on the right and store it in the variable on the left.
+    </p>
+    <pre><code>int hp = 100;        // put 100 into hp
+hp = 75;             // replace with 75 — the old 100 is gone
+hp = hp - 10;        // take current hp (75), subtract 10, store 65 back</code></pre>
+
+    <p><strong>Naming Rules</strong></p>
+    <ul>
+        <li><strong>camelCase</strong> — start lowercase, capitalize each new word
+            (<code>playerHealth</code>, <code>goldAmount</code>)</li>
+        <li>No spaces. No special characters (avoid <code>_</code> and <code>$</code>).</li>
+        <li>Can't start with a number.</li>
+        <li>Can't use Java keywords (<code>int</code>, <code>class</code>,
+            <code>public</code>, etc.).</li>
+        <li>Make names descriptive. <code>hp</code> is fine. <code>x</code> is not.</li>
+    </ul>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Strict Compiler</h3>
+        <p>Try these lines in <code>VarTest.java</code>. They won't compile.
+        What rule is Java enforcing?</p>
+        <pre><code>int x = 3.5;       // can you put a double into an int box?
+int y = "hello";   // can you put a String into an int box?</code></pre>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>Try this line:</p>
+        <pre><code>double z = 5;</code></pre>
+        <p>
+            Does this cause an error? Why does Java let you put an <code>int</code>
+            into a <code>double</code> box, but not a <code>double</code> into an
+            <code>int</code> box?
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker: Explore on Your Own</h3>
+        <ol>
+            <li>Declare <code>int x;</code> and try to print it without assigning.
+                Make a prediction first — then test. What happens?</li>
+            <li>Create three variables: <code>int hp = 100;</code>,
+                <code>double luck = 0.75;</code>, <code>boolean alive = true;</code>.
+                Print all three on one line using concatenation (<code>+</code>).</li>
+            <li>Write your own line that puts a <code>double</code> into an
+                <code>int</code>. What error do you get? Can you read it?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Declare and initialize <code>int</code>, <code>double</code>, and
+                <code>boolean</code> variables</li>
+            <li>Explain what <code>=</code> really means in Java</li>
+            <li>Tell someone why <code>int x = 3.5;</code> won't compile</li>
+            <li>Explain the difference between declaration and initialization</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <p>Need a deeper explanation? These pages cover the same concepts in more detail:</p>
+    <ul>
+        <li><a href="../docs/unit-01/variables.html">Variables &amp; Types</a> — int, double, boolean, naming rules</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

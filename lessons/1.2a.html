@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.2a Printing & Concatenation — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="1.1c.html">◀ 1.1c</a>
+    <span class="lesson-id">1.2a</span>
+    <a href="1.2b.html">1.2b ▶</a>
+</div>
+
+<h1>1.2a — Printing &amp; Concatenation</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <p>
+        To show things to the user, you print to the terminal. Java gives you
+        <code>System.out.println</code> and <code>System.out.print</code>.
+    </p>
+
+    <h3>println vs. print</h3>
+
+    <table>
+        <tr><th>Method</th><th>What it does</th></tr>
+        <tr><td><code>System.out.println(...)</code></td><td>Prints, then moves to the next line</td></tr>
+        <tr><td><code>System.out.print(...)</code></td><td>Prints, stays on the same line</td></tr>
+    </table>
+
+    <pre><code>System.out.println("Line one");
+System.out.println("Line two");
+System.out.print("Same ");
+System.out.print("line");
+<span class="output">Line one</span>
+<span class="output">Line two</span>
+<span class="output">Same line</span></code></pre>
+
+    <h3>Concatenation (+) with Strings</h3>
+
+    <p>
+        Inside <code>println</code>, <code>+</code> glues text and values together.
+        This is called <strong>concatenation</strong>.
+    </p>
+
+    <pre><code>String name = "Aria";
+int level = 5;
+System.out.println("Character: " + name + ", Level: " + level);
+<span class="output">Character: Aria, Level: 5</span></code></pre>
+
+    <div class="tinker">
+        <h3>Tinker Challenge: The Math Illusion</h3>
+        <p>Create a file called <code>PrintTest.java</code>. Run this code:</p>
+        <pre><code>System.out.println("Sum: " + 3 + 5);</code></pre>
+        <p>
+            Wait, what?! Why does it print <code>Sum: 35</code> instead of
+            <code>Sum: 8</code>? What do you think Java is doing here?
+        </p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>
+            How can you use parentheses to force Java to do the math first, so
+            that it prints <code>Sum: 8</code>? Test your theory.
+        </p>
+    </div>
+
+    <p><strong>What happened?</strong></p>
+
+    <p>Java evaluates <code>+</code> left to right. When it sees a String and an int,
+    it glues them together into a new String.</p>
+
+    <ol>
+        <li><code>"Sum: " + 3</code> → Java concatenates: <code>"Sum: 3"</code></li>
+        <li><code>"Sum: 3" + 5</code> → same thing: <code>"Sum: 35"</code></li>
+    </ol>
+
+    <p>Parentheses force the math to happen FIRST, before concatenation.</p>
+
+    <pre><code>int a = 10;
+int b = 3;
+System.out.println(a + b);              // 13 (math, no string)
+System.out.println("" + a + b);         // 103 (all concatenation)
+System.out.println("" + (a + b));       // 13 (math first, then concatenate)
+System.out.println(a + " + " + b + " = " + (a + b));  // 10 + 3 = 13</code></pre>
+
+    <h3>Formatting Tips</h3>
+
+    <pre><code>// Empty println gives a blank line
+System.out.println();
+
+// Separator lines
+System.out.println("====================");
+
+// Aligned columns (tabs)
+System.out.println("Name\tLevel\tHP");
+System.out.println("Aria\t5\t85");</code></pre>
+
+    <p><code>\t</code> is a tab character. It helps line things up.</p>
+
+    <h3>Escape Sequences</h3>
+
+    <table>
+        <tr><th>Code</th><th>What it produces</th></tr>
+        <tr><td><code>\n</code></td><td>New line</td></tr>
+        <tr><td><code>\t</code></td><td>Tab</td></tr>
+        <tr><td><code>\"</code></td><td>Double quote</td></tr>
+        <tr><td><code>\\</code></td><td>Backslash</td></tr>
+    </table>
+
+    <pre><code>System.out.println("She said \"Roll for initiative!\"");
+<span class="output">She said "Roll for initiative!"</span></code></pre>
+
+    <div class="tinker">
+        <h3>Your Turn</h3>
+        <ol>
+            <li>Test: print the area of a rectangle (width × height) using a
+                single println with labels. Watch out for the concatenation trap!</li>
+            <li>Try all four escape sequences. Print a multi-line character sheet
+                using only one println.</li>
+            <li>What does <code>"Score: " + 5 + 10</code> print? What about
+                <code>"Score: " + (5 + 10)</code>? Predict, then test.</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Distinguish <code>println</code> from <code>print</code></li>
+            <li>Explain the concatenation trap and fix it with parentheses</li>
+            <li>Use escape sequences (<code>\n</code>, <code>\t</code>, <code>\"</code>, <code>\\</code>)</li>
+            <li>Predict how Java evaluates a mixed String + int expression left-to-right</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-01/printing.html">Printing &amp; Concatenation</a> — full reference</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

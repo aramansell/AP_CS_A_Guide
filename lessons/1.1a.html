@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1a Hello World & Compile — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <span></span>
+    <span class="lesson-id">1.1a</span>
+    <a href="1.1b.html">1.1b ▶</a>
+</div>
+
+<h1>1.1a — Hello World &amp; Compile</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~15 min</span>
+    </div>
+
+    <p>
+        Java is a <strong>compiled language</strong>. You write human-readable
+        <code>.java</code> files, then a program called <code>javac</code> translates
+        them into <code>.class</code> files that the computer can execute.
+    </p>
+
+    <div class="callout warn">
+        <strong>Golden Rule: Every time you change your .java file, you MUST recompile
+        before running.</strong><br>
+        If you edit code but skip <code>javac</code>, you're running old code.
+        This is the #1 mistake new Java programmers make.
+    </div>
+
+    <p><strong>Step 1: Create Hello.java</strong></p>
+    <pre><code>public class Hello {
+    public static void main(String[] args) {
+        System.out.println("Hello, adventurer!");
+    }
+}</code></pre>
+
+    <p>Every Java program needs this skeleton. The filename <strong>must</strong>
+    match the class name. <code>Hello.java</code> → <code>class Hello</code>.</p>
+
+    <p><strong>Step 2: Compile and run</strong></p>
+    <pre><code>$ javac Hello.java      <span class="output">(no output = success)</span>
+$ java Hello             <span class="output">Hello, adventurer!</span></code></pre>
+
+    <p>
+        <strong>Note:</strong> <code>javac</code> uses the full filename with
+        <code>.java</code>. <code>java</code> uses just the class name — no extension.
+    </p>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Compiler's Complaints</h3>
+        <p>
+            Try intentionally making these mistakes one at a time. After each one,
+            fix it, then make the next. Read every error message — can you find the
+            line number it points to?
+        </p>
+        <ol>
+            <li>Rename the class to <code>hello</code> (lowercase). Compile. What error?</li>
+            <li>Fix it. Compile successfully. Now run <code>java Hello.java</code>
+                instead of <code>java Hello</code>. What happens?</li>
+            <li>Delete the semicolon at the end of the <code>println</code> line.
+                Compile. What error?</li>
+        </ol>
+    </div>
+
+    <p><strong>Terminal commands you need:</strong></p>
+    <table>
+        <tr><th>Command</th><th>What it does</th></tr>
+        <tr><td><code>pwd</code></td><td>Print Working Directory — shows where you are</td></tr>
+        <tr><td><code>ls</code></td><td>List files in the current directory</td></tr>
+        <tr><td><code>cd folder</code></td><td>Change Directory — move into a folder</td></tr>
+        <tr><td><code>cd ..</code></td><td>Go up one directory</td></tr>
+    </table>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write the full boilerplate from memory (class + main method)</li>
+            <li>Compile with <code>javac</code> and run with <code>java</code></li>
+            <li>Read a compiler error and find the line number it references</li>
+            <li>Navigate directories with <code>pwd</code>, <code>ls</code>, and <code>cd</code></li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <p>Need a deeper explanation? This page covers the same concepts in more detail:</p>
+    <ul>
+        <li><a href="../docs/unit-01/compile-and-run.html">Compile &amp; Run</a> — the two commands, boilerplate, terminal</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

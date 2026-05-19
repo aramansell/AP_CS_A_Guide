@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1c Arithmetic & Operators — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="1.1b.html">◀ 1.1b</a>
+    <span class="lesson-id">1.1c</span>
+    <a href="1.2.html">1.2 ▶</a>
+</div>
+
+<h1>1.1c — Arithmetic &amp; Operators</h1>
+
+<p>
+    <strong>Type:</strong> Discovery Lab. Create a file called
+    <code>MathTest.java</code> and try every expression below. Run it, break it,
+    figure it out.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~15 min</span>
+    </div>
+
+    <p>Java can do math. The operators look like what you'd expect — but there's one
+    critical trap that surprises nearly every new programmer. Let's find it.</p>
+
+    <p><strong>The Five Operators</strong></p>
+    <table>
+        <tr><th>Operator</th><th>What it does</th><th>Example</th></tr>
+        <tr><td><code>+</code></td><td>Addition</td><td><code>5 + 3</code></td></tr>
+        <tr><td><code>-</code></td><td>Subtraction</td><td><code>5 - 3</code></td></tr>
+        <tr><td><code>*</code></td><td>Multiplication</td><td><code>5 * 3</code></td></tr>
+        <tr><td><code>/</code></td><td>Division</td><td><code>10 / 3</code></td></tr>
+        <tr><td><code>%</code></td><td>Modulus (remainder)</td><td><code>10 % 3</code></td></tr>
+    </table>
+
+    <div class="tinker">
+        <h3>Tinker Challenge: The Division Trap</h3>
+        <p>Run this code. Make a prediction before you run it — then check.</p>
+        <pre><code>System.out.println(10 / 3);
+System.out.println(7 / 2);
+System.out.println(1 / 2);</code></pre>
+        <p>
+            Wait — why does <code>1 / 2</code> print <code>0</code> instead of
+            <code>0.5</code>? What pattern do you see across all three lines?
+        </p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>
+            How can you force Java to give you the exact decimal answer for 10 ÷ 3?
+            Try <code>10.0 / 3</code>. Try <code>(double) 10 / 3</code>. What
+            difference does the decimal point make?
+        </p>
+    </div>
+
+    <p><strong>The Rule:</strong> When <em>both</em> operands are <code>int</code>,
+    Java does <strong>integer division</strong>. It chops off everything after the
+    decimal point — no rounding, just gone. If <em>any</em> operand is a
+    <code>double</code>, the whole expression uses floating-point math.</p>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Broken Average</h3>
+        <p>A student wrote this code to calculate their test average. It compiles
+        and runs, but the answer is wrong.</p>
+        <pre><code>int test1 = 92;
+int test2 = 87;
+int test3 = 95;
+double average = (test1 + test2 + test3) / 3;
+System.out.println(average);   // prints 91.0 — but it should be ~91.33</code></pre>
+        <p>
+            The math is right — (92+87+95) ÷ 3 = 91.33. So why does Java give 91.0?
+            <em>Hint: look at the types on the division line.</em>
+        </p>
+        <p><strong>Fix it.</strong> Make the code give the correct decimal answer.</p>
+    </div>
+
+    <hr style="border-color:var(--border); margin: 2rem 0;">
+
+    <p><strong>Modulus (%) — the remainder operator</strong></p>
+    <p>Modulus gives you the remainder after division. It's more useful than it looks.</p>
+
+    <div class="tinker">
+        <h3>Tinker Challenge: Modulus Patterns</h3>
+        <p>Run this and look at the pattern:</p>
+        <pre><code>System.out.println(10 % 3);   // 1
+System.out.println(11 % 3);   // 2
+System.out.println(12 % 3);   // 0
+System.out.println(13 % 3);   // 1</code></pre>
+        <p>
+            What is the maximum value you could possibly get when using
+            <code>% 3</code>? What about <code>% 10</code>?
+            If you had a random integer from 1 to 100, how could you use
+            <code>%</code> to check if it's even or odd?
+        </p>
+    </div>
+
+    <hr style="border-color:var(--border); margin: 2rem 0;">
+
+    <p><strong>Compound Assignment Operators</strong></p>
+    <p>Shorthand for "do math on a variable and store it back."</p>
+    <table>
+        <tr><th>Shorthand</th><th>Equivalent</th></tr>
+        <tr><td><code>x += 5;</code></td><td><code>x = x + 5;</code></td></tr>
+        <tr><td><code>x -= 3;</code></td><td><code>x = x - 3;</code></td></tr>
+        <tr><td><code>x *= 2;</code></td><td><code>x = x * 2;</code></td></tr>
+        <tr><td><code>x /= 2;</code></td><td><code>x = x / 2;</code></td></tr>
+        <tr><td><code>x %= 3;</code></td><td><code>x = x % 3;</code></td></tr>
+    </table>
+
+    <pre><code>int hp = 100;
+hp -= 15;    // took 15 damage — now 85
+hp += 25;    // drank a potion — now 110</code></pre>
+
+    <p><strong>Operator Precedence:</strong> <code>* / %</code> before <code>+ -</code>.
+    Use parentheses when in doubt.</p>
+    <pre><code>System.out.println(5 + 3 * 2);       // 11 (3*2=6, then 5+6)
+System.out.println((5 + 3) * 2);     // 16 (5+3=8, then 8*2)</code></pre>
+
+    <div class="tinker">
+        <h3>Your Turn</h3>
+        <ol>
+            <li>Write your own RPG example using <code>+=</code> and <code>-=</code>
+                for HP changes. Test: start at 100, take 30 damage, drink a potion
+                for 15, take 5 more damage. What's the final HP?</li>
+            <li>Write an expression that calculates the area of a rectangle
+                (width × height). Print it with a label.</li>
+            <li>What does <code>(double) 7 / 2</code> print? What about
+                <code>7 / (double) 2</code>? Are they different? Why?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Explain the integer division trap and how to avoid it</li>
+            <li>Use modulus (<code>%</code>) to check if a number is even or odd</li>
+            <li>Use compound assignment operators (<code>+=</code>, <code>-=</code>,
+                etc.)</li>
+            <li>Write and fix arithmetic expressions that mix <code>int</code> and
+                <code>double</code></li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <p>Need a deeper explanation? These pages cover the same concepts in more detail:</p>
+    <ul>
+        <li><a href="../docs/unit-01/arithmetic.html">Arithmetic &amp; Operators</a> — the division trap, modulus, precedence</li>
+        <li><a href="../docs/unit-01/variables.html">Variables &amp; Types</a> — int vs double review</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

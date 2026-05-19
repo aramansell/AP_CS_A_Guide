@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.3b Dice Roller Warmup — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="1.3a.html">◀ 1.3a</a>
+    <span class="lesson-id">1.3b</span>
+    <a href="1.4a.html">1.4a ▶</a>
+</div>
+
+<h1>1.3b — Dice Roller Warmup</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~15 min</span>
+    </div>
+
+    <p>
+        Now that you've cracked the random formula, apply it. Create a file
+        called <code>DiceTest.java</code>.
+    </p>
+
+    <p><strong>Part 1: Three Dice, One Roll</strong></p>
+    <ol>
+        <li>Roll three d6 dice independently — each one gets its own
+            <code>Math.random()</code> call.</li>
+        <li>Calculate and print the sum (like a 3d6 stat roll in your RPG).</li>
+        <li>Print each individual roll AND the total.</li>
+    </ol>
+
+    <pre><code><span class="output">Die 1: 4
+Die 2: 6
+Die 3: 2
+Total: 12</span></code></pre>
+
+    <p><strong>Part 2: Critical Detection</strong></p>
+    <ol>
+        <li>Roll a d20.</li>
+        <li>Print whether it's a "critical hit" (rolled 20) or "critical miss"
+            (rolled 1) or a normal roll (anything else).</li>
+        <li>You'll need <code>if</code> statements. Look at the QuickRef if you
+            haven't seen them before.</li>
+    </ol>
+
+    <pre><code><span class="output">d20 roll: 20 — CRITICAL HIT!</span></code></pre>
+
+    <div class="tinker">
+        <h3>Tinker: Push It Further</h3>
+        <ol>
+            <li>Roll a d100 (1–100). Use it to simulate a loot drop: print
+                "You found a legendary sword!" if the roll is 95 or above,
+                "Rare item!" if 70–94, and "Common loot." for anything below.</li>
+            <li>How many <code>if</code> blocks did you need? Is there a cleaner
+                way to structure them?</li>
+        </ol>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>
+            You wrote the random formula on the previous page. But in
+            <code>DiceTest.java</code>, you're writing it three times — once
+            for each die. What if your RPG needs to roll dice in 20 different
+            places? How could you avoid copying and pasting the formula every
+            time? (We'll solve this in 1.7.)
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write the random formula correctly from memory — every time</li>
+            <li>Use <code>if</code> statements to check dice results</li>
+            <li>Print formatted dice output with labels</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-01/math-random.html">Math.random()</a> — the four Tinker Challenges</li>
+        <li><a href="../docs/unit-01/printing.html">Printing &amp; Concatenation</a> — formatting dice output</li>
+        <li><a href="../docs/unit-01/three-step-pattern.html">Three-Step Pattern</a> — apply to your dice tests</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

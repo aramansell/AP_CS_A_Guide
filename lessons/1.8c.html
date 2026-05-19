@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.8c Build a Party — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="1.8b.html">◀ 1.8b</a>
+    <span class="lesson-id">1.8c</span>
+    <a href="1.R.html">1.R ▶</a>
+</div>
+
+<h1>1.8c — Character Creator: Build a Party</h1>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG — Part 3</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <h3>Part 4: Make It Real — Generate a Full Party</h3>
+
+    <p>
+        One character is fine. A party of four is a game. Create a
+        <code>CharacterTester.java</code> with a main method that generates
+        and displays a full adventuring party.
+    </p>
+
+    <p><strong>Requirements:</strong></p>
+    <ul>
+        <li>Create 4 Character objects</li>
+        <li>Name them (Grog the Warrior, Elara the Mage, etc.)</li>
+        <li>Call <code>generateStats()</code> on each</li>
+        <li>Call <code>printCharacterSheet()</code> on each</li>
+    </ul>
+
+    <div class="tinker">
+        <h3>Tinker: The Weakest Link</h3>
+        <p>
+            After generating all four characters, find and print the name of
+            the character with the LOWEST total HP and the character with the
+            HIGHEST strength. You'll need to compare values across objects.
+        </p>
+    </div>
+
+    <div class="socratic">
+        <h3>Final Socratic Checkpoint — Unit 1</h3>
+        <ol>
+            <li>Trace through the entire Character Creator. Where is the
+                three-step pattern? Which section of the pattern is in
+                <code>Character.java</code> vs <code>CharacterTester.java</code>?</li>
+            <li>You use <code>Dice.statRoll()</code> in your Character class.
+                How is this different from copying the Math.random() formula
+                directly into Character.java?</li>
+            <li>If you wanted to add an Elf race that gets +2 DEX and -1 CON,
+                where would you add that logic?</li>
+            <li>You've now completed Unit 1. What patterns, habits, and mental
+                models do you want to carry into Unit 2?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Create and configure multiple instances of a class</li>
+            <li>Call methods on objects from a separate tester class</li>
+            <li>Compare values across objects (highest/lowest)</li>
+            <li>Explain the full architecture: Dice.java → Character.java → CharacterTester.java</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-01/character-creator.html">Student RPG Guide: Character Creator</a></li>
+        <li><a href="../docs/unit-01/dice-roller.html">Student RPG Guide: Dice Roller</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>
