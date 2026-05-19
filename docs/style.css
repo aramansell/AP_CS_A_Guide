@@ -23,26 +23,58 @@ body {
     background: var(--bg);
     color: var(--text);
     line-height: 1.65;
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 6rem;
     font-size: 15px;
 }
 
-/* ---- Navigation ---- */
-nav {
+/* ---- Top Navigation Tabs ---- */
+.top-nav {
+    background: #161616;
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+    display: flex;
+    gap: 0;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.top-nav a {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+}
+.top-nav a:hover { color: var(--text); }
+.top-nav a.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+/* ---- Page wrapper ---- */
+.page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 6rem;
+}
+
+/* ---- Breadcrumb Navigation ---- */
+nav:not(.top-nav) {
     margin-bottom: 2rem;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--border);
 }
-nav a {
+nav:not(.top-nav) a {
     color: var(--accent);
     text-decoration: none;
     font-size: 14px;
 }
-nav a:hover { text-decoration: underline; }
-nav .sep { color: var(--muted); margin: 0 0.5rem; }
-nav .here { color: var(--muted); }
+nav:not(.top-nav) a:hover { text-decoration: underline; }
+nav:not(.top-nav) .sep { color: var(--muted); margin: 0 0.5rem; }
+nav:not(.top-nav) .here { color: var(--muted); }
 
 /* ---- Headings ---- */
 h1 { font-size: 1.8rem; margin-bottom: 0.5rem; color: #fff; }
