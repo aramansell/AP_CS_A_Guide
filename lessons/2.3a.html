@@ -96,28 +96,29 @@ public class BufferTrap {
         Did it skip the name? Why?
     </p>
 
-    <p>
-        <code>nextInt()</code> reads the number 17 but leaves the <strong>Enter key</strong>
-        you pressed sitting in the input buffer. The next <code>nextLine()</code> sees
-        that leftover Enter and thinks you gave it an empty line.
-    </p>
-
     <div class="socratic">
-        <h3>Socratic Checkpoint — Fix the Trap</h3>
-        <p>
-            Add <strong>one line of code</strong> after <code>nextInt()</code>
-            that eats the leftover Enter key. What method would you call? Where exactly
-            does it go?
-        </p>
+        <h3>Socratic Checkpoint — Diagnose the Trap</h3>
+        <ol>
+            <li>It skipped the name prompt entirely. <code>nextInt()</code> read your
+                number, but left something behind. What did it leave? Think about what
+                you actually typed: <code>17</code> then <code>Enter</code>. Did nextInt
+                consume the Enter?</li>
+            <li>Open the <a href="../docs/unit-02/scanner.html">Scanner docs</a>.
+                Find the section about mixing <code>nextInt</code> and <code>nextLine</code>.
+                What does it say about why this happens?</li>
+            <li>What's the fix? The docs show a one-line fix. Find it. Try it.
+                Don't copy-paste — understand why it works.</li>
+        </ol>
     </div>
 
-    <p><strong>The fix:</strong> Add an extra <code>input.nextLine();</code> right after every <code>nextInt()</code> or <code>nextDouble()</code> call — before the next <code>nextLine()</code>.</p>
-
     <pre><code>int age = input.nextInt();
-input.nextLine();  // EAT the leftover Enter key
+input.nextLine();  // ← What does this do? Why here?
 
 System.out.print("Name: ");
 String name = input.nextLine();  // now this works correctly</code></pre>
+
+    <p><strong>You must be able to explain WHY this fix works, not just that it does.</strong>
+    If you can't explain it yet, re-read the Scanner docs.</p>
 
     <h3>Build It: Weapon Chooser</h3>
 

@@ -77,13 +77,22 @@ CHA:  9
     <div class="tinker">
         <h3>Tinker: The HP Bar</h3>
         <p>
-            The HP bar uses a Unicode block character. Here's the formula:
+            An HP bar shows filled and empty blocks. You need to figure out:
         </p>
-        <pre><code>int filledBlocks = hp * 10 / maxHp;</code></pre>
+        <ol>
+            <li>How to calculate the number of filled blocks from <code>hp</code>
+                and <code>maxHp</code>. (Think: what percent of HP is remaining?)</li>
+            <li>How to build a String with that many filled characters (■) followed
+                by empty characters (□) to make 10 total.</li>
+        </ol>
         <p>
-            Then, build a String with that many ■ characters followed by
-            enough □ characters to make 10 total. Why does this formula
-            use integer division <em>on purpose</em>?
+            Be careful: you're dividing two integers. What does Java do with
+            integer division? What order of operations do you need to avoid
+            getting 0 blocks for every HP value less than maxHp?
+        </p>
+        <p>
+            The <a href="../docs/unit-02/character-creator.html">Character Creator guide</a>
+            has the formula if you get stuck — but try to derive it yourself first.
         </p>
     </div>
 </div>

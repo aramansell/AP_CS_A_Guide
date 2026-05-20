@@ -83,29 +83,20 @@ String name = input.nextLine();            // use</code></pre>
 
     <p>In Unit 1.7, you built a <code>Dice.java</code> utility class. But you used
     it with <strong>static methods</strong> — <code>Dice.roll(20)</code>. That works
-    for utilities, but it's not how most objects work. Try this:</p>
+    for utilities, but it's not how most objects work.</p>
 
-    <p><strong>Step 1:</strong> Create <code>DiceObject.java</code> — make a non-static version:</p>
-    <pre><code>public class DiceObject {
-    public int roll(int sides) {
-        return (int)(Math.random() * sides) + 1;
-    }
-}</code></pre>
+    <p><strong>Your task:</strong> Create a non-static <code>DiceObject</code> class
+    and a <code>DiceTester</code> that uses the three-step pattern to roll a d20.
+    No starter code — build it from scratch.</p>
 
-    <p><strong>Step 2:</strong> Create <code>DiceTester.java</code> and do this:</p>
-    <pre><code>public class DiceTester {
-    public static void main(String[] args) {
-        // 1. DECLARE
-        DiceObject d20;
+    <p>The <code>Dice.java</code> from Unit 1.7 gives you the formula for rolling,
+    but you'll need to change it from static to instance. How?</p>
 
-        // 2. CONSTRUCT
-        d20 = new DiceObject();
-
-        // 3. USE
-        int result = d20.roll(20);
-        System.out.println("You rolled a " + result + " on a d20!");
-    }
-}</code></pre>
+    <div class="callout">
+        <strong>Docs first:</strong> If you're stuck on declaring, constructing, or using
+        an object, check the <a href="../docs/unit-02/objects-and-classes.html">Objects &amp; Classes</a>
+        reference page. It shows the three-step pattern.
+    </div>
 
     <div class="socratic">
         <h3>Socratic Checkpoint</h3>
@@ -122,16 +113,17 @@ String name = input.nextLine();            // use</code></pre>
 
     <div class="bug-hunt">
         <h3>Bug Hunt: NullPointerException — Your New Nemesis</h3>
-        <p>
-            The most common error you'll see this unit. It means you tried to
-            use an object that was never created with <code>new</code>.
-        </p>
         <ol>
             <li>Write a program that declares a String variable but never assigns
                 it, then call <code>.length()</code> on it. What error do you get?</li>
-            <li>Fix it by assigning a value. What changes?</li>
+            <li>Now read the error message carefully. What does "null" mean? What
+                does "pointer" mean? What does "exception" mean? Break down each word.
+                <a href="../docs/unit-02/objects-and-classes.html">Check the Objects docs</a>
+                if you need help.</li>
             <li>Write a program that declares a Scanner, never calls <code>new</code>,
-                and tries to read input. Same error?</li>
+                and tries to read input. Same error? Why?</li>
+            <li>How do you fix it? Don't guess — look at the three-step pattern
+                in the docs and identify which step you skipped.</li>
         </ol>
     </div>
 

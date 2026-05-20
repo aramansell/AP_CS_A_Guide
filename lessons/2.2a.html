@@ -90,7 +90,12 @@ System.out.println(a.equals(b));  // predict: ____</code></pre>
         <pre><code>String s = "hello";
 s.toUpperCase();
 System.out.println(s);  // predict: ____</code></pre>
-        <p>If this prints "hello" (not "HELLO")... why? Strings are <strong>immutable</strong>. Methods like <code>toUpperCase()</code> return a <em>new</em> String — they never change the original. To get "HELLO", you must do: <code>s = s.toUpperCase();</code></p>
+        <p>If this prints "hello" (not "HELLO")... the method didn't change anything.
+        <strong>You need to figure out why.</strong> Open the
+        <a href="../docs/unit-02/string.html">String docs</a> and search for the word
+        "immutable." What does it mean? What do you have to do differently to actually
+        get "HELLO"? Try things until it works. Don't ask the instructor until you've
+        tried at least two different approaches.</p>
     </div>
 
     <div class="tinker">
@@ -99,11 +104,15 @@ System.out.println(s);  // predict: ____</code></pre>
             Write a program that checks a String password against these rules:
         </p>
         <ul>
-            <li>Length must be at least 8 characters (use <code>length()</code>)</li>
-            <li>Must contain the '@' symbol somewhere (use <code>indexOf()</code>)</li>
+            <li>Length must be at least 8 characters</li>
+            <li>Must contain the '@' symbol somewhere</li>
             <li>The first character must NOT be a number</li>
         </ul>
-        <p>Try it with passwords like <code>"hello"</code>, <code>"pass@word"</code>, and <code>"1password@"</code>. Print whether each one passes.</p>
+        <p>Try it with passwords like <code>"hello"</code>, <code>"pass@word"</code>,
+        and <code>"1password@"</code>. Print whether each one passes.</p>
+        <p>Stuck on how to check length or find the '@' symbol? Open the
+        <a href="../docs/unit-02/string.html">String docs</a> — the methods
+        you need are listed there. Figure out which ones match these tasks.</p>
     </div>
 
     <div class="checklist">

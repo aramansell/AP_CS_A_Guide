@@ -49,11 +49,16 @@
     <p>Read a full name from the user and analyze it:</p>
     <ul>
         <li>Print the full name as entered</li>
-        <li>Print just the first name (use <code>indexOf</code> + <code>substring</code>)</li>
+        <li>Print just the first name</li>
         <li>Print just the last name</li>
         <li>Print the initials (first letter of first + first letter of last)</li>
         <li>Print the total character count (don't count spaces)</li>
     </ul>
+
+    <p>You'll need methods from the
+    <a href="../docs/unit-02/string.html">String docs</a>. Which ones let you
+    find a space? Which ones let you extract part of a String? Figure out the
+    combination.</p>
 
     <pre><code><span class="output">Enter your full name: Aragorn son of Arathorn
 Full name: Aragorn son of Arathorn
@@ -92,10 +97,13 @@ FAILED:
     <div class="socratic">
         <h3>Socratic Checkpoint</h3>
         <ol>
-            <li>How do you check for uppercase letters? (Hint: compare the String to
-                <code>toUpperCase()</code> of itself... or think about character ranges.)</li>
+            <li>How do you check for uppercase letters? There's no method called
+                <code>isUpperCase()</code> on a String. What methods DO exist that
+                could help? Open the <a href="../docs/unit-02/string.html">String docs</a>
+                and find something that transforms case.</li>
             <li>How do you check if a password contains the word "password" regardless
-                of case? What combination of methods would you use?</li>
+                of case? You'll need to combine two String methods. The docs have
+                all of them — which pair solves this?</li>
         </ol>
     </div>
 

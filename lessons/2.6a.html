@@ -93,16 +93,19 @@ System.out.println(pi * 2);  // 6.28</code></pre>
 int n = Integer.parseInt(bad);  // NumberFormatException — CRASH!</code></pre>
 
     <div class="tinker">
-        <h3>Tinker Challenge: Safe Parsing</h3>
+        <h3>Tinker Challenge: Parse and Sum</h3>
         <p>
-            Scanner's <code>nextInt()</code> handles this for you. So when would
-            you use parseInt directly? One answer: when numbers are embedded in
-            a String you already have, like a line from a file. Another: when you
-            want to validate input yourself.
+            Scanner's <code>nextInt()</code> reads numbers directly. So why would
+            you ever need <code>Integer.parseInt()</code>? Here's a situation:
+            what if you already have a String full of numbers and need to do math
+            with them?
         </p>
         <p>
             Write a program that reads a line of text, splits it on commas, and
-            converts each piece to an integer. Then sum them.
+            converts each piece to an integer. Then sum them. You'll need to figure
+            out how to split a String into pieces — open the
+            <a href="../docs/unit-02/string.html">String docs</a> and find a method
+            that does that.
         </p>
         <pre><code><span class="output">Enter numbers separated by commas: 10,25,13,8
 Sum: 56</span></code></pre>
@@ -133,12 +136,13 @@ System.out.println(c.equals(d)); // predict: ____</code></pre>
     </div>
 
     <p>
-        <strong>What happened?</strong> Java caches (reuses) Integer objects for
-        small values: -128 to 127. So <code>a</code> and <code>b</code> both point
-        to the SAME cached Integer object — <code>==</code> says true. But 200 is
-        outside the cache range, so <code>c</code> and <code>d</code> are two different
-        Integer objects in memory — <code>==</code> says false even though they hold
-        the same value.
+        <strong>The results don't match your predictions, do they?</strong>
+        This is a famous Java gotcha. There's a range of values that Integer
+        secretly caches (reuses). Your job: figure out what that range is and why
+        this behavior exists. Open the
+        <a href="../docs/unit-02/wrapper-classes.html">Wrapper Classes docs</a>
+        and find the section on Integer caching. Then answer: what range does Java
+        cache, and what method should you ALWAYS use to compare wrapper objects?
     </p>
 
     <div class="socratic">
@@ -157,21 +161,24 @@ System.out.println(c.equals(d)); // predict: ____</code></pre>
     <div class="bug-hunt">
         <h3>Bug Hunt 1: The Null Trap</h3>
         <pre><code>Integer score = null;
-int finalScore = score;  // NullPointerException!</code></pre>
+int finalScore = score;  // What happens?</code></pre>
         <p>
-            Run this. <code>NullPointerException</code>. When Java tries to
-            unbox <code>null</code> into a primitive <code>int</code>, it has
-            nothing to unbox. Primitives CANNOT be null. Wrappers CAN.
+            Run this. What error do you get? Why can a wrapper be null but a
+            primitive cannot? Check the <a href="../docs/unit-02/wrapper-classes.html">Wrapper docs</a>
+            — look for the section that explains what happens when Java tries to
+            convert null into a primitive. What's the fix?
         </p>
     </div>
 
     <div class="bug-hunt">
         <h3>Bug Hunt 2: Wrong Parser</h3>
         <pre><code>String input = "10.5";
-int value = Integer.parseInt(input);  // NumberFormatException!</code></pre>
+int value = Integer.parseInt(input);  // What happens?</code></pre>
         <p>
-            "10.5" has a decimal point. <code>Integer.parseInt</code> can only
-            handle whole numbers. What method should you use instead?
+            "10.5" has a decimal point. Why does <code>Integer.parseInt</code>
+            fail here? Which wrapper class's parser SHOULD you use for decimal
+            numbers? Check the <a href="../docs/unit-02/wrapper-classes.html">Wrapper docs</a>
+            and find the right one.
         </p>
     </div>
 

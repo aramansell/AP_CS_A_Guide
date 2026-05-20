@@ -106,8 +106,11 @@ System.out.println(Math.max(Math.min(7, 3), 5));
 System.out.println((int) Math.sqrt(10));</code></pre>
         <p>
             The last one is tricky. <code>Math.sqrt(10)</code> is about 3.162...
-            Casting to <code>int</code> truncates (chops off) the decimal — it does NOT
-            round. So 3.162 becomes 3.
+            What happens when you cast a decimal number to <code>int</code>?
+            Does it round, or does it chop off the decimal? Run it to find out,
+            then explain the difference. (If you're not sure what casting does,
+            check the <a href="../docs/unit-02/math-class.html">Math docs</a>
+            for a warning about this.)
         </p>
     </div>
 
@@ -115,10 +118,12 @@ System.out.println((int) Math.sqrt(10));</code></pre>
 
     <p>Create <code>CombatMath.java</code>. It calculates hit chance for an RPG attack:</p>
     <ul>
-        <li>Roll a d20: <code>(int)(Math.random() * 20) + 1</code></li>
+        <li>Roll a d20 using Math.random() (the formula is in the
+            <a href="../docs/unit-02/math-class.html">Math docs</a>)</li>
         <li>Add your attack bonus (pick a number, like 5)</li>
         <li>Compare to enemy Armor Class (pick a number, like 15)</li>
-        <li>Damage = a random number between 1 and 8, but minimum 1: <code>Math.max(1, damageRoll)</code></li>
+        <li>Roll damage between 1 and 8. But damage can never be below 1 —
+            which Math method guarantees a minimum value? Check the docs.</li>
         <li>Print whether you hit, and how much damage you dealt</li>
     </ul>
 
@@ -129,12 +134,18 @@ You deal 6 damage.</span></code></pre>
         <h3>Tinker Challenge: Bounded Stats</h3>
         <p>
             In an RPG, stats have caps. Strength can't go above 20. After applying
-            a +3 strength bonus, the new value should be <code>Math.min(20, strength + 3)</code>.
-            Health can't drop below 0. After taking damage: <code>hp = Math.max(0, hp - damage)</code>.
+            a +3 strength bonus, you need to cap it. Which Math method creates an
+            upper limit? Check the docs — there's one that returns "the smaller of
+            two values."
+        </p>
+        <p>
+            Health can't drop below 0. After taking damage, you need to ensure HP
+            stays non-negative. Which Math method creates a lower limit?
         </p>
         <p>
             Add these bounds to your Combat Math Helper. What happens when someone
-            takes 50 damage with only 30 HP?
+            takes 50 damage with only 30 HP? What happens when a strength bonus
+            pushes the stat to 24?
         </p>
     </div>
 

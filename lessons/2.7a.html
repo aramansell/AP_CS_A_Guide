@@ -46,27 +46,18 @@
 
     <h3>Part 1: The Fields (What a Character IS)</h3>
 
-    <p>Every character has these properties. Declare them as instance variables:</p>
-
-    <pre><code>public class Character {
-    String name;
-    int hp;
-    int maxHp;
-    int strength;
-    int dexterity;
-    int constitution;
-    int intelligence;
-    int wisdom;
-    int charisma;
-}</code></pre>
+    <p>Every character has these properties. But what data types do you use?
+    What should HP be capped by? What stats does an RPG character have?
+    Check the <a href="../docs/unit-02/character-creator.html">Character Creator guide</a>
+    for the full spec — it lists every field and the recommended types.</p>
 
     <div class="socratic">
         <h3>Socratic Checkpoint</h3>
         <ol>
             <li>Why are these <em>instance</em> variables (not static)? What happens
                 if you make them static?</li>
-            <li>Why does HP need two variables (<code>hp</code> and <code>maxHp</code>)?
-                What's the difference?</li>
+            <li>Why does HP need two variables? What's the difference between
+                current HP and maximum HP?</li>
             <li>What data type did you choose for the stats? Why not <code>double</code>?</li>
         </ol>
     </div>
@@ -74,16 +65,17 @@
     <h3>Part 2: generateStats() — Summon the Dice God</h3>
 
     <p>
-        Add a method that fills in all six stats automatically using
-        <code>Dice.statRoll()</code>.
+        Add a method that fills in all six stats automatically. The formula for
+        each stat is in your <code>Dice.java</code> from Unit 1.7. The HP formula
+        is in the <a href="../docs/unit-02/character-creator.html">Character Creator guide</a>.
     </p>
 
     <p><strong>Requirements:</strong></p>
     <ul>
-        <li>Method signature: <code>public void generateStats()</code></li>
-        <li>Sets each stat (strength through charisma) using <code>Dice.statRoll()</code></li>
-        <li>Sets <code>maxHp</code> to <code>constitution * 2</code> (HP scales with CON)</li>
-        <li>Sets <code>hp = maxHp</code> (character starts at full health)</li>
+        <li>Method should be <code>public void generateStats()</code></li>
+        <li>Use <code>Dice.statRoll()</code> for each stat</li>
+        <li>HP scales with constitution — check the docs for the exact formula</li>
+        <li>Character starts at full health</li>
     </ul>
 
     <div class="tinker">
