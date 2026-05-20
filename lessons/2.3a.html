@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.3a Scanner Input — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="2.2a.html">◀ 2.2a</a>
+    <span class="lesson-id">2.3a</span>
+    <a href="2.4a.html">2.4a ▶</a>
+</div>
+
+<h1>2.3a — Scanner: The Program Listens</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        Your programs have been one-way — you talk AT the user. Scanner reverses
+        the flow: it reads what the user types into the keyboard.
+    </p>
+
+    <h3>Scanner Setup — Three Things Always Required</h3>
+
+    <p>Every Scanner program needs these three pieces. Create a file called <code>ScannerSetup.java</code> and type this in:</p>
+
+    <pre><code>import java.util.Scanner;  // 1. IMPORT — top of file, before the class
+
+public class ScannerSetup {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);  // 2. CREATE — the object
+
+        System.out.print("Enter your name: ");   // prompt the user
+        String name = input.nextLine();          // 3. READ — wait for Enter
+
+        System.out.println("Hello, " + name + "!");
+    }
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Where in this code do you see the three-step object pattern (declare, construct, use)?</li>
+            <li>Why is <code>System.out.print</code> used instead of <code>println</code> for the prompt?</li>
+            <li>What would happen if you forgot the <code>import</code> line? Try it and see the error.</li>
+        </ol>
+    </div>
+
+    <h3>Reading Different Types</h3>
+
+    <pre><code>String wholeLine = input.nextLine();    // reads everything until Enter
+int number = input.nextInt();           // reads the next integer
+double decimal = input.nextDouble();    // reads the next decimal number</code></pre>
+
+    <h3>THE Buffer Trap — Your #1 Scanner Bug</h3>
+
+    <p>Copy this code into a file called <code>BufferTrap.java</code> and run it:</p>
+
+    <div class="callout trap">
+        <pre><code>import java.util.Scanner;
+
+public class BufferTrap {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("Age: ");
+        int age = input.nextInt();
+
+        System.out.print("Name: ");
+        String name = input.nextLine();
+
+        System.out.println("You are " + age + " and your name is " + name);
+    }
+}</code></pre>
+    </div>
+
+    <p>
+        Run it. Type <code>17</code> then press Enter. <strong>What happened?</strong>
+        Did it skip the name? Why?
+    </p>
+
+    <p>
+        <code>nextInt()</code> reads the number 17 but leaves the <strong>Enter key</strong>
+        you pressed sitting in the input buffer. The next <code>nextLine()</code> sees
+        that leftover Enter and thinks you gave it an empty line.
+    </p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — Fix the Trap</h3>
+        <p>
+            Add <strong>one line of code</strong> after <code>nextInt()</code>
+            that eats the leftover Enter key. What method would you call? Where exactly
+            does it go?
+        </p>
+    </div>
+
+    <p><strong>The fix:</strong> Add an extra <code>input.nextLine();</code> right after every <code>nextInt()</code> or <code>nextDouble()</code> call — before the next <code>nextLine()</code>.</p>
+
+    <pre><code>int age = input.nextInt();
+input.nextLine();  // EAT the leftover Enter key
+
+System.out.print("Name: ");
+String name = input.nextLine();  // now this works correctly</code></pre>
+
+    <h3>Build It: Weapon Chooser</h3>
+
+    <p>Create <code>WeaponChooser.java</code>:</p>
+    <ul>
+        <li>Ask "What is your weapon?" — read it with nextLine()</li>
+        <li>Ask "How much damage does it do?" — read it with nextInt()</li>
+        <li>Print: "Your [weapon] does [damage] damage."</li>
+        <li>Fix the buffer trap if you ask for damage first!</li>
+    </ul>
+
+    <div class="tinker">
+        <h3>Tinker Challenge: Two-Player Setup</h3>
+        <p>
+            Extend WeaponChooser to ask for TWO weapons (one for each hand). Read the
+            name and damage for each. Print a summary. Where do the buffer traps appear?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Set up Scanner: import, create, read — from memory</li>
+            <li>Use nextLine(), nextInt(), and nextDouble() correctly</li>
+            <li>Diagnose and fix the buffer trap (nextInt followed by nextLine)</li>
+            <li>Explain WHY the buffer trap happens (leftover Enter key)</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/scanner.html">Scanner — Reading Input</a> — full reference</li>
+        <li><a href="../docs/unit-02/string.html">The String Class</a> — what to do with Strings you read</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.2a String Exploration — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="2.1a.html">◀ 2.1a</a>
+    <span class="lesson-id">2.2a</span>
+    <a href="2.3a.html">2.3a ▶</a>
+</div>
+
+<h1>2.2a — String Is an Object</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <p>
+        You've used Strings since your first program. But <code>String</code>
+        is not a primitive — it's a full-blown object with methods. Today you
+        explore what Strings can do on your own.
+    </p>
+
+    <h3>Launch — Predict This</h3>
+
+    <p>Open a new file <code>StringLab.java</code>. For each block below,
+    <strong>write your prediction first</strong>, then run the code, then record
+    what actually happened.</p>
+
+    <div class="socratic">
+        <h3>Section 1: length()</h3>
+        <pre><code>String weapon = "Excalibur";
+System.out.println(weapon.length());         // predict: ____
+System.out.println("dragon".length());       // predict: ____
+System.out.println("".length());             // predict: ____
+System.out.println(" ".length());            // predict: ____</code></pre>
+        <p>What's the length of an empty String? Of a space? Why does the second line even work — <code>"dragon"</code> isn't a variable, it's just there?</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Section 2: substring()</h3>
+        <pre><code>String dungeon = "Underdark";
+
+System.out.println(dungeon.substring(0, 5));   // predict: ____
+System.out.println(dungeon.substring(5));      // predict: ____
+System.out.println(dungeon.substring(1, 4));   // predict: ____</code></pre>
+        <p>The second number tells substring where to <em>stop</em> (not how many characters). Does <code>substring(5)</code> with one argument behave differently? What's the rule?</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Section 3: indexOf()</h3>
+        <pre><code>String spell = "Fireball";
+
+System.out.println(spell.indexOf("F"));     // predict: ____
+System.out.println(spell.indexOf("e"));     // predict: ____
+System.out.println(spell.indexOf("ball"));  // predict: ____
+System.out.println(spell.indexOf("x"));     // predict: ____</code></pre>
+        <p>What does indexOf return when it can't find the thing? If there are two 'l' characters in "Fireball", which one does indexOf find?</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Section 4: equals() vs ==</h3>
+        <pre><code>String a = new String("sword");
+String b = new String("sword");
+
+System.out.println(a == b);       // predict: ____
+System.out.println(a.equals(b));  // predict: ____</code></pre>
+        <p>Both variables hold the word "sword". Why does <code>==</code> say false? What is <code>==</code> actually checking?</p>
+    </div>
+
+    <div class="callout trap">
+        <h3>Section 5: The Immutability Trap</h3>
+        <pre><code>String s = "hello";
+s.toUpperCase();
+System.out.println(s);  // predict: ____</code></pre>
+        <p>If this prints "hello" (not "HELLO")... why? Strings are <strong>immutable</strong>. Methods like <code>toUpperCase()</code> return a <em>new</em> String — they never change the original. To get "HELLO", you must do: <code>s = s.toUpperCase();</code></p>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker Challenge: Password Checker</h3>
+        <p>
+            Write a program that checks a String password against these rules:
+        </p>
+        <ul>
+            <li>Length must be at least 8 characters (use <code>length()</code>)</li>
+            <li>Must contain the '@' symbol somewhere (use <code>indexOf()</code>)</li>
+            <li>The first character must NOT be a number</li>
+        </ul>
+        <p>Try it with passwords like <code>"hello"</code>, <code>"pass@word"</code>, and <code>"1password@"</code>. Print whether each one passes.</p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Call length(), substring(), indexOf(), equals(), and compareTo() and predict their output</li>
+            <li>Explain why <code>==</code> doesn't work for comparing String contents</li>
+            <li>Explain String immutability — what happens when you call toUpperCase() without reassigning</li>
+            <li>Use substring and indexOf together to extract a piece of a String</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/string.html">The String Class</a> — full method reference</li>
+        <li><a href="../docs/unit-02/objects-and-classes.html">Objects &amp; Classes</a> — what an object is</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

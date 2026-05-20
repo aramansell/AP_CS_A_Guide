@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.6a Wrapper Classes — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="2.5a.html">◀ 2.5a</a>
+    <span class="lesson-id">2.6a</span>
+    <a href="2.7a.html">2.7a ▶</a>
+</div>
+
+<h1>2.6a — Wrapper Classes: Primitives in Disguise</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <p>
+        You've used <code>int</code>, <code>double</code>, and <code>boolean</code>
+        since day one. But sometimes Java needs them to act like objects. Enter
+        <strong>wrapper classes</strong>: Integer, Double, Boolean, Character.
+    </p>
+
+    <div class="callout">
+        <strong>Why do wrappers exist?</strong> Later this year, you'll use data
+        structures like <code>ArrayList</code> that can only hold objects — not
+        primitives. You can't say <code>ArrayList&lt;int&gt;</code>. You say
+        <code>ArrayList&lt;Integer&gt;</code>. Today you learn what wrappers are
+        and the traps that come with them.
+    </div>
+
+    <h3>Launch — What Is This?</h3>
+
+    <p>Create <code>WrapperLab.java</code> and run this:</p>
+
+    <pre><code>System.out.println("Biggest int: " + Integer.MAX_VALUE);
+System.out.println("Smallest int: " + Integer.MIN_VALUE);
+System.out.println("Biggest double: " + Double.MAX_VALUE);</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li><code>Integer.MAX_VALUE</code> — is this a method call or a constant?</li>
+            <li>Why is it on <code>Integer</code> (capital I) rather than <code>int</code> (lowercase)?</li>
+            <li>What happens if you add 1 to Integer.MAX_VALUE? Try it. This is called <strong>integer overflow</strong>.</li>
+        </ol>
+    </div>
+
+    <h3>The Wrapper Map</h3>
+
+    <table>
+        <tr><th>Primitive</th><th>Wrapper Class</th></tr>
+        <tr><td>int</td><td>Integer</td></tr>
+        <tr><td>double</td><td>Double</td></tr>
+        <tr><td>boolean</td><td>Boolean</td></tr>
+        <tr><td>char</td><td>Character</td></tr>
+    </table>
+
+    <h3>Section 1: parseInt — String to Number</h3>
+
+    <p>
+        The most useful wrapper trick: turning a String into a number.
+    </p>
+
+    <pre><code>String numText = "42";
+int actualNumber = Integer.parseInt(numText);
+System.out.println(actualNumber + 8);  // 50 — math works!
+
+String decimalText = "3.14";
+double pi = Double.parseDouble(decimalText);
+System.out.println(pi * 2);  // 6.28</code></pre>
+
+    <p>But beware — garbage in, crash out:</p>
+
+    <pre><code>String bad = "hello";
+int n = Integer.parseInt(bad);  // NumberFormatException — CRASH!</code></pre>
+
+    <div class="tinker">
+        <h3>Tinker Challenge: Safe Parsing</h3>
+        <p>
+            Scanner's <code>nextInt()</code> handles this for you. So when would
+            you use parseInt directly? One answer: when numbers are embedded in
+            a String you already have, like a line from a file. Another: when you
+            want to validate input yourself.
+        </p>
+        <p>
+            Write a program that reads a line of text, splits it on commas, and
+            converts each piece to an integer. Then sum them.
+        </p>
+        <pre><code><span class="output">Enter numbers separated by commas: 10,25,13,8
+Sum: 56</span></code></pre>
+    </div>
+
+    <h3>Section 2: Autoboxing — Java Does It For You</h3>
+
+    <p>Most of the time, Java converts automatically between primitives and wrappers:</p>
+
+    <pre><code>Integer wrapped = 42;    // autoboxing: int → Integer
+int unwrapped = wrapped; // unboxing: Integer → int
+
+// These are DIFFERENT types, but Java handles the conversion.
+// You usually don't have to think about it.</code></pre>
+
+    <div class="callout trap">
+        <h3>THE CACHING TRAP — This One Is Famous</h3>
+        <p>Create a file called <code>CacheTrap.java</code> and run this:</p>
+        <pre><code>Integer a = 100;
+Integer b = 100;
+Integer c = 200;
+Integer d = 200;
+
+System.out.println(a == b);  // predict: ____
+System.out.println(c == d);  // predict: ____
+System.out.println(a.equals(b)); // predict: ____
+System.out.println(c.equals(d)); // predict: ____</code></pre>
+    </div>
+
+    <p>
+        <strong>What happened?</strong> Java caches (reuses) Integer objects for
+        small values: -128 to 127. So <code>a</code> and <code>b</code> both point
+        to the SAME cached Integer object — <code>==</code> says true. But 200 is
+        outside the cache range, so <code>c</code> and <code>d</code> are two different
+        Integer objects in memory — <code>==</code> says false even though they hold
+        the same value.
+    </p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>What method should you ALWAYS use to compare Integer objects?</li>
+            <li>Is this caching trap the same as the <code>==</code> vs <code>equals()</code>
+                problem with Strings? Why or why not?</li>
+            <li>If you wrote <code>int a = 200; int b = 200;</code> (primitives, not wrappers),
+                would <code>a == b</code> work correctly?</li>
+        </ol>
+    </div>
+
+    <h3>Section 3: Unboxing Dangers</h3>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt 1: The Null Trap</h3>
+        <pre><code>Integer score = null;
+int finalScore = score;  // NullPointerException!</code></pre>
+        <p>
+            Run this. <code>NullPointerException</code>. When Java tries to
+            unbox <code>null</code> into a primitive <code>int</code>, it has
+            nothing to unbox. Primitives CANNOT be null. Wrappers CAN.
+        </p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt 2: Wrong Parser</h3>
+        <pre><code>String input = "10.5";
+int value = Integer.parseInt(input);  // NumberFormatException!</code></pre>
+        <p>
+            "10.5" has a decimal point. <code>Integer.parseInt</code> can only
+            handle whole numbers. What method should you use instead?
+        </p>
+    </div>
+
+    <h3>When Primitives vs When Wrappers</h3>
+
+    <table>
+        <tr><th>Use primitives (int, double)</th><th>Use wrappers (Integer, Double)</th></tr>
+        <tr><td>Almost always — faster, simpler, can't be null</td><td>ArrayList and generic collections (Unit 7)</td></tr>
+        <tr><td>Math and calculations</td><td>Need MAX_VALUE / MIN_VALUE constants</td></tr>
+        <tr><td>Loop counters, array indices</td><td>Value might be "unknown" (null)</td></tr>
+        <tr><td>Method parameters and return values</td><td>Parsing Strings to numbers</td></tr>
+    </table>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Match each primitive to its wrapper class</li>
+            <li>Use Integer.parseInt() and Double.parseDouble() to convert Strings</li>
+            <li>Explain autoboxing and unboxing</li>
+            <li>Explain the Integer caching trap (-128 to 127) and why == fails on wrappers</li>
+            <li>Explain why unboxing null causes a NullPointerException</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/wrapper-classes.html">Wrapper Classes</a> — full reference</li>
+        <li><a href="../docs/unit-02/math-class.html">The Math Class</a> — more static methods</li>
+        <li><a href="../docs/unit-02/character-creator.html">Character Creator Walkthrough</a> — parseInt in context</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

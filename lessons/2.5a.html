@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.5a The Math Class — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="2.4a.html">◀ 2.4a</a>
+    <span class="lesson-id">2.5a</span>
+    <a href="2.6a.html">2.6a ▶</a>
+</div>
+
+<h1>2.5a — The Math Class: Static Methods</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code> —
+        you learned those in Unit 1. The Math class gives you more powerful operations.
+        But Math works differently from the objects you've used so far.
+    </p>
+
+    <h3>Static vs Instance — What's Different?</h3>
+
+    <pre><code>// Instance method call (the pattern you know):
+Scanner input = new Scanner(System.in);  // create an object FIRST
+String s = input.nextLine();             // then call methods ON the object
+
+// Static method call (new pattern):
+double result = Math.sqrt(25);           // call directly on the CLASS</code></pre>
+
+    <p>
+        You never write <code>new Math()</code>. Math methods are <strong>static</strong> —
+        they belong to the class itself, not to individual objects. Think of Math as a
+        toolbox bolted to the wall — everyone reaches into the same toolbox.
+    </p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why do you need <code>new Scanner(...)</code> but NOT <code>new Math()</code>?</li>
+            <li>If Math methods are static, what word is probably in their method signatures?
+                (Hint: you saw static methods in Dice.java during Unit 1.)</li>
+        </ol>
+    </div>
+
+    <h3>The Essential Math Methods</h3>
+
+    <p>Create <code>MathLab.java</code>. For each method, write your prediction, run it, then record what happened.</p>
+
+    <h3>Math.abs(x) — distance, never negative</h3>
+    <pre><code>System.out.println(Math.abs(-7));     // predict: ____
+System.out.println(Math.abs(7));      // predict: ____
+System.out.println(Math.abs(-3.5));   // predict: ____
+
+// RPG use: "How far apart are two coordinates?"
+int diff = Math.abs(playerX - enemyX);</code></pre>
+
+    <h3>Math.pow(base, exp) — raise to a power</h3>
+    <pre><code>System.out.println(Math.pow(2, 3));    // predict: ____  (2³)
+System.out.println(Math.pow(5, 2));    // predict: ____  (5²)
+System.out.println(Math.pow(10, 0));   // predict: ____ (anything^0)
+
+// Warning: Math.pow returns a double!
+int squared = (int) Math.pow(7, 2);  // cast to int if you need an int</code></pre>
+
+    <h3>Math.sqrt(x) — square root</h3>
+    <pre><code>System.out.println(Math.sqrt(25));    // predict: ____
+System.out.println(Math.sqrt(2));     // predict: ____ (not a clean number)
+System.out.println(Math.sqrt(-1));    // predict: ____ (what happens?)</code></pre>
+
+    <h3>Math.min(a,b) and Math.max(a,b)</h3>
+    <pre><code>System.out.println(Math.min(3, 7));   // predict: ____
+System.out.println(Math.max(3, 7));   // predict: ____
+
+// Combine them to clamp a value:
+int clamped = Math.max(0, Math.min(value, 100));
+// If value = -5  → max(0, -5)  = 0
+// If value = 50  → max(0, 50)  = 50
+// If value = 150 → max(0, 100) = 100</code></pre>
+
+    <div class="tinker">
+        <h3>Tinker Challenge: Math Predictions</h3>
+        <pre><code>// What prints? Predict ALL FOUR before running.
+System.out.println(Math.abs(-12));
+System.out.println(Math.pow(3, 2));
+System.out.println(Math.max(Math.min(7, 3), 5));
+System.out.println((int) Math.sqrt(10));</code></pre>
+        <p>
+            The last one is tricky. <code>Math.sqrt(10)</code> is about 3.162...
+            Casting to <code>int</code> truncates (chops off) the decimal — it does NOT
+            round. So 3.162 becomes 3.
+        </p>
+    </div>
+
+    <h3>Build It: Combat Math Helper</h3>
+
+    <p>Create <code>CombatMath.java</code>. It calculates hit chance for an RPG attack:</p>
+    <ul>
+        <li>Roll a d20: <code>(int)(Math.random() * 20) + 1</code></li>
+        <li>Add your attack bonus (pick a number, like 5)</li>
+        <li>Compare to enemy Armor Class (pick a number, like 15)</li>
+        <li>Damage = a random number between 1 and 8, but minimum 1: <code>Math.max(1, damageRoll)</code></li>
+        <li>Print whether you hit, and how much damage you dealt</li>
+    </ul>
+
+    <pre><code><span class="output">You rolled a 12 + 5 = 17 vs AC 15. HIT!
+You deal 6 damage.</span></code></pre>
+
+    <div class="tinker">
+        <h3>Tinker Challenge: Bounded Stats</h3>
+        <p>
+            In an RPG, stats have caps. Strength can't go above 20. After applying
+            a +3 strength bonus, the new value should be <code>Math.min(20, strength + 3)</code>.
+            Health can't drop below 0. After taking damage: <code>hp = Math.max(0, hp - damage)</code>.
+        </p>
+        <p>
+            Add these bounds to your Combat Math Helper. What happens when someone
+            takes 50 damage with only 30 HP?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Explain the difference between static and instance method calls</li>
+            <li>Use abs(), pow(), sqrt(), min(), and max() correctly</li>
+            <li>Predict when Math.pow returns a double vs when you need to cast</li>
+            <li>Use Math.min and Math.max together to clamp a value between bounds</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/math-class.html">The Math Class</a> — full method reference</li>
+        <li><a href="../docs/unit-02/objects-and-classes.html">Objects &amp; Classes</a> — static vs instance</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>
