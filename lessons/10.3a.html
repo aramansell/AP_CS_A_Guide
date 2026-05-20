@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10.3a Merge Sort — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+<div class="page">
+<div class="lesson-nav">
+    <a href="10.2a.html">◀ 10.2a</a>
+    <span class="lesson-id">10.3a</span>
+    <a href="10.4a.html">10.4a ▶</a>
+</div>
+<h1>10.3a — Merge Sort: Divide and Conquer</h1>
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>Selection sort from Unit 7 takes O(N²) time — 10,000 items means ~100 million comparisons. <strong>Merge sort</strong> is a recursive sorting algorithm that's much faster: O(N log N). The idea is simple: split the array in half, sort each half recursively, then merge the two sorted halves together.</p>
+
+    <div class="tinker">
+        <h3>Experiment: Merge Two Sorted Arrays</h3>
+        <p>Create <code>MergeSort.java</code>. First, just merge:</p>
+        <pre><code>// Merge two sorted arrays into one sorted array
+public static int[] merge(int[] left, int[] right) {
+    int[] result = new int[left.length + right.length];
+    int i = 0, j = 0, k = 0;
+
+    while (i < left.length && j < right.length) {
+        if (left[i] <= right[j]) {
+            result[k] = left[i];
+            i++;
+        } else {
+            result[k] = right[j];
+            j++;
+        }
+        k++;
+    }
+
+    // Copy remaining elements
+    while (i < left.length) { result[k] = left[i]; i++; k++; }
+    while (j < right.length) { result[k] = right[j]; j++; k++; }
+
+    return result;
+}</code></pre>
+        <p>Test: <code>merge({1,4,7}, {2,3,6,8})</code> should produce <code>{1,2,3,4,6,7,8}</code>. Trace the while loops on paper.</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment: The Full Merge Sort</h3>
+        <pre><code>public static int[] mergeSort(int[] arr) {
+    // Base case: array of size 0 or 1 is already sorted
+    if (arr.length <= 1) return arr;
+
+    // Split into two halves
+    int mid = arr.length / 2;
+    int[] left = Arrays.copyOfRange(arr, 0, mid);
+    int[] right = Arrays.copyOfRange(arr, mid, arr.length);
+
+    // Recursively sort both halves
+    left = mergeSort(left);
+    right = mergeSort(right);
+
+    // Merge the sorted halves
+    return merge(left, right);
+}</code></pre>
+        <p>Test with <code>{38, 27, 43, 3, 9, 82, 10}</code>. Draw the recursion tree — each split creates two children until you hit single elements, then merge on the way back up.</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Copy Arrays, Don't Modify In-Place:</strong> Merge sort creates new arrays at every level. For N=8, you create ~15 arrays total. This is why merge sort uses O(N) extra memory. Selection sort uses O(1) extra memory — but it's much slower. Read the <a href="../docs/unit-10/merge-sort.html">Merge Sort docs</a> for the time/space trade-off.
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Compare Sorts</h3>
+        <p>Time both algorithms on random arrays:</p>
+        <ul>
+            <li>Generate random array of size 10,000</li>
+            <li>Time selection sort (from Unit 7) — print elapsed milliseconds</li>
+            <li>Time merge sort — print elapsed milliseconds</li>
+            <li>Try 50,000. Try 100,000. When does selection sort become unusable?</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Merge sort splits the array log₂(N) times. For N=1,000,000, that's about 20 levels. How many total comparisons?</li>
+            <li>Why does merge sort need extra arrays? Could you implement it in-place?</li>
+            <li>Read the <a href="../docs/unit-10/merge-sort.html">docs section on stable sorting</a>. Merge sort is stable — what does that mean?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Implement merge() for two sorted arrays</li>
+            <li>Implement recursive merge sort using divide-and-conquer</li>
+            <li>Trace merge sort on paper showing the recursion tree</li>
+            <li>Compare O(N²) vs O(N log N) empirically</li>
+        </ul>
+    </div>
+</div>
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-10/merge-sort.html">Merge Sort</a></li>
+        <li><a href="../docs/unit-10/recursion-basics.html">Recursion Basics</a></li>
+        <li><a href="../docs/unit-07/searching-sorting.html">Searching &amp; Sorting (Unit 7)</a></li>
+    </ul>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.6a Combat System RPG — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+<div class="page">
+<div class="lesson-nav">
+    <a href="9.5a.html">◀ 9.5a</a>
+    <span class="lesson-id">9.6a</span>
+    <span></span>
+</div>
+<h1>9.6a — Combat System: Polymorphic RPG Battles</h1>
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~60 min</span>
+    </div>
+
+    <p>Your DungeonCrawl has one monster type at a time. But a real RPG has goblins, dragons, skeletons, slimes — each with different stats and behaviors. Inheritance makes this clean. One Combatant interface. One battle loop. Infinite monster variety.</p>
+
+    <p>Open the <a href="../docs/unit-09/combat-system.html">Combat System (Student RPG Guide)</a>. Follow the specification.</p>
+
+    <div class="tinker">
+        <h3>Part 1: Refactor to Inheritance</h3>
+        <p>Convert your Monster class into a hierarchy:</p>
+        <ul>
+            <li><code>Combatant</code> interface — attack(), takeDamage(), isAlive(), getName(), getAttackPower()</li>
+            <li><code>Creature</code> abstract class — HP, name, attackPower fields, implements Combatant</li>
+            <li><code>Goblin</code> extends Creature — 20 HP, 5 ATK, bonus: attacks deal +2 damage</li>
+            <li><code>Dragon</code> extends Creature — 80 HP, 20 ATK, attack() returns random 15-25 damage</li>
+            <li><code>Skeleton</code> extends Creature — 30 HP, 8 ATK, 30% chance to dodge (take 0 damage)</li>
+            <li>Player implements Combatant — keep your existing Player, add the interface</li>
+        </ul>
+    </div>
+
+    <div class="tinker">
+        <h3>Part 2: Polymorphic Battle Engine</h3>
+        <p>Create <code>BattleEngine.java</code> with ONE method:</p>
+        <pre><code>public static Combatant runBattle(Combatant a, Combatant b) {
+    while (a.isAlive() && b.isAlive()) {
+        System.out.println(a.getName() + " [" + a.getHp() + "] vs " + b.getName() + " [" + b.getHp() + "]");
+        b.takeDamage(a.attack());
+        if (b.isAlive()) a.takeDamage(b.attack());
+    }
+    return a.isAlive() ? a : b;
+}</code></pre>
+        <p>This method knows NOTHING about Goblin, Dragon, or Skeleton. It works with ANY Combatant — now and forever.</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Part 3: Monster Spawning</h3>
+        <p>Create <code>MonsterSpawner.java</code>:</p>
+        <ul>
+            <li>Takes a difficulty parameter (1-3) in constructor</li>
+            <li>spawn() returns a random Combatant: difficulty 1 = Goblin or Skeleton, 2 = Goblin/Skeleton/Dragon(weakened), 3 = any</li>
+            <li>getBoss() returns a Dragon with +50% HP and attack</li>
+        </ul>
+        <p>Replace DungeonCrawl's hard-coded monster with spawner.spawn(). Player fights through 5 random monsters, then the boss.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Your battle engine calls <code>a.attack()</code>. If a is a Skeleton, it has a 30% dodge chance — but the engine doesn't know that. How does the dodge happen?</li>
+            <li>Why is Creature abstract instead of concrete? What happens if you try <code>new Creature("???", 10, 5)</code>?</li>
+            <li>Look at the <a href="../docs/unit-09/combat-system.html">docs section on extensibility</a>. How would you add a Healer that restores HP? What interface would you use?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Build a class hierarchy with interface, abstract class, concrete classes</li>
+            <li>Write polymorphic battle logic independent of specific creature types</li>
+            <li>Create a factory/spawner pattern for random enemy generation</li>
+        </ul>
+    </div>
+</div>
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/combat-system.html">Combat System (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a></li>
+        <li><a href="../docs/unit-09/inheritance-basics.html">Inheritance Basics</a></li>
+        <li><a href="../docs/unit-09/comparison-interfaces.html">Comparison Interfaces</a></li>
+    </ul>
+</div>
+</div>
+</body>
+</html>

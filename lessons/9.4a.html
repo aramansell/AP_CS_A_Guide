@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.4a Interfaces — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+<div class="page">
+<div class="lesson-nav">
+    <a href="9.3a.html">◀ 9.3a</a>
+    <span class="lesson-id">9.4a</span>
+    <a href="9.5a.html">9.5a ▶</a>
+</div>
+<h1>9.4a — Interfaces: Contracts, Not Parents</h1>
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>Inheritance means IS-A. A Goblin IS-A Creature. But what about IS-ABLE-TO? A Goblin CAN-FIGHT. A Dragon CAN-FIGHT. A Player CAN-FIGHT. None of them share a parent that makes sense for "fighting" — but they all need <code>attack()</code> and <code>takeDamage()</code>. An <strong>interface</strong> is a contract: "any class that implements me MUST provide these methods." No fields, no constructors, no inheritance — just method signatures.</p>
+
+    <div class="tinker">
+        <h3>Experiment: Your First Interface</h3>
+        <p>Create <code>Combatant.java</code> (an interface, NOT a class):</p>
+        <pre><code>public interface Combatant {
+    int attack();
+    void takeDamage(int damage);
+    boolean isAlive();
+    String getName();
+}</code></pre>
+        <p>Now make Creature implement it:</p>
+        <pre><code>public class Creature implements Combatant {
+    // Creature already HAS these methods — no changes needed!
+    // But now you can also make Player implement Combatant
+}</code></pre>
+        <p>Make Player implement Combatant too. Now write polymorphic code:</p>
+        <pre><code>Combatant[] fighters = new Combatant[3];
+fighters[0] = new Goblin();
+fighters[1] = new Dragon();
+fighters[2] = new Player("Hero", 100, 15);
+
+for (Combatant c : fighters) {
+    System.out.println(c.getName() + " attacks: " + c.attack());
+}</code></pre>
+        <p>Player and Creature share NO parent class (well, Object). But they both implement Combatant, so they're both valid here.</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Interface ≠ Parent Class:</strong> An interface CANNOT have instance variables, constructors, or method bodies (before Java 8). It's pure method signatures. A class can implement MULTIPLE interfaces. Read the <a href="../docs/unit-09/comparison-interfaces.html">Comparison Interfaces docs</a> for the full interface rules and the Comparable pattern.
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Comparable</h3>
+        <p>Make Item implement <code>Comparable&lt;Item&gt;</code>:</p>
+        <pre><code>public class Item implements Comparable&lt;Item&gt; {
+    // ... existing fields and methods ...
+
+    @Override
+    public int compareTo(Item other) {
+        return this.value - other.value;  // sort by value ascending
+    }
+}</code></pre>
+        <p>Now <code>Collections.sort(inventory)</code> works. Try it with your DynamicInventory. Then change compareTo to sort by name alphabetically instead.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Could you have used an abstract class instead of Combatant? What's the difference?</li>
+            <li>Why can you implement multiple interfaces but only extend one class?</li>
+            <li>Read the <a href="../docs/unit-09/comparison-interfaces.html">docs section on Comparator vs Comparable</a>. When would you use one over the other?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Define an interface with method signatures</li>
+            <li>Implement an interface on multiple unrelated classes</li>
+            <li>Write polymorphic code using interface references</li>
+            <li>Implement Comparable for natural sort order</li>
+        </ul>
+    </div>
+</div>
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/comparison-interfaces.html">Comparison Interfaces</a></li>
+        <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a></li>
+        <li><a href="../docs/unit-09/inheritance-basics.html">Inheritance Basics</a></li>
+    </ul>
+</div>
+</div>
+</body>
+</html>

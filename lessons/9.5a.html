@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.5a Downcasting — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+<div class="page">
+<div class="lesson-nav">
+    <a href="9.4a.html">◀ 9.4a</a>
+    <span class="lesson-id">9.5a</span>
+    <a href="9.6a.html">9.6a ▶</a>
+</div>
+<h1>9.5a — Downcasting: Getting Your Original Type Back</h1>
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>When you store a Dragon in a Creature variable, Java forgets it's a Dragon — it only remembers the Creature parts. But sometimes you need the Dragon-specific stuff back. <strong>Downcasting</strong> tells the compiler "trust me, this Creature is actually a Dragon." It's powerful, dangerous, and the AP exam tests whether you know when it's safe.</p>
+
+    <div class="tinker">
+        <h3>Experiment: When You Need Downcasting</h3>
+        <p>Build on your Creature hierarchy:</p>
+        <pre><code>Creature[] party = {new Goblin(), new Dragon(), new Skeleton()};
+
+for (Creature c : party) {
+    // This works — attack() is in Creature
+    System.out.println(c.attack());
+
+    // This FAILS — breatheFire() is only in Dragon
+    // c.breatheFire();  // COMPILE ERROR
+
+    // Fix with downcasting:
+    if (c instanceof Dragon) {
+        Dragon d = (Dragon) c;
+        System.out.println(d.breatheFire());
+    }
+}</code></pre>
+    </div>
+
+    <div class="callout trap">
+        <strong>ClassCastException:</strong> <code>(Dragon)c</code> compiles even if c isn't a Dragon — it crashes at RUNTIME. ALWAYS guard casts with <code>instanceof</code>. The AP exam will ask you to identify code that compiles but throws ClassCastException. Read the <a href="../docs/unit-09/downcasting.html">Downcasting docs</a> Bug Hunt for the classic traps.
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Mixed Party Actions</h3>
+        <p>Create a party of 5 Creature references with mixed subtypes. Write:</p>
+        <ul>
+            <li><code>dragonCount()</code> — uses instanceof to count Dragons</li>
+            <li><code>dragonAttack()</code> — calls breatheFire() only on Dragons, regular attack() on others</li>
+            <li><code>dragonBattle()</code> — finds all Dragons and has them fight each other (if 2+ exist)</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why does <code>(Dragon)c</code> compile even when c holds a Goblin? What does the compiler check?</li>
+            <li>What's the difference between a compile error and a runtime error in the context of casting?</li>
+            <li>Read the <a href="../docs/unit-09/downcasting.html">docs section on upcasting</a>. Why is upcasting always safe but downcasting requires instanceof?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Cast a parent reference to a child type with (ChildType)</li>
+            <li>Guard downcasts with instanceof</li>
+            <li>Explain why ClassCastException is a runtime error</li>
+        </ul>
+    </div>
+</div>
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/downcasting.html">Downcasting</a></li>
+        <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a></li>
+    </ul>
+</div>
+</div>
+</body>
+</html>
