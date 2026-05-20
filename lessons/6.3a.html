@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.3a Array Algorithms — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="6.2a.html">◀ 6.2a</a>
+    <span class="lesson-id">6.3a</span>
+    <a href="6.4a.html">6.4a ▶</a>
+</div>
+
+<h1>6.3a — Array Algorithms: Search, Shift, Swap</h1>
+
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        Traversal is the engine. Algorithms are the things you build with it.
+        Finding an item, inserting, removing, swapping — these are the core
+        operations you'll use in every array-based program. The AP exam tests
+        these patterns heavily.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: Find and Count</h3>
+        <p>Create <code>ArraySearch.java</code>. Build these methods:</p>
+        <pre><code>// Linear search: return index of target, or -1 if not found
+public static int findIndex(int[] arr, int target) { ... }
+
+// Count matches
+public static int count(int[] arr, int target) { ... }
+
+// Check if ALL elements meet a condition
+public static boolean allAbove(int[] arr, int threshold) { ... }</code></pre>
+        <p>Test each with the array <code>{45, 72, 33, 72, 18, 72}</code>.
+        What does <code>findIndex(arr, 72)</code> return — first match or all matches?</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment: Swap and Shift</h3>
+        <p>Run this code and trace what happens to the array after each operation:</p>
+        <pre><code>int[] items = {10, 20, 30, 40, 50};
+
+// Swap positions 1 and 3
+int temp = items[1];
+items[1] = items[3];
+items[3] = temp;
+
+// Print after swap
+
+// Shift left: remove position 1, slide everything over
+for (int i = 1; i < items.length - 1; i++) {
+    items[i] = items[i + 1];
+}
+items[items.length - 1] = 0;  // clear the last slot
+
+// Print after shift</code></pre>
+        <p>Draw the array on paper at each step. This is how deletion works.</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Shift Direction Trap:</strong> When removing an element by shifting
+        left, you MUST go forward (left to right). If you go backward, you'll
+        copy the same value into every slot. Try it — reverse the shift loop and
+        see what happens. Read the <a href="../docs/unit-06/array-algorithms.html">
+        Array Algorithms docs</a> Bug Hunt for the classic shift-direction mistakes.
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Insertion</h3>
+        <p>Write a method <code>insert(int[] arr, int index, int value)</code> that
+        inserts <code>value</code> at the given position by shifting everything right.
+        The last element falls off. Test cases:</p>
+        <ul>
+            <li>Insert 99 at index 2: {10,20,30,40,50} → {10,20,99,30,40}</li>
+            <li>Insert at index 0: should work at the front</li>
+            <li>Insert at the last index: should work at the end</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>When inserting, why do you have to shift from right to left?
+            What happens if you shift left to right?</li>
+            <li>Why does the swap algorithm need a temporary variable? What if you
+            just wrote <code>items[1] = items[3]; items[3] = items[1];</code>?</li>
+            <li>Look at the <a href="../docs/unit-06/array-algorithms.html">docs
+            section on the fencepost pattern</a>. What is a fencepost problem and
+            when does it show up?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Implement linear search and count-by-condition</li>
+            <li>Swap two array elements using a temp variable</li>
+            <li>Insert and remove elements with proper shift direction</li>
+            <li>Explain the fencepost pattern</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-06/array-algorithms.html">Array Algorithms</a> — search, shift, swap, fencepost</li>
+        <li><a href="../docs/unit-06/array-traversal.html">Array Traversal</a> — the engine underneath</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

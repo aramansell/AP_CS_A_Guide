@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.1a Relational Operators & if — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <span></span>
+    <span class="lesson-id">3.1a</span>
+    <a href="3.2a.html">3.2a ▶</a>
+</div>
+
+<h1>3.1a — Making Decisions: Relational Operators &amp; if</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <p>
+        Every program you've written so far runs the same way every time.
+        Declare, calculate, print. But real programs make decisions.
+    </p>
+
+    <p>
+        A <strong>relational operator</strong> asks a question about your data.
+        It compares two values and answers <code>true</code> or <code>false</code>.
+        The <code>if</code> statement uses that answer to decide what code to run.
+    </p>
+
+    <h3>The Six Operators</h3>
+
+    <table>
+        <tr><th>Operator</th><th>Question it asks</th></tr>
+        <tr><td><code>&lt;</code></td><td>Is the left less than the right?</td></tr>
+        <tr><td><code>&gt;</code></td><td>Is the left greater than the right?</td></tr>
+        <tr><td><code>&lt;=</code></td><td>Is the left less than or equal?</td></tr>
+        <tr><td><code>&gt;=</code></td><td>Is the left greater than or equal?</td></tr>
+        <tr><td><code>==</code></td><td>Are they equal?</td></tr>
+        <tr><td><code>!=</code></td><td>Are they NOT equal?</td></tr>
+    </table>
+
+    <h3>The if Statement</h3>
+
+    <pre><code>if (condition) {
+    // runs ONLY if condition is true
+}
+// execution continues here regardless</code></pre>
+
+    <h3>else — The Other Path</h3>
+
+    <pre><code>if (condition) {
+    // runs if true
+} else {
+    // runs if false
+}
+// Exactly ONE block runs. Never both. Always one.</code></pre>
+
+    <div class="tinker">
+        <h3>Build: Temperature Checker</h3>
+        <p>Create a file called <code>TemperatureChecker.java</code>. Write a program that:</p>
+        <ol>
+            <li>Declares an <code>int temperature = 75</code> (or pick your own number)</li>
+            <li>Uses <code>if</code>/<code>else</code> to print "It's hot!" if the temperature is above 80, or "It's not too hot." otherwise</li>
+            <li>Change the number to 95 and run again. Then to 50. What prints each time?</li>
+        </ol>
+        <p>
+            Now add a second check: if temperature is below 32, also print "Watch out for ice!"
+            Think carefully — does this go inside the else? Or is it a separate check?
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Coin Flip</h3>
+        <p>
+            Roll a random number from your <code>Dice.java</code> class. Use
+            <code>if</code>/<code>else</code> to print "Heads!" or "Tails!"
+            based on the result. How do you decide where the split point is?
+        </p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Trap Ahead:</strong> There's a difference between <code>=</code>
+        (one equals sign) and <code>==</code> (two equals signs). One assigns,
+        one compares. If you mix them up, Java will yell at you — or worse, do
+        something silently wrong. Try writing <code>if (x = 5)</code> and see
+        what happens. Then try <code>if (x == 5)</code>. What's the difference
+        in what Java tells you?
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>If you run <code>System.out.println(3 &lt; 5)</code>, what prints?
+                What about <code>System.out.println(7 &gt;= 7)</code>?
+                What about <code>System.out.println(4 == 4.0)</code> — predict
+                before you test!</li>
+            <li>What does <code>if (false) { ... }</code> do? Will the code
+                inside ever run?</li>
+            <li>Look at your Temperature Checker code. If you had three different
+                temperature ranges (hot, cold, mild), would your current approach
+                work? Why or why not?</li>
+            <li>Open the <a href="../docs/unit-03/relational-operators.html">Relational Operators docs</a>.
+                Find the Bug Hunt section. What trap does it warn you about with
+                the single <code>=</code> sign? Why can't Java use it in an
+                <code>if</code> condition?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write an if/else statement that makes a decision based on a comparison</li>
+            <li>Explain the difference between <code>=</code> and <code>==</code></li>
+            <li>Use all six relational operators in a program</li>
+            <li>Predict what a boolean expression evaluates to before running it</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-03/relational-operators.html">Relational Operators &amp; if</a> — all six operators with examples</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.6c Combat Encounter — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="3.6b.html">◀ 3.6b</a>
+    <span class="lesson-id">3.6c</span>
+    <span></span>
+</div>
+
+<h1>3.6c — Combat Engine: Full Encounter</h1>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG — Part 3</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <p>
+        You built the engine. Now use it. Create a <code>CombatEncounter.java</code>
+        with a main method that stages a complete fight between your character
+        and a monster — from first roll to final blow.
+    </p>
+
+    <h3>Requirements</h3>
+    <ul>
+        <li>Hard-code stats for a hero and a monster (attack bonuses, AC, damage
+            dice, HP, names)</li>
+        <li>Call <code>combatRound()</code> repeatedly until either the player
+            or the monster reaches 0 HP. (Yes, this means you'll need a loop —
+            the <a href="../docs/unit-04/while-loops.html">Unit 4 docs</a> have
+            what you need. Just a basic while loop. This is your preview of
+            what's coming.)</li>
+        <li>After each round, print who's winning based on remaining HP</li>
+        <li>When the fight ends, print a victory or defeat message</li>
+    </ul>
+
+    <div class="callout">
+        <strong>Loop Preview:</strong> You haven't learned loops formally yet.
+        Here's enough to get you through this encounter:
+        <pre><code>while (monsterHP > 0 && playerHP > 0) {
+    // your combat round code here
+}</code></pre>
+        This keeps running combat rounds until someone's HP drops to 0 or below.
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — Unit 3 Reflection</h3>
+        <ol>
+            <li>Trace through your full encounter. Where does the if/else chain
+                decide hit vs miss? Where does boolean logic combine conditions?
+                Where does De Morgan's law make a condition cleaner?</li>
+            <li>Your <code>Combat.java</code> methods take many parameters.
+                Why pass them in rather than storing them as instance variables?
+                (Hint: compare to how Character.java stores its stats.)</li>
+            <li>What makes a good combat encounter? Is it more fun when the player
+                is slightly stronger than the monster, or slightly weaker?
+                Tweak your stats and find the sweet spot.</li>
+            <li>In Unit 5, you'll move these methods into Player and Monster
+                classes. How would that change the architecture?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker: Commander Mode</h3>
+        <p>
+            Before the fight starts, use <code>Scanner</code> to let the player
+            pick their action. Offer three choices using <code>.equals()</code>:
+        </p>
+        <ul>
+            <li>"attack" — fight normally</li>
+            <li>"defend" — reduce incoming damage by half (you'll need a
+                new variable to track this)</li>
+            <li>"flee" — attempt to escape (50% chance using a d20 roll)</li>
+        </ul>
+        <p>
+            This combines EVERYTHING from Unit 3: if/else chains, boolean
+            logic, comparing objects with .equals(), Scanner input, and your
+            Dice class.
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Assemble multiple methods into a complete interactive experience</li>
+            <li>Track changing state (HP, status) across multiple method calls</li>
+            <li>Use a basic while loop to repeat combat rounds</li>
+            <li>Combine all Unit 3 concepts (if/else, boolean logic, comparisons) in one program</li>
+            <li>Explain the architecture: Dice → Combat → CombatEncounter</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-03/combat-system.html">Student RPG Guide: Combat System</a></li>
+        <li><a href="../docs/unit-04/while-loops.html">While Loops (Unit 4)</a> — loop preview</li>
+        <li><a href="../docs/unit-03/comparing-objects.html">Comparing Objects</a> — switch/command parsing</li>
+        <li><a href="../docs/unit-03/boolean-logic.html">Boolean Logic</a> — combat conditions</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

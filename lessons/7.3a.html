@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7.3a Searching &amp; Sorting — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="7.2a.html">◀ 7.2a</a>
+    <span class="lesson-id">7.3a</span>
+    <a href="7.4a.html">7.4a ▶</a>
+</div>
+
+<h1>7.3a — Searching &amp; Sorting: Finding Needles, Organizing Haystacks</h1>
+
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        Your inventory can hold items. But finding a specific item by scanning
+        the whole list every time is slow. And displaying items in a useful order
+        (by value, by rarity) requires sorting. These are the two most common
+        operations on collections and the AP exam tests them relentlessly.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: Linear vs Binary Search</h3>
+        <p>Create <code>SearchComparison.java</code>:</p>
+        <pre><code>ArrayList&lt;Integer&gt; nums = new ArrayList&lt;Integer&gt;();
+for (int i = 0; i < 20; i++) nums.add(i * 5);
+// nums = [0, 5, 10, 15, ... 95]  — already sorted!
+
+// Linear search: check every element in order
+int target = 65;
+int steps = 0;
+for (int i = 0; i < nums.size(); i++) {
+    steps++;
+    if (nums.get(i) == target) {
+        System.out.println("Linear found at " + i + " in " + steps + " steps");
+        break;
+    }
+}</code></pre>
+        <p>Now implement binary search. Read the <a href="../docs/unit-07/searching-sorting.html">
+        searching & sorting docs</a> for the algorithm. Compare step counts for
+        target values at the beginning, middle, and end of the list. Which search wins and when?</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Binary Search Requires Sorted Data:</strong> If the list isn't sorted,
+        binary search can return wrong answers — not just be slow. The AP exam often
+        asks "what does binary search return on this unsorted array?" The answer
+        is usually wrong. Read the <a href="../docs/unit-07/searching-sorting.html">docs
+        Bug Hunt</a> for the most common binary search mistakes.
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Inventory Sorter</h3>
+        <p>Using your Item class and ArrayList:</p>
+        <ul>
+            <li>Write <code>sortByValue(ArrayList&lt;Item&gt; items)</code> — selection sort
+            by item value (lowest first). Swap entire Item objects.</li>
+            <li>Write <code>sortByRarity(ArrayList&lt;Item&gt; items)</code> — selection sort
+            by rarity (Common < Uncommon < Rare < Epic). Map rarities to numbers first.</li>
+            <li>Write <code>binarySearch(ArrayList&lt;Item&gt; sorted, String name)</code> —
+            assumes sorted by name. Returns index or -1.</li>
+            <li>Test: create 8 items, sort by value, display. Sort by rarity, display.
+            Search for an existing and non-existing item name.</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Selection sort finds the smallest remaining element and swaps it to
+            the front. On a list of N elements, how many comparisons does it make?
+            How many swaps?</li>
+            <li>Binary search splits the search space in half each step. If you have
+            1,000,000 items, how many steps max? (Hint: log₂)</li>
+            <li>Your insert method from Unit 6 took O(N) time. ArrayList.add(index, elem)
+            also takes O(N) — why? What's happening under the hood?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Implement linear search and binary search</li>
+            <li>Implement selection sort on an ArrayList of objects</li>
+            <li>Explain when binary search is safe to use</li>
+            <li>Compare O(N) vs O(log N) at an intuitive level</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-07/searching-sorting.html">Searching &amp; Sorting</a></li>
+        <li><a href="../docs/unit-07/arraylist-basics.html">ArrayList Basics</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

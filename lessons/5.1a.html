@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.1a Anatomy of a Class — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <span></span>
+    <span class="lesson-id">5.1a</span>
+    <a href="5.2a.html">5.2a ▶</a>
+</div>
+
+<h1>5.1a — Anatomy of a Class: The Blueprint</h1>
+
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        In Units 1-4, all your code lived in <code>main()</code>. Every variable,
+        every loop, every if statement — jammed into one method. That works for small
+        programs, but your RPG is growing. You have player stats, monster stats,
+        inventory items, combat rounds. main() is not a filing cabinet.
+    </p>
+
+    <p>
+        A <strong>class</strong> is a blueprint that describes an object — its data
+        (instance variables) and its behavior (methods). You've already <em>used</em>
+        classes: String, Scanner, ArrayList. Now you write your own.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: Read a Class</h3>
+        <p>Open the <a href="../docs/unit-05/class-anatomy.html">Anatomy of a Class</a> docs.
+        Read the annotated Dice class. Copy it into <code>Dice.java</code> and compile it.
+        Then create <code>TestDice.java</code>:</p>
+        <pre><code>public class TestDice {
+    public static void main(String[] args) {
+        Dice die = new Dice(6);
+        System.out.println(die.roll());   // whoa, it returns different values!
+        System.out.println(die.roll());   // that's the point
+        System.out.println(die.roll());
+    }
+}</code></pre>
+        <p>Answer: Where are the instance variables? Where is the constructor?
+        How many methods does Dice have? What does <code>new Dice(6)</code> actually do?</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>File Name Trap:</strong> The class <code>Dice</code> must be in a file
+        named <code>Dice.java</code>. Case matters. If you name it <code>dice.java</code>
+        or <code>DiceClass.java</code>, it won't compile. Every public class must live
+        in a file with the exact same name.
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Dice has a <code>sides</code> instance variable. Could you access
+            <code>die.sides</code> from TestDice? Why or why not?</li>
+            <li>Each time you call <code>die.roll()</code>, you get a different result.
+            Where is the randomness coming from, and why doesn't calling roll() change
+            the value of <code>sides</code>?</li>
+            <li>If you create <code>Dice d8 = new Dice(8)</code> and
+            <code>Dice d20 = new Dice(20)</code>, do they share a <code>sides</code>
+            variable or does each have its own?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Identify instance variables, constructors, and methods in a class</li>
+            <li>Explain the difference between a class (blueprint) and an object (instance)</li>
+            <li>Use <code>new</code> to create an object and call its methods</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-05/class-anatomy.html">Anatomy of a Class</a> — the full breakdown</li>
+        <li><a href="../docs/unit-02/objects-classes.html">Objects &amp; Classes (Unit 2)</a> — what you already know</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

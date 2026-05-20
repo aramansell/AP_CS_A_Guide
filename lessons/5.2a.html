@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.2a Constructors — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="5.1a.html">◀ 5.1a</a>
+    <span class="lesson-id">5.2a</span>
+    <a href="5.3a.html">5.3a ▶</a>
+</div>
+
+<h1>5.2a — Constructors: Building Objects from Scratch</h1>
+
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        Yesterday you saw <code>new Dice(6)</code> and it just worked. Today you
+        figure out what <em>actually happens</em> when you call <code>new</code>.
+        The constructor runs, initializes instance variables, and returns a
+        ready-to-use object.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: Constructor Chaos</h3>
+        <p>Create <code>Weapon.java</code> with two constructors:</p>
+        <pre><code>public class Weapon {
+    private String name;
+    private int damage;
+
+    public Weapon(String n, int d) {
+        name = n;
+        damage = d;
+    }
+
+    public Weapon() {
+        name = "Fists";
+        damage = 1;
+    }
+
+    public int getDamage() { return damage; }
+    public String getName() { return name; }
+}</code></pre>
+        <p>Test both constructors:</p>
+        <pre><code>Weapon sword = new Weapon("Longsword", 8);
+Weapon fists = new Weapon();
+
+System.out.println(sword.getName() + ": " + sword.getDamage());
+System.out.println(fists.getName() + ": " + fists.getDamage());</code></pre>
+        <p>Now try: <code>Weapon w = new Weapon("Dagger");</code> — does it compile? Why not?</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Shadowing Trap:</strong> In the first constructor, the parameters are
+        named <code>n</code> and <code>d</code>. What if you named them <code>name</code>
+        and <code>damage</code>? Read the docs on <a href="../docs/unit-05/constructors.html">
+        constructors and the <code>this</code> keyword</a> to find out. Then try it —
+        your Weapon will silently break.
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Monster Constructor</h3>
+        <p>Create <code>Monster.java</code> with a constructor that takes name, hp, AC,
+        and attackBonus. Add a <code>toString()</code> method that returns a formatted
+        string like <code>"Goblin [HP:10 AC:12 ATK:+3]"</code>. Test with three
+        different monsters.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>You wrote two Weapon constructors. How does Java know which one to
+            call? What's the rule?</li>
+            <li>If you delete the no-argument constructor and only keep the one with
+            parameters, what happens to <code>new Weapon()</code>? Why?</li>
+            <li>The <a href="../docs/unit-05/constructors.html">constructors docs</a>
+            mention a <strong>default constructor</strong>. When does Java give you one
+            for free, and when does it not?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write a constructor that initializes all instance variables</li>
+            <li>Write multiple constructors (overloading)</li>
+            <li>Use <code>this</code> to disambiguate parameters from instance variables</li>
+            <li>Explain when the default constructor is provided</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-05/constructors.html">Constructors</a> — default, overloaded, this</li>
+        <li><a href="../docs/unit-05/class-anatomy.html">Anatomy of a Class</a> — the complete blueprint</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

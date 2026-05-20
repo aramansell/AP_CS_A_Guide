@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.4a Comparing Objects — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="3.3a.html">◀ 3.3a</a>
+    <span class="lesson-id">3.4a</span>
+    <a href="3.5a.html">3.5a ▶</a>
+</div>
+
+<h1>3.4a — Comparing Objects in Conditions</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <p>
+        You already know the golden rule from Unit 2: <strong>primitives use
+        <code>==</code>, objects use <code>.equals()</code></strong>. Now you
+        need to use that rule inside conditions.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: The == Trap</h3>
+        <p>Create <code>CompareTest.java</code>. Run this code:</p>
+        <pre><code>int a = 100;
+int b = 100;
+System.out.println(a == b);     // what do you expect?
+
+String s1 = "hello";
+String s2 = "hello";
+System.out.println(s1 == s2);   // what do you expect?
+System.out.println(s1.equals(s2)); // what about this?
+
+String s3 = new String("hello");
+System.out.println(s1 == s3);   // NOW what happens?</code></pre>
+        <p>
+            Write down your predictions for each one BEFORE running.
+            Then run it. Which results surprised you?
+        </p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why did <code>s1 == s2</code> print true, but
+                <code>s1 == s3</code> print false — even though they
+                both contain "hello"?</li>
+            <li>Open the <a href="../docs/unit-03/comparing-objects.html">Comparing Objects docs</a>.
+                Find the section on null-safe comparisons. What's the
+                difference between <code>name.equals("Frodo")</code> and
+                <code>"Frodo".equals(name)</code>? Why does one crash
+                when <code>name</code> is null and the other doesn't?</li>
+            <li>How does short-circuit evaluation (from 3.2a) help when
+                writing safe null checks before <code>.equals()</code>?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Combat Command Parser</h3>
+        <p>
+            Write a program that uses <code>Scanner</code> to read a command
+            from the player (attack, defend, potion, flee). Use
+            <code>if/else if</code> chains with <code>.equals()</code> to
+            print the appropriate action.
+        </p>
+        <p>
+            Test it. Then try typing "Attack" (with a capital A). What happens?
+            Read the docs to learn how to make your parser case-insensitive
+            using string methods you learned in Unit 2.
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Explore: compareTo</h3>
+        <p>
+            The <a href="../docs/unit-03/comparing-objects.html">Comparing Objects docs</a>
+            have a section on <code>compareTo</code>. Read it. Then write a program
+            that compares two strings alphabetically and prints which one comes first.
+            What value does <code>compareTo</code> return? What do negative, zero,
+            and positive mean?
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Explore: switch Statement</h3>
+        <p>
+            The docs also show a <code>switch</code> statement — an alternative
+            to long if/else chains for comparing one value against many options.
+            Read that section. Then find the Bug Hunt about the fall-through trap.
+            Rewrite your Combat Command Parser using <code>switch</code> instead
+            of if/else if. What does the <code>break</code> keyword do? What
+            happens if you forget it?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Use <code>.equals()</code> for String comparisons in conditions</li>
+            <li>Explain why <code>==</code> is unreliable for objects</li>
+            <li>Write null-safe object comparisons</li>
+            <li>Use <code>compareTo</code> for ordering</li>
+            <li>Implement a switch statement with proper break usage</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-03/comparing-objects.html">Comparing Objects</a> — equals, null-safe, compareTo, switch</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.1a 2D Array Basics — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <span></span>
+    <span class="lesson-id">8.1a</span>
+    <a href="8.2a.html">8.2a ▶</a>
+</div>
+
+<h1>8.1a — 2D Array Basics: Grids, Not Lines</h1>
+
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        Every array you've used so far has been a line. But dungeon maps are grids.
+        Chess boards have rows and columns. Screens are pixels arranged in width and
+        height. A <strong>2D array</strong> is an array of arrays — a grid where
+        you index by <code>[row][col]</code>.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: Your First Grid</h3>
+        <p>Create <code>GridIntro.java</code>:</p>
+        <pre><code>// 3 rows, 4 columns
+int[][] grid = new int[3][4];
+
+// Fill with row * 10 + col
+for (int row = 0; row < grid.length; row++) {
+    for (int col = 0; col < grid[row].length; col++) {
+        grid[row][col] = row * 10 + col;
+        System.out.print(grid[row][col] + " ");
+    }
+    System.out.println();  // newline after each row
+}</code></pre>
+        <p>Run it. Then swap the loops — put the col loop outside and row loop inside.
+        What happens to the output? This is the difference between row-major and
+        column-major traversal.</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment: Three Ways to Initialize</h3>
+        <pre><code>// Way 1: Literal
+int[][] a = {{1,2,3}, {4,5,6}, {7,8,9}};
+
+// Way 2: new with dimensions
+int[][] b = new int[3][4];  // 3 rows, 4 cols
+
+// Way 3: Ragged — every row different length
+int[][] c = new int[3][];
+c[0] = new int[2];  // row 0 has 2 columns
+c[1] = new int[5];  // row 1 has 5 columns
+c[2] = new int[3];  // row 2 has 3 columns</code></pre>
+        <p>For each: print <code>grid.length</code> and <code>grid[0].length</code>.
+        What does each one give you? Now try <code>c[1].length</code> — does it match
+        <code>c[0].length</code>?</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Row vs Column Confusion:</strong> <code>grid.length</code> is the
+        number of ROWS. <code>grid[0].length</code> is the number of COLUMNS in
+        row 0. The AP exam loves to swap these. Read the
+        <a href="../docs/unit-08/2d-array-basics.html">2D Array Basics docs</a>
+        and memorize: first bracket = row, second = column.
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>If <code>grid = new int[5][8]</code>, what is <code>grid.length</code>?
+            What is <code>grid[0].length</code>? What is the last valid index for rows?
+            For columns?</li>
+            <li>In a ragged array, can you assume <code>grid[0].length</code> works for
+            every row? When would it break?</li>
+            <li>Read the <a href="../docs/unit-08/2d-array-basics.html">docs section
+            on how 2D arrays are stored in memory</a>. Why is a 2D array really an
+            array of references?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Declare and initialize 2D arrays (literal, new, ragged)</li>
+            <li>Access elements with [row][col] syntax</li>
+            <li>Distinguish row count (grid.length) from column count (grid[r].length)</li>
+            <li>Explain what a ragged array is</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-08/2d-array-basics.html">2D Array Basics</a></li>
+        <li><a href="../docs/unit-06/array-basics.html">Array Basics (Unit 6)</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

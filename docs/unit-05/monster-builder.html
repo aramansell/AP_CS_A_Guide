@@ -193,6 +193,20 @@ System.out.println("Boss avg (should be ~6 for d8 advantage): " + (bossSum / 100
 <p>At the end of combat, display the kill count:</p>
 <pre><code>System.out.println("Total monsters defeated: " + Monster.getDefeatedCount());</code></pre>
 
+<hr>
+<h3>Socratic Checkpoints</h3>
+
+<p><strong>1.</strong> Your Monster class has a <code>static int defeatedCount</code>. What happens if a Monster subclass (like <code>class Dragon extends Monster</code>) gets defeated — does <code>defeatedCount</code> still go up? Why or why not?</p>
+
+<p><strong>2.</strong> The constructor takes <code>attackBonus</code> and <code>damageDie</code> as separate parameters. Why not just hardcode them inside the class? What kind of monster would you need those parameters to change for?</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="player-builder.html">Player.java</a> — the other half of combat</li>
+    <li><a href="methods-and-static.html">Methods &amp; Static</a> — static defeat counter</li>
+    <li><a href="constructors.html">Constructors</a> — Monster constructor pattern</li>
+</ul>
+
 </div><!-- .page -->
 </body>
 </html>

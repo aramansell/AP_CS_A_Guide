@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.5a De Morgan's Laws — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="3.4a.html">◀ 3.4a</a>
+    <span class="lesson-id">3.5a</span>
+    <a href="3.6a.html">3.6a ▶</a>
+</div>
+
+<h1>3.5a — De Morgan's Laws: Flipping Conditions</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <p>
+        You have a condition. It works. Then someone asks: "Can you rewrite
+        that WITHOUT the <code>!</code> on the outside?" That's what De Morgan's
+        Laws let you do — flip conditions into equivalent forms.
+    </p>
+
+    <h3>The Two Laws</h3>
+
+    <pre><code>Law 1:  !(A && B)  →  !A || !B
+Law 2:  !(A || B)  →  !A && !B</code></pre>
+
+    <p>
+        In words: NOT (both are true) means at least one is false.
+        NOT (either is true) means both are false.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: Prove It</h3>
+        <p>
+            Create <code>DeMorganTest.java</code>. Pick two booleans (try TT, TF,
+            FT, FF). For each pair, print BOTH sides of Law 1 and verify they
+            give the same result. Then do the same for Law 2. Build a truth table
+            proving both laws hold.
+        </p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Read the <a href="../docs/unit-03/de-morgan.html">De Morgan's Laws docs</a>.
+                Look at the "Why This Matters" section. Which version is clearer
+                to you: <code>!(score &lt; 0 || score &gt; 100)</code> or
+                <code>score &gt;= 0 &amp;&amp; score &lt;= 100</code>?
+                Why?</li>
+            <li>Now find the Bug Hunt in the docs. The student wanted to check
+                for extreme d20 rolls (1 or 20). They started with
+                <code>!(roll &gt; 1 &amp;&amp; roll &lt; 20)</code> which works,
+                then "removed the !" and got <code>roll &lt; 1 &amp;&amp; roll &gt; 20</code>.
+                Why will that NEVER be true? How SHOULD they have applied
+                De Morgan's Law?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Apply: Rewrite These</h3>
+        <p>
+            Each of the following uses an outer <code>!</code>. Rewrite it
+            without the <code>!</code> using De Morgan's Laws:
+        </p>
+        <ol>
+            <li><code>!(hp &lt;= 0 || armorBroken)</code> — when would this be true?</li>
+            <li><code>!(enemyAlive &amp;&amp; hasAmmo)</code> — when can't you attack?</li>
+            <li><code>!(score &lt; 0 || score &gt; 100)</code> — what does this check?</li>
+        </ol>
+        <p>
+            Write your answers down on paper first. Then write code to verify
+            both versions give the same result for multiple input values.
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Apply: Combat Validation</h3>
+        <p>
+            Your combat system needs to validate whether a player can attack.
+            A player CAN attack when they are alive AND have a weapon AND the
+            enemy is alive. Write this condition.
+        </p>
+        <p>
+            Now the game needs to print "You cannot attack!" when the player
+            CANNOT attack. You could write:
+        </p>
+        <pre><code>if (!(playerAlive && hasWeapon && enemyAlive)) {
+    System.out.println("You cannot attack!");
+}</code></pre>
+        <p>
+            Apply De Morgan's Law to rewrite this without the outer <code>!</code>.
+            Which version is more readable? Which would be better for printing
+            a specific reason (e.g., "You're dead!" vs "You have no weapon!")?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>State both of De Morgan's Laws</li>
+            <li>Rewrite a negated compound condition without the outer !</li>
+            <li>Verify that both forms produce the same truth table</li>
+            <li>Choose the more readable form for a given situation</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-03/de-morgan.html">De Morgan's Laws</a> — both laws, range trap, combat examples</li>
+        <li><a href="../docs/unit-03/boolean-logic.html">Boolean Logic</a> — the operators being flipped</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

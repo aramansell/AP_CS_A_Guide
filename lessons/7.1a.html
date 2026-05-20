@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7.1a ArrayList Basics — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <span></span>
+    <span class="lesson-id">7.1a</span>
+    <a href="7.2a.html">7.2a ▶</a>
+</div>
+
+<h1>7.1a — ArrayList Basics: An Array That Grows</h1>
+
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        Your FixedInventory from Unit 6 has one glaring problem: it can hold exactly
+        20 items and no more. You coded capacity checks, "inventory full" messages,
+        and manual shift loops. ArrayList handles ALL of that for you — it grows
+        automatically, shifts on removal, and never runs out of space. Under the
+        hood it's still an array, but you don't have to manage it.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: First ArrayList</h3>
+        <p>Create <code>ListIntro.java</code>:</p>
+        <pre><code>import java.util.ArrayList;
+
+ArrayList&lt;String&gt; names = new ArrayList&lt;String&gt;();
+
+// add — appends to the end, auto-grows
+names.add("Gandalf");
+names.add("Aragorn");
+names.add("Frodo");
+
+// size() — how many elements (NOT length!)
+System.out.println(names.size());   // 3
+
+// get(index) — access by position
+System.out.println(names.get(0));   // Gandalf
+System.out.println(names.get(2));   // Frodo
+
+// set(index, value) — replace at position
+names.set(1, "Boromir");
+System.out.println(names.get(1));   // Boromir
+
+// remove(index) — removes AND shifts, returns removed element
+String removed = names.remove(0);
+System.out.println(removed);        // Gandalf
+System.out.println(names.size());   // 2</code></pre>
+        <p>Compare every line to what you wrote in FixedInventory. What code
+        disappeared?</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Primitive Type Trap:</strong> ArrayList only stores objects, not
+        primitives. <code>ArrayList&lt;int&gt;</code> is a compile error. Use the
+        wrapper class: <code>ArrayList&lt;Integer&gt;</code>. Java auto-boxes for you
+        — <code>list.add(5)</code> automatically wraps 5 into an Integer. Read the
+        <a href="../docs/unit-07/arraylist-basics.html">ArrayList Basics docs</a>
+        for the complete wrapper class story.
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Score Tracker</h3>
+        <p>Create <code>ScoreTracker.java</code>:</p>
+        <ul>
+            <li>ArrayList&lt;Integer&gt; to store game scores</li>
+            <li>addScore(int score) — appends to list</li>
+            <li>getAverage() — returns mean as double</li>
+            <li>getHighScore() — returns max value</li>
+            <li>getLowScore() — returns min value</li>
+            <li>removeBelow(int threshold) — removes all scores below threshold</li>
+            <li>Test with 8-10 scores. Print before and after removeBelow(50).</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Your FixedInventory used <code>items.length</code> for capacity
+            and <code>count</code> for actual items. ArrayList uses only
+            <code>size()</code>. Where did the capacity tracking go?</li>
+            <li>What happens if you call <code>names.get(-1)</code>? Or
+            <code>names.get(100)</code>? Make a prediction, test it, read the error.</li>
+            <li>Look at the <a href="../docs/unit-07/arraylist-basics.html">docs
+            section comparing arrays and ArrayLists</a>. When would you choose
+            a plain array over an ArrayList?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Create, add to, get from, set in, and remove from ArrayList</li>
+            <li>Use <code>size()</code> correctly — never confuse with <code>.length</code></li>
+            <li>Use wrapper classes (Integer, Double, Boolean) for primitives</li>
+            <li>Explain the pros/cons of ArrayList vs array</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-07/arraylist-basics.html">ArrayList Basics</a> — add, get, set, remove, wrappers</li>
+        <li><a href="../docs/unit-06/array-basics.html">Array Basics (Unit 6)</a> — the raw version underneath</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

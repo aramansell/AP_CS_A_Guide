@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7.4a Dynamic Inventory — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="7.3a.html">◀ 7.3a</a>
+    <span class="lesson-id">7.4a</span>
+    <span></span>
+</div>
+
+<h1>7.4a — Dynamic Inventory: ArrayList-Powered RPG Backpack</h1>
+
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~60 min</span>
+    </div>
+
+    <p>
+        Your FixedInventory from Unit 6 works, but it has a hard limit. If the player
+        finds a Legendary Sword in room 12 but their 20-slot backpack is full, they
+        can't pick it up. That's a terrible RPG experience. It's time to replace
+        the fixed array with an ArrayList that grows forever.
+    </p>
+
+    <p>
+        Open the <a href="../docs/unit-07/dynamic-inventory.html">Dynamic Inventory
+        (Student RPG Guide)</a>. The specification is nearly identical to FixedInventory
+        — same method names, same Item objects — but the implementation is dramatically
+        simpler.
+    </p>
+
+    <div class="tinker">
+        <h3>Build: DynamicInventory.java</h3>
+        <p>Create <code>DynamicInventory.java</code> using ArrayList&lt;Item&gt;:</p>
+        <ul>
+            <li><code>void add(Item item)</code> — one line: <code>items.add(item)</code>. No capacity check.</li>
+            <li><code>boolean remove(String name)</code> — find by name, call <code>items.remove(index)</code>. Auto-shift.</li>
+            <li><code>boolean contains(String name)</code> — same logic as before, but cleaner</li>
+            <li><code>int getTotalValue()</code> — sum traversal</li>
+            <li><code>void display()</code> — numbered list with rarity and value</li>
+            <li><code>void sortByValue()</code> — selection sort (from 7.3a)</li>
+        </ul>
+        <p>Count the lines of code. Compare to FixedInventory. Where did all the
+        array management code go?</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Integrate Into Your RPG</h3>
+        <p>Swap FixedInventory for DynamicInventory in your DungeonCrawl game loop.
+        The method signatures are the same — just change the constructor call:</p>
+        <pre><code>// Before:
+FixedInventory inventory = new FixedInventory(20);
+
+// After:
+DynamicInventory inventory = new DynamicInventory();</code></pre>
+        <p>Add a sort option: after combat, let the player type "sort" to see their
+        inventory sorted by value. Add "filter rare" to show only rare+ items.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>What happens when you call <code>items.remove("Potion")</code> and the
+            player has three Potions? Which one gets removed?</li>
+            <li>ArrayList is built on top of a plain array. Where does the capacity
+            logic go? How does it know when to grow?</li>
+            <li>If you add 1,000,000 items to your DynamicInventory, does it slow down?
+            What operation gets slower — add, remove, or contains?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Replace array-based collection with ArrayList equivalent</li>
+            <li>Integrate dynamic inventory into RPG game loop</li>
+            <li>Add sort and filter operations powered by ArrayList methods</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-07/dynamic-inventory.html">Dynamic Inventory (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-07/arraylist-basics.html">ArrayList Basics</a></li>
+        <li><a href="../docs/unit-07/searching-sorting.html">Searching &amp; Sorting</a></li>
+        <li><a href="../docs/unit-06/inventory-builder.html">Inventory Builder (Unit 6)</a> — compare</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

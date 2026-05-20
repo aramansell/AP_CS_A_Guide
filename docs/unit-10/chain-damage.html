@@ -258,6 +258,20 @@ Recurse DOWN to (3,2): bounds OK, alive, NOT visited
 
 <p>This is your gateway to all Unit 10 recursion topics. Flood fill, pathfinding, and backtracking all use the same recursive 4-direction neighbor traversal with different stopping conditions.</p>
 
+<hr>
+<h3>Socratic Checkpoints</h3>
+
+<p><strong>1.</strong> The visited array prevents re-hitting enemies. What would happen if you removed it entirely — would the recursion run forever, or would it stop naturally? Trace a simple 2x2 grid with two enemies adjacent to each other.</p>
+
+<p><strong>2.</strong> The chain stops when <code>distance > range</code>. If you swap the order of base cases and check <code>distance > range</code> AFTER the neighbor calls, what changes? Draw it out — which cells get visited?</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="recursion-basics.html">Recursion Basics</a> — base case + recursive case</li>
+    <li><a href="flood-fill.html">Flood Fill</a> — 2D recursion on dungeon maps</li>
+    <li><a href="backtracking.html">Backtracking Lab</a> — recursive pathfinding</li>
+</ul>
+
 </div><!-- .page -->
 </body>
 </html>

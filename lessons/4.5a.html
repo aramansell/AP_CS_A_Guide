@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.5a Loop Analysis &amp; Tracing — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="4.4a.html">◀ 4.4a</a>
+    <span class="lesson-id">4.5a</span>
+    <a href="4.6a.html">4.6a ▶</a>
+</div>
+
+<h1>4.5a — Tracing Loops: How Many Times?</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        You can run code and see what happens. But on the AP exam, you can't run
+        anything — you have to trace it on paper. This is the skill that
+        separates guessing from knowing.
+    </p>
+
+    <p>
+        A <strong>trace table</strong> is a grid where each row is one loop iteration
+        and each column is a variable. You write down what every variable equals
+        at every step. No computer. No compiler. Just you and the logic.
+    </p>
+
+    <h3>Trace Table Format</h3>
+
+    <pre><code>int sum = 0;
+for (int i = 1; i <= 4; i++) {
+    sum += i;
+}</code></pre>
+
+    <table>
+        <tr><th>Iteration</th><th>i</th><th>sum (before)</th><th>sum += i</th><th>sum (after)</th></tr>
+        <tr><td>Start</td><td>—</td><td>—</td><td>—</td><td>0</td></tr>
+        <tr><td>1</td><td>1</td><td>0</td><td>0+1</td><td>1</td></tr>
+        <tr><td>2</td><td>2</td><td>1</td><td>1+2</td><td>3</td></tr>
+        <tr><td>3</td><td>3</td><td>3</td><td>3+3</td><td>6</td></tr>
+        <tr><td>4</td><td>4</td><td>6</td><td>6+4</td><td>10</td></tr>
+        <tr><td>End</td><td>5 (fails)</td><td>—</td><td>—</td><td>10</td></tr>
+    </table>
+
+    <div class="tinker">
+        <h3>Practice: Trace on Paper</h3>
+        <p>
+            Open the <a href="../docs/unit-04/loop-analysis.html">Tracing Loops docs</a>.
+            There's a while-loop trace table (HP, damage, hits). Study it. Now,
+            WITHOUT looking at the docs, trace this loop on paper:
+        </p>
+        <pre><code>int hp = 15;
+int hits = 0;
+while (hp > 0) {
+    hp -= 4;
+    hits++;
+}</code></pre>
+        <p>
+            What's the final value of hits? What's the final value of hp?
+            How many iterations ran? Write your trace table, then run the code
+            to verify.
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Practice: How Many Times?</h3>
+        <p>
+            The docs have a "How Many Times?" table with six common loop patterns.
+            Study it. Then, WITHOUT looking, answer THESE:
+        </p>
+        <ol>
+            <li><code>for (int i = 0; i < 10; i++)</code> — how many iterations? What are the values of i?</li>
+            <li><code>for (int i = 1; i <= 10; i++)</code> — how many iterations? Values of i?</li>
+            <li><code>for (int i = 5; i > 0; i--)</code> — how many iterations? Values of i?</li>
+            <li><code>for (int i = 0; i <= 10; i += 2)</code> — how many iterations? Values of i?</li>
+        </ol>
+        <p>
+            Write your answers, then check against the doc.
+        </p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Off-By-One Trap:</strong> Read the off-by-one section in the docs.
+        The loop <code>for (int i = 0; i <= 5; i++)</code> runs 6 times, not 5.
+        The loop <code>for (int i = 5; i < 5; i++)</code> runs 0 times.
+        The difference between <code>&lt;</code> and <code>&lt;=</code> is exactly
+        one iteration. When does each matter?
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — AP Exam Prep</h3>
+        <ol>
+            <li>Read the "Exam Prep" Socratic Checkpoint in the docs. Which of the
+                four loops produces the same output as <code>for (int i = 0; i < 5; i++)</code>?
+                Answer WITHOUT running. Explain WHY the others are wrong.</li>
+            <li>Trace this nested loop: how many times does the print statement execute?
+                <pre><code>for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 4; j++) {
+        System.out.print("*");
+    }
+    System.out.println();
+}</code></pre>
+            </li>
+            <li>What's the difference between <code>break</code> and continuing
+                through the normal loop exit? When would you use <code>break</code>
+                inside a combat loop?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Create a trace table for any loop and fill it correctly</li>
+            <li>Predict the number of iterations from a loop header</li>
+            <li>Identify and fix off-by-one errors</li>
+            <li>Determine if two loops are equivalent without running them</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/loop-analysis.html">Tracing Loops</a> — trace tables, iteration counts, off-by-one</li>
+        <li><a href="../docs/unit-04/while-loops.html">while Loops</a> — the loops you're tracing</li>
+        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — counting patterns reference</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

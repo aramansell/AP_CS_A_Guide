@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.3a else-if Chains — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="3.2a.html">◀ 3.2a</a>
+    <span class="lesson-id">3.3a</span>
+    <a href="3.4a.html">3.4a ▶</a>
+</div>
+
+<h1>3.3a — else-if Chains: More Than Two Paths</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        <code>if</code>/<code>else</code> gives you two paths. But what about
+        four? Or ten? That's where <code>else if</code> chains come in.
+    </p>
+
+    <p>
+        Java checks conditions <strong>top to bottom</strong>. The FIRST true
+        condition runs. Then it skips everything else. Exactly ONE block executes.
+    </p>
+
+    <h3>The Pattern</h3>
+
+    <pre><code>if (condition1) {
+    // first priority
+} else if (condition2) {
+    // second priority
+} else if (condition3) {
+    // third priority
+} else {
+    // if nothing matched
+}</code></pre>
+
+    <div class="tinker">
+        <h3>Build: Damage Classifier</h3>
+        <p>
+            Write an <code>if/else if</code> chain that reads a damage number
+            and prints the correct classification. Here are the ranges:
+        </p>
+        <ul>
+            <li>0 → "Miss!"</li>
+            <li>1–5 → "Scratch"</li>
+            <li>6–10 → "Solid hit"</li>
+            <li>11–15 → "Heavy blow"</li>
+            <li>16+ → "Devastating!"</li>
+        </ul>
+        <p>
+            Test every edge! What happens when you pass in exactly 5? Exactly 6?
+            Exactly 15? Exactly 16? Make sure each number lands in exactly one category.
+        </p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Order Matters Trap:</strong> Before you read ahead, try to
+        predict: if you write your conditions as <code>if (dmg &gt; 0)</code>
+        first, then <code>else if (dmg &gt; 5)</code>, then <code>else if (dmg &gt; 10)</code>...
+        what goes wrong? Run it and find out. Then fix it. Why does checking
+        from LOWEST to HIGHEST (or HIGHEST to LOWEST) matter?
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — Boolean Zen</h3>
+        <p>Open the <a href="../docs/unit-03/else-if-chains.html">else-if Chains docs</a>.
+        Find the Socratic Checkpoint section labeled "Boolean Zen." Then answer:</p>
+        <ol>
+            <li>Why is <code>if (enemyAlive)</code> preferred over
+                <code>if (enemyAlive == true)</code>? What does the <code>if</code>
+                statement actually expect inside its parentheses?</li>
+            <li>Look at this code:
+                <pre><code>if (hp > 0) {
+    return true;
+} else {
+    return false;
+}</code></pre>
+                How could you rewrite this in a single line? (Hint: <code>hp &gt; 0</code>
+                itself evaluates to something. What?)
+            </li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Grade Letter Converter</h3>
+        <p>
+            Use <code>Scanner</code> to read a numeric score (0–100). Use an
+            <code>if/else if</code> chain to print the corresponding letter grade:
+            90+=A, 80+=B, 70+=C, 60+=D, below 60=F.
+        </p>
+        <p>
+            Read the <a href="../docs/unit-03/else-if-chains.html">docs</a> for
+            a hint about the order trap — they have a bug hunt that shows exactly
+            the mistake students make with this problem. Learn from it before you
+            write your code!
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Combat Result Printer</h3>
+        <p>
+            Roll a d20 using your Dice class. Print the result based on the roll:
+        </p>
+        <ul>
+            <li>20 → "CRITICAL HIT!"</li>
+            <li>15–19 → "Hit!"</li>
+            <li>10–14 → "Glancing blow"</li>
+            <li>2–9 → "Miss!"</li>
+            <li>1 → "CRITICAL MISS!"</li>
+        </ul>
+        <p>
+            Which direction should your conditions go — top-down from 20, or
+            bottom-up from 1? Think about the order trap before you start.
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write multi-way decisions using if/else if/else chains</li>
+            <li>Explain why the ORDER of conditions matters</li>
+            <li>Test edge values to verify exactly one branch executes</li>
+            <li>Apply Boolean Zen — use boolean variables directly in conditions</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-03/else-if-chains.html">else-if Chains</a> — order matters trap, Boolean Zen, nested if</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

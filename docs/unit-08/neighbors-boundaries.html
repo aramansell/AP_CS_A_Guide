@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neighbors & Boundaries — Unit 8</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../index.html" class="active">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 8</a>
+    <span class="sep">/</span>
+    <span class="here">Neighbors & Boundaries</span>
+</nav>
+
+<h1>Neighbors and Boundary Safety</h1>
+
+<p>
+    You've learned to traverse 2D arrays. Now the real challenge: checking the cells
+    <em>around</em> a cell without crashing into the array's walls.
+</p>
+
+<h2>The Problem: ArrayIndexOutOfBoundsException</h2>
+
+<pre><code>char[][] map = {
+    {'#', '#', '#'},
+    {'#', 'M', '#'},
+    {'#', '#', '#'}
+};
+
+// Trying to check above the monster at (1,1):
+char above = map[0][1];  // OK — row 0 exists
+
+// But what if the monster is at (0,0)?
+char above = map[-1][0];  // CRASH — row -1 doesn't exist
+// OR at (2,2)?
+char below = map[3][2];   // CRASH — row 3 doesn't exist (max row is 2)</code></pre>
+
+<p>
+    <strong>The rule:</strong> Every time you access a neighbor, you MUST check bounds first.
+    No exceptions. The compiler won't stop you, but the runtime will.
+</p>
+
+<h2>The Four Directions</h2>
+
+<p>From any cell at <code>(row, col)</code>, its four orthogonal neighbors are:</p>
+
+<table>
+    <tr><th>Direction</th><th>Coordinates</th><th>Bounds Check</th></tr>
+    <tr><td>Up</td><td><code>(row-1, col)</code></td><td><code>row > 0</code></td></tr>
+    <tr><td>Down</td><td><code>(row+1, col)</code></td><td><code>row < grid.length - 1</code></td></tr>
+    <tr><td>Left</td><td><code>(row, col-1)</code></td><td><code>col > 0</code></td></tr>
+    <tr><td>Right</td><td><code>(row, col+1)</code></td><td><code>col < grid[0].length - 1</code></td></tr>
+</table>
+
+<h2>The Safe Neighbor Pattern</h2>
+
+<p>The standard pattern wraps each access in its own bounds check:</p>
+
+<pre><code>public static int countMonsterNeighbors(char[][] grid, int row, int col) {
+    int count = 0;
+
+    // Up
+    if (row > 0 && grid[row-1][col] == 'M') {
+        count++;
+    }
+    // Down
+    if (row < grid.length - 1 && grid[row+1][col] == 'M') {
+        count++;
+    }
+    // Left
+    if (col > 0 && grid[row][col-1] == 'M') {
+        count++;
+    }
+    // Right
+    if (col < grid[0].length - 1 && grid[row][col+1] == 'M') {
+        count++;
+    }
+
+    return count;
+}</code></pre>
+
+<div class="callout">
+    <strong>Notice:</strong> Java uses <em>short-circuit evaluation</em> — if the first condition in an
+    <code>&&</code> is false, it never evaluates the second. That's why we put the bounds check
+    FIRST: if it fails, we skip the array access entirely.
+</div>
+
+<h2>Compact Direction Arrays (Advanced)</h2>
+
+<p>Instead of four separate if-blocks, store the four direction offsets:</p>
+
+<pre><code>public static boolean hasTreasureNearby(char[][] grid, int row, int col) {
+    // Offsets for: up, down, left, right
+    int[] dRow = {-1, 1, 0, 0};
+    int[] dCol = {0, 0, -1, 1};
+
+    for (int d = 0; d < 4; d++) {
+        int newRow = row + dRow[d];
+        int newCol = col + dCol[d];
+
+        // Bounds check using length, not hardcoded numbers
+        if (newRow >= 0 && newRow < grid.length &&
+            newCol >= 0 && newCol < grid[0].length) {
+
+            if (grid[newRow][newCol] == '$') {
+                return true;
+            }
+        }
+    }
+    return false;
+}</code></pre>
+
+<p>This pattern scales: add diagonal offsets to go from 4 to 8 directions.</p>
+
+<h2>The #1 Trap: The Four-Branch Duplication Problem</h2>
+
+<pre><code>// DANGEROUS — duplicated logic in every branch:
+if (row > 0) {
+    if (grid[row-1][col] == target) {
+        System.out.println("Found at " + (row-1) + ", " + col);
+        count++;
+    }
+}
+// ... repeat for down, left, right ...
+
+// If you need to CHANGE the action (print, count, return...),
+// you must change it in FOUR places. Easy to miss one.</code></pre>
+
+<p>
+    <strong>Solution:</strong> Extract the action into a helper method, OR use the direction-array
+    pattern. One loop, one action, four directions handled cleanly.
+</p>
+
+<h2>Edge Cases: Wrapping vs. Clamping</h2>
+
+<p>
+    When the player goes off the edge of the map, you have two choices:
+</p>
+
+<pre><code>// CHOICE 1: Clamp — stop at the edge
+int clampedRow = Math.max(0, Math.min(grid.length - 1, row + dRow));
+int clampedCol = Math.max(0, Math.min(grid[0].length - 1, col + dCol));
+
+// CHOICE 2: Wrap — appear on the opposite side (Pac-Man style)
+int wrappedRow = (row + dRow + grid.length) % grid.length;
+int wrappedCol = (col + dCol + grid[0].length) % grid[0].length;</code></pre>
+
+<p>
+    Most RPG maps use clamping. Pac-Man uses wrapping. Know which one your game needs.
+</p>
+
+<h2>The Diagonal Question</h2>
+
+<p>
+    Orthogonal neighbors (up, down, left, right) are sometimes called "4-directional."
+    If you need diagonals too (8-directional), add these offsets:
+</p>
+
+<pre><code>int[] dRow = {-1, -1, -1,  0, 0,  1, 1, 1};
+int[] dCol = {-1,  0,  1, -1, 1, -1, 0, 1};</code></pre>
+
+<p>Now you can check all 8 surrounding cells with the same loop. Same logic, more directions.</p>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Empty-Edge Monster</h3>
+    <p>A dungeon map has monsters ('M') and empty cells ('.'). You want to count how many monsters are
+    <em>completely isolated</em> — meaning none of their four orthogonal neighbors contain another
+    monster. Cells on the edge have fewer neighbors, so they need fewer checks.</p>
+    <p>Do edge cells have an advantage or disadvantage in this count? Why might you get a different
+    answer if you treated off-the-edge cells as empty vs. if you treated them as walls?</p>
+
+    <h3>2. The Direction-Array Switch</h3>
+    <p>You have working code with four separate if-blocks for neighbors. You want to upgrade to
+    the direction-array pattern. What's one bug that could silently slip through if you get the
+    offset arrays wrong? How would you test for it?</p>
+</div>
+
+<h2>Bug Hunt: The Over-Counting Monster Detector</h2>
+
+<div class="bug-hunt">
+    <p>A student writes code to count how many cells have at least one monster neighbor. They use
+    a boolean to mark each cell once, but the output count is consistently wrong — sometimes too
+    high, sometimes too low.</p>
+    <pre><code>public static int cellsWithMonsterNeighbor(char[][] grid) {
+    int count = 0;
+    for (int r = 0; r < grid.length; r++) {
+        for (int c = 0; c < grid[0].length; c++) {
+            // Check all four neighbors
+            if (r > 0 && grid[r-1][c] == 'M') count++;
+            if (r < grid.length-1 && grid[r+1][c] == 'M') count++;
+            if (c > 0 && grid[r][c-1] == 'M') count++;
+            if (c < grid[0].length-1 && grid[r][c+1] == 'M') count++;
+        }
+    }
+    return count;
+}</code></pre>
+    <p><strong>Question:</strong> A single monster cell at (1,1) with empty cells all around it will
+    increment <code>count</code> multiple times. Why? Trace which cells trigger the count increment
+    and explain why the answer is almost certainly too high. How would you fix it?</p>
+</div>
+
+<h2>Tinker Challenge: Flood Zone Calculator</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Build a method that analyzes every cell's surroundings in one pass.</p>
+    <ol>
+        <li><strong>Danger Level Map:</strong> Write a method
+        <code>public static int[][] dangerGrid(char[][] map)</code> that returns a new 2D int array
+        where each cell contains the number of monster ('M') neighbors in its four orthogonal
+        directions. Edge cells should not crash.</li>
+        <li><strong>Safe Zone Finder:</strong> Write
+        <code>public static int[] findSafeZone(char[][] map)</code> that locates the first cell
+        with zero monster neighbors and returns its coordinates as <code>{row, col}</code>. If no
+        safe zone exists, return <code>{-1, -1}</code>.</li>
+        <li><strong>Boss Move:</strong> Write
+        <code>public static boolean isSurrounded(char[][] map, int row, int col)</code> that
+        returns true if ALL valid orthogonal neighbors of the cell are monsters ('M'). A cell on
+        the edge can never be fully surrounded (it has fewer neighbors). A cell in a corner has
+        only two neighbors — do you consider it "surrounded" if both are monsters?</li>
+    </ol>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="2d-array-basics.html">2D Array Basics</a> — [row][col] indexing</li>
+    <li><a href="2d-array-traversal.html">2D Array Traversal</a> — row-major and column-major</li>
+    <li><a href="dungeon-map.html">Dungeon Map Generator</a> — RPG practice with neighbor checks</li>
+</ul>
+
+</div><!-- .page -->
+</body>
+</html>

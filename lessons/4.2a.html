@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.2a for Loops — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="4.1a.html">◀ 4.1a</a>
+    <span class="lesson-id">4.2a</span>
+    <a href="4.3a.html">4.3a ▶</a>
+</div>
+
+<h1>4.2a — for Loops: When You Know the Count</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        while loops are for unknown counts — "keep fighting until someone dies."
+        But what about "generate exactly 5 rooms" or "print inventory items 1 through 10"?
+        When you know the count, a <code>for</code> loop packs all the loop control
+        into one clean line.
+    </p>
+
+    <p>
+        A for loop bundles initialize, test, and update into its header.
+        It's not different from while — it's just organized differently.
+    </p>
+
+    <h3>The Pattern</h3>
+
+    <pre><code>for (initialize; test; update) {
+    // body
+}</code></pre>
+
+    <pre><code>// A while loop:
+int i = 0;           // initialize
+while (i < 5) {      // test
+    System.out.println(i);
+    i++;             // update
+}
+
+// The SAME thing as a for loop:
+for (int i = 0; i < 5; i++) {
+    System.out.println(i);
+}</code></pre>
+
+    <div class="tinker">
+        <h3>Experiment: Rewrite the Rewrite</h3>
+        <p>
+            Take your <code>CombatLoop.java</code> from 4.1a. The combat loop
+            is a while loop because you don't know how many rounds. But can
+            you add a round counter that prints the round number? Try it.
+        </p>
+        <p>
+            Now create a new file <code>ForExplorer.java</code>. Write a for loop
+            that prints exactly 5 rooms — room 1 through room 5. Include a d20
+            roll for each room: if roll >= 10, print "Enemy appears!" Otherwise,
+            print "Room is empty."
+        </p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Scope Trap:</strong> Open the
+        <a href="../docs/unit-04/for-loops.html">for Loops docs</a>. Find the
+        "Lost in Scope" Socratic Checkpoint. Read the broken code, then answer:
+        why can't you use <code>i</code> after the loop? How would you fix it
+        if you NEEDED the final value after the loop?
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Counting Patterns</h3>
+        <p>
+            The <a href="../docs/unit-04/for-loops.html">for Loops docs</a>
+            have a section called "Counting Patterns." It shows five different
+            loop headers. Write a program that creates all five loops and prints
+            what each one outputs.
+        </p>
+        <p>
+            Before running, PREDICT the output of each one. Write it down.
+            Then run. How many did you get right?
+        </p>
+        <p>
+            Which pattern would you use for: printing even numbers? Printing
+            numbers 10, 20, 30 up to 100? Countdown from 10?
+        </p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>The docs say: "while = unknown repetitions, for = known repetitions."
+                Think of a game situation where you'd use NEITHER — where the
+                repetition needs both a counter AND an unknown exit condition.
+                How would you write that?</li>
+            <li>Read "The Missing Item" Bug Hunt in the docs. Why does the buggy
+                inventory loop crash? What's the difference between starting at
+                0 vs starting at 1 when your array has 5 items?</li>
+            <li>Look at the enhanced for loop at the bottom of the docs. When
+                would you use <code>for (String item : items)</code> instead of
+                <code>for (int i = 0; ...)</code>? What can the index version do
+                that the enhanced version can't?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write a for loop with any of the five counting patterns</li>
+            <li>Explain when to use for vs while</li>
+            <li>Explain loop variable scope (why i disappears after the loop)</li>
+            <li>Rewrite a while loop as a for loop and vice versa</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — syntax, counting patterns, scope, inventory</li>
+        <li><a href="../docs/unit-04/while-loops.html">while Loops</a> — comparison reference</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

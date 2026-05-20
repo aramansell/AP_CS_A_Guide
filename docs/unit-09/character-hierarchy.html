@@ -318,6 +318,20 @@ for (GameCharacter gc : party) {
 
 <p>In Unit 10, chain damage and area-of-effect spells operate on <code>GameCharacter[][]</code> grids — possible only because Player and Monster share a parent type.</p>
 
+<hr>
+<h3>Socratic Checkpoints</h3>
+
+<p><strong>1.</strong> GameCharacter has <code>abstract String attack()</code>. What happens if you create a new subclass (<code>Healer</code>) but forget to write <code>attack()</code>? Will the compiler catch it? Will it compile but crash at runtime?</p>
+
+<p><strong>2.</strong> You store Player and Monster together in a <code>GameCharacter[]</code>. When you call <code>gc.takeDamage(10)</code>, it works for both. But what about <code>gc.castSpell()</code> — a method that only Mage has? Why doesn't it work even though Mage extends GameCharacter? What's the minimum change to make it work safely?</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="extends-and-super.html">Extends &amp; super</a> — the extends keyword and super() calls</li>
+    <li><a href="abstract-classes.html">Abstract Classes</a> — Character as an abstract parent</li>
+    <li><a href="polymorphism.html">Polymorphism</a> — Character[] holding Warriors and Mages</li>
+</ul>
+
 </div><!-- .page -->
 </body>
 </html>

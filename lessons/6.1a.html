@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.1a Array Basics — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <span></span>
+    <span class="lesson-id">6.1a</span>
+    <a href="6.2a.html">6.2a ▶</a>
+</div>
+
+<h1>6.1a — Array Basics: A Row of Lockers</h1>
+
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        So far you've stored one value per variable: <code>int hp = 20</code>.
+        But what if you need to store 100 monster HP values? Or all 52 cards in a
+        deck? You're not writing <code>monster1hp, monster2hp, monster3hp...</code>
+        for 100 monsters.
+    </p>
+
+    <p>
+        An <strong>array</strong> is a single variable that holds multiple values
+        of the same type. Think of it as a row of numbered lockers — each locker
+        holds one value, and you open it by its number (the <em>index</em>).
+        Indexing starts at 0, not 1. This is the single most common source of
+        off-by-one bugs in programming.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: Your First Array</h3>
+        <p>Create <code>ArrayIntro.java</code>. Run each block separately:</p>
+        <pre><code>// Declaration + initialization
+int[] scores = {95, 87, 72, 100, 63};
+
+// Access by index
+System.out.println(scores[0]);   // first
+System.out.println(scores[4]);   // last
+System.out.println(scores[2]);   // middle
+
+// How many elements?
+System.out.println(scores.length);</code></pre>
+        <p>Answer: what does <code>scores[5]</code> do? Try it. Read the error message
+        carefully — this is <code>ArrayIndexOutOfBoundsException</code>. You'll see it
+        a lot.</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment: Create + Fill</h3>
+        <pre><code>// Create empty array of size 5
+int[] numbers = new int[5];
+
+// Fill each slot
+numbers[0] = 10;
+numbers[1] = 20;
+numbers[2] = 30;
+numbers[3] = 40;
+numbers[4] = 50;
+
+// What's in numbers[0] after this?
+numbers[0] = numbers[0] + 5;
+
+// Print all values — we'll learn loops next
+System.out.println(numbers[0]);
+System.out.println(numbers[1]);
+System.out.println(numbers[2]);
+System.out.println(numbers[3]);
+System.out.println(numbers[4]);</code></pre>
+        <p>What are the default values in a new int[] before you fill it?
+        Create one and print <code>numbers[0]</code> before setting it.</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Index Off-By-One:</strong> An array of length 5 has indices 0, 1, 2, 3, 4.
+        The last index is <code>length - 1</code>. The most common bug in this unit:
+        writing <code>i <= array.length</code> instead of <code>i < array.length</code>.
+        Read the <a href="../docs/unit-06/array-basics.html">Array Basics docs</a>
+        Bug Hunt section and find all the broken code samples.
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why do arrays start at 0 instead of 1? (Hint: the docs explain this.)</li>
+            <li>What happens if you try to set <code>numbers[-1] = 5</code>?
+            Make a prediction, then test it.</li>
+            <li>What's the difference between <code>int[] arr = {1,2,3}</code> and
+            <code>int[] arr = new int[3]</code>? Which one gives you more control?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Declare and initialize an array three different ways</li>
+            <li>Access elements by index and explain why <code>length - 1</code> is the last valid index</li>
+            <li>Read and understand <code>ArrayIndexOutOfBoundsException</code></li>
+            <li>Use <code>.length</code> to get array size</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-06/array-basics.html">Array Basics</a> — declaration, initialization, indexing</li>
+        <li><a href="../docs/unit-05/class-anatomy.html">Anatomy of a Class (Unit 5)</a> — arrays store objects too</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

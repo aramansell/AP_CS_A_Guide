@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Object, Interfaces & Casting — Unit 9</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../index.html" class="active">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 9</a>
+    <span class="sep">/</span>
+    <span class="here">Object, Interfaces & Casting</span>
+</nav>
+
+<h1>Object, Interfaces, and Casting</h1>
+
+<p>
+    Inheritance gets you far. But three concepts sit at the top of the Java type system and
+    unlock the rest of the language: the <strong>Object class</strong> (every class's secret parent),
+    <strong>interfaces</strong> (contracts without inheritance), and <strong>casting</strong>
+    (telling the compiler "trust me, this is actually a _____").
+</p>
+
+<h2>The Object Class</h2>
+
+<p>
+    <strong>Every class in Java extends Object.</strong> If you write <code>class Player { }</code>,
+    Java secretly makes it <code>class Player extends Object { }</code>. You don't need to type it.
+</p>
+
+<p>Why does this matter? Every object inherits methods from Object:</p>
+
+<table>
+    <tr><th>Method</th><th>What it does</th></tr>
+    <tr><td><code>toString()</code></td><td>Returns a String representation. Default: <code>ClassName@hexAddress</code>. Override it.</td></tr>
+    <tr><td><code>equals(Object obj)</code></td><td>Tests if two objects are "logically equal." Default: <code>==</code> (same memory address). Override it.</td></tr>
+    <tr><td><code>hashCode()</code></td><td>Returns an int hash for HashMap/HashSet. Must be consistent with equals().</td></tr>
+    <tr><td><code>getClass()</code></td><td>Returns the runtime class. Used with reflection (rare in AP).</td></tr>
+</table>
+
+<h3>Overriding toString()</h3>
+
+<pre><code>public class Player {
+    private String name;
+    private int hp;
+
+    public Player(String name, int hp) {
+        this.name = name;
+        this.hp = hp;
+    }
+
+    @Override
+    public String toString() {
+        return name + " [" + hp + " HP]";
+    }
+}
+
+// Usage:
+Player p = new Player("Aria", 100);
+System.out.println(p);  // Before override: Player@1a2b3c4d
+                        // After override:  Aria [100 HP]</code></pre>
+
+<div class="callout">
+    <strong>The <code>@Override</code> annotation:</strong> Not required, but always use it.
+    If you accidentally mistype the method name (<code>toSring</code>), the compiler catches it
+    because no parent has that method. Without <code>@Override</code>, you silently write a new
+    method that never gets called.
+</div>
+
+<h3>Overriding equals()</h3>
+
+<pre><code>public class Player {
+    private String name;
+    private int idNumber;
+
+    @Override
+    public boolean equals(Object obj) {
+        // 1. Same reference? Always equal
+        if (this == obj) return true;
+
+        // 2. Null or wrong class? Never equal
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        // 3. Cast and compare fields
+        Player other = (Player) obj;
+        return idNumber == other.idNumber;
+    }
+}
+
+// Usage:
+Player p1 = new Player("Aria", 1001);
+Player p2 = new Player("Aria", 1001);
+System.out.println(p1 == p2);       // false — different objects
+System.out.println(p1.equals(p2));  // true — same ID</code></pre>
+
+<p>
+    <strong>The pattern:</strong> accept <code>Object</code> as the parameter (it MUST be Object,
+    not Player), check for same-reference and null/wrong-class, then cast and compare your
+    own fields. Every equals() method follows this pattern.
+</p>
+
+<h2>Casting: Telling the Compiler What You Know</h2>
+
+<p>
+    When you hold a parent-type reference to a child object, the compiler only sees the parent's
+    methods. Casting lets you access the child's specific methods.
+</p>
+
+<pre><code>Character c = new Warrior("Thorn", 150, 15);  // Character reference, Warrior object
+
+c.attack();   // OK — attack() is in Character
+// c.rage();  // ERROR — the compiler sees Character, not Warrior
+
+// Downcast to access Warrior methods:
+Warrior w = (Warrior) c;
+w.rage();     // OK — w is a Warrior reference</code></pre>
+
+<h3>The instanceof Guard</h3>
+
+<p>Never cast without checking first. A wrong cast throws ClassCastException at runtime.</p>
+
+<pre><code>public static void useSpecial(Character c) {
+    if (c instanceof Warrior) {
+        Warrior w = (Warrior) c;
+        w.rage();
+    } else if (c instanceof Mage) {
+        Mage m = (Mage) c;
+        m.castSpell();
+    }
+}
+
+// Wrong — no guard:
+Warrior w = (Warrior) c;  // If c is actually a Mage, CRASH</code></pre>
+
+<div class="callout">
+    <strong>instanceof checks the RUNTIME type, not the reference type.</strong>
+    <code>Character c = new Warrior("Thorn", 150, 15);</code>
+    <code>c instanceof Warrior</code> → true (the actual object IS a Warrior)
+    <code>c instanceof Character</code> → true (Warrior extends Character)
+    <code>c instanceof Mage</code> → false (a Warrior is not a Mage)
+</div>
+
+<h2>Interfaces: Contracts Without Inheritance</h2>
+
+<p>
+    An <strong>abstract class</strong> says "I am a _____." An <strong>interface</strong> says
+    "I can do _____." You can only extend one class, but you can implement many interfaces.
+</p>
+
+<pre><code>// Interface: a contract — any class that implements this MUST have these methods
+public interface Attackable {
+    void takeDamage(int damage);
+    boolean isAlive();
+}
+
+public interface Lootable {
+    Item dropLoot();
+    int getGoldValue();
+}
+
+// A class can implement multiple interfaces:
+public class Dragon implements Attackable, Lootable {
+    private int hp;
+    private int treasure;
+
+    public void takeDamage(int damage) {
+        hp -= damage;
+    }
+
+    public boolean isAlive() {
+        return hp > 0;
+    }
+
+    public Item dropLoot() {
+        return new Item("Dragon Scale", treasure);
+    }
+
+    public int getGoldValue() {
+        return treasure;
+    }
+}</code></pre>
+
+<p>
+    <strong>Key difference from abstract classes:</strong> interfaces have NO instance variables,
+    NO constructors, and (before Java 8) NO method bodies. They are pure contracts.
+</p>
+
+<h3>Polymorphism Through Interfaces</h3>
+
+<pre><code>// A method that works with ANY Attackable:
+public static int attackAll(Attackable[] targets, int damage) {
+    int survivors = 0;
+    for (Attackable t : targets) {
+        t.takeDamage(damage);
+        if (t.isAlive()) survivors++;
+    }
+    return survivors;
+}
+
+// Works on players, monsters, dragons, doors, anything Attackable:
+Attackable[] targets = {player, dragon, boss, door};</code></pre>
+
+<p>
+    This is the same polymorphic pattern you learned with abstract classes. Interfaces give you
+    the same power <em>without</em> forcing a shared parent class.
+</p>
+
+<h3>Interfaces vs. Abstract Classes</h3>
+
+<table>
+    <tr><th>Feature</th><th>Abstract Class</th><th>Interface</th></tr>
+    <tr><td>Instance variables</td><td>Yes</td><td>No (only constants)</td></tr>
+    <tr><td>Constructors</td><td>Yes</td><td>No</td></tr>
+    <tr><td>Method bodies</td><td>Yes (partial implementations)</td><td>No* (pure contracts)</td></tr>
+    <tr><td>How many can you have?</td><td>One parent</td><td>As many as you want</td></tr>
+    <tr><td>Relationship</td><td>"is-a" (Warrior IS a Character)</td><td>"can-do" (Dragon CAN be attacked)</td></tr>
+</table>
+
+<p><small>*Java 8+ allows default methods in interfaces, but that's beyond AP scope.</small></p>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>1. The Broken equals()</h3>
+    <p>A student writes this equals method:</p>
+    <pre><code>public boolean equals(Player other) {
+    return this.id == other.id;
+}</code></pre>
+    <p>It works perfectly when they test it with <code>p1.equals(p2)</code>. But later, when they
+    put Players in an ArrayList and call <code>list.contains(somePlayer)</code>, it never finds a
+    match. Why? What's the difference between <code>equals(Player)</code> and <code>equals(Object)</code>?</p>
+
+    <h3>2. Interface Blindness</h3>
+    <p>You have a variable <code>Attackable a = new Dragon("Smaug", 500, 1000);</code>. What happens
+    if you try to call <code>a.getGoldValue()</code>? Why does the compiler reject it even though
+    Dragon has the method? What's the fix?</p>
+</div>
+
+<h2>Bug Hunt: The Silent instanceof Trap</h2>
+
+<div class="bug-hunt">
+    <p>A game has three character types: Warrior, Mage, and Rogue. The combat system uses
+    instanceof to apply type-specific effects. But the Rogue never gets its backstab bonus.</p>
+    <pre><code>public static void applyTurnEffects(Character c) {
+    if (c instanceof Warrior) {
+        ((Warrior) c).berserk();
+    } else if (c instanceof Mage) {
+        ((Mage) c).rechargeMana();
+    }
+    // Rogues were supposed to get a backstab here...
+}</code></pre>
+    <p><strong>Bug 1:</strong> Where's the Rogue? What happens when a Rogue enters combat — do
+    they silently skip, or get treated as something else?</p>
+    <p><strong>Bug 2:</strong> A new developer copies this pattern into a new method but
+    forgets to update the instanceof chain. The compiler doesn't warn them. Why is instanceof-based
+    dispatch dangerous in a growing codebase? What alternative pattern would the compiler
+    <em>force</em> you to handle every type?</p>
+</div>
+
+<h2>Tinker Challenge: Combat System with Interfaces</h2>
+
+<div class="tinker">
+    <p><strong>Goal:</strong> Refactor type-specific behavior into interfaces.</p>
+    <ol>
+        <li><strong>Design an Interface:</strong> Create a <code>SpecialAbility</code> interface
+        with one method: <code>void useSpecial()</code>. Have Warrior, Mage, and Rogue each
+        implement it differently (rage, cast, backstab).</li>
+        <li><strong>Eliminate instanceof:</strong> Rewrite <code>applyTurnEffects</code> to
+        call <code>c.useSpecial()</code> directly through the interface. No casting, no
+        instanceof. Why is this safer?</li>
+        <li><strong>Boss Move:</strong> Create an <code>Item</code> interface with methods
+        <code>String getName()</code> and <code>void use(Character target)</code>. Make
+        Potion, Scroll, and Weapon implement it. Store them all in an <code>Item[]</code>
+        and let the player invoke <code>use()</code> on any item without knowing its type.</li>
+    </ol>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="abstract-classes.html">Abstract Classes</a> — the "is-a" parent pattern</li>
+    <li><a href="polymorphism.html">Polymorphism</a> — parent references, instanceof, casting</li>
+    <li><a href="extends-and-super.html">Extends &amp; super</a> — the mechanics of inheritance</li>
+</ul>
+
+</div><!-- .page -->
+</body>
+</html>

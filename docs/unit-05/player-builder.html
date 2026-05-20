@@ -201,6 +201,22 @@ System.out.println(dead.isAlive());         // true</code></pre>
     </tr>
 </table>
 
+
+<hr>
+<h3>Socratic Checkpoints</h3>
+
+<p><strong>1.</strong> Why does <code>takeDamage()</code> clamp HP to 0 instead of letting it go negative? What would break in your dungeon loop if HP could be negative?</p>
+
+<p><strong>2.</strong> You have two ways to check if a player is alive: <code>hp > 0</code> and <code>player.isAlive()</code>. If someone later changes the HP logic (maybe a player is dead at -10 HP now means something), which approach would break less code? Why?</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="class-anatomy.html">Anatomy of a Class</a> — the blueprint</li>
+    <li><a href="constructors.html">Constructors</a> — how new Player() works</li>
+    <li><a href="accessors-mutators.html">Accessors &amp; Mutators</a> — getters for HP, name, etc.</li>
+    <li><a href="monster-builder.html">Monster.java</a> — the other half of combat</li>
+</ul>
+
 </div><!-- .page -->
 </body>
 </html>

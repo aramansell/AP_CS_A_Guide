@@ -214,6 +214,20 @@ DynamicInventory inventory = new DynamicInventory();</code></pre>
 
 <p>Everything else (<code>.add()</code>, <code>.contains()</code>, <code>.display()</code>) works the same. Your RPG inventory now grows forever.</p>
 
+<hr>
+<h3>Socratic Checkpoints</h3>
+
+<p><strong>1.</strong> Your <code>DynamicInventory</code> uses an <code>ArrayList&lt;Item&gt;</code> internally. What happens if someone passes <code>null</code> to <code>add(null)</code>? Should your code handle this, and if so, how?</p>
+
+<p><strong>2.</strong> In Unit 6's FixedInventory, remove-by-name used a for loop to find the index, then a shift loop to close the gap. DynamicInventory just calls <code>items.remove(name)</code>. How does ArrayList do both steps in one call? What's the runtime cost compared to your manual version?</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="arraylist-basics.html">ArrayList Basics</a> — add, remove, get, set</li>
+    <li><a href="arraylist-traversal.html">ArrayList Traversal</a> — walking through the inventory</li>
+    <li><a href="../unit-06/inventory-builder.html">Inventory Builder (Unit 6)</a> — array version for comparison</li>
+</ul>
+
 </div><!-- .page -->
 </body>
 </html>

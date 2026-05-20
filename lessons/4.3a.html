@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.3a String Traversal — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="4.2a.html">◀ 4.2a</a>
+    <span class="lesson-id">4.3a</span>
+    <a href="4.4a.html">4.4a ▶</a>
+</div>
+
+<h1>4.3a — Loops + Strings: Character by Character</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        A String is a sequence of characters. You know <code>charAt()</code> and
+        <code>length()</code> from Unit 2. Now combine those with loops to visit
+        every character — searching, counting, building new strings.
+    </p>
+
+    <p>
+        This is called <strong>string traversal</strong>: walking through a string
+        one character at a time, doing something at each position.
+    </p>
+
+    <h3>The Standard Pattern</h3>
+
+    <pre><code>String word = "dragon";
+for (int i = 0; i < word.length(); i++) {
+    char c = word.charAt(i);
+    System.out.println("Position " + i + ": " + c);
+}</code></pre>
+
+    <div class="tinker">
+        <h3>Experiment: charAt Boundaries</h3>
+        <p>Create <code>StringWalker.java</code>. Run these experiments:</p>
+        <pre><code>String s = "sword";
+System.out.println(s.length());        // what prints?
+System.out.println(s.charAt(0));       // first character?
+System.out.println(s.charAt(4));       // last character?
+// System.out.println(s.charAt(5));    // UNCOMMENT — what happens?</code></pre>
+        <p>
+            Open the <a href="../docs/unit-04/string-loops.html">Loops + Strings docs</a>.
+            Find the "Out of Bounds" Bug Hunt. Read the broken code. Why does
+            <code>weapon.charAt(weapon.length())</code> crash? What's the fix?
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Count and Search</h3>
+        <p>
+            Pick a spell name: "Fireball", "IceStorm", "Thunderbolt", or your own.
+            Write a traversal loop that counts:
+        </p>
+        <ol>
+            <li>How many vowels (a, e, i, o, u) are in the spell name?</li>
+            <li>How many total characters?</li>
+            <li>Does the spell name contain the letter 'z'?</li>
+        </ol>
+        <p>
+            Run on multiple spell names. Does your vowel counter handle uppercase?
+            If the user types "FIREBALL", does it still count correctly?
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Reverse It</h3>
+        <p>
+            The docs show a reverse-string example. Read it. Then write your own
+            version without looking — write it from memory.
+        </p>
+        <p>
+            Start with an empty String (not <code>null</code> — <code>""</code>).
+            Loop through the original string BACKWARDS. Use <code>+=</code> to
+            build the reversed version. Test: "sword" → "drows", "java" → "avaj".
+        </p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Read "The Memory Cost" Socratic Checkpoint in the docs. If you
+                use <code>+=</code> inside a loop to build a 1000-character string,
+                how many temporary String objects does Java create? Why is this
+                wasteful?</li>
+            <li>The docs show a "Combat Command Parser" that splits "attack goblin"
+                into verb and target. Read it. Why does it search for a space?
+                What happens if the player types a command with NO space?</li>
+            <li>Look at the <code>Character.isDigit()</code> and <code>isLetter()</code>
+                methods in the docs. Write a loop that prints "digit", "letter",
+                or "other" for each character in "F1r3bAll!".</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Traverse a string with a for loop and charAt()</li>
+            <li>Count characters matching a condition (vowels, digits, etc.)</li>
+            <li>Build a new string by accumulating characters in a loop</li>
+            <li>Avoid off-by-one errors with length() and charAt()</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/string-loops.html">Loops + Strings</a> — traversal, counting, building, Character methods</li>
+        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — the loop backbone</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

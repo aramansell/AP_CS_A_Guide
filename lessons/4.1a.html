@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.1a while Loops — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <span></span>
+    <span class="lesson-id">4.1a</span>
+    <a href="4.2a.html">4.2a ▶</a>
+</div>
+
+<h1>4.1a — while Loops: Repeating While True</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        Every program you've written runs its code once and stops. One attack roll.
+        One tip calculation. But games don't work that way — combat rounds repeat.
+        You explore rooms until the dungeon runs out. Your player keeps drinking
+        potions until their inventory is empty.
+    </p>
+
+    <p>
+        A <code>while</code> loop is an if statement that <strong>runs again</strong>.
+        It checks a condition, and if it's true, runs the body. Then checks again.
+        And again. Until the condition becomes false.
+    </p>
+
+    <h3>The Core Idea</h3>
+
+    <pre><code>while (condition) {
+    // runs REPEATEDLY while condition is true
+}
+// execution continues here when condition becomes false</code></pre>
+
+    <div class="tinker">
+        <h3>Experiment: Your First Loop</h3>
+        <p>Create <code>FirstLoop.java</code>. Run this code:</p>
+        <pre><code>int count = 0;
+while (count < 5) {
+    System.out.println("Count is: " + count);
+    count++;
+}
+System.out.println("Done!");</code></pre>
+        <p>Write down: how many times does the println inside the loop run?
+        What's the first value of count printed? The last? Now change
+        <code>&lt; 5</code> to <code>&lt;= 5</code> and run again. What changed?</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Infinite Loop Trap:</strong> Open the
+        <a href="../docs/unit-04/while-loops.html">while Loops docs</a>.
+        Find the Bug Hunt section "The Frozen Game." Read the broken code.
+        Before looking at the answer: why does it freeze? What is the loop
+        MISSING? Write down your answer, then run the broken code yourself.
+        (Save your work first — you'll need Ctrl+C to stop it.)
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Combat Round Loop</h3>
+        <p>
+            You already have Combat.java from Unit 3. Now wrap a combat round
+            in a while loop. Create <code>CombatLoop.java</code>:
+        </p>
+        <ul>
+            <li>Initialize <code>int playerHP = 20</code> and <code>int enemyHP = 12</code></li>
+            <li>Use a while loop: keep fighting while BOTH are alive</li>
+            <li>Inside: the player attacks, then — only if the enemy is still alive —
+                the enemy counterattacks</li>
+            <li>Print HP after each round</li>
+            <li>When someone dies: print victory or defeat</li>
+        </ul>
+        <p>
+            This is the same combat from 3.6c, but now you understand WHY the
+            while loop goes there instead of blindly copying it.
+        </p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>In your CombatLoop, what would happen if you forgot to subtract
+                damage from enemyHP? What about playerHP? Try it — but save first.</li>
+            <li>Read the <a href="../docs/unit-04/while-loops.html">docs section
+                on sentinel loops</a>. What's the difference between a counted loop
+                and a sentinel loop? Which one is combat?</li>
+            <li>The docs say every while loop needs three parts: initialize, test,
+                update. Identify all three in your combat loop.</li>
+            <li>Look at the sentinel loop example in the docs (the one with Scanner
+                and "quit"). What's the sentinel value? Why does the loop use
+                <code>!command.equals("quit")</code> instead of
+                <code>command.equals("quit")</code>?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write a while loop with all three parts (initialize, test, update)</li>
+            <li>Identify what causes an infinite loop and fix it</li>
+            <li>Use a while loop for indeterminate repetition (combat, sentinel)</li>
+            <li>Explain the difference between while and if</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/while-loops.html">while Loops</a> — syntax, combat, sentinel patterns</li>
+        <li><a href="../docs/unit-03/boolean-logic.html">Boolean Logic</a> — combining alive checks with &&</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

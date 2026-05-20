@@ -219,6 +219,20 @@ System.out.println(dungeon.getPlayerCol());  // 0 or 1 — clamped by wall</code
 
 <p>In Unit 10, the recursion algorithms (flood fill, pathfinding) operate on this exact grid structure.</p>
 
+<hr>
+<h3>Socratic Checkpoints</h3>
+
+<p><strong>1.</strong> Your <code>move()</code> checks bounds before updating player position. What would happen if you moved the player first, then checked bounds? Walk through a specific example — player at (0, 0) moving up.</p>
+
+<p><strong>2.</strong> The map stores monsters ('M') and treasure ('$') as chars in the grid. What limitation does this create? How would you store a monster with actual HP and attack values alongside its position — without using two separate arrays?</p>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="2d-array-basics.html">2D Array Basics</a> — grid declaration and indexing</li>
+    <li><a href="2d-array-traversal.html">2D Array Traversal</a> — row-major walkthrough</li>
+    <li><a href="tic-tac-toe.html">Tic-Tac-Toe</a> — another grid-based game</li>
+</ul>
+
 </div><!-- .page -->
 </body>
 </html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.1a Inheritance Basics — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+<div class="page">
+<div class="lesson-nav">
+    <span></span>
+    <span class="lesson-id">9.1a</span>
+    <a href="9.2a.html">9.2a ▶</a>
+</div>
+<h1>9.1a — Inheritance Basics: IS-A Relationships</h1>
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+    <p>You've built Monster, Player, Item — each from scratch. But a Goblin and a Dragon share a lot: they both have HP, they both attack, they both take damage. Inheritance lets you write that shared code ONCE in a parent class and reuse it in child classes. The key question: IS-A. A Goblin IS-A Monster. A Dragon IS-A Monster. If the sentence makes sense, inheritance fits.</p>
+    <div class="tinker">
+        <h3>Experiment: Your First Parent-Child</h3>
+        <p>Create <code>Creature.java</code> (parent) and <code>Goblin.java</code> (child):</p>
+        <pre><code>// Creature.java — the parent
+public class Creature {
+    private String name;
+    private int hp;
+    private int attackPower;
+
+    public Creature(String name, int hp, int attackPower) {
+        this.name = name;
+        this.hp = hp;
+        this.attackPower = attackPower;
+    }
+
+    public int attack() {
+        return attackPower;
+    }
+
+    public void takeDamage(int damage) {
+        hp -= damage;
+        if (hp < 0) hp = 0;
+    }
+
+    public boolean isAlive() { return hp > 0; }
+    public String getName() { return name; }
+    public int getHp() { return hp; }
+}</code></pre>
+        <pre><code>// Goblin.java — the child
+public class Goblin extends Creature {
+    public Goblin() {
+        super("Goblin", 20, 5);  // calls Creature constructor
+    }
+
+    // Goblin gets attack(), takeDamage(), isAlive() for FREE
+    // You can add goblin-specific methods here
+    public String screech() {
+        return "EEEEK!";
+    }
+}</code></pre>
+        <p>Create a main that makes a Goblin and calls <code>attack()</code>, <code>takeDamage(8)</code>, <code>isAlive()</code>. These methods aren't in Goblin.java — they're inherited. Then call <code>screech()</code>, which IS in Goblin.</p>
+    </div>
+    <div class="callout trap">
+        <strong>Private Fields Aren't Inherited Directly:</strong> A child class CANNOT access <code>hp</code> directly even though it inherits the field. You must use the parent's public methods (getHp()) or declare the field <code>protected</code>. Read the <a href="../docs/unit-09/inheritance-basics.html">Inheritance Basics docs</a> for the public/private/protected visibility rules.
+    </div>
+    <div class="tinker">
+        <h3>Experiment: Multiple Children</h3>
+        <p>Create two more child classes: <code>Dragon.java</code> and <code>Skeleton.java</code>. Each calls <code>super()</code> with different stats. Give Dragon a <code>breatheFire()</code> method. Give Skeleton a <code>reassemble()</code> method. Create an array of Creature references and store one of each:</p>
+        <pre><code>Creature[] party = new Creature[3];
+party[0] = new Goblin();
+party[1] = new Dragon();
+party[2] = new Skeleton();
+
+for (Creature c : party) {
+    System.out.println(c.getName() + " attacks for " + c.attack());
+}</code></pre>
+        <p>This works because a Goblin IS-A Creature, a Dragon IS-A Creature. But can you call <code>c.breatheFire()</code> inside the loop? Try it.</p>
+    </div>
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Could you have made Monster the parent of Goblin in Unit 5? What would you have needed to change?</li>
+            <li>What does <code>super()</code> actually do? When MUST you call it?</li>
+            <li>Look at the <a href="../docs/unit-09/inheritance-basics.html">docs section on the Object superclass</a>. Every class you've ever written extends Object. What methods do you get for free?</li>
+        </ol>
+    </div>
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write a parent class and extend it with <code>extends</code></li>
+            <li>Call parent constructor with <code>super()</code></li>
+            <li>Explain what IS-A means and when inheritance is appropriate</li>
+            <li>Store child objects in a parent-typed array</li>
+        </ul>
+    </div>
+</div>
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/inheritance-basics.html">Inheritance Basics</a></li>
+        <li><a href="../docs/unit-09/object-superclass.html">The Object Superclass</a></li>
+    </ul>
+</div>
+</div>
+</body>
+</html>

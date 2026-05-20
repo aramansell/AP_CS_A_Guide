@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.6b Combat Round — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="3.6a.html">◀ 3.6a</a>
+    <span class="lesson-id">3.6b</span>
+    <a href="3.6c.html">3.6c ▶</a>
+</div>
+
+<h1>3.6b — Combat Engine: The Combat Round</h1>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG — Part 2</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        You have attack methods. Now combine them into a full combat round:
+        player attacks, monster takes damage, and — only if it's still alive —
+        the monster counterattacks.
+    </p>
+
+    <p>
+        Read <strong>Part 3</strong> of the
+        <a href="../docs/unit-03/combat-system.html">Combat System Student RPG Guide</a>.
+    </p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — Before You Code</h3>
+        <ol>
+            <li>The method has 8 parameters. Trace through one call: which
+                parameter controls the player's roll bonus? Which controls
+                the monster's defense? Which tracks the monster's HP?</li>
+            <li>Why does the guide say "the monster should ONLY attack the player
+                if the monster is still alive"? What boolean condition checks
+                this? What happens if you forget this check?</li>
+            <li>Why does <code>combatRound</code> return <code>monsterHP</code>?
+                If we didn't return it, how would the next round know the
+                monster's current HP?</li>
+            <li>Look at the acceptance test in the guide. It calls combatRound
+                twice with the same monster. What's the point of the second call?
+                What are we verifying?</li>
+        </ol>
+    </div>
+
+    <div class="callout trap">
+        <strong>Trap:</strong> The monster should NOT attack if it's dead!
+        This is where boolean logic from 3.2a is critical. What condition
+        do you write after the player's attack to decide whether the
+        monster gets a counterattack?
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker: Print the Story</h3>
+        <p>
+            After you get the basic combat round working, make it more readable.
+            Print a separator line before the round. Print the player's attack
+            result with the monster's name. Print the monster's remaining HP.
+            If the monster counterattacks, print how much damage the player
+            took. If the monster dies, print a dramatic death message.
+        </p>
+        <p>
+            The output should tell a story — not just numbers.
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Orchestrate multiple method calls in sequence</li>
+            <li>Use a conditional to decide whether a counterattack happens</li>
+            <li>Track and return state (HP) across method boundaries</li>
+            <li>Trace the flow of a multi-step combat round</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-03/combat-system.html">Student RPG Guide: Combat System</a> — Part 3</li>
+        <li><a href="../docs/unit-03/boolean-logic.html">Boolean Logic</a> — the alive check</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

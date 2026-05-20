@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.4a Nested Loops — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="4.3a.html">◀ 4.3a</a>
+    <span class="lesson-id">4.4a</span>
+    <a href="4.5a.html">4.5a ▶</a>
+</div>
+
+<h1>4.4a — Nested Loops: Loops Inside Loops</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        One loop does one thing repeatedly. A <strong>nested loop</strong> is a
+        loop inside another loop — the inner loop runs to completion for every
+        single iteration of the outer loop. This is how you process grids, tables,
+        and multi-dimensional problems.
+    </p>
+
+    <h3>The Pattern</h3>
+
+    <pre><code>for (int row = 1; row <= 3; row++) {       // OUTER: 3 iterations
+    for (int col = 1; col <= 4; col++) {   // INNER: 4 iterations each
+        System.out.print("(" + row + "," + col + ") ");
+    }
+    System.out.println();  // newline after each row
+}</code></pre>
+
+    <p>Total iterations: 3 × 4 = 12. The inner loop resets from scratch each time.</p>
+
+    <div class="tinker">
+        <h3>Experiment: See the Nesting</h3>
+        <p>Create <code>GridLab.java</code>. Run the pattern above. Then:</p>
+        <ol>
+            <li>Change the outer loop to run 5 times instead of 3. What changes?</li>
+            <li>Change the inner loop to print just the <code>col</code> value with
+                spaces. What does the output look like?</li>
+            <li>Add a print statement INSIDE the outer loop but BEFORE the inner
+                loop. Then add one AFTER the inner loop. What's the difference?</li>
+            <li>Multiply row × col and print the result. What famous table are you
+                generating?</li>
+        </ol>
+    </div>
+
+    <div class="callout trap">
+        <strong>Variable Shadowing Trap:</strong> Open the
+        <a href="../docs/unit-04/nested-loops.html">Nested Loops docs</a>.
+        Find "The Neverending Dungeon" Bug Hunt. Read the broken code. Why does
+        using the same variable name <code>i</code> in both loops cause an
+        infinite loop? What's the fix?
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Dungeon Grid</h3>
+        <p>
+            Read the "Dungeon Grid" section in the docs. It shows a 5×5 map
+            using a 2D char array. Create <code>DungeonMap.java</code>. Write
+            nested loops that print the map. The inner loop prints one cell,
+            the outer loop adds a newline after each row.
+        </p>
+        <p>
+            Then modify it: instead of printing the raw character, use if/else
+            to print the room description. '.' → "[Empty]", 'E' → "[Enemy]",
+            'T' → "[Treasure]", 'B' → "[BOSS]".
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Triangle Patterns</h3>
+        <p>
+            The docs show a triangle pattern where the inner loop's condition
+            DEPENDS on the outer loop variable. Read that section. Then write
+            a program that prints:
+        </p>
+        <pre><code>#
+##
+###
+####
+#####</code></pre>
+        <p>
+            Then reverse it — print the triangle upside down. What do you change
+            in the inner loop's test condition?
+        </p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Read "The Multiplication Rule" in the docs. If the outer loop runs
+                50 times and the inner loop runs 50 times, how many total iterations?
+                Why does nesting multiply instead of add?</li>
+            <li>The docs show "Combat with Multiple Enemies" — outer loop is
+                rounds, inner loop is enemies. What would happen if you swapped
+                them? (Enemies as outer, rounds as inner?) Trace through it.</li>
+            <li>In the Dungeon Grid, why does the outer loop use
+                <code>row < dungeon.length</code> and the inner loop use
+                <code>col < dungeon[row].length</code>? What does
+                <code>dungeon[row].length</code> give you?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write nested loops that process every cell of a grid</li>
+            <li>Predict the total number of iterations (outer × inner)</li>
+            <li>Use different loop variables for inner and outer loops</li>
+            <li>Make the inner loop depend on the outer loop variable</li>
+            <li>Explain when nested loops are the right tool</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/nested-loops.html">Nested Loops</a> — grids, tables, triangles, combat patterns</li>
+        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — the inner and outer building blocks</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7.2a ArrayList Traversal — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="7.1a.html">◀ 7.1a</a>
+    <span class="lesson-id">7.2a</span>
+    <a href="7.3a.html">7.3a ▶</a>
+</div>
+
+<h1>7.2a — ArrayList Traversal: Walking a Growing List</h1>
+
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        You know how to walk an array with for and for-each. ArrayList works the
+        same way — but with one critical difference: if you remove elements while
+        traversing, the indices shift under your feet. This is the most common
+        ArrayList bug on the AP exam.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: The Shifting Index Trap</h3>
+        <p>Create <code>RemoveExperiment.java</code>:</p>
+        <pre><code>ArrayList&lt;Integer&gt; nums = new ArrayList&lt;Integer&gt;();
+for (int i = 1; i <= 5; i++) nums.add(i * 10);
+// nums = [10, 20, 30, 40, 50]
+
+// ATTEMPT 1: Remove all numbers < 30
+for (int i = 0; i < nums.size(); i++) {
+    if (nums.get(i) < 30) {
+        nums.remove(i);
+    }
+}
+System.out.println(nums);  // What actually got removed?</code></pre>
+        <p>Trace it on paper. When you remove index 0, what was at index 1 slides to
+        index 0 — but the loop already checked index 0, so it moves to index 1 and
+        SKIPS the element that just slid in. Fix it: decrement i after removal, or
+        traverse backwards.</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>ConcurrentModificationException:</strong> If you use for-each and
+        try to remove, you get this exception. For-each uses an internal iterator
+        that detects mid-traversal changes and throws. Only standard for loops
+        (with index tracking) can safely remove during traversal. Read the
+        <a href="../docs/unit-07/arraylist-traversal.html">ArrayList Traversal docs</a>
+        for the complete rules.
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Inventory Filter</h3>
+        <p>Using your Item class from Unit 6, create <code>InventoryFilter.java</code>:</p>
+        <ul>
+            <li>ArrayList&lt;Item&gt; with 8-10 items of various rarities and values</li>
+            <li>removeJunk() — removes all "Common" items. Handle the shifting index properly.</li>
+            <li>removeExpensive(int threshold) — removes items above threshold value</li>
+            <li>displayByRarity(String rarity) — prints all items of given rarity (no removal)</li>
+            <li>Test: display all, filter, display again. Verify correct items removed.</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why does traversing backwards (<code>i = size()-1; i >= 0; i--</code>)
+            fix the removal problem? Draw a list and remove an element from the middle
+            while going backwards.</li>
+            <li>Look at the <a href="../docs/unit-07/arraylist-traversal.html">docs
+            section on filtering with a new list</a>. What's the trade-off between
+            removing in-place vs building a new filtered list?</li>
+            <li>If you remove ALL elements from an ArrayList during traversal, what's
+            the time complexity? How many shifts happen?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Traverse ArrayList with standard for and for-each</li>
+            <li>Safely remove elements during traversal (reverse or decrement)</li>
+            <li>Explain why for-each throws ConcurrentModificationException on remove</li>
+            <li>Filter a list by building a new ArrayList vs modifying in-place</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-07/arraylist-traversal.html">ArrayList Traversal</a></li>
+        <li><a href="../docs/unit-07/arraylist-basics.html">ArrayList Basics</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

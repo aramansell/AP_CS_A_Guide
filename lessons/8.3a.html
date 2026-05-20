@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.3a 2D Array Algorithms — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+<div class="page">
+<div class="lesson-nav">
+    <a href="8.2a.html">◀ 8.2a</a>
+    <span class="lesson-id">8.3a</span>
+    <a href="8.4a.html">8.4a ▶</a>
+</div>
+<h1>8.3a — 2D Array Algorithms: Row Sums, Transpose, Borders</h1>
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+    <p>The AP exam loves 2D array algorithm questions. The patterns repeat: row operations, column operations, diagonals, borders, and flood fills. Master these five patterns and you can handle any 2D array FRQ.</p>
+    <div class="tinker">
+        <h3>Experiment: Row and Column Operations</h3>
+        <p>Create <code>GridAlgorithms.java</code>. Build each as a separate method:</p>
+        <pre><code>// Return sum of a specific row
+public static int rowSum(int[][] grid, int row) { ... }
+
+// Return sum of a specific column
+public static int colSum(int[][] grid, int col) { ... }
+
+// Return array of all row sums
+public static int[] allRowSums(int[][] grid) { ... }
+
+// Return index of row with largest sum
+public static int maxRowIndex(int[][] grid) { ... }</code></pre>
+        <p>Test with: <code>{{1,2,3}, {4,5,6}, {7,8,9}}</code>. Row sums: 6, 15, 24. Col sums: 12, 15, 18.</p>
+    </div>
+    <div class="tinker">
+        <h3>Experiment: Transpose (Flip Rows and Columns)</h3>
+        <pre><code>// Transpose: grid[r][c] becomes result[c][r]
+public static int[][] transpose(int[][] grid) {
+    int rows = grid.length;
+    int cols = grid[0].length;
+    int[][] result = new int[cols][rows];  // swapped!
+    for (int r = 0; r < rows; r++)
+        for (int c = 0; c < cols; c++)
+            result[c][r] = grid[r][c];
+    return result;
+}</code></pre>
+        <p>What happens if the grid isn't square? Try transposing a 2x5 grid.</p>
+    </div>
+    <div class="tinker">
+        <h3>Experiment: Border Sum</h3>
+        <pre><code>// Sum all elements on the outer border (first/last row, first/last col)
+public static int borderSum(int[][] grid) { ... }</code></pre>
+        <p>Test with a 4x4 grid. Be careful not to double-count corners.</p>
+    </div>
+    <div class="callout trap">
+        <strong>Corner Double-Count:</strong> When summing borders, corners belong to BOTH the top/bottom row AND the left/right column. If you just sum row 0 + last row + col 0 + last col, you count corners twice. Read the <a href="../docs/unit-08/traversal-patterns.html">Traversal Patterns docs</a> for the clean border-sum pattern.
+    </div>
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Transpose swaps dimensions. If you transpose twice, do you get the original back? Prove it.</li>
+            <li>For a square grid, can you transpose in-place (without creating a new array)? What's the swap pattern?</li>
+            <li>Read the docs section on the flood-fill algorithm. Why is it recursive?</li>
+        </ol>
+    </div>
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Compute row sums, column sums, and aggregate row statistics</li>
+            <li>Transpose a 2D array (both square and rectangular)</li>
+            <li>Sum border elements without double-counting corners</li>
+        </ul>
+    </div>
+</div>
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-08/traversal-patterns.html">Traversal Patterns</a></li>
+        <li><a href="../docs/unit-08/2d-array-basics.html">2D Array Basics</a></li>
+    </ul>
+</div>
+</div>
+</body>
+</html>

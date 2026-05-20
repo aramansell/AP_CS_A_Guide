@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.4a Arrays of Objects — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="6.3a.html">◀ 6.3a</a>
+    <span class="lesson-id">6.4a</span>
+    <a href="6.5a.html">6.5a ▶</a>
+</div>
+
+<h1>6.4a — Arrays of Objects: Not Just Numbers</h1>
+
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        Arrays aren't limited to int and double. You can store objects — Monsters,
+        Items, Players, Strings. But arrays of objects have a critical difference
+        from arrays of primitives: each slot starts as <code>null</code>, not zero.
+        Forget this and you'll meet your new enemy: <code>NullPointerException</code>.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: Null Is Not Zero</h3>
+        <p>Create <code>ObjectArray.java</code>:</p>
+        <pre><code>// Create array — all slots are null
+Weapon[] armory = new Weapon[3];
+
+// This CRASHES: armory[0].getName();  // NullPointerException!
+
+// You must create objects first
+armory[0] = new Weapon("Sword", 8);
+armory[1] = new Weapon("Axe", 10);
+armory[2] = new Weapon("Dagger", 4);
+
+// Now this works
+for (Weapon w : armory) {
+    System.out.println(w.getName() + " deals " + w.getDamage());
+}</code></pre>
+        <p>Now create an array of size 5 but only fill slots 0-2. Loop through all 5
+        with for-each. What happens at slot 3? Fix it with a null check.</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>NullPointerException:</strong> The most common runtime error in Java.
+        It means "you tried to call a method on something that doesn't exist yet."
+        Always check <code>if (obj != null)</code> before calling methods on array
+        elements — especially when the array isn't full. Read the
+        <a href="../docs/unit-06/arrays-of-objects.html">Arrays of Objects docs</a>
+        for the complete null-safety patterns.
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Loot Table</h3>
+        <p>Create <code>LootTable.java</code> with your Weapon class from Unit 5:</p>
+        <ul>
+            <li>Create an array of 6 Weapons with varied names and damage values</li>
+            <li>Write <code>getRandomLoot()</code> — returns a random Weapon from the array</li>
+            <li>Write <code>getMostPowerful()</code> — returns the Weapon with highest damage</li>
+            <li>Write <code>countByDamage(int minDamage)</code> — counts weapons above a threshold</li>
+            <li>Test: call getRandomLoot() 10 times and print what you got</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why does <code>new Weapon[3]</code> create null slots instead of
+            default Weapon objects? What would Java need to know to create default
+            objects?</li>
+            <li>Your getRandomLoot() returns a Weapon reference. If the caller modifies
+            the returned Weapon (changes its damage), does it affect the original in
+            the array? Why or why not?</li>
+            <li>Read the <a href="../docs/unit-06/arrays-of-objects.html">docs section
+            on sorting objects</a>. Why can't you just use <code><</code> to compare
+            two Weapons?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Create an array of objects and initialize each slot</li>
+            <li>Null-check before calling methods on array elements</li>
+            <li>Traverse an object array to find max, count by condition, random pick</li>
+            <li>Explain why <code>new ClassName[N]</code> gives null slots</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-06/arrays-of-objects.html">Arrays of Objects</a> — null safety, sorting, searching</li>
+        <li><a href="../docs/unit-05/class-anatomy.html">Anatomy of a Class (Unit 5)</a> — what's inside a Weapon</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

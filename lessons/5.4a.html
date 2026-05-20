@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.4a Methods &amp; Static — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="5.3a.html">◀ 5.3a</a>
+    <span class="lesson-id">5.4a</span>
+    <a href="5.5a.html">5.5a ▶</a>
+</div>
+
+<h1>5.4a — Methods &amp; Static: Behavior That Belongs to the Class</h1>
+
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        Every method you've written so far has been tied to an object —
+        <code>sword.getDamage()</code> reads from one specific sword. But some
+        behavior doesn't belong to any one object. It belongs to the <em>class itself</em>.
+        The <code>static</code> keyword makes this possible.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: Static vs Instance</h3>
+        <p>Add a static kill counter to your Monster class:</p>
+        <pre><code>private static int defeatedCount = 0;
+
+public void defeat() {
+    hp = 0;
+    defeatedCount++;
+}
+
+public static int getDefeatedCount() {
+    return defeatedCount;
+}</code></pre>
+        <p>Test it: create three monsters, call <code>defeat()</code> on two of them,
+        then print <code>Monster.getDefeatedCount()</code>.</p>
+        <p>Notice: you call it on the CLASS, not on an instance. Now add a method
+        that DOESN'T work:</p>
+        <pre><code>public static String getFormattedCount() {
+    return name + " kills: " + defeatedCount;  // COMPILE ERROR
+}</code></pre>
+        <p>Read the error. Why can't a static method use <code>name</code>?</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Static Context Trap:</strong> Static methods can only access static
+        variables and other static methods. They have no <code>this</code> — there's
+        no object to refer to. This is a common FRQ mistake. If you see "non-static
+        variable cannot be referenced from a static context," you're trying to use
+        an instance variable inside a static method.
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Combat Formulas</h3>
+        <p>Create <code>CombatFormulas.java</code> — a utility class with all static methods:</p>
+        <ul>
+            <li><code>static int rollD20()</code> — returns 1-20</li>
+            <li><code>static boolean isHit(int roll, int bonus, int ac)</code> — true if roll + bonus >= ac</li>
+            <li><code>static int rollDamage(int dieSize)</code> — returns 1-dieSize</li>
+            <li><code>static String combatResult(int roll, int bonus, int ac)</code> — returns "HIT", "MISS", or "CRITICAL HIT!"</li>
+        </ul>
+        <p>Test by simulating 20 attacks and counting hits vs misses.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Your CombatFormulas class has only static methods. Could you write
+            <code>new CombatFormulas()</code>? Should you? What's the purpose of a class
+            that you never instantiate?</li>
+            <li><code>Math.random()</code> and <code>Math.sqrt(25)</code> are static.
+            Look up the <a href="../docs/unit-05/methods-and-static.html">static methods
+            docs</a>. Why did the Java designers make these static instead of instance
+            methods?</li>
+            <li>If <code>defeatedCount</code> were NOT static, what would happen to
+            the count? Would each monster track its own defeats, or would they share
+            one count?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Distinguish instance methods from static methods</li>
+            <li>Explain why static methods can't access instance variables</li>
+            <li>Create utility classes with all static methods</li>
+            <li>Use static variables for shared counts/totals</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-05/methods-and-static.html">Methods &amp; Static</a> — static keyword, utility classes</li>
+        <li><a href="../docs/unit-05/class-anatomy.html">Anatomy of a Class</a> — where static fits</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

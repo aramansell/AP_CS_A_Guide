@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.3a Accessors &amp; Mutators — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="5.2a.html">◀ 5.2a</a>
+    <span class="lesson-id">5.3a</span>
+    <a href="5.4a.html">5.4a ▶</a>
+</div>
+
+<h1>5.3a — Accessors &amp; Mutators: Controlled Access</h1>
+
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        Your Weapon class has <code>private String name</code>. The <code>private</code>
+        keyword means only code inside Weapon.java can touch it. But what if GameLoop
+        needs to read the weapon's damage? It can't reach <code>sword.damage</code>
+        directly. You need accessor methods (getters) to expose data safely, and
+        mutator methods (setters) to change it with validation.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: Public vs Private</h3>
+        <p>Take your Monster.java from 5.2a. Change <code>private int hp</code> to
+        <code>public int hp</code>. Now in your test class, write:</p>
+        <pre><code>Monster goblin = new Monster("Goblin", 10, 12, 3);
+goblin.hp = -999;  // HAHAHA IMMORTAL GOBLIN
+System.out.println(goblin);</code></pre>
+        <p>This compiles. This is a disaster. Change it back to private. Now add:</p>
+        <pre><code>public int getHP() { return hp; }
+public void setHP(int newHP) {
+    if (newHP < 0) newHP = 0;
+    hp = newHP;
+}</code></pre>
+        <p>Try <code>goblin.hp = -999</code> again — it won't compile. Try
+        <code>goblin.setHP(-999)</code> — the setter clamps it to 0.</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Boolean Naming Trap:</strong> Read about proper getter naming in the
+        <a href="../docs/unit-05/accessors-mutators.html">accessors & mutators docs</a>.
+        If you have <code>private boolean alive</code>, the getter should be
+        <code>isAlive()</code>, not <code>getAlive()</code>. This is a Java convention
+        that tools and frameworks depend on.
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Player HP System</h3>
+        <p>Create <code>Player.java</code>. It needs:</p>
+        <ul>
+            <li>private instance variables: name, hp, maxHp, ac, strength</li>
+            <li>Constructor that sets all values. Clamp hp to maxHp.</li>
+            <li>getHP(), getMaxHP(), getName(), getAC() — accessors</li>
+            <li>takeDamage(int amount) — subtracts from hp, clamps to 0</li>
+            <li>heal(int amount) — adds to hp, clamps to maxHp</li>
+            <li>isAlive() — returns true if hp > 0</li>
+            <li>toString() — shows name, HP/maxHP, AC</li>
+        </ul>
+        <p>Test: create a player, damage them, heal them, print after each step.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why use <code>takeDamage()</code> instead of <code>setHP(getHP() - damage)</code>?
+            Which one is safer? Which one reads better?</li>
+            <li>If hp is private and you have getHP(), why can't someone write
+            <code>goblin.getHP() = 10</code>? What's the difference between reading
+            a value and assigning to a method call?</li>
+            <li>Look at the <a href="../docs/unit-05/accessors-mutators.html">docs
+            section on immutability</a>. What does it mean for a class to be immutable?
+            Is your Player immutable? Should it be?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write getters (accessors) and setters (mutators) with proper naming</li>
+            <li>Explain why instance variables should be private</li>
+            <li>Add validation logic inside mutators (clamping, bounds checking)</li>
+            <li>Use <code>is</code> prefix for boolean getters</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-05/accessors-mutators.html">Accessors &amp; Mutators</a> — encapsulation</li>
+        <li><a href="../docs/unit-05/class-anatomy.html">Anatomy of a Class</a> — the full structure</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

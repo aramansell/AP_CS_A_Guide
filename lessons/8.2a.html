@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.2a 2D Array Traversal — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="8.1a.html">◀ 8.1a</a>
+    <span class="lesson-id">8.2a</span>
+    <a href="8.3a.html">8.3a ▶</a>
+</div>
+
+<h1>8.2a — 2D Array Traversal: Walking the Grid</h1>
+
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        You can walk a 1D array forward or backward. A 2D array gives you four
+        directions: row-major (left-to-right, top-to-bottom), column-major,
+        reverse, and even diagonal. The nested loop is your tool — but the order
+        of the loops matters enormously.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: Four Traversal Orders</h3>
+        <p>Create <code>GridWalk.java</code> with a 3x4 grid filled with row*10+col.
+        Run each traversal and draw the output path on paper:</p>
+        <pre><code>int[][] grid = {{0,1,2,3}, {10,11,12,13}, {20,21,22,23}};
+
+// 1. Row-major (standard reading order)
+for (int r = 0; r < grid.length; r++)
+    for (int c = 0; c < grid[r].length; c++)
+        System.out.print(grid[r][c] + " ");
+
+// 2. Column-major (down each column first)
+for (int c = 0; c < grid[0].length; c++)
+    for (int r = 0; r < grid.length; r++)
+        System.out.print(grid[r][c] + " ");
+
+// 3. Row-major reverse (bottom-up, right-to-left)
+for (int r = grid.length-1; r >= 0; r--)
+    for (int c = grid[r].length-1; c >= 0; c--)
+        System.out.print(grid[r][c] + " ");</code></pre>
+        <p>Predict the output of each BEFORE running. Which one is fastest on real hardware and why? (Hint: cache lines.)</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment: Condition-Based Traversal</h3>
+        <pre><code>// Sum all elements
+int sum = 0;
+for (int[] row : grid)
+    for (int val : row)
+        sum += val;
+
+// Count elements above threshold
+int count = 0;
+for (int r = 0; r < grid.length; r++)
+    for (int c = 0; c < grid[r].length; c++)
+        if (grid[r][c] > 10) count++;
+
+// Find max in each row
+for (int r = 0; r < grid.length; r++) {
+    int max = grid[r][0];
+    for (int c = 1; c < grid[r].length; c++)
+        if (grid[r][c] > max) max = grid[r][c];
+    System.out.println("Row " + r + " max: " + max);
+}</code></pre>
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment: Ragged Array Traversal</h3>
+        <p>What happens when rows have different lengths?</p>
+        <pre><code>int[][] ragged = {{1,2}, {3,4,5,6}, {7,8,9}};
+
+for (int r = 0; r < ragged.length; r++) {
+    for (int c = 0; c < ragged[r].length; c++) {  // ragged[r].length — NOT ragged[0].length!
+        System.out.print(ragged[r][c] + " ");
+    }
+    System.out.println();
+}</code></pre>
+        <p>Change <code>ragged[r].length</code> to <code>ragged[0].length</code>. What breaks?</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Ragged Array Index Trap:</strong> If you use <code>grid[0].length</code>
+        as the column bound for every row in a ragged array, you WILL get
+        ArrayIndexOutOfBoundsException on shorter rows. Always use
+        <code>grid[r].length</code>. Read the <a href="../docs/unit-08/traversal-patterns.html">
+        Traversal Patterns docs</a> for the complete set of patterns.
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Row-major vs column-major: which one matches how a book is read?
+            Which one would you use to process a column of spreadsheet data?</li>
+            <li>If you have a 1000x1000 grid and you access it column-major, it can
+            be 10-100x slower than row-major. Why? (Hint: the docs explain CPU cache.)</li>
+            <li>When would you use reverse row-major traversal on a real problem?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Traverse a 2D array in row-major and column-major order</li>
+            <li>Use enhanced for-each on 2D arrays: <code>for (int[] row : grid)</code></li>
+            <li>Handle ragged arrays with per-row length checks</li>
+            <li>Compute aggregate values (sum, max, count) across a grid</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-08/traversal-patterns.html">Traversal Patterns</a></li>
+        <li><a href="../docs/unit-08/2d-array-basics.html">2D Array Basics</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.3a Polymorphism — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+<div class="page">
+<div class="lesson-nav">
+    <a href="9.2a.html">◀ 9.2a</a>
+    <span class="lesson-id">9.3a</span>
+    <a href="9.4a.html">9.4a ▶</a>
+</div>
+<h1>9.3a — Polymorphism: One Interface, Many Forms</h1>
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+    <p>Polymorphism (Greek: "many forms") is what makes inheritance useful. A single variable of type Creature can hold a Goblin, a Dragon, or a Skeleton — and calling <code>attack()</code> runs the right version automatically. This means you can write code that works with the PARENT type and it handles all children correctly, even children you haven't written yet.</p>
+    <div class="tinker">
+        <h3>Experiment: Polymorphic Battle</h3>
+        <p>Create <code>BattleArena.java</code>. No Goblin or Dragon types anywhere — only Creature:</p>
+        <pre><code>public class BattleArena {
+    // This method works with ANY Creature, present or future
+    public static void battle(Creature a, Creature b) {
+        System.out.println(a.getName() + " vs " + b.getName() + "!");
+        while (a.isAlive() && b.isAlive()) {
+            b.takeDamage(a.attack());
+            if (b.isAlive()) a.takeDamage(b.attack());
+        }
+        Creature winner = a.isAlive() ? a : b;
+        System.out.println(winner.getName() + " wins!");
+    }
+
+    public static void main(String[] args) {
+        battle(new Goblin(), new Dragon());
+        battle(new Skeleton(), new Goblin());
+        // Add a new creature subclass in 3 weeks — battle() still works
+    }
+}</code></pre>
+        <p>Read that code carefully. There is zero mention of Goblin, Dragon, or Skeleton in the battle() method. It works with ANY Creature. That's polymorphism.</p>
+    </div>
+    <div class="callout trap">
+        <strong>Parent Reference = Limited Method Access:</strong> A Creature variable can only call methods declared in Creature. If Dragon has <code>breatheFire()</code> but Creature doesn't, you CANNOT call <code>c.breatheFire()</code> on a Creature reference, even if the object is a Dragon. You'd need to cast: <code>((Dragon)c).breatheFire()</code>. Read the <a href="../docs/unit-09/downcasting.html">Downcasting docs</a> — and the Bug Hunt for when casting goes wrong.
+    </div>
+    <div class="tinker">
+        <h3>Build: Creature Army</h3>
+        <p>Create <code>CreatureArmy.java</code>:</p>
+        <ul>
+            <li>Build an ArrayList&lt;Creature&gt; with 10 creatures of mixed types</li>
+            <li>getTotalAttackPower() — sum of all creature attack values</li>
+            <li>getLivingCount() — count of creatures with hp > 0</li>
+            <li>applyDamageToAll(int damage) — every creature takes damage</li>
+            <li>getStrongest() — returns the Creature with highest attackPower</li>
+            <li>Test: apply 15 damage to all, then print who's still alive and the strongest survivor</li>
+        </ul>
+    </div>
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why does polymorphism let you add new Creature subclasses later without changing battle()?</li>
+            <li>If you override attack() in a child but accidentally write <code>public int attak()</code> (typo), what happens? Does your override work? Does @Override save you?</li>
+            <li>Read the <a href="../docs/unit-09/polymorphism.html">docs section on static vs dynamic binding</a>. Which method calls are resolved at compile time and which at runtime?</li>
+        </ol>
+    </div>
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write polymorphic code that works with parent types</li>
+            <li>Store mixed child objects in parent-typed collections</li>
+            <li>Explain the difference between compile-time type and runtime type</li>
+            <li>Identify when a method call on a parent reference will fail (method not in parent)</li>
+        </ul>
+    </div>
+</div>
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a></li>
+        <li><a href="../docs/unit-09/downcasting.html">Downcasting</a></li>
+        <li><a href="../docs/unit-07/arraylist-basics.html">ArrayList Basics</a></li>
+    </ul>
+</div>
+</div>
+</body>
+</html>

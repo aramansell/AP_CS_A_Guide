@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.2a Method Overriding — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+<div class="page">
+<div class="lesson-nav">
+    <a href="9.1a.html">◀ 9.1a</a>
+    <span class="lesson-id">9.2a</span>
+    <a href="9.3a.html">9.3a ▶</a>
+</div>
+<h1>9.2a — Method Overriding: Same Name, Different Behavior</h1>
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+    <p>Inheritance gives you the parent's methods for free. But sometimes you want a child to do the same thing DIFFERENTLY. A Dragon shouldn't just "attack" — it should breathe fire. Overriding lets you replace a parent method with a child-specific version. The magic: when you call <code>attack()</code> on a Creature reference that actually points to a Dragon, the DRAGON's version runs.</p>
+    <div class="tinker">
+        <h3>Experiment: Override Attack</h3>
+        <p>Add to Creature, Goblin, and Dragon from yesterday:</p>
+        <pre><code>// In Creature.java:
+public int attack() {
+    System.out.println(name + " attacks!");
+    return attackPower;
+}
+
+// In Goblin.java — override:
+@Override
+public int attack() {
+    System.out.println(getName() + " swings a rusty dagger!");
+    return super.attack() + 2;  // call parent's version, then add bonus
+}
+
+// In Dragon.java — override:
+@Override
+public int attack() {
+    System.out.println(getName() + " breathes fire!");
+    return attackPower * 2;  // double damage
+}</code></pre>
+        <p>Now run this:</p>
+        <pre><code>Creature[] party = {new Goblin(), new Dragon(), new Goblin()};
+for (Creature c : party) {
+    int dmg = c.attack();  // WHICH attack() runs?
+    System.out.println("Dealt " + dmg + " damage\n");
+}</code></pre>
+        <p>The variable type is Creature, but the method that runs depends on the ACTUAL object type. This is polymorphism — the single most powerful concept in OOP.</p>
+    </div>
+    <div class="callout trap">
+        <strong>@Override Is Not Optional (For You):</strong> Always use <code>@Override</code>. If you misspell the method name or get the parameters wrong, the compiler will catch it and say "method does not override anything." Without @Override, you just wrote a NEW method with a typo and your override silently fails. Read the <a href="../docs/unit-09/polymorphism.html">Polymorphism docs</a> for the full rules.
+    </div>
+    <div class="tinker">
+        <h3>Build: toString() Override</h3>
+        <p>Override toString() in Creature and each child:</p>
+        <pre><code>// In Creature:
+@Override
+public String toString() {
+    return name + " [HP:" + hp + " ATK:" + attackPower + "]";
+}
+
+// In Dragon:
+@Override
+public String toString() {
+    return super.toString() + " ✦ DRAGON ✦";  // adds dragon flair
+}</code></pre>
+        <p>Create a mixed Creature array, loop, and <code>System.out.println(c)</code>. Java automatically calls toString() — and the RIGHT version for each object.</p>
+    </div>
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>In the loop <code>for (Creature c : party)</code>, the variable is type Creature. Why does calling <code>c.attack()</code> run the Dragon's version when c points to a Dragon? How does Java know?</li>
+            <li>What's the difference between <code>super.attack()</code> and <code>this.attack()</code>? When would calling super.attack() cause infinite recursion?</li>
+            <li>Read the <a href="../docs/unit-09/polymorphism.html">docs section on the override rules</a>. Can you change the return type? Can you make it more restrictive (public to private)?</li>
+        </ol>
+    </div>
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Override a parent method with <code>@Override</code></li>
+            <li>Call the parent version with <code>super.methodName()</code></li>
+            <li>Explain why the ACTUAL object type determines which override runs</li>
+            <li>Override toString() to customize object printing</li>
+        </ul>
+    </div>
+</div>
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a></li>
+        <li><a href="../docs/unit-09/inheritance-basics.html">Inheritance Basics</a></li>
+        <li><a href="../docs/unit-09/object-superclass.html">The Object Superclass</a></li>
+    </ul>
+</div>
+</div>
+</body>
+</html>

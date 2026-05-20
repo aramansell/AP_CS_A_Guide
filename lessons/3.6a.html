@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.6a Combat Engine: Attack Methods — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="3.5a.html">◀ 3.5a</a>
+    <span class="lesson-id">3.6a</span>
+    <a href="3.6b.html">3.6b ▶</a>
+</div>
+
+<h1>3.6a — Combat Engine: Attack Methods</h1>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG — Part 1</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        You've learned if/else, boolean logic, else-if chains, and comparing
+        objects. Now you build something real: a combat engine. Your character
+        can finally fight.
+    </p>
+
+    <p>
+        Open the <a href="../docs/unit-03/combat-system.html">Combat System
+        Student RPG Guide</a>. This is your primary resource for the next
+        three lessons. It provides acceptance criteria — what your code must
+        do to pass — but not the code itself.
+    </p>
+
+    <h3>Part 1: playerAttack()</h3>
+
+    <p>
+        Read Part 1 of the guide carefully. Your job: implement a
+        <code>playerAttack</code> method that follows all the rules. The guide
+        tells you the method signature, the behavior for critical hits/critical
+        misses/standard attacks, and gives you an acceptance test.
+    </p>
+
+    <p>
+        Create <code>Combat.java</code> and <code>CombatTester.java</code>.
+        In Combat.java, write the playerAttack method. Use your Dice class
+        for the d20 roll.
+    </p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — Before You Code</h3>
+        <ol>
+            <li>How many different possible outcomes does this method have?
+                What kind of if-statement structure will you need?</li>
+            <li>The guide mentions that a natural 20 is an automatic hit
+                regardless of attack bonus vs AC. Where in your if/else chain
+                must the critical hit check go? Why?</li>
+            <li>Look at the acceptance test in the guide. What values does it
+                pass for attackBonus, targetAC, and damageDie? What's the
+                range of possible return values? How will you know if your
+                code is correct?</li>
+            <li>Why does the method return an <code>int</code> (the damage)
+                instead of printing it? What does the CALLER do with that
+                return value?</li>
+        </ol>
+    </div>
+
+    <h3>Part 2: monsterAttack()</h3>
+
+    <p>
+        Now read Part 2 of the guide. Monsters don't get critical hits or
+        misses — just standard attacks. Look at your playerAttack code.
+        How much of the standard attack logic is shared? Could you reuse it?
+    </p>
+
+    <div class="tinker">
+        <h3>Tinker: Code Reuse</h3>
+        <p>
+            The guide asks: "How much of the logic from playerAttack can you
+            reuse here?" Before writing monsterAttack, think about it.
+            Do you copy-paste the standard attack block? Or is there a way
+            to avoid duplication?
+        </p>
+        <p>
+            If you can't figure out a clean way to share code, copy-pasting
+            is okay for now. We'll optimize in a later unit. Either way, get
+            both methods working and passing their tests.
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Explain the three-outcome if/else if structure (crit hit, crit miss, standard)</li>
+            <li>Implement a method that takes parameters and returns a computed value</li>
+            <li>Use Dice.java as a reusable component inside another class</li>
+            <li>Verify behavior using the provided acceptance tests</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-03/combat-system.html">Student RPG Guide: Combat System</a> — Part 1 &amp; 2</li>
+        <li><a href="../docs/unit-03/relational-operators.html">Relational Operators</a> — comparing roll to AC</li>
+        <li><a href="../docs/unit-03/boolean-logic.html">Boolean Logic</a> — combining hit/dead checks</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

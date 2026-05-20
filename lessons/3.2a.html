@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.2a Boolean Logic — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="3.1a.html">◀ 3.1a</a>
+    <span class="lesson-id">3.2a</span>
+    <a href="3.3a.html">3.3a ▶</a>
+</div>
+
+<h1>3.2a — Boolean Logic: Combining Conditions</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        Last time you made simple decisions: if X, do Y. But real decisions
+        are rarely that simple. "Did I hit AND is the enemy still alive?"
+        "Are you a goblin OR a troll?" Multiple conditions, one decision.
+    </p>
+
+    <h3>The Three Boolean Operators</h3>
+
+    <table>
+        <tr><th>Operator</th><th>Name</th><th>True when...</th></tr>
+        <tr><td><code>&amp;&amp;</code></td><td>AND</td><td>BOTH conditions are true</td></tr>
+        <tr><td><code>||</code></td><td>OR</td><td>AT LEAST ONE condition is true</td></tr>
+        <tr><td><code>!</code></td><td>NOT</td><td>The condition is FALSE</td></tr>
+    </table>
+
+    <div class="tinker">
+        <h3>Tinker: Truth Table Detective</h3>
+        <p>Create a file called <code>BooleanLab.java</code>. Run this code:</p>
+        <pre><code>boolean a = true;
+boolean b = false;
+
+System.out.println(a && b);
+System.out.println(a || b);
+System.out.println(!a);
+System.out.println(!b);</code></pre>
+        <p>
+            Now try all four combinations of a and b (TT, TF, FT, FF).
+            Before each run, write down what you predict. Then run and check.
+            Build a complete truth table in your notes.
+        </p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — Short-Circuit Detective</h3>
+        <p>Open the <a href="../docs/unit-03/boolean-logic.html">Boolean Logic docs</a>.
+        Find the section about short-circuit evaluation. Then answer:</p>
+        <ol>
+            <li>What does Java stop checking an AND at the first false?</li>
+            <li>What does it stop checking an OR at the first true?</li>
+            <li>Why does <code>if (enemy != null && enemy.isAlive())</code>
+                protect you from a crash, but <code>if (enemy.isAlive() && enemy != null)</code>
+                might crash your program?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Combat Readiness Checker</h3>
+        <p>
+            Create <code>CombatCheck.java</code>. Your player has:
+        </p>
+        <ul>
+            <li><code>int hp</code> — hit points</li>
+            <li><code>boolean hasWeapon</code> — does the player have a weapon?</li>
+            <li><code>boolean isPoisoned</code> — is the player poisoned?</li>
+        </ul>
+        <p>
+            Write a program that prints "Ready for combat!" if the player has a
+            weapon AND HP > 0. Otherwise, print "Not ready!" Test with different
+            combinations of values.
+        </p>
+        <p>
+            Now extend it: also print "Warning: fighting while poisoned!" if the
+            player is ready for combat AND is poisoned. Think about where this
+            check goes — inside the "ready" branch?
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Build: Loot Eligibility</h3>
+        <p>
+            A treasure chest opens if you have a key OR you know the password
+            (let's say the password is "dragonfire"). Write the code that uses
+            <code>Scanner</code> to ask if the player has a key (yes/no) and
+            what the password is, then prints whether the chest opens.
+            Use <code>||</code>.
+        </p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Precedence Trap:</strong> <code>!</code> binds tightest, then
+        <code>&amp;&amp;</code>, then <code>||</code>. So <code>a && b || c</code>
+        means <code>(a && b) || c</code>, not <code>a && (b || c)</code>. When
+        in doubt, use parentheses. They cost nothing and prevent bugs.
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Build a truth table for AND, OR, and NOT</li>
+            <li>Combine two or more conditions using <code>&amp;&amp;</code> and <code>||</code></li>
+            <li>Explain short-circuit evaluation and why order matters</li>
+            <li>Use parentheses to control boolean operator precedence</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-03/boolean-logic.html">Boolean Logic</a> — truth tables, operator precedence, RPG patterns</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>
