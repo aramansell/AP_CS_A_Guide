@@ -67,8 +67,10 @@ System.out.println(1 / 2);</code></pre>
         <h3>Socratic Checkpoint</h3>
         <p>
             How can you force Java to give you the exact decimal answer for 10 ÷ 3?
-            Try <code>10.0 / 3</code>. Try <code>(double) 10 / 3</code>. What
-            difference does the decimal point make?
+            Change the numbers in your code and run it again. What happens if you
+            use a number with a decimal point? What happens if you write
+            <code>double</code> anywhere in the expression? Experiment until you
+            find at least two different ways to get <code>3.333...</code> from 10 ÷ 3.
         </p>
     </div>
 
@@ -101,10 +103,10 @@ System.out.println(average);   // prints 91.0 — but it should be ~91.33</code>
     <div class="tinker">
         <h3>Tinker Challenge: Modulus Patterns</h3>
         <p>Run this and look at the pattern:</p>
-        <pre><code>System.out.println(10 % 3);   // 1
-System.out.println(11 % 3);   // 2
-System.out.println(12 % 3);   // 0
-System.out.println(13 % 3);   // 1</code></pre>
+        <pre><code>System.out.println(10 % 3);
+System.out.println(11 % 3);
+System.out.println(12 % 3);
+System.out.println(13 % 3);</code></pre>
         <p>
             What is the maximum value you could possibly get when using
             <code>% 3</code>? What about <code>% 10</code>?

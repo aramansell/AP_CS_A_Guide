@@ -81,18 +81,17 @@ No match — try again!</span></code></pre>
     <h3>Iteration 2: Adding the Symbols</h3>
 
     <p>Once the reels generate random numbers from 0 to 3, we need to map them to
-    Strings. Here's the logic for the first reel:</p>
+    Strings. Here's the first branch to get you started:</p>
 
     <pre><code>String symbol1;
 if (reel1 == 0) symbol1 = "Cherry";
-else if (reel1 == 1) symbol1 = "Lemon";
-else if (reel1 == 2) symbol1 = "7";
-else symbol1 = "Bell";</code></pre>
+// What goes here for reels 1, 2, and 3?</code></pre>
 
     <div class="tinker">
         <h3>Tinker Challenge</h3>
-        <p>Repeat this logic for <code>reel2</code> → <code>symbol2</code> and
-        <code>reel3</code> → <code>symbol3</code>. Update your print statement to
+        <p>Complete the if/else chain for all four symbols (Cherry, Lemon, 7, Bell)
+        on reel1. Then repeat the logic for <code>reel2</code> → <code>symbol2</code>
+        and <code>reel3</code> → <code>symbol3</code>. Update your print statement to
         use the Strings instead of the integers.</p>
     </div>
 
@@ -108,8 +107,9 @@ else symbol1 = "Bell";</code></pre>
 
     <div class="bug-hunt">
         <h3>Bug Hunt 2</h3>
-        <p>What's wrong with the win condition above? Think: reel1 is Cherry, reel2
-        is Cherry, and reel3 is Lemon. What does this code print?</p>
+        <p>Run this code a few times. Watch the output carefully. Sometimes the game
+        announces a JACKPOT when the reels don't all match. What condition is the
+        code ACTUALLY checking vs. what it SAYS it's checking?</p>
         <p><strong>Fix the if statement so ALL THREE must match.</strong></p>
     </div>
 

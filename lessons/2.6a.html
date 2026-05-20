@@ -136,13 +136,12 @@ System.out.println(c.equals(d)); // predict: ____</code></pre>
     </div>
 
     <p>
-        <strong>The results don't match your predictions, do they?</strong>
-        This is a famous Java gotcha. There's a range of values that Integer
-        secretly caches (reuses). Your job: figure out what that range is and why
-        this behavior exists. Open the
+        <strong>Were the results surprising?</strong> If two of the lines didn't
+        do what you expected, you've just discovered something important. Your job:
+        figure out why 100 works one way but 200 works differently. Open the
         <a href="../docs/unit-02/wrapper-classes.html">Wrapper Classes docs</a>
-        and find the section on Integer caching. Then answer: what range does Java
-        cache, and what method should you ALWAYS use to compare wrapper objects?
+        and find the section on Integer comparison. Then answer: what method
+        should you ALWAYS use to compare wrapper objects, and why?
     </p>
 
     <div class="socratic">
@@ -198,7 +197,7 @@ int value = Integer.parseInt(input);  // What happens?</code></pre>
             <li>Match each primitive to its wrapper class</li>
             <li>Use Integer.parseInt() and Double.parseDouble() to convert Strings</li>
             <li>Explain autoboxing and unboxing</li>
-            <li>Explain the Integer caching trap (-128 to 127) and why == fails on wrappers</li>
+            <li>Explain the Integer caching trap and why == fails on wrappers</li>
             <li>Explain why unboxing null causes a NullPointerException</li>
         </ul>
     </div>

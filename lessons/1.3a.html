@@ -88,10 +88,8 @@
         cast <code>Math.random()</code> to an <code>int</code> <em>first</em>, or
         does it multiply <em>first</em>?
     </div>
-    <p>Now fix the code using parentheses so the multiplication happens <em>before</em>
-    the cast:</p>
-    <pre><code>System.out.println((int) (Math.random() * 6));</code></pre>
-    <p><em>Observation:</em> Run it 5 times. What is the range of integers you get now?</p>
+    <p>Now fix the code so the multiplication happens <em>before</em> the cast.
+    Run it 5 times. What is the range of integers you get now?</p>
 
     <h3>Tinker Challenge 4: Shifting the Range</h3>
     <p>You should be getting numbers from 0 to 5. But a standard die rolls from 1 to 6.
@@ -117,7 +115,7 @@
         <h3>Checkpoint — before moving on, you must be able to:</h3>
         <ul>
             <li>Explain the range of <code>Math.random()</code> (0.0 ≤ x &lt; 1.0)</li>
-            <li>Write the formula: <code>(int)(Math.random() * range) + min</code></li>
+            <li>Write the general formula for generating a random integer in any range — test it with at least three different ranges to be sure</li>
             <li>Explain WHY parentheses are necessary around the multiplication</li>
             <li>Generate: a d6 (1–6), a d20 (1–20), 3d6 (3–18), a number from 10–99</li>
             <li>Explain the formula to a partner — in your own words, not memorized</li>

@@ -76,12 +76,10 @@ Total: $54.6
         <p>Add this calculation to your code:</p>
         <pre><code>tip = billAmount * (tipPercent / 100);
 System.out.println("Debug Tip: " + tip);</code></pre>
-        <p>Run it. The output is <code>Debug Tip: 0.0</code>. Why?</p>
-        <p>
-            <strong>Fix it.</strong> This is the integer division trap. What
-            happens when you do <code>20 / 100</code> with <code>int</code>s?
-            How do you force Java to do floating-point division instead?
-        </p>
+        <p>Run it. The output is <code>Debug Tip: 0.0</code>. Why does the tip
+        come out as zero? What do you think Java did with the division? How have
+        you solved a similar problem before?</p>
+        <p><strong>Fix it.</strong> The tip should be 20% of 45.50, which is 9.10.</p>
     </div>
 
     <h3>Iteration 3: Display the Receipt</h3>
