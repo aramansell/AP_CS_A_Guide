@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.6c Nested Dungeon — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="4.6b.html">◀ 4.6b</a>
+    <span class="lesson-id">4.6c</span>
+    <a href="5.1a.html">5.1a ▶</a>
+</div>
+
+<h1>4.6c — Dungeon Crawl: Nested Loops &amp; Multi-Floor Dungeon</h1>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Your DungeonLoop runs one floor of 5 rooms. But real dungeons have multiple
+    floors — each floor is a series of rooms, and the dungeon is a series of floors.
+    That's nested loops: an outer loop over floors, an inner loop over rooms.
+    You'll build a <code>DungeonCrawl.java</code> that chains together room
+    exploration, combat encounters, treasure, a final boss, and an end-of-dungeon
+    summary.</p>
+
+    <p>Open the <a href="../docs/unit-04/dungeon-crawl.html">Dungeon Crawl Extended
+    (Student RPG Guide)</a>. Follow the specification. This combines everything from
+    Unit 4 into one system.</p>
+
+    <h3>generateRoom() — Random Encounter Engine</h3>
+
+    <p>Extract the room logic from DungeonLoop into a reusable method with scaling:</p>
+    <pre><code>public static boolean generateRoom(int[] playerHP, int playerAC, int playerAtk,
+                                 int[] gold, String[] inventory,
+                                 int floor, int roomNumber)</code></pre>
+
+    <ul>
+        <li>Parameters use arrays so the method can modify HP, gold, and inventory
+            in place — primitives can't be modified by a called method</li>
+        <li>Random room type: 0 = combat, 1 = treasure, 2 = trap</li>
+        <li>Combat: scaled monsters with while-loop attack pattern from 4.6a</li>
+        <li>Treasure: random gold + append to inventory string</li>
+        <li>Trap: damage, player can die</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why are <code>playerHP</code>, <code>gold</code>, and
+                <code>inventory</code> passed as arrays instead of plain int
+                and String? What's different about array parameters?</li>
+            <li>You're building a monster name array: Goblin, Skeleton, Orc, etc.
+                The index formula in the docs is
+                <code>(roomNumber + floor - 2) % names.length</code>. Trace it:
+                floor 1, room 1 → what index? floor 2, room 3 → what index?</li>
+        </ol>
+    </div>
+
+    <h3>exploreFloor() — Multi-Room Floor Loop</h3>
+
+    <p>A floor has <code>3 + floor</code> rooms (later floors are longer). For-loop
+    over rooms, calling generateRoom() each time. After all rooms: restore
+    <code>floor × 3</code> HP (rest at end of floor).</p>
+
+    <h3>runDungeon() — Multi-Floor Outer Loop</h3>
+
+    <p>Outer for loop: floor 1 to totalFloors. Calls exploreFloor(). After all
+    floors: bossFight(), then printSummary(). Four levels of loops: outer for
+    (floors) → inner for (rooms) → generateRoom → while (combat).</p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Draw the loop structure. Outer for controls floors, inner for
+                controls rooms, while controls combat rounds. Which loop runs
+                the most times? Which runs the fewest?</li>
+            <li>Later floors have more rooms (<code>3 + floor</code>). Floor 1 has
+                4 rooms. Floor 5 has 8 rooms. Is that fair to the player?
+                What else could you scale to keep it balanced?</li>
+        </ol>
+    </div>
+
+    <h3>bossFight() + printSummary()</h3>
+
+    <p>Boss: Ancient Dragon if ≥ 3 floors, Ogre Lord otherwise. Uses the same
+    while-loop combat pattern. The boss CAN critical hit. Victory adds
+    <code>floors × 50</code> gold.</p>
+
+    <p>printSummary(): show HP remaining vs starting, total gold, inventory items
+    (split on comma, loop through).</p>
+
+    <div class="tinker">
+        <h3>Tinker: Inventory Tracking</h3>
+        <p>
+            The docs use a comma-separated String for inventory. But that's fragile —
+            what if an item name contains a comma? Design a better way to store
+            multiple items. We'll explore this in Unit 6 with arrays.
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write nested for loops (floors containing rooms)</li>
+            <li>Explain why array parameters let methods modify caller data</li>
+            <li>Build a multi-level game loop: while (combat) inside for (rooms)
+                inside for (floors)</li>
+            <li>Trace through all four loop levels for a given input</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/dungeon-crawl.html">Dungeon Crawl Extended (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-04/dungeon-system.html">Dungeon Loop System</a> — Part 1 reference</li>
+        <li><a href="../docs/unit-04/nested-loops.html">Nested Loops</a> — outer/inner loop patterns</li>
+        <li><a href="../docs/unit-04/loop-analysis.html">Tracing Loops</a> — trace through nested loops</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>6.5a Inventory Builder — AP CS A</title>
+<title>6.5a Item Class — AP CS A</title>
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -20,84 +20,62 @@
 <div class="lesson-nav">
     <a href="6.4a.html">◀ 6.4a</a>
     <span class="lesson-id">6.5a</span>
-    <span></span>
+    <a href="6.5b.html">6.5b ▶</a>
 </div>
 
-<h1>6.5a — Inventory Builder: Item + FixedInventory</h1>
+<h1>6.5a — Item.java: Immutable RPG Loot</h1>
 
 <div class="activity rpg">
     <div class="activity-header">
         <span class="activity-label">RPG Build</span>
-        <span class="activity-time">~60 min</span>
+        <span class="activity-time">~20 min</span>
     </div>
 
     <p>
         Your Player has stats. Your Monster has attacks. But RPG characters carry
-        things — weapons, potions, armor, keys. It's time to build an inventory
-        system. You'll create an Item class and a FixedInventory that uses a
-        plain array under the hood with a tracking variable for how many items
-        are actually stored.
+        things — weapons, potions, armor, keys. An inventory starts with a single
+        item. Before you can build a backpack, you need to model what goes inside it.
     </p>
 
     <p>
         Open the <a href="../docs/unit-06/inventory-builder.html">Inventory Builder
-        (Student RPG Guide)</a>. This is a step-by-step guided build with acceptance
-        tests. Follow the specification exactly.
+        (Student RPG Guide)</a>. This is a step-by-step guided build. Follow File 1:
+        Item.java. Your completed Item class must pass the acceptance tests.
     </p>
 
     <div class="tinker">
-        <h3>Part 1: Item.java</h3>
-        <p>Create <code>Item.java</code>:</p>
+        <h3>Build: Item.java</h3>
+        <p>Create <code>Item.java</code> — immutable, like Card from Unit 5:</p>
         <ul>
-            <li>Private fields: name (String), weight (int), value (int), rarity (String)</li>
-            <li>Constructor takes all four. Validate rarity: must be "Common", "Uncommon", "Rare", or "Epic"</li>
+            <li>Private <strong>final</strong> fields: name (String), weight (int), goldValue (int), rarity (String)</li>
+            <li>Constructor takes all four. Validate rarity: must be "Common", "Uncommon", "Rare", or "Epic". Reject with a clear message if invalid.</li>
+            <li>Validate weight: 1–50. Validate goldValue: ≥ 0.</li>
             <li>Getters for all fields</li>
-            <li>toString(): <code>"Sword [Rare] — Wt:10 Val:100g"</code></li>
+            <li>toString(): <code>"Sword [Epic] — Wt:12 Val:250g"</code></li>
         </ul>
-        <p>Test: create items of each rarity. Try creating one with invalid rarity — does it reject it?</p>
-    </div>
-
-    <div class="tinker">
-        <h3>Part 2: FixedInventory.java</h3>
-        <p>Create <code>FixedInventory.java</code>:</p>
-        <ul>
-            <li>Private fields: <code>Item[] items</code> and <code>int count</code></li>
-            <li>Constructor takes capacity, creates the array</li>
-            <li>add(Item item) — adds at position count, then count++. Check capacity first.</li>
-            <li>remove(String name) — find first match by name, shift left to close the gap</li>
-            <li>contains(String name) — returns true if any item matches</li>
-            <li>getTotalValue() — sum of all item values</li>
-            <li>display() — prints each item in a numbered list</li>
-        </ul>
-        <p>Run the acceptance tests from the Student RPG Guide.</p>
-    </div>
-
-    <div class="tinker">
-        <h3>Integrate Into Your RPG</h3>
-        <p>Add a <code>FixedInventory</code> field to your Player class (or keep it
-        separate in DungeonCrawl). After combat victories, loot the monster:</p>
-        <pre><code>inventory.add(new Item("Goblin Sword", 8, 25, "Common"));</code></pre>
-        <p>Add a "show inventory" option to your game loop. Print total value.</p>
+        <p>Test: create items of each rarity. Try creating one with invalid rarity —
+        does it reject it? What about weight 0? weight 51?</p>
     </div>
 
     <div class="socratic">
         <h3>Socratic Checkpoint</h3>
         <ol>
-            <li>Why do you need both <code>items.length</code> (capacity) and
-            <code>count</code> (how many are actually stored)? Why not just use
-            <code>items.length</code> for both?</li>
-            <li>Your remove() shifts elements left. If you remove the first item
-            from a full inventory, how many shifts happen? What if you remove
-            the last item?</li>
+            <li>Item is <strong>immutable</strong> — all fields are <code>final</code>.
+                Once created, you can't change a Sword into a Potion. Is that a
+                problem? When WOULD you want an item to change?</li>
+            <li>Why validate rarity in the constructor? What happens if you don't,
+                and someone creates <code>new Item("Sword", 10, 100, "Legendary")</code>
+                when "Legendary" isn't in your enum?</li>
         </ol>
     </div>
 
     <div class="checklist">
-        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <h3>Acceptance — your Item.java must:</h3>
         <ul>
-            <li>Build an array-based collection with a count tracking variable</li>
-            <li>Add, remove, and search items with proper shift and null handling</li>
-            <li>Integrate inventory into the RPG game loop</li>
+            <li>Reject invalid rarity with a clear message</li>
+            <li>Reject weight outside 1–50</li>
+            <li>Reject negative goldValue</li>
+            <li>Pass all acceptance tests in the Student RPG Guide</li>
         </ul>
     </div>
 </div>
@@ -106,8 +84,8 @@
     <h3>Reference Docs</h3>
     <ul>
         <li><a href="../docs/unit-06/inventory-builder.html">Inventory Builder (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-05/card.html">Card (Unit 5)</a> — immutable class pattern</li>
         <li><a href="../docs/unit-06/arrays-of-objects.html">Arrays of Objects</a></li>
-        <li><a href="../docs/unit-06/array-algorithms.html">Array Algorithms</a> — shift, search</li>
     </ul>
 </div>
 

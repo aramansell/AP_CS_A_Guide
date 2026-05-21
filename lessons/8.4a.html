@@ -3,90 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8.4a Dungeon Map Builder — AP CS A</title>
+<title>8.4a Dungeon Grid — AP CS A</title>
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+
 <nav class="top-nav">
     <a href="../index.html" class="active">Dashboard</a>
     <a href="../docs/index.html">Docs</a>
     <a href="../projects.html">Projects</a>
     <a href="../demos.html">Demos</a>
 </nav>
+
 <div class="page">
+
 <div class="lesson-nav">
     <a href="8.3a.html">◀ 8.3a</a>
     <span class="lesson-id">8.4a</span>
-    <span></span>
+    <a href="8.4b.html">8.4b ▶</a>
 </div>
-<h1>8.4a — Dungeon Map Builder: 2D Grid RPG</h1>
+
+<h1>8.4a — DungeonMap: The 2D Grid Foundation</h1>
+
 <div class="activity rpg">
     <div class="activity-header">
         <span class="activity-label">RPG Build</span>
-        <span class="activity-time">~60 min</span>
+        <span class="activity-time">~20 min</span>
     </div>
-    <p>Your DungeonCrawl game has been room-by-room so far. But real dungeons are grids — rooms connected by corridors, with walls, treasure, and monsters at specific coordinates. You're building a tile-based dungeon map using a 2D char array.</p>
-    <p>Open the <a href="../docs/unit-08/dungeon-map-builder.html">Dungeon Map Builder (Student RPG Guide)</a>. Follow the specification.</p>
+
+    <p>Your DungeonCrawl game has been room-by-room so far. But real dungeons are
+    grids — rooms connected by corridors, with walls, treasure, and monsters at
+    specific coordinates. Today you create the grid itself: a 2D char array with
+    wall borders and the ability to set and read individual tiles.</p>
+
+    <p>Open the <a href="../docs/unit-08/dungeon-map-builder.html">Dungeon Map
+    Builder (Student RPG Guide)</a>. Follow Part 1.</p>
+
     <div class="tinker">
-        <h3>Part 1: DungeonMap.java</h3>
+        <h3>Build: DungeonMap.java — The Grid</h3>
         <p>Create <code>DungeonMap.java</code>:</p>
         <ul>
             <li>Private field: <code>char[][] tiles</code></li>
             <li>Constructor takes rows and cols, fills entire grid with '.' (floor)</li>
             <li>Place wall borders: top row, bottom row, left col, right col all '#'</li>
-            <li>setTile(int row, int col, char symbol) — sets a single tile</li>
-            <li>getTile(int row, int col) — returns tile or ' ' if out of bounds</li>
-            <li>display() — prints the entire grid with a space after each char</li>
+            <li><code>setTile(int row, int col, char symbol)</code> — sets a single tile</li>
+            <li><code>getTile(int row, int col)</code> — returns tile or ' ' if out of bounds</li>
+            <li><code>display()</code> — prints the entire grid with a space after each char</li>
         </ul>
     </div>
-    <div class="tinker">
-        <h3>Part 2: Room Placement</h3>
-        <p>Add to DungeonMap:</p>
-        <ul>
-            <li>addRoom(int startRow, int startCol, int height, int width) — carves out a rectangular room: walls '#' border, floor '.' inside. Must stay within map bounds.</li>
-            <li>addDoor(int row, int col) — sets tile to '+' (door). Must be on an existing wall.</li>
-            <li>addCorridor(int row1, int col1, int row2, int col2) — draws a straight-line '.' path between two points. Keep it simple: horizontal then vertical.</li>
-        </ul>
-    </div>
-    <div class="tinker">
-        <h3>Part 3: Entity Placement</h3>
-        <p>Add entity markers:</p>
-        <ul>
-            <li>placePlayer(int row, int col) — sets tile to 'P'. Only one allowed.</li>
-            <li>placeMonster(int row, int col) — sets tile to 'M'</li>
-            <li>placeTreasure(int row, int col) — sets tile to 'T'</li>
-            <li>count(char symbol) — returns how many tiles match the given symbol</li>
-        </ul>
-    </div>
-    <div class="tinker">
-        <h3>Integrate Into Your RPG</h3>
-        <p>Wire DungeonMap into DungeonCrawl. Replace the room-number tracking with map coordinates. Player starts at 'P'. Movement: read direction (N/S/E/W), check if destination is '.' or 'T' (not '#' or out of bounds), move the 'P'. When the player steps on 'M', trigger combat. When they step on 'T', give loot.</p>
-    </div>
+
     <div class="socratic">
         <h3>Socratic Checkpoint</h3>
         <ol>
-            <li>Your addRoom() fills a rectangular area. How do you avoid overwriting the outer border walls?</li>
-            <li>When the player moves, you need to erase the old 'P' and draw a new one. What was on the old tile before the player stood there — and how do you remember it?</li>
-            <li>Read the docs section on line-of-sight. Why is checking every tile between two points harder than it looks?</li>
+            <li>You fill the grid with '.' then overwrite edges with '#'. Why two
+                passes? Could you do it in one nested loop?</li>
+            <li>getTile() returns ' ' for out-of-bounds instead of crashing.
+                Why is this safer? Where in your future code will this matter?</li>
+            <li>display() uses <code>tiles.length</code> for rows and
+                <code>tiles[0].length</code> for columns. What happens if the
+                grid has 0 rows?</li>
         </ol>
     </div>
+
     <div class="checklist">
-        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <h3>Acceptance — your DungeonMap must:</h3>
         <ul>
-            <li>Build a 2D char grid with walls, rooms, corridors, and entities</li>
-            <li>Move a player token through the grid with boundary checking</li>
-            <li>Integrate tile-based movement into the game loop</li>
+            <li>Display a bordered rectangle of floor tiles</li>
+            <li>Allow setting and reading individual tiles</li>
+            <li>Handle out-of-bounds reads without crashing</li>
         </ul>
     </div>
 </div>
+
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
         <li><a href="../docs/unit-08/dungeon-map-builder.html">Dungeon Map Builder (Student RPG Guide)</a></li>
         <li><a href="../docs/unit-08/2d-array-basics.html">2D Array Basics</a></li>
-        <li><a href="../docs/unit-08/traversal-patterns.html">Traversal Patterns</a></li>
     </ul>
 </div>
-</div>
+
+</div><!-- .page -->
 </body>
 </html>

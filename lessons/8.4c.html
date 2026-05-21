@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.4c Dungeon Movement — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="8.4b.html">◀ 8.4b</a>
+    <span class="lesson-id">8.4c</span>
+    <a href="9.1a.html">9.1a ▶</a>
+</div>
+
+<h1>8.4c — Tile-Based Movement &amp; Wire It In</h1>
+
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Your DungeonMap has rooms, corridors, and entities. Now make the player
+    move through it. Movement on a grid is a state-tracking problem: you need to
+    remember what was on a tile before the player stood there so you can restore
+    it when they leave.</p>
+
+    <div class="tinker">
+        <h3>Add Player State to DungeonMap</h3>
+        <p>Add these fields:</p>
+        <ul>
+            <li><code>int playerRow, playerCol</code> — current position</li>
+            <li><code>char floorUnderPlayer</code> — what was on this tile before 'P'</li>
+        </ul>
+
+        <p>Update <code>placePlayer()</code> to save both position and the original tile.</p>
+
+        <p>Add movement:</p>
+        <pre><code>public boolean movePlayer(char direction) {
+    // Calculate new row/col based on N/S/E/W
+    // Check: is destination in bounds? Is it walkable ('.' or 'T')?
+    // Restore old tile: tiles[playerRow][playerCol] = floorUnderPlayer;
+    // Save new tile: floorUnderPlayer = tiles[newRow][newCol];
+    // Place player: tiles[newRow][newCol] = 'P';
+    // Update position
+    // Return true if move succeeded
+}</code></pre>
+
+        <p>Walkable tiles: '.' (floor), 'T' (treasure), '+' (door). Blocked: '#' (wall),
+        out of bounds. 'M' (monster) triggers combat — move onto it.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why do you need <code>floorUnderPlayer</code>? What happens if you
+                just set the old position to '.' every time?</li>
+            <li>When the player steps on 'T', you trigger treasure. When they step
+                on 'M', you trigger combat. Where should that logic live —
+                in movePlayer() or in the game loop?</li>
+        </ol>
+    </div>
+
+    <h3>Wire Into DungeonCrawl</h3>
+
+    <p>Replace the room-number system with DungeonMap:</p>
+    <ul>
+        <li>Create a DungeonMap (15×15 for a starter dungeon)</li>
+        <li>Add 3–4 rooms, connect with corridors</li>
+        <li>Place player at first room entrance</li>
+        <li>Place 3–5 monsters and 2–3 treasures</li>
+        <li>Game loop: display map, read direction (N/S/E/W), call movePlayer()</li>
+        <li>On 'M': trigger combat. On 'T': add to inventory.</li>
+        <li>Win condition: all monsters defeated</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Read the docs section on line-of-sight. Why is checking every tile
+            between two points harder than it looks?</li>
+            <li>Your movement currently lets the player move through monsters to
+            trigger combat. Some RPGs block movement when a monster is adjacent.
+            How would you change movePlayer() to enforce that?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Implement tile-based movement with state tracking</li>
+            <li>Handle boundary checks and walkable-tile logic</li>
+            <li>Wire a 2D map into an existing game loop</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-08/dungeon-map-builder.html">Dungeon Map Builder (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-08/traversal-patterns.html">Traversal Patterns</a></li>
+        <li><a href="../docs/unit-08/2d-array-basics.html">2D Array Basics</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

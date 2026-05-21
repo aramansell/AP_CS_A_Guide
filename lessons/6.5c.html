@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.5c Inventory Integration — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="6.5b.html">◀ 6.5b</a>
+    <span class="lesson-id">6.5c</span>
+    <a href="7.1a.html">7.1a ▶</a>
+</div>
+
+<h1>6.5c — Wire Inventory Into Your RPG</h1>
+
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>You've built Item.java and FixedInventory.java in isolation. Now you integrate
+    them into DungeonCrawl so loot from combat actually goes somewhere the player
+    can use. This is the payoff: two files you built from scratch now power a real
+    game feature.</p>
+
+    <div class="tinker">
+        <h3>Add Inventory to DungeonCrawl</h3>
+        <p>Add a <code>FixedInventory</code> field to DungeonCrawl:</p>
+        <pre><code>FixedInventory inventory = new FixedInventory(20);</code></pre>
+
+        <p>After each combat victory, loot the monster:</p>
+        <pre><code>inventory.add(new Item("Goblin Sword", 8, 25, "Common"));
+inventory.add(new Item("Gold Coins", 1, 10, "Common"));</code></pre>
+
+        <p>Add a "show inventory" command to your game loop. When the player types
+        "inv", call <code>inventory.display()</code>. Show total gold value too.</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Use Items in Combat</h3>
+        <p>Before combat, let the player type "use Health Potion" to consume an item:</p>
+        <ul>
+            <li>Check <code>inventory.contains("Health Potion")</code></li>
+            <li>If found, call <code>inventory.remove("Health Potion")</code></li>
+            <li>Call <code>player.heal(15)</code></li>
+        </ul>
+        <p>Add a "Strength Potion" that gives +3 attack for one combat. Where do you
+        store "temporary buffs" — in the item, the player, or somewhere else?</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>FixedInventory has a capacity of 20. What happens when the 21st item
+                drops? Is there a better way to handle this than silently losing items?</li>
+            <li>You built Item as immutable. When a player "uses" a Health Potion,
+                you don't change the potion — you remove it and call player.heal().
+                Why is this design cleaner than making Item mutable?</li>
+            <li>Look at your DungeonCrawl main loop. How many features does it
+                handle now: movement, combat, inventory, item usage. Is this getting
+                unwieldy? What would you do to organize this in a bigger game?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Wire a custom data structure into an existing game loop</li>
+            <li>Connect inventory operations (add/remove/contains) to game events</li>
+            <li>Explain the trade-off between mutable and immutable item design</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-06/inventory-builder.html">Inventory Builder (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-06/arrays-of-objects.html">Arrays of Objects</a></li>
+        <li><a href="../docs/unit-06/array-algorithms.html">Array Algorithms</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.5b FixedInventory — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="6.5a.html">◀ 6.5a</a>
+    <span class="lesson-id">6.5b</span>
+    <a href="6.5c.html">6.5c ▶</a>
+</div>
+
+<h1>6.5b — FixedInventory.java: Array-Based Backpack</h1>
+
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        You have Item objects. Now you need somewhere to put them. You'll build
+        <code>FixedInventory.java</code> — a container that holds items in a plain
+        array, tracks how many slots are used, and handles add/remove/search operations.
+        This is the array-based collection pattern you'll see everywhere in CS.
+    </p>
+
+    <p>
+        Open the <a href="../docs/unit-06/inventory-builder.html">Inventory Builder
+        (Student RPG Guide)</a> File 2: FixedInventory.java.
+    </p>
+
+    <div class="tinker">
+        <h3>Build: FixedInventory.java</h3>
+        <p>Create <code>FixedInventory.java</code>:</p>
+        <ul>
+            <li>Private fields: <code>Item[] items</code> and <code>int count</code></li>
+            <li>Constructor takes capacity, creates the array</li>
+            <li><code>add(Item item)</code> — adds at position <code>count</code>, then count++.
+                Return false if inventory is full.</li>
+            <li><code>remove(String name)</code> — find first match by name, shift all
+                later items left to close the gap. Set last used slot to null.</li>
+            <li><code>contains(String name)</code> — returns true if any item matches</li>
+            <li><code>getTotalValue()</code> — sum of all item goldValues</li>
+            <li><code>display()</code> — numbered list: "1. Sword [Epic] — Wt:12 Val:250g"</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why do you need both <code>items.length</code> (capacity) and
+            <code>count</code> (how many are stored)? Why not use
+            <code>items.length</code> for both?</li>
+            <li>Your remove() shifts elements left. If you remove the first item
+            from a full 20-slot inventory, how many shifts happen? What if you
+            remove the last item?</li>
+            <li>What happens if you add 21 items to a 20-slot inventory? Is the
+            21st item silently lost, or does your code tell you something?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Acceptance — your FixedInventory must:</h3>
+        <ul>
+            <li>Reject add() when full (return false)</li>
+            <li>Handle remove() on empty inventory gracefully</li>
+            <li>Shift elements correctly — no gaps after remove</li>
+            <li>Pass all acceptance tests in the Student RPG Guide</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-06/inventory-builder.html">Inventory Builder (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-06/array-algorithms.html">Array Algorithms</a> — shift, search, sum</li>
+        <li><a href="../docs/unit-06/arrays-of-objects.html">Arrays of Objects</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

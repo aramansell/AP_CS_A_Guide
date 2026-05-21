@@ -20,15 +20,15 @@
 <div class="lesson-nav">
     <a href="5.4a.html">◀ 5.4a</a>
     <span class="lesson-id">5.5a</span>
-    <span></span>
+    <a href="5.5b.html">5.5b ▶</a>
 </div>
 
-<h1>5.5a — Player.java: Your RPG's Hero</h1>
+<h1>5.5a — Player.java: Encapsulate Your Hero</h1>
 
 <div class="activity rpg">
     <div class="activity-header">
         <span class="activity-label">RPG Build</span>
-        <span class="activity-time">~60 min</span>
+        <span class="activity-time">~30 min</span>
     </div>
 
     <p>
@@ -41,8 +41,8 @@
 
     <p>
         Open the <a href="../docs/unit-05/player-builder.html">Player Builder (Student RPG Guide)</a>.
-        This is a step-by-step guided build. Follow the specification exactly. Your completed
-        Player.java must pass the acceptance tests at the bottom of the guide.
+        Follow the specification exactly. Your completed Player.java must pass the
+        acceptance tests at the bottom of the guide.
     </p>
 
     <div class="tinker">
@@ -58,33 +58,16 @@
         </ul>
     </div>
 
-    <div class="tinker">
-        <h3>Integrate Into Your RPG</h3>
-        <p>Open your DungeonCrawl.java. Replace every scattered player variable:</p>
-        <pre><code>// BEFORE
-int playerHP = 25;
-int playerMaxHP = 25;
-int playerAC = 14;
-String playerName = "Hero";
-
-// AFTER
-Player player = new Player("Hero", 25, 14, 12, 16, 10);
-
-// Replace: playerHP -= damage     → player.takeDamage(damage)
-// Replace: if (playerHP > 0)      → if (player.isAlive())
-// Replace: playerHP += healAmt    → player.heal(healAmt)</code></pre>
-        <p>Run your dungeon crawler. Does everything still work? Fix any compile errors
-        (type mismatches, method name typos).</p>
-    </div>
-
     <div class="socratic">
         <h3>Socratic Checkpoint</h3>
         <ol>
-            <li>Your old code had <code>if (playerHP > 0)</code> scattered everywhere.
-            Now it's <code>player.isAlive()</code>. Why is the second version better
-            even though it does the same thing?</li>
-            <li>If you decided a player is dead at HP ≤ 0, where would you change
-            that? Your old code vs your new code — how many file changes in each?</li>
+            <li>Why are the fields <code>private</code>? What would break if they
+                were <code>public</code> and someone set <code>hp = -50</code>?</li>
+            <li>Your <code>takeDamage()</code> clamps to 0. Your <code>heal()</code>
+                clamps to maxHp. Why is clamping important? What's the worst bug
+                that could happen without it?</li>
+            <li>Compare Player.java to Character.java from Unit 2.7. What's the
+                same? What's different? Why did we wait until now to encapsulate?</li>
         </ol>
     </div>
 
@@ -93,7 +76,8 @@ Player player = new Player("Hero", 25, 14, 12, 16, 10);
         <ul>
             <li>Compile without errors</li>
             <li>Pass all acceptance tests in the Student RPG Guide</li>
-            <li>Integrate into DungeonCrawl.java with no logic changes</li>
+            <li>Clamp HP correctly in both directions</li>
+            <li>Return correct values from isAlive() at HP=0, HP=1, HP=maxHp</li>
         </ul>
     </div>
 </div>
@@ -102,7 +86,6 @@ Player player = new Player("Hero", 25, 14, 12, 16, 10);
     <h3>Reference Docs</h3>
     <ul>
         <li><a href="../docs/unit-05/player-builder.html">Player Builder (Student RPG Guide)</a></li>
-        <li><a href="../docs/unit-05/monster-builder.html">Monster Builder (Student RPG Guide)</a></li>
         <li><a href="../docs/unit-05/class-anatomy.html">Anatomy of a Class</a></li>
         <li><a href="../docs/unit-05/constructors.html">Constructors</a></li>
         <li><a href="../docs/unit-05/accessors-mutators.html">Accessors &amp; Mutators</a></li>

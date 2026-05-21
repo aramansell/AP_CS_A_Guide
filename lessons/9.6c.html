@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.6c Monster Spawner + Integrate — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="9.6b.html">◀ 9.6b</a>
+    <span class="lesson-id">9.6c</span>
+    <a href="10.1a.html">10.1a ▶</a>
+</div>
+
+<h1>9.6c — Monster Spawner &amp; Full Integration</h1>
+
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <h3>Part 1: MonsterSpawner.java</h3>
+
+    <p>Your BattleEngine handles any Combatant. Now build a factory that creates
+    them. A MonsterSpawner generates random enemies based on difficulty — this
+    is the Factory pattern in action.</p>
+
+    <p>Create <code>MonsterSpawner.java</code>:</p>
+    <ul>
+        <li>Constructor takes <code>int difficulty</code> (1-3)</li>
+        <li><code>spawn()</code> returns a random Combatant:
+            <ul>
+                <li>Difficulty 1: Goblin or Skeleton (equal chance)</li>
+                <li>Difficulty 2: Goblin, Skeleton, or weakened Dragon (HP 40, ATK 12)</li>
+                <li>Difficulty 3: Goblin, Skeleton, or full Dragon</li>
+            </ul>
+        </li>
+        <li><code>getBoss()</code> returns a Dragon with +50% HP and ATK</li>
+        <li><code>spawnWave(int count)</code> returns ArrayList of count random combatants</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>spawn() returns type Combatant, not Goblin or Dragon. Why? What
+                happens if spawn() returned Dragon and a weaker monster needed
+                to be returned?</li>
+            <li>getBoss() creates a Dragon with modified stats. Is this a new class
+                or the same Dragon with different constructor arguments? Which is
+                simpler?</li>
+        </ol>
+    </div>
+
+    <h3>Part 2: Rewire DungeonCrawl</h3>
+
+    <p>Replace your hard-coded combat with the spawner + BattleEngine:</p>
+    <pre><code>// BEFORE
+if (monsterName.equals("Goblin")) { ... }
+else if (monsterName.equals("Dragon")) { ... }
+
+// AFTER
+MonsterSpawner spawner = new MonsterSpawner(difficulty);
+Combatant enemy = spawner.spawn();
+Combatant winner = BattleEngine.runBattle(player, enemy);</code></pre>
+
+    <p>Add a dungeon run: 5 random monsters, then the boss. Player rests (heal 10)
+    between fights. Track wins. After all 6 fights: victory or death screen.</p>
+
+    <div class="tinker">
+        <h3>Tinker: New Creatures</h3>
+        <p>Add two new creature types WITHOUT changing BattleEngine:</p>
+        <ul>
+            <li><strong>Slime</strong> — 15 HP, 3 ATK. When it takes damage,
+                it splits: if HP would drop below 0, set HP to 1 instead (survives
+                with 1 HP once per fight).</li>
+            <li><strong>Healer</strong> — 25 HP, 4 ATK. Every 3rd round, instead
+                of attacking, it heals itself for 8 HP. You'll need a round counter.</li>
+        </ul>
+        <p>Add them to MonsterSpawner. Does BattleEngine need any changes?
+        (It shouldn't — that's the whole point.)</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Look at the <a href="../docs/unit-09/combat-system.html">docs
+                section on extensibility</a>. What's the difference between adding
+                a new creature (easy) and adding a new combat mechanic like
+                "flee from battle" (hard)?</li>
+            <li>Your DungeonCrawl now has Player, DynamicInventory, DungeonMap,
+                MonsterSpawner, and BattleEngine. Draw the dependency diagram:
+                which class depends on which?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Build a factory class that returns interface types</li>
+            <li>Wire polymorphic combat into the game loop</li>
+            <li>Add new creatures without modifying the battle engine</li>
+            <li>Explain the Factory pattern and why it decouples code</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/combat-system.html">Combat System (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a></li>
+        <li><a href="../docs/unit-09/comparison-interfaces.html">Comparison Interfaces</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

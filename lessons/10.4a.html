@@ -3,128 +3,127 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>10.4a Recursive Dungeon RPG — AP CS A</title>
+<title>10.4a Flood Fill — AP CS A</title>
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+
 <nav class="top-nav">
     <a href="../index.html" class="active">Dashboard</a>
     <a href="../docs/index.html">Docs</a>
     <a href="../projects.html">Projects</a>
     <a href="../demos.html">Demos</a>
 </nav>
+
 <div class="page">
+
 <div class="lesson-nav">
     <a href="10.3a.html">◀ 10.3a</a>
     <span class="lesson-id">10.4a</span>
-    <span></span>
+    <a href="10.4b.html">10.4b ▶</a>
 </div>
-<h1>10.4a — Recursive Dungeon: Flood Fill &amp; Pathfinding</h1>
+
+<h1>10.4a — Flood Fill: Reveal the Dungeon</h1>
+
 <div class="activity rpg">
     <div class="activity-header">
         <span class="activity-label">RPG Build</span>
-        <span class="activity-time">~60 min</span>
+        <span class="activity-time">~30 min</span>
     </div>
 
-    <p>Your DungeonMap from Unit 8 is a grid, but you've been moving the player one step at a time. What if the player finds a magic item that reveals all connected floor tiles? Or a spell that finds the shortest path to the exit? These are naturally recursive problems — explore a tile, then explore all its neighbors, then their neighbors...</p>
+    <p>Your DungeonMap from Unit 8 is a grid, but the player can only see one tile
+    at a time. What if they find a magic item that reveals all connected floor tiles?
+    This is the classic <strong>flood fill</strong> algorithm — explore a tile,
+    then recursively explore all its walkable neighbors. The same algorithm that
+    powers the paint bucket tool in every drawing program.</p>
 
-    <p>Open the <a href="../docs/unit-10/recursive-dungeon.html">Recursive Dungeon (Student RPG Guide)</a>. Follow the specification.</p>
+    <p>Open the <a href="../docs/unit-10/recursive-dungeon.html">Recursive Dungeon
+    (Student RPG Guide)</a>. Follow Part 1: Flood Fill.</p>
 
     <div class="tinker">
-        <h3>Part 1: Flood Fill</h3>
-        <p>Add to DungeonMap:</p>
-        <pre><code>// Starting from (row, col), mark all connected floor tiles as revealed
-public void reveal(int row, int col, boolean[][] visited) {
-    // Base case: off-map, wall, or already visited — stop
-    if (row < 0 || row >= tiles.length || col < 0 || col >= tiles[0].length) return;
-    if (tiles[row][col] == '#' || visited[row][col]) return;
+        <h3>Add reveal() to DungeonMap</h3>
+        <pre><code>// Starting from (row, col), mark all connected walkable tiles as visited
+public int reveal(int row, int col, boolean[][] visited) {
+    // Base case: out of bounds — stop
+    if (row < 0 || row >= tiles.length || col < 0 || col >= tiles[0].length)
+        return 0;
+    // Base case: wall or already visited — stop
+    if (tiles[row][col] == '#' || visited[row][col])
+        return 0;
 
     visited[row][col] = true;  // mark current
+    int count = 1;             // count this tile
 
     // Recurse in all 4 directions
-    reveal(row - 1, col, visited);  // up
-    reveal(row + 1, col, visited);  // down
-    reveal(row, col - 1, visited);  // left
-    reveal(row, col + 1, visited);  // right
+    count += reveal(row - 1, col, visited);  // up
+    count += reveal(row + 1, col, visited);  // down
+    count += reveal(row, col - 1, visited);  // left
+    count += reveal(row, col + 1, visited);  // right
+
+    return count;  // total connected tiles found
 }</code></pre>
-        <p>Call reveal(playerRow, playerCol, new boolean[numRows][numCols]) to find all connected floor space. Display visited tiles as '.' and unvisited as '?'.</p>
+
+        <p>Call it from the player's position. It returns how many tiles are
+        reachable from where they stand — useful for checking if the exit is
+        reachable.</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Visualize the Reveal</h3>
+        <p>Add a <code>displayRevealed(boolean[][] visited)</code> method:</p>
+        <ul>
+            <li>Loop through the grid</li>
+            <li>If visited[row][col] is true, print the actual tile</li>
+            <li>If false, print '?' (fog of war)</li>
+            <li>Always print walls as '#' (they're visible but impassable)</li>
+        </ul>
+        <p>Call displayRevealed() after reveal(). The player sees connected
+        rooms but not disconnected areas. That's real fog of war.</p>
     </div>
 
     <div class="callout trap">
-        <strong>Forgetting the Visited Check = Infinite Recursion:</strong> Without the visited array, reveal(0,0) calls reveal(1,0) which calls reveal(0,0) which calls reveal(1,0)... forever. The visited array breaks cycles. Also: check boundaries BEFORE indexing tiles[row][col]. Read the <a href="../docs/unit-10/recursive-dungeon.html">Recursive Dungeon docs</a> for the complete flood-fill algorithm.
-    </div>
-
-    <div class="tinker">
-        <h3>Part 2: Shortest Path</h3>
-        <p>Add to DungeonMap:</p>
-        <pre><code>// Return the fewest steps from (r1,c1) to (r2,c2), or -1 if unreachable
-public int shortestPath(int r1, int c1, int r2, int c2, boolean[][] visited, int steps) {
-    // Base cases
-    if (out of bounds || wall || visited) return -1;
-    if (r1 == r2 && c1 == c2) return steps;  // reached target!
-
-    visited[r1][c1] = true;
-
-    // Try all 4 directions, take the shortest valid path
-    int up = shortestPath(r1-1, c1, r2, c2, visited, steps + 1);
-    int down = shortestPath(r1+1, c1, r2, c2, visited, steps + 1);
-    int left = shortestPath(r1, c1-1, r2, c2, visited, steps + 1);
-    int right = shortestPath(r1, c1+1, r2, c2, visited, steps + 1);
-
-    visited[r1][c1] = false;  // BACKTRACK so other paths can use this tile
-
-    // Return the shortest non-negative result
-    int min = Math.min(Math.min(up, down), Math.min(left, right));
-    if (min == -1) {
-        // All blocked? Check if any were valid (>= 0)
-        if (up >= 0) min = up;
-        else if (down >= 0) min = down;
-        else if (left >= 0) min = left;
-        else if (right >= 0) min = right;
-    }
-    return min;
-}</code></pre>
-        <p>Warning: this is the brute-force version. It tries EVERY path. For large maps, it's slow — but it's correct and it demonstrates backtracking.</p>
-    </div>
-
-    <div class="tinker">
-        <h3>Integrate Into Your RPG</h3>
-        <p>Add two items to your inventory:</p>
-        <ul>
-            <li>"Scroll of Revelation" — when used, calls reveal() from the player's position</li>
-            <li>"Compass" — when used, calls shortestPath() from player to exit marker 'E'</li>
-        </ul>
-        <p>Add these as one-time-use items. Player can purchase them at the start of the dungeon.</p>
+        <strong>Forgetting the Visited Check = Infinite Recursion:</strong>
+        Without <code>visited[row][col]</code>, reveal(0,0) calls reveal(1,0) which
+        calls reveal(0,0) which calls reveal(1,0)... forever. The visited array
+        breaks cycles. Also: check boundaries BEFORE indexing tiles[row][col].
+        Read the <a href="../docs/unit-10/recursive-dungeon.html">Recursive Dungeon
+        docs</a> for the complete algorithm.
     </div>
 
     <div class="socratic">
         <h3>Socratic Checkpoint</h3>
         <ol>
-            <li>Why does shortestPath need to set visited[r][c]=FALSE after exploring? What happens if you don't?</li>
-            <li>Flood fill visits tiles in a depth-first pattern (explores a full path before trying the next direction). What would breadth-first look like? Which is better for shortest-path?</li>
-            <li>Read the <a href="../docs/unit-10/recursive-dungeon.html">docs section on why we return -1</a>. How do you distinguish "tried all paths, none work" from "haven't tried yet"?</li>
+            <li>Why does the visited array parameter start as
+            <code>new boolean[rows][cols]</code>? What would happen if you created
+            a new array inside reveal() on every recursive call?</li>
+            <li>Flood fill visits tiles in depth-first order (explores a full path
+            before trying the next direction). What would breadth-first look like?
+            Which is better for revealing a dungeon?</li>
+            <li>The return value counts connected tiles. How would you use this to
+            verify that the exit tile 'E' is reachable from the player?</li>
         </ol>
     </div>
 
     <div class="checklist">
-        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <h3>Acceptance — your flood fill must:</h3>
         <ul>
-            <li>Implement recursive flood fill with visited tracking</li>
-            <li>Implement recursive shortest-path with backtracking</li>
-            <li>Explain why backtracking requires resetting visited flags</li>
-            <li>Integrate recursive algorithms into the RPG game loop</li>
+            <li>Stop at walls and out-of-bounds</li>
+            <li>Never visit the same tile twice</li>
+            <li>Return the correct count of connected tiles</li>
+            <li>Not overflow the stack on a 15×15 map</li>
         </ul>
     </div>
 </div>
+
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
         <li><a href="../docs/unit-10/recursive-dungeon.html">Recursive Dungeon (Student RPG Guide)</a></li>
-        <li><a href="../docs/unit-10/recursive-traversal.html">Recursive Traversal</a></li>
         <li><a href="../docs/unit-10/recursion-basics.html">Recursion Basics</a></li>
-        <li><a href="../docs/unit-08/dungeon-map-builder.html">Dungeon Map Builder (Unit 8)</a></li>
+        <li><a href="../docs/unit-10/recursive-traversal.html">Recursive Traversal</a></li>
     </ul>
 </div>
-</div>
+
+</div><!-- .page -->
 </body>
 </html>

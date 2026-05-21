@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.5b Monster + Integration — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="5.5a.html">◀ 5.5a</a>
+    <span class="lesson-id">5.5b</span>
+    <a href="6.1a.html">6.1a ▶</a>
+</div>
+
+<h1>5.5b — Monster.java + Rewire DungeonCrawl</h1>
+
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <h3>Part 1: Monster.java — Same Pattern, New Class</h3>
+
+    <p>
+        Player.java taught you encapsulation. Now apply the same pattern to monsters.
+        Open the <a href="../docs/unit-05/monster-builder.html">Monster Builder
+        (Student RPG Guide)</a>. Follow the specification.
+    </p>
+
+    <p>Create <code>Monster.java</code>:</p>
+    <ul>
+        <li>Private fields: name, hp, maxHp, ac, attackBonus, damageDie</li>
+        <li>Constructor takes all six. Clamp hp between 0 and maxHp.</li>
+        <li>Getters for all fields, <code>isAlive()</code>, <code>takeDamage()</code>, <code>heal()</code></li>
+        <li><code>attack()</code> — returns <code>Dice.roll(damageDie)</code></li>
+        <li><code>toString()</code> — "Goblin [HP: 10/15 AC:12 ATK:+2 d6]"</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Player and Monster are nearly identical. What fields do they share?
+                What fields are unique to each? If you were designing a game engine,
+                what would you do to avoid duplicating code?</li>
+            <li>Monster.attack() uses Dice.roll(). Why is this better than putting
+                the dice formula directly in the attack method?</li>
+        </ol>
+    </div>
+
+    <h3>Part 2: Rewire DungeonCrawl</h3>
+
+    <p>
+        Open your DungeonCrawl.java. Replace every scattered player variable
+        with a Player object and every scattered monster variable with a Monster object.
+    </p>
+
+    <pre><code>// BEFORE
+int playerHP = 25;
+int playerAC = 14;
+String playerName = "Hero";
+
+// AFTER
+Player player = new Player("Hero", 25, 25, 14, 12, 16, 10);
+
+// Replace: playerHP -= damage     → player.takeDamage(damage)
+// Replace: if (playerHP > 0)      → if (player.isAlive())
+// Replace: playerHP += healAmt    → player.heal(healAmt)</code></pre>
+
+    <p>Do the same for monsters:</p>
+    <pre><code>// BEFORE
+int monsterHP = 10;
+int monsterAC = 12;
+String monsterName = "Goblin";
+
+// AFTER
+Monster monster = new Monster("Goblin", 10, 10, 12, 2, 6);
+
+// Replace: monsterHP -= dmg   → monster.takeDamage(dmg)
+// Replace: if (monsterHP > 0) → if (monster.isAlive())</code></pre>
+
+    <div class="callout trap">
+        <strong>Watch Out:</strong> runCombat() currently takes individual int/String
+        parameters. You'll need to update its signature to accept Player and Monster
+        objects — or extract the values with getters. Which approach is cleaner?
+        (<a href="../docs/unit-05/monster-builder.html">The Monster Guide</a> has
+        the recommended approach.)
+    </div>
+
+    <p>Run your dungeon crawler. Does everything still work? Fix any compile errors.
+    The game logic should be identical — only the data storage changed.</p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Your old code had <code>if (playerHP > 0)</code> scattered everywhere.
+            Now it's <code>player.isAlive()</code>. Why is the second version better
+            even though it does the same thing?</li>
+            <li>If you decided a player is dead at HP ≤ 0, where would you change
+            that? Your old code vs your new code — how many file changes in each?</li>
+            <li>Count the parameters to runCombat() before and after. How many lines
+            of code disappeared from DungeonCrawl?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Design a class spec and implement it from scratch</li>
+            <li>Refactor scattered primitives into encapsulated objects</li>
+            <li>Update method signatures to accept objects instead of primitives</li>
+            <li>Verify game logic is unchanged after refactoring</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-05/monster-builder.html">Monster Builder (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-05/player-builder.html">Player Builder (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-05/methods-and-static.html">Methods &amp; Static</a> — passing objects vs primitives</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.6a Dungeon Loop — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="4.5a.html">◀ 4.5a</a>
+    <span class="lesson-id">4.6a</span>
+    <a href="4.6b.html">4.6b ▶</a>
+</div>
+
+<h1>4.6a — Dungeon Loop: Combat While Loop</h1>
+
+<p>
+    <strong>Type:</strong> RPG Integration. You've studied while loops, for loops,
+    nested loops, and loop analysis. Now you put all four concepts into one system:
+    a dungeon crawler where combat uses while loops and room exploration uses
+    for loops. This is a 3-day assignment.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Create a <code>DungeonLoop.java</code> class. Today you build the combat
+    engine — a while-loop that keeps two combatants fighting until one falls.
+    You already wrote combat logic in Unit 3's Combat.java. Now you wrap it in a
+    loop that runs an unknown number of rounds.</p>
+
+    <p>Open the <a href="../docs/unit-04/dungeon-system.html">Dungeon Loop System
+    (Student RPG Guide)</a>. Follow the specification for Part 1: runCombat().</p>
+
+    <h3>Part 1: runCombat() — The While Loop</h3>
+
+    <p>Create <code>DungeonLoop.java</code>. Add this method:</p>
+    <pre><code>public static boolean runCombat(String playerName, int playerHP, int playerAC,
+                                int playerAttackBonus, String monsterName,
+                                int monsterHP, int monsterAC,
+                                int monsterAttackBonus, int monsterDamageDie)</code></pre>
+
+    <p><strong>Requirements:</strong></p>
+    <ul>
+        <li>Print a combat header: <code>"=== COMBAT: [player] vs [monster] ==="</code></li>
+        <li>Use a <code>while</code> loop. Condition: <code>playerHP > 0 && monsterHP > 0</code></li>
+        <li>Each iteration: print current HP, player attacks, monster counterattacks
+            (only if still alive)</li>
+        <li>Attack pattern: roll d20, add bonus. Natural 20 = critical (d8 × 2).
+            Total ≥ AC = hit (d8). Otherwise miss.</li>
+        <li>After loop: return <code>true</code> if player won, <code>false</code> otherwise</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>You don't know how many rounds this fight will last. Why is this
+                a while loop and not a for loop? What's the rule for choosing?</li>
+            <li>Why does the monster only counterattack when <code>monsterHP > 0</code>?
+                What would happen if you removed that check?</li>
+            <li>Trace through one round: player attacks, damage is subtracted, then
+                monster attacks. Does the order matter? What if the monster went first?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker: Variable Damage</h3>
+        <p>
+            Right now both sides roll d8 for damage. Make the player's damage die
+            a parameter too. Then make the monster's critical hit do double damage
+            (dmgDie × 2 on a natural 20). Does the fight feel more dangerous?
+        </p>
+    </div>
+
+    <p><strong>Acceptance Test:</strong></p>
+    <pre><code>boolean result = DungeonLoop.runCombat("Hero", 20, 14, 3, "Goblin", 10, 12, 2, 6);
+System.out.println("Result: " + (result ? "Won" : "Lost"));
+// Run 5 times. Verify combat ends when one side hits 0 HP.
+// Verify the boolean matches the winner.</code></pre>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/dungeon-system.html">Dungeon Loop System (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-04/while-loops.html">while Loops</a> — indeterminate iteration</li>
+        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — comparison with while</li>
+        <li><a href="../docs/unit-03/combat-engine.html">Combat Engine (Unit 3)</a> — attack logic you're reusing</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

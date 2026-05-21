@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.4b Rooms &amp; Entities — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="8.4a.html">◀ 8.4a</a>
+    <span class="lesson-id">8.4b</span>
+    <a href="8.4c.html">8.4c ▶</a>
+</div>
+
+<h1>8.4b — Rooms, Corridors, and Entity Placement</h1>
+
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>Your grid exists. Now carve rooms, connect them with corridors, and place
+    game entities. This is where 2D array traversal patterns start solving real
+    problems — rectangular fill, straight-line path drawing, and counting tiles.</p>
+
+    <p>Open the <a href="../docs/unit-08/dungeon-map-builder.html">Dungeon Map
+    Builder (Student RPG Guide)</a>. Follow Parts 2 and 3.</p>
+
+    <div class="tinker">
+        <h3>Part 1: Room Placement</h3>
+        <p>Add to DungeonMap:</p>
+        <ul>
+            <li><code>addRoom(int startRow, int startCol, int height, int width)</code> —
+                carves a rectangular room: walls '#' border, floor '.' inside.
+                Must stay within map bounds (don't overwrite the outer border).</li>
+            <li><code>addDoor(int row, int col)</code> — sets tile to '+' (door).
+                Must be on an existing wall tile.</li>
+            <li><code>addCorridor(int row1, int col1, int row2, int col2)</code> —
+                draws a straight-line '.' path between two points.
+                Keep it simple: horizontal then vertical.</li>
+        </ul>
+    </div>
+
+    <div class="callout trap">
+        <strong>Watch the outer border:</strong> Your addRoom() should never change
+        row 0, row rows-1, col 0, or col cols-1. Those are the dungeon perimeter
+        walls. If a room tries to extend outside bounds, reject it.
+    </div>
+
+    <div class="tinker">
+        <h3>Part 2: Entity Placement</h3>
+        <p>Add entity markers:</p>
+        <ul>
+            <li><code>placePlayer(int row, int col)</code> — sets tile to 'P'. Only one allowed.</li>
+            <li><code>placeMonster(int row, int col)</code> — sets tile to 'M'</li>
+            <li><code>placeTreasure(int row, int col)</code> — sets tile to 'T'</li>
+            <li><code>count(char symbol)</code> — returns how many tiles match the given symbol.
+                Traverse the entire grid.</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>addRoom() fills a rectangular area with nested for loops. Which
+            loop controls rows? Which controls columns? What's the right order?</li>
+            <li>Your addCorridor draws horizontal-then-vertical. What would happen
+            if you drew vertical-then-horizontal instead? Does it matter?</li>
+            <li>placePlayer() only allows one 'P'. How do you enforce that?
+            What if the previous 'P' position matters?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Acceptance — your DungeonMap must:</h3>
+        <ul>
+            <li>Place rooms without destroying outer walls</li>
+            <li>Draw corridors as connected floor paths</li>
+            <li>Place and count entities correctly</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-08/dungeon-map-builder.html">Dungeon Map Builder (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-08/traversal-patterns.html">Traversal Patterns</a></li>
+        <li><a href="../docs/unit-08/2d-array-basics.html">2D Array Basics</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

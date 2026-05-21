@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7.4b Inventory Sort &amp; Swap — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="7.4a.html">◀ 7.4a</a>
+    <span class="lesson-id">7.4b</span>
+    <a href="8.1a.html">8.1a ▶</a>
+</div>
+
+<h1>7.4b — Sort, Filter &amp; Wire It In</h1>
+
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <h3>Part 1: Add Sort and Filter</h3>
+
+    <p>Your DynamicInventory stores items — now add the operations that make an
+    RPG inventory useful. Sorting and filtering are traversal problems.</p>
+
+    <p>Add to <code>DynamicInventory.java</code>:</p>
+    <ul>
+        <li><code>void sortByValue()</code> — selection sort by goldValue (ascending).
+            Use the same algorithm from 7.3a. ArrayList lets you use
+            <code>.get(index)</code> and <code>.set(index, item)</code> instead
+            of <code>[index]</code>.</li>
+        <li><code>ArrayList&lt;Item&gt; filterByRarity(String rarity)</code> —
+            returns a NEW ArrayList containing only items matching the given rarity.
+            Use an enhanced for-loop.</li>
+        <li><code>ArrayList&lt;Item&gt; filterByMinValue(int minValue)</code> —
+            returns items worth at least minValue.</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Your filter methods return a NEW ArrayList. Why not modify the
+                original? What would break if filter removed items instead of
+                returning a new list?</li>
+            <li>Selection sort on ArrayList uses .set(index, item) to swap. How
+                is this different from array[] = syntax?</li>
+        </ol>
+    </div>
+
+    <h3>Part 2: Swap and Extend</h3>
+
+    <p>Open DungeonCrawl. Replace FixedInventory with DynamicInventory:</p>
+    <pre><code>// Before:
+FixedInventory inventory = new FixedInventory(20);
+
+// After:
+DynamicInventory inventory = new DynamicInventory();</code></pre>
+
+    <p>The method signatures match. Nothing else in your game loop should change.</p>
+
+    <p>Add commands to your game loop:</p>
+    <ul>
+        <li>"sort" — calls <code>inventory.sortByValue()</code>, then displays</li>
+        <li>"filter epic" — calls <code>inventory.filterByRarity("Epic")</code>,
+            displays only epic items</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>If you add 1,000 items to your DynamicInventory, which operations
+                get slower — add(), remove(), or contains()? Why?</li>
+            <li>You swapped FixedInventory for DynamicInventory and nothing broke.
+                That's because both have the same public methods. What is this
+                design principle called? (The docs have the answer.)</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Implement selection sort on ArrayList objects</li>
+            <li>Write filter methods that return new collections</li>
+            <li>Swap one inventory implementation for another without breaking game logic</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-07/dynamic-inventory.html">Dynamic Inventory (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-07/searching-sorting.html">Searching &amp; Sorting</a></li>
+        <li><a href="../docs/unit-07/arraylist-traversal.html">ArrayList Traversal</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

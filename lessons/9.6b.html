@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.6b Polymorphic Battle Engine — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="9.6a.html">◀ 9.6a</a>
+    <span class="lesson-id">9.6b</span>
+    <a href="9.6c.html">9.6c ▶</a>
+</div>
+
+<h1>9.6b — BattleEngine: One Loop, Infinite Monsters</h1>
+
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~15 min</span>
+    </div>
+
+    <h3>The Payoff</h3>
+
+    <p>You have three different creature types, each with unique combat behavior.
+    But your combat code shouldn't care which one it's fighting. This is polymorphism:
+    write one battle loop that works with ANY Combatant — now and forever.</p>
+
+    <p>Open the <a href="../docs/unit-09/combat-system.html">Combat System
+    (Student RPG Guide)</a>. Follow Part 2: BattleEngine.</p>
+
+    <div class="tinker">
+        <h3>Build: BattleEngine.java</h3>
+        <p>Create <code>BattleEngine.java</code>. ONE static method:</p>
+        <pre><code>public static Combatant runBattle(Combatant a, Combatant b) {
+    System.out.println("=== COMBAT: " + a.getName() + " vs " + b.getName() + " ===");
+
+    while (a.isAlive() && b.isAlive()) {
+        System.out.println(a.getName() + " [" + a.getHp() + "] vs "
+                         + b.getName() + " [" + b.getHp() + "]");
+
+        // A attacks B
+        int dmg = a.attack();
+        System.out.println(a.getName() + " deals " + dmg + " damage!");
+        b.takeDamage(dmg);
+
+        // B counterattacks (if still alive)
+        if (b.isAlive()) {
+            dmg = b.attack();
+            System.out.println(b.getName() + " deals " + dmg + " damage!");
+            a.takeDamage(dmg);
+        }
+        System.out.println();  // blank line between rounds
+    }
+
+    Combatant winner = a.isAlive() ? a : b;
+    System.out.println(winner.getName() + " wins!");
+    return winner;
+}</code></pre>
+
+        <p>This method knows NOTHING about Goblin, Dragon, or Skeleton. It works
+        with ANY two Combatants. Test it:</p>
+        <pre><code>Combatant goblin = new Goblin();
+Combatant dragon = new Dragon();
+Combatant winner = BattleEngine.runBattle(goblin, dragon);</code></pre>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>The engine calls <code>a.attack()</code>. If a is a Skeleton,
+            that does one thing. If a is a Dragon, it does another. How does
+            Java know which one to call? What is the name of this mechanism?</li>
+            <li>Could you add a new creature type — say, Healer that restores HP
+            on attack — without changing a single line of BattleEngine? Why or
+            why not?</li>
+            <li>What happens if you pass null for either parameter? Where should
+            you add a null check?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Acceptance — your BattleEngine must:</h3>
+        <ul>
+            <li>Work with any two Combatant implementations</li>
+            <li>Handle Goblin vs Dragon, Skeleton vs Player, Player vs Player</li>
+            <li>Return the winning Combatant</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/combat-system.html">Combat System (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

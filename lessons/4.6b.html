@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.6b Dungeon For Loop — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="4.6a.html">◀ 4.6a</a>
+    <span class="lesson-id">4.6b</span>
+    <a href="4.6c.html">4.6c ▶</a>
+</div>
+
+<h1>4.6b — Dungeon Loop: Room Exploration</h1>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>Part 2: runDungeon() — The For Loop</h3>
+
+    <p>Your combat while loop works. Now build the dungeon that uses a for loop
+    to generate a fixed number of rooms. Each room has a random encounter:
+    combat, treasure, or trap. This is where you see the while-vs-for distinction
+    in action — combat uses while (unknown rounds), rooms use for (known count).</p>
+
+    <p>Open the <a href="../docs/unit-04/dungeon-system.html">Dungeon Loop System
+    (Student RPG Guide)</a>. Follow Part 2: runDungeon().</p>
+
+    <p>Add this method to <code>DungeonLoop.java</code>:</p>
+    <pre><code>public static void runDungeon(int difficulty)</code></pre>
+
+    <p><strong>Requirements:</strong></p>
+    <ul>
+        <li>Print header: <code>"=== DUNGEON CRAWL (Difficulty: [N]) ==="</code></li>
+        <li>Track: playerHP (start 20), gold (start 0), roomsSurvived (start 0)</li>
+        <li>For loop: room 1 to 5. At top of each iteration: if playerHP ≤ 0, break</li>
+        <li>Each room: random type 0/1/2:
+            <ul>
+                <li><strong>Combat (0):</strong> Scale a monster. HP = 5 + room × difficulty,
+                    AC = 10 + room. Call runCombat(). Win → add 10 × room gold.
+                    Lose → playerHP = 0.</li>
+                <li><strong>Treasure (1):</strong> Add 5 + Dice.roll(10) × difficulty gold.
+                    Print what was found.</li>
+                <li><strong>Trap (2):</strong> Subtract Dice.roll(6) from playerHP.
+                    Print damage and remaining HP.</li>
+            </ul>
+        </li>
+        <li>Increment roomsSurvived after each room</li>
+        <li>After loop: print summary (rooms explored, gold, HP remaining)</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why is the dungeon loop a for loop but the combat loop is a while
+                loop? Could you swap them? What would break?</li>
+            <li>You use <code>break</code> when the player dies. What happens to the
+                remaining rooms? What if you used <code>return</code> instead?</li>
+            <li>HP carries over across rooms. Gold accumulates. Where are these
+                variables declared — inside the for loop or outside it? Why?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker: Escalating Difficulty</h3>
+        <p>
+            Make room difficulty scale: monster HP and AC increase by 1 per room.
+            By room 5, monsters are significantly tougher. Run the dungeon at
+            difficulty 1, then difficulty 3. How often does the player survive?
+            What difficulty feels "fair"?
+        </p>
+    </div>
+
+    <p><strong>Acceptance Test:</strong></p>
+    <pre><code>DungeonLoop.runDungeon(1);
+// Verify: exactly 5 rooms (or fewer if player dies)
+// Room types vary (re-run to see all three)
+// Combat, treasure, and trap rooms work as described
+// HP and gold carry across rooms
+// Player death skips remaining rooms</code></pre>
+</div>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~10 min</span>
+    </div>
+
+    <h3>Part 3: main() — Wire It Together</h3>
+
+    <p>Add a main method that tests both pieces:</p>
+    <ol>
+        <li>Call <code>runCombat()</code> once with hardcoded stats to verify the
+            while loop in isolation</li>
+        <li>Call <code>runDungeon(1)</code> to run the full game</li>
+    </ol>
+
+    <p>Run DungeonLoop.main() several times. Results should vary — dice rolls
+    make every run different.</p>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Explain when to use while vs for based on the problem</li>
+            <li>Write a while loop for indeterminate combat rounds</li>
+            <li>Write a for loop for a fixed series of dungeon rooms</li>
+            <li>Use <code>break</code> to exit a loop early</li>
+            <li>Call a method from inside a loop and use its return value</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/dungeon-system.html">Dungeon Loop System (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — fixed-count iteration</li>
+        <li><a href="../docs/unit-04/while-loops.html">while Loops</a> — condition-based iteration</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>
