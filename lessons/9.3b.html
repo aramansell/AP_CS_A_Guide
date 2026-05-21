@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.3b Polymorphism: Type-Driven Behavior — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="9.3a.html">◀ 9.3a</a>
+    <span class="lesson-id">9.3b</span>
+    <a href="9.3c.html">9.3c ▶</a>
+</div>
+
+<h1>9.3b — Polymorphism: Building a Type-Aware System</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        Polymorphism isn't just about calling <code>attack()</code> — it's about
+        writing code that works with <em>any</em> Creature without knowing which
+        specific type it is. Today you build systems that treat all creatures the
+        same way, yet each creature behavior is unique.
+    </p>
+
+    <h3>Build 1: Creature Healer</h3>
+
+    <p>Create <code>CreatureHealer.java</code>. A healer NPC visits your party and
+    heals every creature:</p>
+    <ul>
+        <li>Method: <code>healAll(Creature[] party)</code> — loops through every creature</li>
+        <li>Each creature gets 20% of its max HP back (round to int)</li>
+        <li>After healing, print each creature's name and new HP</li>
+        <li>Only heal living creatures — dead ones stay dead</li>
+    </ul>
+
+    <pre><code>// Test with mixed party:
+Creature[] party = {new Goblin("Snag"), new Dragon("Pyrax"), new Skeleton("Bones")};
+// Apply damage first (you decide how much)
+// Then healAll()
+// Output each creature's status</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>The healer method signature says <code>Creature[] party</code>. But the actual objects are Goblin, Dragon, Skeleton. How does the loop work when it calls party[i].heal() — does it call the Creature version or the child's version?</li>
+            <li>If Goblin overrides heal() but Dragon doesn't, which heal() does a Dragon object get when called through a Creature reference?</li>
+            <li>You need max HP. Where is it stored? Is it in Creature, or must each subclass define its own?</li>
+        </ol>
+    </div>
+
+    <h3>Build 2: Creature Sorter</h3>
+
+    <p>Create <code>CreatureSorter.java</code>. Given an array of Creatures, sort them by a criteria:</p>
+    <ul>
+        <li><code>sortByHP(Creature[] creatures)</code> — highest HP first</li>
+        <li><code>sortByAttack(Creature[] creatures)</code> — highest attack first</li>
+        <li><code>printCreatureList(Creature[] creatures)</code> — formatted output</li>
+    </ul>
+
+    <p>You'll need to compare creatures by their stats. If you haven't learned sorting algorithms yet, just find the creature with the highest HP, print it, then find the next highest, repeat — a simple selection approach using nested loops.</p>
+
+    <div class="tinker">
+        <h3>Tinker: Filter by Type</h3>
+        <p>
+            Add a method <code>filterByType(Creature[] creatures, String typeName)</code>
+            that returns only creatures whose class name matches. Use
+            <code>creature.getClass().getSimpleName()</code> — check the
+            <a href="../docs/unit-09/inheritance.html">Inheritance docs</a> for how
+            getClass() works. This lets you isolate all Goblins from a mixed party.
+        </p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Null Creature</h3>
+        <p>
+            What if the party array has null slots (dead creatures removed)?
+            <code>party[i] == null</code> — your loop must skip these without crashing.
+            Where do you put the null check — before every method call? Before the
+            loop body? How does this pattern look?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Operate on Creature[] arrays polymorphically without casting</li>
+            <li>Sort/filter mixed-type collections using parent type references</li>
+            <li>Check for null references before calling methods</li>
+            <li>Explain which method version runs when called through a parent reference</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a> — dynamic dispatch, casting</li>
+        <li><a href="../docs/unit-09/inheritance.html">Inheritance</a> — getClass(), instanceof</li>
+        <li><a href="../docs/unit-07/arraylist.html">ArrayList</a> — dynamic collections</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

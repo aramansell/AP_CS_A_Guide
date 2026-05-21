@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.2b String Methods in Context — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="2.2a.html">◀ 2.2a</a>
+    <span class="lesson-id">2.2b</span>
+    <a href="2.2c.html">2.2c ▶</a>
+</div>
+
+<h1>2.2b — String Methods: Apply and Build</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        Yesterday you explored String methods by experimenting. Today you apply them
+        to solve problems. You'll write methods that take Strings in and return something
+        useful out — exactly what RPG systems do behind the scenes.
+    </p>
+
+    <h3>Recap: The Methods You'll Need</h3>
+
+    <p>Open the <a href="../docs/unit-02/string.html">String docs</a> and have them ready. You'll use:</p>
+    <ul>
+        <li><code>length()</code> — how many characters</li>
+        <li><code>substring(begin, end)</code> — extract a piece</li>
+        <li><code>indexOf(String)</code> — find where something starts</li>
+        <li><code>equals(Object)</code> — compare contents</li>
+        <li><code>toUpperCase()</code> / <code>toLowerCase()</code> — case conversion</li>
+        <li><code>trim()</code> — strip leading/trailing whitespace</li>
+    </ul>
+
+    <div class="callout trap">
+        <h3>Trap Review: == vs equals()</h3>
+        <p>Before you start, make sure you can answer this: why does <code>"sword" == "sword"</code> sometimes work but <code>a.equals(b)</code> always works? If you can't explain it, re-read the <a href="../docs/unit-02/objects-and-classes.html">Objects &amp; Classes docs</a> — look for the section on reference comparison.</p>
+    </div>
+
+    <h3>Build 1: Weapon Name Formatter</h3>
+
+    <p>Create <code>WeaponName.java</code>. Write a method called <code>formatWeapon</code> that takes a raw weapon name and returns it properly formatted:</p>
+    <ul>
+        <li>Trim whitespace from both ends</li>
+        <li>Convert to lowercase</li>
+        <li>Capitalize the first letter</li>
+    </ul>
+    <pre><code>// input → output examples (test these):
+"sWoRD  "   → "Sword"
+"   aXE"   → "Axe"
+"BOW"       → "Bow"</code></pre>
+
+    <p>
+        You'll need a way to get the first letter, convert it to uppercase, and combine
+        it with the rest of the word. The String docs show you how. This is a two-step
+        process — don't try to do it in one line.
+    </p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>What happens if your method receives an empty string <code>""</code>? Does it crash? Test it. If it does, what check could you add?</li>
+            <li>What happens if it receives <code>null</code>? Try it. This is a different kind of error. What's it called?</li>
+        </ol>
+    </div>
+
+    <h3>Build 2: Email Extractor</h3>
+
+    <p>Create <code>EmailExtractor.java</code>. In RPGs, items often have metadata embedded in strings. Given a string like <code>"player@dungeon"</code>, extract:</p>
+    <ul>
+        <li>The username — everything before the '@'</li>
+        <li>The domain — everything after the '@'</li>
+    </ul>
+    <pre><code>// input → output:
+"warrior@dungeon"  → username: "warrior", domain: "dungeon"
+"mage@castle.org"  → username: "mage",    domain: "castle.org"</code></pre>
+
+    <p>
+        You'll need <code>indexOf("@")</code> to find the split point, then
+        <code>substring</code> to extract both halves. The String docs have
+        examples of exactly this pattern.
+    </p>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: What If There's No '@'?</h3>
+        <p>
+            Run your EmailExtractor with <code>"justaname"</code> — a string with no '@'.
+            What happens? Where does indexOf return -1, and why does that break substring?
+        </p>
+        <p>
+            Fix it: if the '@' isn't found, return the original string as the username
+            and <code>""</code> as the domain. You'll need an if statement. If you're not
+            sure how, open the
+            <a href="../docs/unit-03/boolean-expressions.html">Boolean Expressions docs</a>
+            for a refresher.
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Combine substring, indexOf, and trim to parse structured strings</li>
+            <li>Handle edge cases: empty strings, missing delimiters</li>
+            <li>Use equals() (not ==) to compare String contents</li>
+            <li>Explain what happens when you call a method on a null reference</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/string.html">The String Class</a> — full method reference</li>
+        <li><a href="../docs/unit-02/objects-and-classes.html">Objects &amp; Classes</a> — reference comparison</li>
+        <li><a href="../docs/unit-03/boolean-expressions.html">Boolean Expressions</a> — if statements</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

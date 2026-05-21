@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.5b Pattern Printer — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="4.5a.html">&#9664; 4.5a</a>
+    <span class="lesson-id">4.5b</span>
+    <a href="4.5c.html">4.5c &#9654;</a>
+</div>
+
+<h1>4.5b &#8212; Pattern Printer (Build Together)</h1>
+
+<p>
+    <strong>Type:</strong> Basic Application. The teacher builds, you follow along.
+    Nested loops turn abstract loop tracing into visible output. You'll see
+    exactly what an inner loop does relative to its outer loop.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Print a right triangle of stars using nested for loops.</p>
+
+    <pre><code><span class="output">*
+**
+***
+****
+*****</span></code></pre>
+
+    <h3>Iteration 1: Single Row First</h3>
+
+    <p>Before nesting, make sure you can print a single row.
+    Create <code>PatternPrinter.java</code>:</p>
+
+    <pre><code>public class PatternPrinter {
+    public static void main(String[] args) {
+        // Print 5 stars on one line
+        for (int i = 0; i < 5; i++) {
+            System.out.print("*");
+        }
+        System.out.println(); // move to next line
+    }
+}</code></pre>
+
+    <p>Run it. You should see <code>*****</code> on one line.</p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>What's the difference between <code>print</code> and
+                <code>println</code> here? Why do we need both?</li>
+            <li>If you changed the loop to <code>i < 3</code>, how
+                many stars would print?</li>
+        </ol>
+    </div>
+
+    <h3>Iteration 2: Repeat the Row (Broken!)</h3>
+
+    <p>Wrap the existing code in another for loop. Let's see what
+    happens:</p>
+
+    <pre><code>for (int row = 0; row < 5; row++) {
+    for (int i = 0; i < 5; i++) {
+        System.out.print("*");
+    }
+    System.out.println();
+}</code></pre>
+
+    <p>Run it. You get a 5&#215;5 square of stars. That's not a triangle.</p>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>The inner loop always prints 5 stars &#8212; every row is the
+        same length. To make a triangle, row 0 should print 1 star,
+        row 1 should print 2 stars, row 2 should print 3 stars...</p>
+        <p><strong>What needs to change in the inner loop's condition?</strong>
+        The condition currently says <code>i < 5</code>. What variable
+        from the outer loop could replace the 5?</p>
+    </div>
+
+    <h3>Iteration 3: The Inverted Triangle Trap</h3>
+
+    <p>Change the inner loop's condition to <code>i < row</code>.
+    Run it. You get:</p>
+
+    <pre><code>
+*
+**
+***
+****</code></pre>
+
+    <p>Almost right, but row 0 printed 0 stars. Why?</p>
+
+    <div class="tinker">
+        <h3>Tinker Challenge</h3>
+        <p>Fix it so row 0 prints 1 star and row 4 prints 5 stars.
+        The fix is one character. (Hint: should the condition be
+        <code>i < row</code> or <code>i <= row</code>? Or should
+        <code>row</code> start at 1 instead of 0?)</p>
+    </div>
+
+    <h3>Iteration 4: Different Patterns</h3>
+
+    <p>Now that you understand how the outer row variable controls
+    the inner loop, try these patterns. For each one, write pseudocode
+    BEFORE you write Java:</p>
+
+    <pre><code>*****          *               *****
+****           **              ****
+***            ***             ***
+**             ****            **
+*              *****           *</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>For the middle triangle (spaces before stars): how
+                many spaces do you need on each row? What's the
+                relationship between the row number and the number
+                of spaces?</li>
+            <li>Why does nested loop tracing matter for your RPG?
+                Think about your TileMap: what two things are you
+                looping over to draw every tile?</li>
+        </ol>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/for-loops.html">For Loops</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-04/loop-analysis.html">Loop Analysis</a></li>
+        <li><a href="../docs/unit-04/while-loops.html">While vs For</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

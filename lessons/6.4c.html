@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.4c Card Deck — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="6.4b.html">&#9664; 6.4b</a>
+    <span class="lesson-id">6.4c</span>
+    <a href="6.5a.html">6.5a &#9654;</a>
+</div>
+
+<h1>6.4c &#8212; Card Deck: Array of Objects</h1>
+
+<p>
+    <strong>Type:</strong> Expand Application. You've built arrays of primitives
+    &#8212; now fill an array with your own Card objects. Shuffle, deal, and
+    print. Every card game starts here.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Build a <code>Deck</code> class that creates 52 Card objects, stores
+    them in an array, shuffles them, and deals 5 cards.</p>
+
+    <pre><code><span class="output">=== DECK (first 5 after shuffle) ===
+7 of Hearts
+King of Diamonds
+3 of Spades
+Ace of Clubs
+10 of Hearts</span></code></pre>
+
+    <p><strong>Reference:</strong>
+    <a href="../docs/unit-06/card-deck.html">Card Deck Walkthrough</a> &#8212;
+    full reference.</p>
+
+    <h3>Build It: Deck</h3>
+
+    <p>Create <code>Deck.java</code>. You'll need your <code>Card.java</code>
+    from 5.4b. Start with this skeleton:</p>
+
+    <pre><code>public class Deck {
+    private Card[] cards;
+    private int nextCard;  // tracks which card to deal next
+
+    public Deck() {
+        cards = new Card[52];
+        nextCard = 0;
+
+        String[] suits = {"Spades", "Hearts", "Diamonds", "Clubs"};
+        String[] ranks = {"Ace","2","3","4","5","6","7","8","9","10",
+                          "Jack","Queen","King"};
+
+        // YOUR CODE: nested loops to fill cards[]
+        // Outer loop: suits. Inner loop: ranks.
+        // Each iteration: cards[something] = new Card(suit, rank);
+    }
+}</code></pre>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>You have two arrays (suits has 4, ranks has 13) and need
+        to fill 52 slots. How do you compute the array index? If you
+        use <code>cards[i * 13 + j]</code>, trace it: suit index 0
+        rank index 0 goes to slot 0. Suit index 1 rank index 0 goes
+        to slot 13. Check your math before coding.</p>
+    </div>
+
+    <h3>Shuffle Method</h3>
+
+    <p>Here's the shuffle algorithm. Type it yourself &#8212; don't copy-paste:</p>
+
+    <pre><code>public void shuffle() {
+    for (int i = 0; i < cards.length; i++) {
+        int swapIndex = (int) (Math.random() * cards.length);
+        Card temp = cards[i];
+        cards[i] = cards[swapIndex];
+        cards[swapIndex] = temp;
+    }
+    nextCard = 0;  // reset the deal position
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why is the swap temporary variable <code>Card temp</code>
+                and not <code>int temp</code>? What type must it be?</li>
+            <li>What does setting <code>nextCard = 0</code> after shuffle
+                do? What would happen if you left it unchanged?</li>
+            <li>If you shuffled 52 cards, how many total swaps does
+                this loop do? Is every swap productive?</li>
+        </ol>
+    </div>
+
+    <h3>Deal Method</h3>
+
+    <pre><code>public Card deal() {
+    if (nextCard < cards.length) {
+        Card c = cards[nextCard];
+        nextCard++;
+        return c;
+    }
+    return null;  // deck is empty
+}</code></pre>
+
+    <div class="tinker">
+        <h3>Extend It (pick one)</h3>
+        <ul>
+            <li>Add a <code>dealHand(int n)</code> method that returns
+                an array of n cards.</li>
+            <li>Add a method that checks if a dealt hand contains a
+                pair, three of a kind, or a flush.</li>
+            <li>Write a <code>DeckTester</code> that deals two 5-card
+                hands and prints both.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-06/card-deck.html">Card Deck Walkthrough</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-06/arrays-intro.html">Array Basics</a></li>
+        <li><a href="../docs/unit-06/array-algorithms.html">Array Algorithms</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

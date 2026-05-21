@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.1b Conditional Scoring — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="3.1a.html">◀ 3.1a</a>
+    <span class="lesson-id">3.1b</span>
+    <a href="3.1c.html">3.1c ▶</a>
+</div>
+
+<h1>3.1b — Conditional Scoring: Apply Your if Statements</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Score Calculator</h3>
+        <p>Yesterday you explored how <code>if</code> and relational operators let your program make decisions. Today you'll apply that to a scoring system — the kind that shows up in every game.</p>
+        <p>Create a class called <code>ScoreCalculator</code> with a <code>main</code> method. The program should:</p>
+        <ol>
+            <li>Declare an <code>int score</code> and assign it a value (start with 75).</li>
+            <li>Use <strong>if / else if / else</strong> to print a letter grade:
+                <ul>
+                    <li>90+ → "A"</li>
+                    <li>80-89 → "B"</li>
+                    <li>70-79 → "C"</li>
+                    <li>60-69 → "D"</li>
+                    <li>Below 60 → "F"</li>
+                </ul>
+            </li>
+            <li>Add a second check: if the score is <strong>exactly</strong> 100, also print "Perfect Score!"</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Extend: Bonus Round</h3>
+        <p>Add a <code>boolean hasBonus</code> variable. If <code>hasBonus</code> is true, add 5 points to the score <em>before</em> calculating the letter grade. Test with score = 87 and hasBonus = true. What letter grade do you get now?</p>
+    </div>
+
+    <div class="section">
+        <h3>Think</h3>
+        <p>What happens if you put the "Perfect Score" check <em>after</em> the letter grade chain? What if you put it <em>before</em>? Try both. Which order makes more sense?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-3/booleans.html">Booleans &amp; if Statements</a></li>
+        <li><a href="../docs/unit-1/output.html">Printing &amp; Output</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.1c Tile Map Editor — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="8.1b.html">◀ 8.1b</a>
+    <span class="lesson-id">8.1c</span>
+    <a href="8.2a.html">8.2a ▶</a>
+</div>
+
+<h1>8.1c — Tile Map Editor: Paint Your Dungeon</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: TileMap Class</h3>
+        <p>Tile-based games use a 2D array of integers where each number represents a different tile type: 0=floor, 1=wall, 2=door, 3=chest, 4=enemy. Build the editor that manipulates this map.</p>
+        <p>Create a class called <code>TileMap</code> with <code>int[][] map = new int[8][8]</code>:</p>
+        <ol>
+            <li>Initialize: fill borders with 1 (walls), interior with 0 (floor).</li>
+            <li>Method <code>void setTile(int row, int col, int type)</code>: set a tile. Refuse if out of bounds or if it's a border wall.</li>
+            <li>Method <code>void placeRoom(int startRow, int startCol, int width, int height)</code>: clear a rectangular area to floor (0), surrounded by walls (1).</li>
+            <li>Method <code>void render()</code>: print the map using symbols: '.' for floor, '#' for wall, '+' for door, '$' for chest, 'E' for enemy.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Test: Build a Level</h3>
+        <p>Place a 3x3 room at (2, 2). Place a chest at (3, 3). Place an enemy at (2, 3). Place a door connecting the room to the edge. Render after each operation.</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-8/2d-arrays.html">2D Arrays</a></li>
+        <li><a href="../docs/unit-4/iteration.html">Iteration</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

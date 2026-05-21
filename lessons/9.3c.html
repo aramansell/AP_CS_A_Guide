@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.3c Polymorphism: Battle System — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="9.3b.html">◀ 9.3b</a>
+    <span class="lesson-id">9.3c</span>
+    <a href="9.4a.html">9.4a ▶</a>
+</div>
+
+<h1>9.3c — Polymorphism: Build a Turn-Based Battle System</h1>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <p>
+        Now pull everything together: a complete turn-based battle system that
+        operates entirely on Creature references. No Goblin, Dragon, or Skeleton
+        types appear in the battle logic — yet each creature fights with its own
+        unique behavior.
+    </p>
+
+    <div class="callout">
+        <strong>This is the pattern that makes RPG engines extensible.</strong>
+        When you add a new creature type six months from now, the battle system
+        works without changing a single line.
+    </div>
+
+    <h3>Build: BattleSystem.java</h3>
+
+    <p>The system has three parts:</p>
+
+    <p><strong>Part 1: Team Setup</strong></p>
+    <ul>
+        <li>Player's party: ArrayList&lt;Creature&gt; with 3 creatures (choose from Goblin, Dragon, Skeleton — give them names and unique stats)</li>
+        <li>Enemy party: ArrayList&lt;Creature&gt; with 3 creatures (different mix)</li>
+        <li>Store both teams in a <code>Battle</code> class that holds the two ArrayLists</li>
+    </ul>
+
+    <p><strong>Part 2: The Turn Loop</strong></p>
+    <ul>
+        <li>Each round: player's alive creatures each attack a random enemy</li>
+        <li>Then: each surviving enemy attacks a random player creature</li>
+        <li>After each attack: check if the target died (HP <= 0) — if so, remove from team</li>
+        <li>Continue until one team has no living creatures</li>
+    </ul>
+
+    <pre><code>═══ BATTLE ═══
+Round 1
+  Snag (Goblin) attacks Pyrax (Dragon) for 8 damage!
+  Pyrax has 92 HP remaining.
+  Elara (Skeleton) attacks Bones (Skeleton) for 5 damage!
+  Bones has 25 HP remaining.
+  ...
+
+═══ ROUND SUMMARY ═══
+Your team: 2 alive, 1 defeated
+Enemy team: 1 alive, 2 defeated
+
+Your team wins!</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Your <code>selectRandomTarget(ArrayList&lt;Creature&gt; enemies)</code> method works with Creature references. How do you ensure you only pick ALIVE targets?</li>
+            <li>After a creature dies, should you remove it from the ArrayList immediately or mark it dead and skip it? What happens to the ArrayList indices if you remove during iteration?</li>
+            <li>Each creature's <code>attack()</code> method returns different damage amounts (Goblin 3-8, Dragon 15-30, Skeleton 5-12). How does the battle loop handle this without knowing the type?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker: Special Abilities</h3>
+        <p>
+            Add a <code>specialAbility()</code> method to Creature. Each subclass
+            defines its own:
+        </p>
+        <ul>
+            <li><strong>Goblin:</strong> Steal gold — reduces enemy attack by 2 next turn</li>
+            <li><strong>Dragon:</strong> Fire breath — hits ALL enemies for 10-15 damage</li>
+            <li><strong>Skeleton:</strong> Reassemble — if HP is 0, 20% chance to revive with 10 HP</li>
+        </ul>
+        <p>
+            Each creature has a 25% chance to use its special ability each turn instead
+            of a normal attack. The battle loop checks <code>Math.random() < 0.25</code>
+            and calls <code>specialAbility()</code> — still polymorphically, still without
+            knowing the creature type.
+        </p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: Concurrent Modification</h3>
+        <p>
+            If you remove dead creatures from the ArrayList inside a for-each loop,
+            Java throws <code>ConcurrentModificationException</code>. Try it — then
+            research two solutions:
+        </p>
+        <ol>
+            <li>Use a standard for loop running backward (i--) so removal doesn't shift indices you haven't visited yet</li>
+            <li>Use an Iterator with <code>iterator.remove()</code></li>
+        </ol>
+        <p>Which approach is cleaner? Which one avoids the bug entirely?</p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Build a complete turn-based system using only parent-type references</li>
+            <li>Handle creature death and removal from battle safely</li>
+            <li>Add special abilities polymorphically without modifying battle logic</li>
+            <li>Debug ConcurrentModificationException and implement safe removal</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a> — full reference</li>
+        <li><a href="../docs/unit-09/inheritance.html">Inheritance</a> — superclass patterns</li>
+        <li><a href="../docs/unit-07/arraylist.html">ArrayList</a> — iteration and concurrent modification</li>
+        <li><a href="../docs/unit-04/while-loops.html">while Loops</a> — game loop patterns</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

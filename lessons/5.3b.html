@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.3b Inventory with Validation — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="5.3a.html">◀ 5.3a</a>
+    <span class="lesson-id">5.3b</span>
+    <a href="5.3c.html">5.3c ▶</a>
+</div>
+
+<h1>5.3b — Accessors &amp; Mutators: Getters with Guardrails</h1>
+
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Backpack with Limits</h3>
+        <p>Yesterday you learned why accessor (getter) and mutator (setter) methods protect your data. Today you'll build an inventory system that uses mutators to enforce rules — no negative gold, no items over the weight limit.</p>
+        <p>Create a class called <code>Backpack</code>:</p>
+        <ol>
+            <li>Private instance variables: <code>int gold</code>, <code>int currentWeight</code>, <code>int maxWeight</code></li>
+            <li>Constructor takes <code>maxWeight</code>. Gold starts at 0, currentWeight at 0.</li>
+            <li>Getter <code>getGold()</code>, getter <code>getCurrentWeight()</code>.</li>
+            <li>Mutator <code>boolean addItem(int itemWeight)</code>: returns false if it would exceed maxWeight.</li>
+            <li>Mutator <code>void addGold(int amount)</code>: refuses to add negative amounts. Print a warning if someone tries.</li>
+            <li>Mutator <code>boolean spendGold(int amount)</code>: returns false if not enough gold.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Test Edge Cases</h3>
+        <p>Create a Backpack(maxWeight=20). Try addItem(25) — should fail. Try addGold(-50) — should refuse. Try spendGold(100) when gold is 0 — should fail. Do all your guards work?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-5/accessors.html">Accessors &amp; Mutators</a></li>
+        <li><a href="../docs/unit-3/booleans.html">Booleans &amp; if Statements</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7.1c RPG Quest Log — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="7.1b.html">◀ 7.1b</a>
+    <span class="lesson-id">7.1c</span>
+    <a href="7.2a.html">7.2a ▶</a>
+</div>
+
+<h1>7.1c — RPG Quest Log: Dynamic Quest Tracking</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: QuestLog Class</h3>
+        <p>Quest logs grow as you accept quests and shrink as you complete them. You don't know how many quests there will be — ArrayList is perfect for this.</p>
+        <p>Create a class called <code>QuestLog</code> with an <code>ArrayList&lt;String&gt; activeQuests</code> and an <code>ArrayList&lt;String&gt; completedQuests</code>:</p>
+        <ol>
+            <li><code>void acceptQuest(String name)</code>: add to activeQuests. But first, check if it's already active or completed — if so, print a message and don't add.</li>
+            <li><code>void completeQuest(String name)</code>: remove from activeQuests, add to completedQuests. If not found in active, print "No such active quest."</li>
+            <li><code>void abandonQuest(String name)</code>: remove from activeQuests without adding to completed.</li>
+            <li><code>void displayActive()</code>: print all active quests with numbers (1-based).</li>
+            <li><code>int totalCompleted()</code>: return completedQuests.size().</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Test Flow</h3>
+        <p>Accept "Slay the Dragon", "Find the Herb", "Rescue the Smith". Complete "Find the Herb". Try to accept "Find the Herb" again — should refuse. Display active quests. What's left?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-7/arraylist.html">ArrayList</a></li>
+        <li><a href="../docs/unit-3/comparing.html">Comparing Objects</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

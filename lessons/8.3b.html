@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.3b Tic-Tac-Toe — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="8.3a.html">&#9664; 8.3a</a>
+    <span class="lesson-id">8.3b</span>
+    <a href="8.3c.html">8.3c &#9654;</a>
+</div>
+
+<h1>8.3b &#8212; Tic-Tac-Toe (Build Together)</h1>
+
+<p>
+    <strong>Type:</strong> Basic Application. The teacher builds, you follow along.
+    A 2D array as a game board &#8212; print it, place moves, and detect wins.
+    Every grid-based game starts with this skeleton.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~35 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Build a two-player Tic-Tac-Toe game using a 3&#215;3
+    <code>char[][]</code> board. Players alternate placing X and O until
+    someone wins or the board is full.</p>
+
+    <pre><code><span class="output">  0 1 2
+0 [ ][ ][ ]
+1 [ ][ ][ ]
+2 [ ][ ][ ]
+
+Player X: enter row col > 1 1
+
+  0 1 2
+0 [ ][ ][ ]
+1 [ ][X][ ]
+2 [ ][ ][ ]</span></code></pre>
+
+    <p><strong>Reference:</strong>
+    <a href="../docs/unit-08/tic-tac-toe.html">Tic-Tac-Toe Walkthrough</a>
+    &#8212; full reference.</p>
+
+    <h3>Iteration 1: Create the Board</h3>
+
+    <p>Create <code>TicTacToe.java</code>:</p>
+
+    <pre><code>public class TicTacToe {
+    public static void main(String[] args) {
+        char[][] board = new char[3][3];
+
+        // Initialize with spaces
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                board[r][c] = ' ';
+            }
+        }
+
+        printBoard(board);
+    }
+
+    public static void printBoard(char[][] board) {
+        System.out.println("  0 1 2");
+        for (int r = 0; r < 3; r++) {
+            System.out.print(r + " ");
+            for (int c = 0; c < 3; c++) {
+                System.out.print("[" + board[r][c] + "]");
+            }
+            System.out.println();
+        }
+    }
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why use <code>char[][]</code> instead of
+                <code>String[][]</code>? What's the difference?</li>
+            <li>What would the board look like if you forgot to fill
+                it with spaces? Try it.</li>
+            <li>Why is <code>printBoard</code> static? What would need
+                to change to make it non-static?</li>
+        </ol>
+    </div>
+
+    <h3>Iteration 2: Place Moves</h3>
+
+    <p>Add Scanner and let two players alternate:</p>
+
+    <pre><code>Scanner input = new Scanner(System.in);
+char currentPlayer = 'X';
+
+while (true) {
+    System.out.print("Player " + currentPlayer + ": enter row col > ");
+    int row = input.nextInt();
+    int col = input.nextInt();
+
+    board[row][col] = currentPlayer;
+    printBoard(board);
+
+    // Switch player
+    if (currentPlayer == 'X') {
+        currentPlayer = 'O';
+    } else {
+        currentPlayer = 'X';
+    }
+}</code></pre>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>What happens if a player types "1 1" on a square that
+        already has an X or O? It overwrites it! Add a check:
+        only place the move if the square is still empty. Also:
+        what if they type "5 5"? Add bounds checking.</p>
+    </div>
+
+    <h3>Iteration 3: Win Detection (The Hard Part)</h3>
+
+    <p>You need to check 8 possible wins: 3 rows, 3 columns, 2 diagonals.
+    DO NOT write 8 separate if-statements. Use loops:</p>
+
+    <pre><code>public static boolean checkWin(char[][] board, char player) {
+    // Check rows
+    for (int r = 0; r < 3; r++) {
+        if (board[r][0] == player &&
+            board[r][1] == player &&
+            board[r][2] == player) {
+            return true;
+        }
+    }
+    // YOUR CODE: check columns (same idea, swap r and c)
+    // YOUR CODE: check two diagonals
+    return false;
+}</code></pre>
+
+    <div class="tinker">
+        <h3>Tinker Challenge</h3>
+        <p>The win check above works but doesn't scale &#8212; what if
+        you wanted a 5&#215;5 board? Rewrite the row check using a loop
+        that checks every cell in the row without hardcoding each
+        column index. (Hint: you'll need a boolean flag inside the
+        outer loop.)</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why is the grid-based Tic-Tac-Toe board the perfect
+                model for your RPG's TileMap? What's the same?</li>
+            <li>How would you adapt this board for a Connect Four
+                game (6 rows, 7 columns, pieces drop to the bottom)?</li>
+        </ol>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-08/tic-tac-toe.html">Tic-Tac-Toe Walkthrough</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-08/2d-arrays.html">2D Arrays</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-08/2d-algorithms.html">2D Array Algorithms</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

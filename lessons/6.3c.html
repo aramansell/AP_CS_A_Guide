@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.3c Combat Tracker — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="6.3b.html">◀ 6.3b</a>
+    <span class="lesson-id">6.3c</span>
+    <a href="6.4a.html">6.4a ▶</a>
+</div>
+
+<h1>6.3c — Combat Initiative Tracker: Sort and Shift</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Turn Order System</h3>
+        <p>In tactical RPGs, combatants act in turn order based on their speed stat. When someone's turn ends, they move to the back of the queue. You'll build this using array shift operations.</p>
+        <p>Create a class called <code>TurnOrder</code>:</p>
+        <ol>
+            <li>Declare arrays: <code>String[] combatants</code> and <code>int[] speeds</code> — parallel arrays of size 6.</li>
+            <li>Initialize with 4 combatants: "Hero"(12), "Goblin"(8), "Mage"(15), "Orc"(6).</li>
+            <li>Method <code>void sortBySpeed()</code>: sort combatants and speeds together by speed descending (highest first).</li>
+            <li>Method <code>String takeTurn()</code>: return the name of the first combatant, then rotate the array — move first element to the end, shift everything else left.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Test Multiple Rounds</h3>
+        <p>Call takeTurn() 8 times in a loop and print who acts. Does the order cycle correctly? After a full cycle, is the order the same as the start?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-6/algorithms.html">Array Algorithms</a></li>
+        <li><a href="../docs/unit-6/traversal.html">Array Traversal</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

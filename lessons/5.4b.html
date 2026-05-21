@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.4b Card Class — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="5.4a.html">&#9664; 5.4a</a>
+    <span class="lesson-id">5.4b</span>
+    <a href="5.4c.html">5.4c &#9654;</a>
+</div>
+
+<h1>5.4b &#8212; The Card Class (Build Together)</h1>
+
+<p>
+    <strong>Type:</strong> Basic Application. The teacher builds, you follow along.
+    Your first multi-field class &#8212; private fields, a constructor, getters,
+    and a toString. Every class you write from now on follows this skeleton.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Build a <code>Card</code> class with a suit and a rank. Then write
+    a <code>CardTester</code> that creates a few cards and prints them.</p>
+
+    <pre><code><span class="output">Ace of Spades
+7 of Hearts
+Queen of Diamonds</span></code></pre>
+
+    <p><strong>Reference:</strong>
+    <a href="../docs/unit-05/card.html">Card Class Walkthrough</a> &#8212;
+    the full reference with the constructor formula.</p>
+
+    <h3>Iteration 1: The Skeleton</h3>
+
+    <p>Create <code>Card.java</code>. This is the minimum structure every
+    class needs:</p>
+
+    <pre><code>public class Card {
+    // Step 1: PRIVATE fields
+    private String suit;
+    private String rank;
+
+    // Step 2: CONSTRUCTOR (same name as class, NO return type)
+    public Card() {
+        suit = "Spades";
+        rank = "Ace";
+    }
+}</code></pre>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>Create a <code>CardTester.java</code> with a main method.
+        Try <code>Card c = new Card();</code> then
+        <code>System.out.println(c.suit);</code>. What error do you get?
+        Why? Fix it WITHOUT making <code>suit</code> public.</p>
+    </div>
+
+    <h3>Iteration 2: Getters</h3>
+
+    <p>Since the fields are private, you need public methods to read them:</p>
+
+    <pre><code>public String getSuit() {
+    return suit;
+}
+
+public String getRank() {
+    return rank;
+}</code></pre>
+
+    <p>Now in CardTester: <code>c.getSuit()</code> works. Try it.</p>
+
+    <h3>Iteration 3: The Constructor Trap</h3>
+
+    <p>Right now, every Card is the Ace of Spades. That's useless.
+    We want <code>new Card("Hearts", "7")</code>. But if you just add
+    parameters, this breaks:</p>
+
+    <div class="callout trap">
+    <pre><code>// If you ADD a parameterized constructor:
+public Card(String s, String r) {
+    suit = s;
+    rank = r;
+}
+
+// Then this BREAKS in CardTester:
+Card c = new Card();  // ERROR: no default constructor!</code></pre>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why does adding a parameterized constructor remove the
+                default one? (The compiler only gives you a free default
+                if you write NO constructors at all.)</li>
+            <li>How do you fix this so BOTH <code>new Card()</code> and
+                <code>new Card("Hearts", "7")</code> work?</li>
+        </ol>
+    </div>
+
+    <h3>Iteration 4: toString()</h3>
+
+    <p>Right now <code>System.out.println(c)</code> prints garbage like
+    <code>Card@15db9742</code>. Add a toString():</p>
+
+    <pre><code>public String toString() {
+    return rank + " of " + suit;
+}</code></pre>
+
+    <p>Now <code>System.out.println(c)</code> prints "Ace of Spades".
+    Why does it automatically call toString()? Check the docs.</p>
+
+    <div class="checklist">
+        <h3>Checkpoint &#8212; Your Card class must have:</h3>
+        <ul>
+            <li>Two private fields: <code>suit</code> and <code>rank</code></li>
+            <li>A default constructor AND a parameterized constructor</li>
+            <li><code>getSuit()</code> and <code>getRank()</code></li>
+            <li>A <code>toString()</code> method</li>
+            <li>Tested in CardTester with at least 3 different cards</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-05/card.html">Card Class Walkthrough</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-05/classes-intro.html">Intro to Classes</a></li>
+        <li><a href="../docs/unit-05/constructors.html">Constructors</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

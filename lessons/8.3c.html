@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.3c Connect Four — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="8.3b.html">&#9664; 8.3b</a>
+    <span class="lesson-id">8.3c</span>
+    <a href="8.4a.html">8.4a &#9654;</a>
+</div>
+
+<h1>8.3c &#8212; Connect Four</h1>
+
+<p>
+    <strong>Type:</strong> Expand Application. Tic-Tac-Toe was a warm-up.
+    Now build a bigger board (6&#215;7), gravity-based piece placement, and
+    four-in-a-row win detection in every direction. This is a real game.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~35 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Build Connect Four. Pieces drop to the lowest empty row in the
+    chosen column. Win detection checks horizontal, vertical, and both
+    diagonal directions for four in a row.</p>
+
+    <pre><code><span class="output"> 0 1 2 3 4 5 6
+[ ][ ][ ][ ][ ][ ][ ]
+[ ][ ][ ][ ][ ][ ][ ]
+[ ][ ][ ][ ][ ][ ][ ]
+[ ][ ][ ][ ][ ][ ][ ]
+[ ][ ][X][ ][ ][ ][ ]
+[ ][O][X][O][ ][ ][ ]
+
+Player X: choose column (0-6) > 2</span></code></pre>
+
+    <p><strong>Reference:</strong>
+    <a href="../docs/unit-08/connect-four.html">Connect Four
+    Walkthrough</a> &#8212; full reference.</p>
+
+    <h3>Build It: Gravity First</h3>
+
+    <p>Create <code>ConnectFour.java</code>. Use a <code>char[][]</code>
+    board of 6 rows &#215; 7 columns. The key difference from Tic-Tac-Toe:
+    the player only picks a COLUMN. The piece falls to the lowest
+    empty row in that column.</p>
+
+    <pre><code>// Drop a piece in the given column for the given player
+// Returns the row it landed in, or -1 if column is full
+public static int dropPiece(char[][] board, int col, char player) {
+    // Start from the BOTTOM row and go UP
+    for (int row = board.length - 1; row >= 0; row--) {
+        if (board[row][col] == ' ') {
+            board[row][col] = player;
+            return row;
+        }
+    }
+    return -1;  // column full
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why does the loop start at <code>board.length - 1</code>
+                and go down to 0? What would happen if it went the
+                other way?</li>
+            <li>How does <code>return row</code> inside the loop end
+                the method immediately? Why is that useful here?</li>
+        </ol>
+    </div>
+
+    <h3>Win Detection: Four Directions</h3>
+
+    <p>Connect Four checks four directions from the last-placed piece.
+    For each direction (horizontal, vertical, diagonal-up, diagonal-down),
+    count how many same-color pieces are in a line.</p>
+
+    <pre><code>// Check if the player just won starting from (row, col)
+public static boolean checkWin(char[][] board, int row, int col, char player) {
+    // Check horizontal: count left + count right
+    // Check vertical: count down only (pieces only fall down)
+    // Check diagonal / : count up-left + down-right
+    // Check diagonal \ : count up-right + down-left
+    // If any direction has >= 4, return true
+    return false;  // placeholder
+}</code></pre>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>The obvious approach is 4 separate loops, one per direction.
+        But there's a smarter way: use direction arrays. Two arrays
+        define 4 directions as (rowDelta, colDelta) pairs: right (0,1),
+        down (1,0), down-right (1,1), down-left (1,-1). One loop nests
+        inside another. Can you figure out the pattern?</p>
+        <p><em>Hint: check the Connect Four walkthrough if you get
+        stuck. But try to sketch it on paper first.</em></p>
+    </div>
+
+    <div class="tinker">
+        <h3>Extend It (pick one)</h3>
+        <ul>
+            <li>Add a simple AI: after the player moves, the computer
+                picks a random valid column.</li>
+            <li>Add a smarter AI: the computer prefers the center
+                column, then blocks opponent wins.</li>
+            <li>Add a move counter and detect a draw when the board
+                fills up with no winner.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-08/connect-four.html">Connect Four Walkthrough</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-08/2d-arrays.html">2D Arrays</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-08/2d-algorithms.html">2D Array Algorithms</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

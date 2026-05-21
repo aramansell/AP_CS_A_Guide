@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.4c BankAccount — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="5.4b.html">&#9664; 5.4b</a>
+    <span class="lesson-id">5.4c</span>
+    <a href="5.5a.html">5.5a &#9654;</a>
+</div>
+
+<h1>5.4c &#8212; BankAccount: Mutators and Validation</h1>
+
+<p>
+    <strong>Type:</strong> Expand Application. Card was read-only &#8212; you
+    could only get values. Now add methods that CHANGE state: deposit,
+    withdraw. And guardrails that prevent bad state.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Build a <code>BankAccount</code> class where money can move.
+    Deposits increase the balance. Withdrawals decrease it &#8212; but
+    only if there's enough money. Overdraft prevention built in.</p>
+
+    <pre><code><span class="output">Created account #1001 for Alice with $500.00
+Deposited $200.00. New balance: $700.00
+Withdrew $100.00. New balance: $600.00
+Withdrew $900.00: INSUFFICIENT FUNDS
+Final balance: $600.00</span></code></pre>
+
+    <p><strong>Reference:</strong>
+    <a href="../docs/unit-05/bank-account.html">BankAccount Walkthrough</a>
+    &#8212; the full reference.</p>
+
+    <h3>Build It: BankAccount</h3>
+
+    <p>Create <code>BankAccount.java</code> with these fields:</p>
+    <ul>
+        <li><code>private int accountNumber</code></li>
+        <li><code>private String ownerName</code></li>
+        <li><code>private double balance</code></li>
+    </ul>
+
+    <p>Start with a constructor and getters (same pattern as Card).
+    Then add these methods:</p>
+
+    <pre><code>public void deposit(double amount) {
+    // YOUR CODE: add amount to balance
+    // Print the new balance
+}
+
+public void withdraw(double amount) {
+    // YOUR CODE: subtract amount from balance
+    // BUT FIRST: check if balance >= amount
+    // If not, print "INSUFFICIENT FUNDS" and DO NOT change balance
+}</code></pre>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>What happens if someone calls <code>deposit(-50)</code>? Does
+        the balance go down? Should it? Add a guard: if the amount is
+        negative, print an error and don't change the balance. The
+        same guard should go on <code>withdraw()</code>.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why is <code>withdraw()</code> a mutator but
+                <code>getBalance()</code> is an accessor?</li>
+            <li>Where does the overdraft check go &#8212; in the BankAccount
+                class or in the tester? Why does it belong inside the
+                class and not outside?</li>
+            <li>What would happen if <code>balance</code> were public
+                instead of private? How could that break the overdraft
+                protection?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Extend It (pick one)</h3>
+        <ul>
+            <li>Add a <code>transferTo(BankAccount other, double amount)</code>
+                method that moves money between two accounts.</li>
+            <li>Add a transaction history: store the last 5 transactions
+                and add a <code>printHistory()</code> method.</li>
+            <li>Add interest: a <code>applyInterest(double rate)</code>
+                method that increases balance by rate%.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-05/bank-account.html">BankAccount Walkthrough</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-05/classes-intro.html">Intro to Classes</a></li>
+        <li><a href="../docs/unit-05/mutator-methods.html">Mutator Methods</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

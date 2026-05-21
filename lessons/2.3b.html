@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.3b Scanner in Context — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="2.3a.html">◀ 2.3a</a>
+    <span class="lesson-id">2.3b</span>
+    <a href="2.3c.html">2.3c ▶</a>
+</div>
+
+<h1>2.3b — Scanner: Character Creation Terminal</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        You know how to read one value. But RPG character creation needs many:
+        name, class, stats, weapon. Today you build a terminal-based character
+        creator that asks the player a series of questions and assembles a
+        character sheet.
+    </p>
+
+    <div class="callout trap">
+        <strong>Buffer trap refresher:</strong> Every time you mix <code>nextInt()</code>
+        or <code>nextDouble()</code> with <code>nextLine()</code>, the leftover newline
+        will eat your next String read. You MUST add an extra <code>nextLine()</code> to
+        consume it. If you're not sure why, re-read the
+        <a href="../docs/unit-02/scanner.html">Scanner docs — buffer trap section</a>.
+    </div>
+
+    <h3>Build: CharacterCreator.java</h3>
+
+    <p>Create a program that asks the player these questions in order:</p>
+    <ol>
+        <li>"Enter your character name:" — read with nextLine()</li>
+        <li>"Choose a class (warrior/mage/rogue):" — read with nextLine()</li>
+        <li>"Enter strength (1-20):" — read with nextInt()</li>
+        <li>"Enter dexterity (1-20):" — read with nextInt()</li>
+        <li>"Enter intelligence (1-20):" — read with nextInt()</li>
+        <li>"Enter starting gold:" — read with nextDouble()</li>
+    </ol>
+
+    <p>Then print a formatted character sheet:</p>
+    <pre><code>═══════════════════════════════
+  CHARACTER SHEET
+═══════════════════════════════
+  Name: Thorn
+  Class: rogue
+  STR: 14  DEX: 18  INT: 10
+  Gold: 25.5
+═══════════════════════════════</code></pre>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: Find the Buffer Traps</h3>
+        <p>
+            There are at least THREE buffer traps in this sequence. Find them before
+            you run the program. Write down which lines will break and why. Then run
+            it — were you right?
+        </p>
+        <p>
+            Fix every trap. Your program must read all six values correctly with no
+            skips or crashes.
+        </p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>You read strength, dexterity, and intelligence one after another. Did any of those cause buffer traps? Why or why not?</li>
+            <li>After nextDouble() for gold, you ask for the next input. What trap appears? Why is it the same pattern as nextInt()?</li>
+            <li>Why does nextLine() after nextDouble() consume the newline, but nextInt() after nextInt() works fine?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Chain multiple Scanner reads without buffer traps</li>
+            <li>Identify every location where nextInt/nextDouble is followed by nextLine</li>
+            <li>Format multi-line output with borders and aligned columns</li>
+            <li>Explain why consecutive nextInt() calls DON'T need buffer fixes</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/scanner.html">Scanner — Reading Input</a> — buffer trap, all read methods</li>
+        <li><a href="../docs/unit-02/string.html">The String Class</a> — formatting output</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

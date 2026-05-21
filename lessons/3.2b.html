@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.2b Boolean Logic Puzzles — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="3.2a.html">◀ 3.2a</a>
+    <span class="lesson-id">3.2b</span>
+    <a href="3.2c.html">3.2c ▶</a>
+</div>
+
+<h1>3.2b — Boolean Logic: Combining Conditions in Practice</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Access Checker</h3>
+        <p>Many programs check multiple conditions at once. Create a class called <code>AccessChecker</code> that decides whether a player can enter a restricted area.</p>
+        <ol>
+            <li>Declare three variables:
+                <ul>
+                    <li><code>int playerLevel</code> — set to 5</li>
+                    <li><code>boolean hasKey</code> — set to false</li>
+                    <li><code>boolean isAdmin</code> — set to false</li>
+                </ul>
+            </li>
+            <li>Use <strong>&&</strong> to check: playerLevel >= 3 AND hasKey. Print "Access granted" or "Access denied".</li>
+            <li>Now modify the condition using <strong>||</strong>: allow access if <em>either</em> the player has a key OR is an admin. Print the result.</li>
+            <li>Add a third check using <strong>!</strong>: deny access if the player is NOT level 1 and NOT an admin. Print the result.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Truth Table Check</h3>
+        <p>Before running: what output do you expect for level=1, no key, not admin? Trace through each of your three checks by hand. Run the program. Did it match your prediction?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-3/booleans.html">Booleans &amp; if Statements</a></li>
+        <li><a href="../docs/unit-3/logic.html">Boolean Logic &amp; De Morgan</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

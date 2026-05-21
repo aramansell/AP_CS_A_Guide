@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.5c ShapeCollection — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="9.5b.html">&#9664; 9.5b</a>
+    <span class="lesson-id">9.5c</span>
+    <a href="9.6a.html">9.6a &#9654;</a>
+</div>
+
+<h1>9.5c &#8212; ShapeCollection: Polymorphic Operations</h1>
+
+<p>
+    <strong>Type:</strong> Expand Application. The array worked for 3 shapes.
+    Now build a collection that can hold any number of shapes, compute totals,
+    and filter by type &#8212; all using polymorphism.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Build a <code>ShapeCollection</code> that uses an ArrayList to store
+    any mix of shapes. Add methods to compute total area, find the shape
+    with the largest perimeter, and count how many of each type exist.</p>
+
+    <pre><code><span class="output">=== SHAPE COLLECTION ===
+Total shapes: 6
+Total area: 283.64
+Largest perimeter: Circle (radius 8.0) = 50.27
+Circles: 2, Rectangles: 3, Triangles: 1</span></code></pre>
+
+    <h3>Build It: ShapeCollection</h3>
+
+    <p>Create <code>ShapeCollection.java</code>:</p>
+
+    <pre><code>import java.util.ArrayList;
+
+public class ShapeCollection {
+    private ArrayList&lt;Shape&gt; shapes;
+
+    public ShapeCollection() {
+        shapes = new ArrayList&lt;&gt;();
+    }
+
+    public void add(Shape s) {
+        shapes.add(s);
+    }
+
+    public double getTotalArea() {
+        double total = 0;
+        for (Shape s : shapes) {
+            total += s.getArea();  // WHICH getArea()? Depends on the object
+        }
+        return total;
+    }
+
+    // YOUR CODE:
+    // getLargestPerimeter() - returns the Shape with max perimeter
+    // countByType() - returns how many Circles, Rectangles, Triangles
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>The <code>getTotalArea()</code> loop calls
+                <code>s.getArea()</code> on every shape. How does Java
+                know which formula to use without any if-statements?</li>
+            <li>What does the <code>instanceof</code> keyword do? Why
+                might you need it for <code>countByType()</code>?</li>
+            <li>Is <code>instanceof</code> a sign of good design or
+                a code smell? When is it acceptable vs. when does it
+                mean your parent class is missing methods?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker Challenge</h3>
+        <p>Add a <code>printReport()</code> method that prints the
+        full collection sorted by area (largest first). You'll need
+        to adapt the selection sort from 7.3c to work with Shapes
+        instead of Players. What changes?</p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>If you add a new shape type (like <code>Square</code> that
+        extends <code>Rectangle</code>), does <code>countByType()</code>
+        still work? A Square IS-A Rectangle, so <code>instanceof Rectangle</code>
+        returns true for Squares too. Is that what you want? How would
+        you distinguish between a Rectangle and a Square?</p>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/inheritance.html">Inheritance</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a></li>
+        <li><a href="../docs/unit-07/arraylist.html">ArrayList</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

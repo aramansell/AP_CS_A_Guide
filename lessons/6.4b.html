@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.4b High Score Table — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="6.4a.html">&#9664; 6.4a</a>
+    <span class="lesson-id">6.4b</span>
+    <a href="6.4c.html">6.4c &#9654;</a>
+</div>
+
+<h1>6.4b &#8212; High Score Table (Build Together)</h1>
+
+<p>
+    <strong>Type:</strong> Basic Application. The teacher builds, you follow along.
+    Your first parallel array pattern &#8212; two arrays, one index, synchronized
+    data. Plus: finding the max, printing a sorted view.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Store player names and their scores in parallel arrays. Find the
+    highest score, print the leaderboard, and compute the average.</p>
+
+    <pre><code><span class="output">=== HIGH SCORES ===
+1. Alice      - 950
+2. Bob        - 720
+3. Charlie    - 610
+4. Diana      - 880
+5. Eve        - 540
+---
+HIGH SCORE: Alice with 950
+AVERAGE: 740.0</span></code></pre>
+
+    <p><strong>Reference:</strong>
+    <a href="../docs/unit-06/high-score.html">High Score Table Walkthrough</a>
+    &#8212; full reference.</p>
+
+    <h3>Iteration 1: Two Arrays, One Index</h3>
+
+    <p>Create <code>HighScoreTable.java</code>:</p>
+
+    <pre><code>public class HighScoreTable {
+    public static void main(String[] args) {
+        String[] names = {"Alice", "Bob", "Charlie", "Diana", "Eve"};
+        int[] scores = {950, 720, 610, 880, 540};
+
+        // Print them as a table
+        for (int i = 0; i < names.length; i++) {
+            System.out.println((i+1) + ". " + names[i] + " - " + scores[i]);
+        }
+    }
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why are these called "parallel arrays"? What makes them
+                parallel rather than independent?</li>
+            <li>What happens if <code>names</code> has 5 elements but
+                <code>scores</code> only has 3? What error would you get
+                and on which line?</li>
+        </ol>
+    </div>
+
+    <h3>Iteration 2: Find the Max (Broken!)</h3>
+
+    <p>Add this code to find the highest score. It's broken:</p>
+
+    <pre><code>int maxScore = 0;
+String topPlayer = "";
+
+for (int i = 0; i < scores.length; i++) {
+    if (scores[i] > maxScore) {
+        maxScore = scores[i];
+        topPlayer = names[i];
+    }
+}
+System.out.println("HIGH SCORE: " + topPlayer + " with " + maxScore);</code></pre>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>Run it. It works. But what if ALL scores are negative?
+        (Imagine a game where scores can go below zero.) The max
+        would be reported as 0 with an empty name. Why? What should
+        <code>maxScore</code> be initialized to instead?</p>
+    </div>
+
+    <h3>Iteration 3: Compute the Average</h3>
+
+    <p>Add a loop that sums all scores, then divides by the length.</p>
+
+    <div class="tinker">
+        <h3>Tinker Challenge &#8212; Sort by Score</h3>
+        <p>Print the table sorted by score, highest first. The
+        algorithm: find the highest remaining score, print it, mark
+        it as "used," repeat. You'll need a <code>boolean[] used</code>
+        parallel array.</p>
+        <p>Don't look up the full solution. Start with pseudocode on
+        paper. What does "find the highest remaining" look like as a
+        loop?</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>How is the parallel array pattern similar to what
+                your RPG inventory system will need? (Think: item
+                names and item counts.)</li>
+            <li>Why do sorting algorithms need to "mark as used"
+                rather than just moving elements?</li>
+        </ol>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-06/high-score.html">High Score Table Walkthrough</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-06/arrays-intro.html">Array Basics</a></li>
+        <li><a href="../docs/unit-06/array-algorithms.html">Array Algorithms</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

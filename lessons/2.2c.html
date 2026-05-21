@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.2c String Methods: Build a Parser — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="2.2b.html">◀ 2.2b</a>
+    <span class="lesson-id">2.2c</span>
+    <a href="2.3a.html">2.3a ▶</a>
+</div>
+
+<h1>2.2c — String Methods: Build a Combat Command Parser</h1>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <p>
+        Text-based RPGs work by parsing commands: the player types something like
+        <code>attack goblin</code> and the game figures out what they meant. Today you
+        build a command parser that splits player input into a verb and a target.
+    </p>
+
+    <div class="callout">
+        <strong>What is parsing?</strong> Parsing means taking a raw string and
+        extracting structured information from it. <code>"attack goblin"</code> is
+        just characters — until you find the space, split on it, and recognize
+        "attack" as a verb and "goblin" as a target.
+    </div>
+
+    <h3>Build: CombatCommandParser</h3>
+
+    <p>Create <code>CombatParser.java</code> with a <code>main</code> method that does this:</p>
+    <ol>
+        <li>Hard-code a command string: <code>String command = "attack goblin";</code></li>
+        <li>Find the space between the verb and the target</li>
+        <li>Extract the verb (everything before the space)</li>
+        <li>Extract the target (everything after the space)</li>
+        <li>Print: <code>"Action: [verb], Target: [target]"</code></li>
+    </ol>
+
+    <pre><code>// Example output for "cast heal ally":
+Action: cast
+Target: ally</code></pre>
+
+    <p>
+        The String docs have substring and indexOf examples. You've already
+        built something similar in 2.2b with the email extractor. This is the
+        same pattern — but now you need to handle commands that might have
+        extra spaces.
+    </p>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: Extra Spaces and Edge Cases</h3>
+        <p>Test your parser with these edge cases. Some will break. Fix them one at a time.</p>
+        <pre><code>"attack    dragon"    // multiple spaces between verb and target
+"  attack goblin  "    // leading and trailing spaces
+"attack"                // no target at all
+""                      // empty command</code></pre>
+        <p>
+            What method removes leading/trailing whitespace? Check the String docs.
+            What should your parser do when there's no target? (Hint: print a message
+            like "No target specified" instead of crashing.)
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker: Handle Multiple Commands</h3>
+        <p>
+            What if commands aren't just "verb target"? What if they're longer?
+        </p>
+        <pre><code>"attack goblin with sword"   → verb: attack, target: goblin, tool: sword
+"cast heal on ally"          → verb: cast, target: heal, recipient: ally</code></pre>
+        <p>
+            Extend your parser to handle three-part commands. You'll need
+            <code>substring</code> and <code>indexOf</code> with a start position.
+            The String docs show how to find the second occurrence of a character.
+        </p>
+    </div>
+
+    <h3>Build: Command Validator</h3>
+
+    <p>Not every command is valid. Add validation to your parser:</p>
+    <ul>
+        <li>Only these verbs are allowed: <code>attack</code>, <code>cast</code>, <code>use</code>, <code>flee</code></li>
+        <li>If the verb isn't recognized, print "Unknown command: [verb]"</li>
+        <li>For <code>attack</code> and <code>cast</code>, a target is required — if missing, print an error</li>
+        <li>For <code>flee</code>, no target is needed</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>You used <code>equals()</code> to check the verb. What would happen if you used <code>==</code> instead? Why?</li>
+            <li>If the player types <code>"ATTACK GOBLIN"</code>, does your parser recognize it? What String method would fix this?</li>
+            <li>Look at the String docs. Find <code>split()</code>. How could you rewrite your entire parser using split instead of indexOf + substring? Which approach is cleaner? Which gives you more control?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Parse a command string into verb and target using substring and indexOf</li>
+            <li>Handle edge cases: multiple spaces, leading/trailing spaces, missing target</li>
+            <li>Validate commands against a list of allowed verbs</li>
+            <li>Explain the tradeoff between split() and manual indexOf parsing</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/string.html">The String Class</a> — full method reference including split()</li>
+        <li><a href="../docs/unit-02/objects-and-classes.html">Objects &amp; Classes</a> — equals() vs ==</li>
+        <li><a href="../docs/unit-03/boolean-expressions.html">Boolean Expressions</a> — if/else validation</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

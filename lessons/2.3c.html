@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.3c Scanner: Combat Dialogue — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="2.3b.html">◀ 2.3b</a>
+    <span class="lesson-id">2.3c</span>
+    <a href="2.4a.html">2.4a ▶</a>
+</div>
+
+<h1>2.3c — Scanner: Build a Combat Dialogue Loop</h1>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <p>
+        Character creation was a one-shot process — ask questions, get answers, print
+        a sheet. But real RPGs are interactive loops: the game asks the player what to
+        do, the player responds, the game reacts, and it repeats.
+    </p>
+
+    <div class="callout">
+        <strong>This is your first interactive game loop.</strong> The program doesn't
+        end after one action — it keeps asking until the player chooses to quit. Every
+        turn-based RPG works this way.
+    </div>
+
+    <h3>Build: CombatDialogue.java</h3>
+
+    <p>
+        Create a simple turn-based combat dialogue. The player fights a goblin.
+        Each turn, the game shows the player's HP and the goblin's HP, then asks
+        what the player wants to do.
+    </p>
+
+    <pre><code>═══════════════════════════════
+  COMBAT — Thorn vs Goblin
+═══════════════════════════════
+  Your HP: 30    Goblin HP: 15
+
+  What do you do?
+  [1] Attack
+  [2] Drink potion
+  [3] Flee
+  Choice: </code></pre>
+
+    <p>The game must:</p>
+    <ul>
+        <li>Read the player's choice with <code>nextInt()</code></li>
+        <li>If choice is 1: deal random damage (5-10) to goblin, goblin hits back for 3-6</li>
+        <li>If choice is 2: heal 8 HP, goblin hits back</li>
+        <li>If choice is 3: flee (prints "You flee!" and ends)</li>
+        <li>If goblin HP reaches 0: player wins</li>
+        <li>If player HP reaches 0: player loses</li>
+        <li>After each turn, display updated HP</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>You need a loop. What kind? Should it be a for loop or a while loop? Why? (If you haven't learned loops yet, look ahead at the <a href="../docs/unit-04/while-loops.html">while loops docs</a> — the concept is simple: "keep doing this until someone wins.")</li>
+            <li>Where do you check for the win/lose condition? Before the turn? After? Both?</li>
+            <li>If the player enters <code>4</code> or <code>-1</code> or <code>"hello"</code>, what happens? How would you detect and handle bad input?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker: Add More Actions</h3>
+        <p>
+            Extend the combat system with these additional actions:
+        </p>
+        <ul>
+            <li><strong>Special Attack (choice 4):</strong> deals 10-20 damage but you take 5 damage from exhaustion</li>
+            <li><strong>Scan (choice 5):</strong> reveals the goblin's exact stats (doesn't cost a turn if the goblin doesn't attack back)</li>
+            <li>What happens to your buffer traps when you add more nextInt() reads?</li>
+        </ul>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Non-Numeric Crash</h3>
+        <p>
+            Try typing <code>"attack"</code> instead of a number when prompted for a
+            choice. What error do you get? Why does <code>nextInt()</code> crash on
+            text input?
+        </p>
+        <p>
+            For now, just be aware of this limitation. Later, you'll learn how to
+            read everything as a String with nextLine() and convert manually — which
+            solves this problem completely.
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Build an interactive loop that reads player input repeatedly</li>
+            <li>Mix nextInt() with conditional logic to create game mechanics</li>
+            <li>Handle the win/lose state inside a loop</li>
+            <li>Identify where buffer traps appear in multi-turn input patterns</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/scanner.html">Scanner — Reading Input</a></li>
+        <li><a href="../docs/unit-02/math-class.html">The Math Class</a> — random damage</li>
+        <li><a href="../docs/unit-04/while-loops.html">while Loops</a> — game loop pattern</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

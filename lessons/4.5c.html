@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.5c String Loops — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="4.5b.html">&#9664; 4.5b</a>
+    <span class="lesson-id">4.5c</span>
+    <a href="4.6a.html">4.6a &#9654;</a>
+</div>
+
+<h1>4.5c &#8212; String Analysis with Loops</h1>
+
+<p>
+    <strong>Type:</strong> Expand Application. You've printed shapes with nested
+    loops &#8212; now apply loops to something practical: tearing apart
+    Strings character by character.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Build a String Analyzer that takes a word or sentence and counts
+    vowels, reverses the text, and checks for palindromes &#8212; all by
+    looping over individual characters.</p>
+
+    <pre><code><span class="output">Enter a word: racecar
+Length: 7
+Vowels: 3
+Reversed: racecar
+Palindrome? YES!</span></code></pre>
+
+    <h3>Build It: String Analyzer</h3>
+
+    <p>Create <code>StringAnalyzer.java</code>. Start with this skeleton:</p>
+
+    <pre><code>import java.util.Scanner;
+
+public class StringAnalyzer {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("Enter a word: ");
+        String word = input.nextLine();
+
+        System.out.println("Length: " + word.length());
+
+        // TASK 1: Count vowels
+        int vowels = 0;
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            // YOUR CODE: check if c is a vowel
+        }
+        System.out.println("Vowels: " + vowels);
+    }
+}</code></pre>
+
+    <div class="tinker">
+        <h3>Tinker Challenge &#8212; Reverse It</h3>
+        <p>Add a loop that builds the reversed version of the word.
+        Start with an empty String: <code>String reversed = "";</code>
+        Then loop from the END of the word to the beginning, adding
+        each character. Don't look up the formula &#8212; think about what
+        index the last character is at.</p>
+        <p><strong>Do NOT use StringBuilder.reverse().</strong> Build it
+        character by character. You'll understand loops better.</p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>When you loop from the end to the beginning, what index do
+        you start at? Hint: <code>word.length()</code> is 7 for "racecar",
+        but the last character is at index 6. If your loop starts at
+        <code>word.length()</code>, you get a StringIndexOutOfBoundsException.
+        Why?</p>
+    </div>
+
+    <h3>Palindrome Check</h3>
+
+    <p>Now that you have the reversed string, checking for a palindrome
+    is trivial:</p>
+
+    <pre><code>if (word.equals(reversed)) {
+    System.out.println("Palindrome? YES!");
+} else {
+    System.out.println("Palindrome? No.");
+}</code></pre>
+
+    <p>But wait &#8212; try "Racecar" with a capital R. Does it still work?
+    Fix it so case doesn't matter.</p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why does <code>word.charAt(word.length())</code> crash
+                but <code>word.charAt(word.length() - 1)</code> doesn't?</li>
+            <li>Compare your two loops: the forward loop (counting vowels)
+                and the backward loop (reversing). What's the same? What
+                single thing changes between them?</li>
+            <li>How would you count only LOWERCASE vowels? What changes?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Extend It (pick one)</h3>
+        <ul>
+            <li>Count consonants too. Print a vowel-to-consonant ratio.</li>
+            <li>Handle full sentences with spaces: ignore spaces when
+                checking for palindromes ("a man a plan a canal panama").</li>
+            <li>Count how many times each letter appears (frequency
+                analysis). You'll need a way to track 26 counts.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/for-loops.html">For Loops</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-02/string.html">The String Class</a> &#8212; charAt(), length()</li>
+        <li><a href="../docs/unit-04/loop-analysis.html">Loop Analysis</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.2b for Loops: Item Printer — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="4.2a.html">◀ 4.2a</a>
+    <span class="lesson-id">4.2b</span>
+    <a href="4.2c.html">4.2c ▶</a>
+</div>
+
+<h1>4.2b — for Loops: Item Lister & Stat Printer</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        for loops excel at two things: repeating an action a known number of times,
+        and walking through a range of numbers. Today you build RPG tools that do both.
+    </p>
+
+    <h3>Build 1: Inventory Printer</h3>
+
+    <p>Create <code>ItemLister.java</code>. Given an array of item names, print a numbered inventory:</p>
+    <pre><code>String[] items = {"Sword", "Potion", "Shield", "Key", "Torch"};
+
+// Output:
+═══ INVENTORY ═══
+1. Sword
+2. Potion
+3. Shield
+4. Key
+5. Torch
+6 slots used, 10 total</code></pre>
+
+    <p>The array has 5 items, but the inventory has 10 slots. Print all 10 rows — items 6-10 should say "(empty)". You need a for loop that goes from 0 to 9, and decides what to print based on whether the index has a corresponding item.</p>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The ArrayIndexOutOfBounds</h3>
+        <p>
+            If you write <code>for (int i = 0; i <= 10; i++)</code>, what happens
+            when i = 5 and you access items[5]? Why does the loop keep going to 10
+            if the array only has 5 elements?
+        </p>
+        <p>
+            The fix: check <code>if (i < items.length)</code> before accessing the
+            array. This is called <strong>bounds checking</strong> — and it's how
+            every professional programmer avoids this crash.
+        </p>
+    </div>
+
+    <h3>Build 2: Multi-Table Roller</h3>
+
+    <p>Create <code>LootRoller.java</code>. A loot table has multiple items with different drop rates. Roll for each one:</p>
+    <pre><code>String[] table = {"Gold (50%)", "Potion (30%)", "Sword (10%)", "Armor (5%)", "Dragon Egg (1%)"};
+double[] rates = {0.50, 0.30, 0.10, 0.05, 0.01};
+
+System.out.println("Rolling loot...");
+for (int i = 0; i < table.length; i++) {
+    double roll = Math.random();
+    if (roll < rates[i]) {
+        System.out.println("★★★ " + table[i] + " — DROPPED!");
+    }
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why does <code>Math.random() < 0.50</code> give a 50% chance? If you wanted 75%, what number would you compare to?</li>
+            <li>If you run LootRoller 10 times, will you always get the Dragon Egg at least once? Is there a guarantee? (Think: 1% chance, 10 trials...)</li>
+            <li>What's the relationship between the for loop counter <code>i</code> and the tables array? Why must they be the same length?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Use for loops to iterate over arrays with bounds checking</li>
+            <li>Combine Math.random() with a loop to roll multiple probabilities</li>
+            <li>Print formatted numbered lists with conditional logic inside the loop</li>
+            <li>Explain why the loop counter and array index are the same variable</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — syntax, scope, off-by-one</li>
+        <li><a href="../docs/unit-06/arrays.html">Arrays</a> — .length, index access</li>
+        <li><a href="../docs/unit-02/math-class.html">The Math Class</a> — random()</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

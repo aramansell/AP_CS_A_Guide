@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10.3b Recursive Fibonacci — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="10.3a.html">&#9664; 10.3a</a>
+    <span class="lesson-id">10.3b</span>
+    <a href="10.3c.html">10.3c &#9654;</a>
+</div>
+
+<h1>10.3b &#8212; Recursive Fibonacci (Build Together)</h1>
+
+<p>
+    <strong>Type:</strong> Basic Application. The teacher builds, you follow along.
+    The classic recursive function &#8212; elegant, simple, and deceptively slow.
+    You'll watch it blow up and learn why recursion isn't always the answer.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Write a recursive Fibonacci function. Watch it work beautifully for
+    small numbers. Then push it to n=50 and witness why exponential recursion
+    is a trap.</p>
+
+    <pre><code><span class="output">fib(0) = 0
+fib(1) = 1
+fib(2) = 1
+fib(3) = 2
+fib(4) = 3
+fib(5) = 5
+fib(10) = 55
+fib(20) = 6765
+fib(40) = 102334155
+fib(50) = ... waiting ... waiting ...</span></code></pre>
+
+    <p><strong>Reference:</strong>
+    <a href="../docs/unit-10/recursive-fibonacci.html">Fibonacci &amp;
+    Efficiency</a> &#8212; full reference.</p>
+
+    <h3>Iteration 1: The Recursive Formula</h3>
+
+    <p>Create <code>Fibonacci.java</code>. The mathematical definition:</p>
+    <ul>
+        <li>fib(0) = 0</li>
+        <li>fib(1) = 1</li>
+        <li>fib(n) = fib(n-1) + fib(n-2)</li>
+    </ul>
+
+    <pre><code>public class Fibonacci {
+    public static long fib(int n) {
+        if (n == 0) return 0;      // base case 1
+        if (n == 1) return 1;      // base case 2
+        return fib(n - 1) + fib(n - 2);  // recursive case
+    }
+
+    public static void main(String[] args) {
+        for (int i = 0; i <= 10; i++) {
+            System.out.println("fib(" + i + ") = " + fib(i));
+        }
+    }
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why are there TWO base cases? What would happen with
+                only one (n == 0)?</li>
+            <li>Trace <code>fib(4)</code> by hand. Draw the call tree.
+                How many times does fib(2) get called?</li>
+            <li>What's different about <code>long</code> vs <code>int</code>
+                here? Why did we use long?</li>
+        </ol>
+    </div>
+
+    <h3>Iteration 2: The Exponential Explosion</h3>
+
+    <p>Try fib(40). It works but feels slow. Try fib(45). You'll wait.
+    Try fib(50). You'll wait a very long time. Why?</p>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt &#8212; Not a Bug, a Design Flaw</h3>
+        <p>The algorithm is correct but does massive redundant work.
+        Count how many times <code>fib(2)</code> is called during
+        <code>fib(10)</code>. Then count for <code>fib(20)</code>.
+        The pattern is exponential: O(2&#8319;).</p>
+        <p>Add a counter to your class:</p>
+        <pre><code>static int calls = 0;
+// inside fib(): calls++;</code></pre>
+        <p>Run fib(20) and print <code>calls</code>. How many calls
+        did it take to compute a single number?</p>
+    </div>
+
+    <h3>Iteration 3: The Fix (Memoization Preview)</h3>
+
+    <p>The fix is to remember results you've already computed. This is
+    called memoization. We'll build it properly in the Expand application,
+    but for now, see if you can figure out the pattern:</p>
+
+    <pre><code>static long[] memo = new long[100];  // stores computed fib(n)
+
+public static long fibMemo(int n) {
+    if (n == 0) return 0;
+    if (n == 1) return 1;
+    if (memo[n] != 0) {      // already computed?
+        return memo[n];
+    }
+    memo[n] = fibMemo(n - 1) + fibMemo(n - 2);
+    return memo[n];
+}</code></pre>
+
+    <p>Run fibMemo(50). Instant. Why? How many recursive calls does it
+    make now vs. the original?</p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>The memoized version calls each n EXACTLY ONCE. Why does
+                <code>if (memo[n] != 0)</code> guarantee that?</li>
+            <li>Where else in programming do we trade memory for speed?
+                Is this always the right trade-off?</li>
+        </ol>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-10/recursive-fibonacci.html">Fibonacci &amp; Efficiency</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-10/recursion-basics.html">Recursion Basics</a></li>
+        <li><a href="../docs/unit-10/recursive-search.html">Recursive Search</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

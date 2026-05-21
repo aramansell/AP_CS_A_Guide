@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.1b Array Indexing Practice — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="6.1a.html">◀ 6.1a</a>
+    <span class="lesson-id">6.1b</span>
+    <a href="6.1c.html">6.1c ▶</a>
+</div>
+
+<h1>6.1b — Array Indexing: Read, Write, and Don't Crash</h1>
+
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Score Tracker</h3>
+        <p>Yesterday you learned that arrays are indexed from 0 and their length is fixed. Today you'll build a score tracker that stores the last 5 game scores and computes stats from them.</p>
+        <p>Create a class called <code>ScoreTracker</code>:</p>
+        <ol>
+            <li>Declare <code>int[] scores = new int[5]</code>.</li>
+            <li>Fill it with values: 85, 92, 78, 96, 88.</li>
+            <li>Print the first score (<code>scores[0]</code>) and the last score (<code>scores[4]</code>).</li>
+            <li>Calculate and print the <strong>average</strong> score.</li>
+            <li>Find and print the <strong>highest</strong> score.</li>
+            <li>Replace the lowest score with 100. Print the array before and after.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Boundary Trap</h3>
+        <p>Try to access <code>scores[5]</code> or <code>scores[-1]</code>. What error do you get? This is the most common array bug. How do you figure out the last valid index?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-6/arrays.html">Array Basics</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

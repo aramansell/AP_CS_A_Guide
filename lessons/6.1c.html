@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.1c RPG Inventory Array — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="6.1b.html">◀ 6.1b</a>
+    <span class="lesson-id">6.1c</span>
+    <a href="6.2a.html">6.2a ▶</a>
+</div>
+
+<h1>6.1c — RPG Inventory: Arrays for Your Loot</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Item Inventory</h3>
+        <p>RPG inventories have a fixed number of slots. Items can be added if there's room, removed if they exist, and displayed. This is a perfect use case for an array with a counter.</p>
+        <p>Create a class called <code>Inventory</code>:</p>
+        <ol>
+            <li>Declare <code>String[] slots = new String[8]</code> (8 inventory slots).</li>
+            <li>Declare <code>int itemCount = 0</code> to track how many slots are filled.</li>
+            <li>Method <code>boolean addItem(String itemName)</code>: add to the first empty slot. Return false if full.</li>
+            <li>Method <code>boolean removeItem(String itemName)</code>: find the item and set its slot to null. Return false if not found. Compact the array by shifting items left.</li>
+            <li>Method <code>void display()</code>: print all slots that aren't null.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Test Full Inventory</h3>
+        <p>Add 8 items, then try to add a 9th. Does it correctly refuse? Remove an item from the middle, then display. Are there gaps? Should there be?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-6/arrays.html">Array Basics</a></li>
+        <li><a href="../docs/unit-6/traversal.html">Array Traversal</a></li>
+        <li><a href="../docs/unit-3/comparing.html">Comparing Objects</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

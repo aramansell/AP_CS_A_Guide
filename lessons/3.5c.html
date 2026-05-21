@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.5c Choose Your Adventure — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="3.5b.html">&#9664; 3.5b</a>
+    <span class="lesson-id">3.5c</span>
+    <a href="3.6a.html">3.6a &#9654;</a>
+</div>
+
+<h1>3.5c &#8212; Choose Your Adventure</h1>
+
+<p>
+    <strong>Type:</strong> Expand Application. You've built the number guessing
+    game with one branch &#8212; now chain multiple branches into a story.
+    Same if/else pattern, stretched into a narrative.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Build a text adventure where the player makes choices at each turn
+    and the story branches. At least 3 decision points with at least 2
+    choices each.</p>
+
+    <pre><code><span class="output">You wake up in a dark forest. Moonlight filters through the trees.
+To the NORTH, a stone tower looms against the sky.
+To the EAST, you hear a stream bubbling.
+
+Which way? (north/east)
+> north
+You approach the tower...</span></code></pre>
+
+    <p><strong>Reference:</strong>
+    <a href="../docs/unit-03/choose-your-adventure.html">Choose Your Adventure
+    Walkthrough</a> &#8212; the full reference with example branches.</p>
+
+    <h3>Build It: Your Adventure</h3>
+
+    <p>Create <code>Adventure.java</code>. Start with this skeleton:</p>
+
+    <pre><code>import java.util.Scanner;
+
+public class Adventure {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("You wake up in a dark forest.");
+        System.out.println("NORTH: a stone tower. EAST: a stream.");
+        System.out.print("Which way? (north/east): ");
+        String choice = input.nextLine();
+
+        if (choice.equals("north")) {
+            System.out.println("You approach the tower...");
+            // YOUR SECOND BRANCH GOES HERE
+        } else if (choice.equals("east")) {
+            System.out.println("You follow the sound of water...");
+            // YOUR SECOND BRANCH GOES HERE
+        } else {
+            System.out.println("You stand still, unsure...");
+        }
+    }
+}</code></pre>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>What happens if the player types "North" with a capital N?
+        Try it. Then fix it. (Hint: the Scanner docs show how).</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker Challenge &#8212; Deeper Branches</h3>
+        <p>Add at least a SECOND decision point inside each branch
+        (you'll write another if/else inside the first one). That
+        means at minimum:</p>
+        <ul>
+            <li>North &#8594; enter tower or knock? &#8594; each leads to a
+                different third scene.</li>
+            <li>East &#8594; drink from stream or cross it? &#8594; each leads
+                to a different third scene.</li>
+        </ul>
+        <p>That gives you at least 4 distinct endings.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why does comparing Strings need <code>.equals()</code>
+                instead of <code>==</code>? What does <code>==</code>
+                actually check for objects?</li>
+            <li>How many if/else blocks do you have in total? Count
+                them.</li>
+            <li>What's the deepest nesting level in your code? How many
+                braces deep does the innermost branch go?</li>
+            <li>How is this structurally similar to the combat engine
+                your RPG needs? Where would an attack branch lead vs.
+                a defend branch?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Extend It (pick one)</h3>
+        <ul>
+            <li>Add an inventory: the player picks up an item in one
+                branch, and it affects a later branch.</li>
+            <li>Add a health system: bad choices reduce HP.</li>
+            <li>Add a "go back" option that loops to the previous
+                decision (you'll need a while loop).</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-03/choose-your-adventure.html">Choose Your Adventure Walkthrough</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-03/boolean-logic.html">Boolean Logic</a></li>
+        <li><a href="../docs/unit-02/scanner.html">Scanner &#8212; Reading Input</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

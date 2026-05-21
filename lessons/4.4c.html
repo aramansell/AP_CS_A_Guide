@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.4c ASCII Dungeon Map — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="4.4b.html">◀ 4.4b</a>
+    <span class="lesson-id">4.4c</span>
+    <a href="4.5a.html">4.5a ▶</a>
+</div>
+
+<h1>4.4c — ASCII Dungeon Map: Nested Loops Meet RPG</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Dungeon Map Renderer</h3>
+        <p>Roguelike games render dungeons using ASCII characters: <code>#</code> for walls, <code>.</code> for floors, <code>@</code> for the player. You'll use nested loops to render a dungeon map from a 2D array of characters.</p>
+        <p>Create a class called <code>DungeonRenderer</code>:</p>
+        <ol>
+            <li>Declare a 2D char array (hardcoded map):
+<pre>char[][] map = {
+    {'#', '#', '#', '#', '#'},
+    {'#', '.', '.', '.', '#'},
+    {'#', '.', '@', '.', '#'},
+    {'#', '.', '.', '.', '#'},
+    {'#', '#', '#', '#', '#'}
+};</pre>
+            </li>
+            <li>Use nested for loops to print the map row by row.</li>
+            <li>Add a border around the map using <code>*</code> characters.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Extend: Fog of War</h3>
+        <p>The player shouldn't see the whole map. Add a <code>int visionRange = 1</code>. In your nested loop, check the distance from the player (@ position) to each tile. If it's within vision range, print the tile; otherwise print <code>?</code>. You'll need to know where @ is — use variables <code>playerRow</code> and <code>playerCol</code>.</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-4/iteration.html">Iteration: while &amp; for</a></li>
+        <li><a href="../docs/unit-8/2d-arrays.html">2D Arrays</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

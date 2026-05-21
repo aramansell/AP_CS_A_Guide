@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7.3c Leaderboard — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="7.3b.html">&#9664; 7.3b</a>
+    <span class="lesson-id">7.3c</span>
+    <a href="7.4a.html">7.4a &#9654;</a>
+</div>
+
+<h1>7.3c &#8212; Leaderboard: ArrayList of Objects</h1>
+
+<p>
+    <strong>Type:</strong> Expand Application. Strings were easy. Now store
+    your own objects in an ArrayList, sort them, and find the top performers.
+    The full leaderboard pattern.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Build a <code>Player</code> class with a name and score, store them
+    in an ArrayList, sort by score, and print a ranked leaderboard.</p>
+
+    <pre><code><span class="output">=== LEADERBOARD ===
+1. Alice      - 2150
+2. Diana      - 1880
+3. Bob        - 1720
+4. Charlie    - 1610
+5. Eve        - 1540</span></code></pre>
+
+    <p><strong>Reference:</strong>
+    <a href="../docs/unit-07/leaderboard.html">Leaderboard Walkthrough</a>
+    &#8212; full reference.</p>
+
+    <h3>Build It: Player Class + Leaderboard</h3>
+
+    <p>Create <code>Player.java</code>:</p>
+
+    <pre><code>public class Player {
+    private String name;
+    private int score;
+
+    public Player(String name, int score) {
+        this.name = name;
+        this.score = score;
+    }
+
+    public String getName() { return name; }
+    public int getScore() { return score; }
+
+    public String toString() {
+        return name + " - " + score;
+    }
+}</code></pre>
+
+    <p>Create <code>Leaderboard.java</code>. Add at least 5 players:</p>
+
+    <pre><code>import java.util.ArrayList;
+
+public class Leaderboard {
+    public static void main(String[] args) {
+        ArrayList&lt;Player&gt; players = new ArrayList&lt;&gt;();
+
+        players.add(new Player("Alice", 2150));
+        players.add(new Player("Bob", 1720));
+        players.add(new Player("Charlie", 1610));
+        players.add(new Player("Diana", 1880));
+        players.add(new Player("Eve", 1540));
+
+        // YOUR CODE: print unsorted
+    }
+}</code></pre>
+
+    <h3>The Sort Challenge</h3>
+
+    <p>Sort the ArrayList by score, highest first. You CANNOT use
+    <code>Collections.sort()</code> yet &#8212; that requires Comparable
+    (coming in 7.4). Instead, use the selection sort pattern you
+    learned with arrays:</p>
+
+    <pre><code>// Selection sort by score (descending)
+for (int i = 0; i < players.size() - 1; i++) {
+    int maxIndex = i;
+    for (int j = i + 1; j < players.size(); j++) {
+        if (players.get(j).getScore() > players.get(maxIndex).getScore()) {
+            maxIndex = j;
+        }
+    }
+    // swap players[i] with players[maxIndex]
+    Player temp = players.get(i);
+    players.set(i, players.get(maxIndex));
+    players.set(maxIndex, temp);
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why does the inner loop start at <code>i + 1</code>
+                instead of 0?</li>
+            <li>What changes if you want ascending order (lowest first)?</li>
+            <li>How is this sort structurally identical to the card
+                shuffle swap pattern? What's the only thing that
+                changed?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Extend It (pick one)</h3>
+        <ul>
+            <li>Add the ability to update a player's score and re-sort.</li>
+            <li>Track "games played" per player and compute average
+                score per game.</li>
+            <li>Add new players from Scanner input and insert them
+                in the correct sorted position (no full re-sort).</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-07/leaderboard.html">Leaderboard Walkthrough</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-07/arraylist.html">ArrayList</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-07/searching-sorting.html">Searching &amp; Sorting</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

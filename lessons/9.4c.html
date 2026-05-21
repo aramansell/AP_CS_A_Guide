@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.4c Combat Abilities Engine — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="9.4b.html">◀ 9.4b</a>
+    <span class="lesson-id">9.4c</span>
+    <a href="9.5a.html">9.5a ▶</a>
+</div>
+
+<h1>9.4c — Combat Abilities Engine: Interface-Driven Combat</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Ability System</h3>
+        <p>Professional RPGs use an interface for all combat actions. "Attack", "Heal", "Fireball", "Shield Block" — they all conform to the same contract. This lets you build an ability bar that works with anything.</p>
+        <p>Create interface <code>CombatAction</code>:</p>
+        <ol>
+            <li><code>String getName()</code></li>
+            <li><code>int getPower()</code></li>
+            <li><code>String getTargetType()</code> — returns "enemy", "ally", or "self"</li>
+            <li><code>String execute()</code> — returns a description of what happened</li>
+        </ol>
+        <p>Create at least 4 implementations:</p>
+        <ol>
+            <li><code>Slash</code>: power=12, target=enemy</li>
+            <li><code>Fireball</code>: power=25, target=enemy</li>
+            <li><code>HealingLight</code>: power=15, target=ally</li>
+            <li><code>DefensiveStance</code>: power=0, target=self — execute() returns "Defense doubled for 2 turns!"</li>
+        </ol>
+        <p>Store all 4 in a <code>CombatAction[]</code> array. Print each action's name, power, target, and execution result.</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-9/interfaces.html">Interfaces</a></li>
+        <li><a href="../docs/unit-9/inheritance.html">Inheritance</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

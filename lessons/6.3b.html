@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.3b Search &amp; Insert — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="6.3a.html">◀ 6.3a</a>
+    <span class="lesson-id">6.3b</span>
+    <a href="6.3c.html">6.3c ▶</a>
+</div>
+
+<h1>6.3b — Array Algorithms: Search and Insert in an Ordered List</h1>
+
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: High Score Table</h3>
+        <p>High score tables stay sorted. New scores must be inserted at the right position and everything below shifts down. You'll implement this classic algorithm.</p>
+        <p>Create a class called <code>HighScoreTable</code>:</p>
+        <ol>
+            <li>Declare <code>int[] scores = new int[10]</code> — the table holds up to 10 scores, kept in <strong>descending</strong> order.</li>
+            <li>Initialize with: 950, 820, 780, 650, 500, 0, 0, 0, 0, 0 (5 scores, 5 empty). Track <code>int count = 5</code>.</li>
+            <li>Method <code>boolean addScore(int newScore)</code>:
+                <ul>
+                    <li>Find where it belongs (shift right all smaller scores).</li>
+                    <li>Insert it. Increment count.</li>
+                    <li>If table is full (count==10), drop the lowest score.</li>
+                </ul>
+            </li>
+            <li>Method <code>void display()</code> to print the table.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Test</h3>
+        <p>Add score 900. It should land between 950 and 820. Add 100. It should go after 500. Add 999. It should go at the top. Display after each insert.</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-6/algorithms.html">Array Algorithms</a></li>
+        <li><a href="../docs/unit-6/traversal.html">Array Traversal</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

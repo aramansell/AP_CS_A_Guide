@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10.2c Recursive Loot Finder — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="10.2b.html">◀ 10.2b</a>
+    <span class="lesson-id">10.2c</span>
+    <a href="10.3a.html">10.3a ▶</a>
+</div>
+
+<h1>10.2c — Recursive Loot Finder: Best Path Through Treasure</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Treasure Path Optimizer</h3>
+        <p>You're in a dungeon with rooms containing gold. You can only move right or down. What's the maximum gold you can collect from start to exit? This is a classic recursive optimization problem.</p>
+        <p>Create a class called <code>TreasurePath</code> with a 2D gold grid:</p>
+        <pre>int[][] gold = {
+    {5, 3, 2, 1},
+    {2, 8, 4, 3},
+    {1, 2, 6, 5},
+    {3, 1, 2, 9}
+};</pre>
+        <ol>
+            <li><code>int maxGold(int row, int col)</code>: returns the maximum gold from this tile to the bottom-right, moving only right or down.
+                <ul>
+                    <li>Base case 1: out of bounds → return 0</li>
+                    <li>Base case 2: at bottom-right → return gold[row][col]</li>
+                    <li>Recursive: gold[row][col] + max of going right vs going down</li>
+                </ul>
+            </li>
+            <li>Call maxGold(0,0) to find the best path.</li>
+            <li>BONUS: also print the actual path (the row,col coordinates) of the optimal route.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Performance Question</h3>
+        <p>This recursive solution explores ALL paths. How many total paths exist in a 4×4 grid? Is there a more efficient way?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-10/recursion.html">Recursion</a></li>
+        <li><a href="../docs/unit-8/2d-arrays.html">2D Arrays</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

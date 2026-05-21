@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7.2c Enemy Horde Manager — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="7.2b.html">◀ 7.2b</a>
+    <span class="lesson-id">7.2c</span>
+    <a href="7.3a.html">7.3a ▶</a>
+</div>
+
+<h1>7.2c — Enemy Horde Manager: Spawn, Damage, Remove</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Horde Manager</h3>
+        <p>In action RPGs, enemies constantly spawn and die. The enemy list is dynamic — ArrayList is the natural choice. But removing dead enemies while iterating requires the safe pattern you just learned.</p>
+        <p>Create a class called <code>HordeManager</code>. Use TWO parallel ArrayLists: <code>ArrayList&lt;String&gt; enemyNames</code> and <code>ArrayList&lt;Integer&gt; enemyHP</code>.</p>
+        <ol>
+            <li><code>void spawn(String name, int hp)</code>: add a new enemy.</li>
+            <li><code>void damageAll(int amount)</code>: subtract amount from every enemy's HP.</li>
+            <li><code>void removeDead()</code>: traverse <strong>backwards</strong> and remove any enemy with HP <= 0. Print a death message for each.</li>
+            <li><code>void displayHorde()</code>: print all living enemies with their HP.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Stress Test</h3>
+        <p>Spawn 6 enemies with HP 10. Call damageAll(4). Remove dead. DamageAll(4). Remove dead. How many are left? Call removeDead() when none are dead — does it crash?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-7/arraylist.html">ArrayList</a></li>
+        <li><a href="../docs/unit-6/traversal.html">Array Traversal</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

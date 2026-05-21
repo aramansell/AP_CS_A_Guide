@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.5b Shape Hierarchy — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="9.5a.html">&#9664; 9.5a</a>
+    <span class="lesson-id">9.5b</span>
+    <a href="9.5c.html">9.5c &#9654;</a>
+</div>
+
+<h1>9.5b &#8212; Shape Hierarchy (Build Together)</h1>
+
+<p>
+    <strong>Type:</strong> Basic Application. The teacher builds, you follow along.
+    Your first inheritance hierarchy &#8212; a parent class with abstract methods,
+    concrete children, and polymorphic arrays. The full OOP toolkit in one build.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~35 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Build a <code>Shape</code> parent class with <code>getArea()</code> and
+    <code>getPerimeter()</code>. Create <code>Circle</code>, <code>Rectangle</code>,
+    and <code>Triangle</code> as children. Store them all in a
+    <code>Shape[]</code> array and print each one's area &#8212; without knowing
+    which specific shape it is.</p>
+
+    <pre><code><span class="output">Circle (radius 5.0): area = 78.54, perimeter = 31.42
+Rectangle (4.0 x 6.0): area = 24.0, perimeter = 20.0
+Triangle (base 3.0, height 4.0): area = 6.0, perimeter = 12.0</span></code></pre>
+
+    <h3>Iteration 1: The Parent</h3>
+
+    <p>Create <code>Shape.java</code>. This defines what EVERY shape can do:</p>
+
+    <pre><code>public abstract class Shape {
+    protected String name;
+
+    public Shape(String name) {
+        this.name = name;
+    }
+
+    public abstract double getArea();
+    public abstract double getPerimeter();
+
+    public String toString() {
+        return name + ": area = " + getArea()
+             + ", perimeter = " + getPerimeter();
+    }
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why is <code>Shape</code> abstract? What would happen if
+                you tried <code>new Shape("blob")</code>?</li>
+            <li>Why can <code>toString()</code> call <code>getArea()</code>
+                even though <code>getArea()</code> has no body? When does
+                that call get resolved?</li>
+            <li>What does <code>protected</code> mean? How is it different
+                from <code>private</code> and <code>public</code>?</li>
+        </ol>
+    </div>
+
+    <h3>Iteration 2: Circle</h3>
+
+    <p>Create <code>Circle.java</code>. Circle HAS-A radius:</p>
+
+    <pre><code>public class Circle extends Shape {
+    private double radius;
+
+    public Circle(double radius) {
+        super("Circle (radius " + radius + ")");
+        this.radius = radius;
+    }
+
+    public double getArea() {
+        return Math.PI * radius * radius;
+    }
+
+    public double getPerimeter() {
+        return 2 * Math.PI * radius;
+    }
+}</code></pre>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>What happens if you forget the <code>super(...)</code> call
+        in Circle's constructor? Try it. The compiler error tells you
+        exactly why: "no default constructor available in Shape." Why
+        doesn't Shape have a default constructor? (You wrote one with
+        a parameter &#8212; same issue as Card in Unit 5!)</p>
+    </div>
+
+    <h3>Iteration 3: Rectangle and Triangle</h3>
+
+    <p>Create <code>Rectangle.java</code> and <code>Triangle.java</code>
+    following the same pattern as Circle. Each needs:</p>
+    <ul>
+        <li>Private fields for dimensions</li>
+        <li>A constructor that calls <code>super(...)</code></li>
+        <li><code>getArea()</code> and <code>getPerimeter()</code></li>
+    </ul>
+
+    <p>For Triangle, use the formula <code>0.5 * base * height</code> for
+    area. For perimeter, you'll need all 3 sides. Start with a right
+    triangle (two legs + hypotenuse from Pythagorean theorem).</p>
+
+    <h3>Iteration 4: Polymorphic Array</h3>
+
+    <p>Create <code>ShapeTester.java</code>. The magic: store different
+    types in one array:</p>
+
+    <pre><code>public class ShapeTester {
+    public static void main(String[] args) {
+        Shape[] shapes = new Shape[3];
+        shapes[0] = new Circle(5.0);
+        shapes[1] = new Rectangle(4.0, 6.0);
+        shapes[2] = new Triangle(3.0, 4.0, 5.0);
+
+        for (Shape s : shapes) {
+            System.out.println(s);
+            // Which getArea() gets called?
+        }
+    }
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>When the loop calls <code>s.getArea()</code>, how does
+                Java know whether to use Circle's formula or Rectangle's
+                formula? (This is dynamic dispatch.)</li>
+            <li>Why can you store a Circle in a Shape[] array but not
+                in an int[] array?</li>
+            <li>How is this pattern used in your RPG? Think about your
+                Enemy class and its subclasses.</li>
+        </ol>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/inheritance.html">Inheritance</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-09/abstract-classes.html">Abstract Classes</a></li>
+        <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.2c Elemental Combat — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="9.2b.html">◀ 9.2b</a>
+    <span class="lesson-id">9.2c</span>
+    <a href="9.3a.html">9.3a ▶</a>
+</div>
+
+<h1>9.2c — Elemental Combat: Override Damage by Type</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Elemental Damage System</h3>
+        <p>Many RPGs have elemental weaknesses: fire beats ice, ice beats water, etc. Each damage type calculates differently — perfect for method overriding.</p>
+        <p>Create <code>Attack</code> (abstract parent):</p>
+        <ol>
+            <li>Field: <code>String name</code>, <code>int power</code>.</li>
+            <li>Abstract method: <code>int calculateDamage(String targetElement)</code>.</li>
+        </ol>
+        <p>Create concrete subclasses:</p>
+        <ol>
+            <li><code>FireAttack extends Attack</code>: against "ice" target → 2× damage. Against "water" → 0.5×. Otherwise normal.</li>
+            <li><code>IceAttack extends Attack</code>: against "fire" target → 2×. Against "ice" → 0.5×.</li>
+            <li><code>PhysicalAttack extends Attack</code>: normal damage to all. No weakness, no resistance.</li>
+        </ol>
+        <p>Store all 3 attacks in an <code>Attack[]</code> array. Loop through them and test against "ice", "water", and "fire" targets. Print each result.</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-9/overriding.html">Method Overriding</a></li>
+        <li><a href="../docs/unit-9/abstract.html">Abstract Classes</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

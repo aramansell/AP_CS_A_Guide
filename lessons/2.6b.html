@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.6b Wrapper Classes in Context — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="2.6a.html">◀ 2.6a</a>
+    <span class="lesson-id">2.6b</span>
+    <a href="2.6c.html">2.6c ▶</a>
+</div>
+
+<h1>2.6b — Wrapper Classes: Parsing & Validation</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        When users type input, it always arrives as a String. But game logic needs
+        numbers. Wrapper classes bridge that gap — they convert Strings to numbers
+        and numbers back to Strings. Today you build programs that validate and
+        convert player input.
+    </p>
+
+    <div class="callout trap">
+        <strong>Reminder:</strong> <code>Integer.parseInt("hello")</code> crashes with
+        a NumberFormatException. You must either validate input before parsing or handle
+        the error. Today we validate first.
+    </div>
+
+    <h3>Build 1: Stat Input Validator</h3>
+
+    <p>Create <code>StatInput.java</code>. The program reads three lines of input and converts each to a number:</p>
+    <ul>
+        <li>Read a strength value as String → parse to int</li>
+        <li>Read a luck value as String → parse to double</li>
+        <li>Read an alive status as String → parse to boolean</li>
+    </ul>
+
+    <pre><code>// Example session:
+Enter strength: 15
+Enter luck: 0.75
+Enter alive (true/false): true
+
+Parsed: strength=15, luck=0.75, alive=true</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>You used <code>Integer.parseInt()</code> for strength. What wrapper class parses doubles? What parses booleans?</li>
+            <li>Boolean.parseBoolean() is unusual. Try it with <code>"true"</code>, <code>"false"</code>, <code>"yes"</code>, and <code>"goblin"</code>. What happens with non-boolean inputs? Does it crash or return false?</li>
+            <li>Which parsing method is the most dangerous (most likely to crash)?</li>
+        </ol>
+    </div>
+
+    <h3>Build 2: Safe Parser</h3>
+
+    <p>Create <code>SafeParser.java</code>. This time, don't let the program crash. For each input:</p>
+    <ul>
+        <li>Try to parse the String to an int</li>
+        <li>If the String contains anything other than digits (and an optional minus sign), print an error and ask again</li>
+        <li>Keep asking until the user enters a valid number</li>
+    </ul>
+
+    <p>The <a href="../docs/unit-02/wrapper-classes.html">Wrapper docs</a> don't show how to detect if a String is parseable — but think: what if you check every character? Open the <a href="../docs/unit-02/string.html">String docs</a> and look for methods that let you inspect individual characters.</p>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: Negative Numbers and Empty Strings</h3>
+        <p>Test your SafeParser with these tricky inputs:</p>
+        <pre><code>"-5"      // negative — is that valid?
+"3.14"    // has a decimal point — should this parse as int?
+""        // empty string
+"   42"   // has leading spaces
+"42 "     // trailing space</code></pre>
+        <p>
+            Which ones does Integer.parseInt() accept? Which ones crash?
+            Does your validation handle them the same way?
+        </p>
+    </div>
+
+    <h3>Build 3: Stat Range Checker</h3>
+
+    <p>Add range validation using wrapper constants:</p>
+    <ul>
+        <li>Strength must be between 1 and 20</li>
+        <li>If the player enters 25, print "Strength cannot exceed 20" and ask again</li>
+        <li>Use <code>Integer.MIN_VALUE</code> and <code>Integer.MAX_VALUE</code> in your error messages to show the valid range</li>
+    </ul>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Use Integer.parseInt(), Double.parseDouble(), and Boolean.parseBoolean()</li>
+            <li>Validate input before parsing to avoid NumberFormatException</li>
+            <li>Use wrapper constants (MAX_VALUE, MIN_VALUE) in range checks</li>
+            <li>Explain why Boolean.parseBoolean() behaves differently from the other parsers</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/wrapper-classes.html">Wrapper Classes</a> — full reference</li>
+        <li><a href="../docs/unit-02/string.html">The String Class</a> — character inspection methods</li>
+        <li><a href="../docs/unit-02/scanner.html">Scanner — Reading Input</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

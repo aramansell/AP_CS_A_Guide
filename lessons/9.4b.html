@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.4b Implementing Interfaces — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="9.4a.html">◀ 9.4a</a>
+    <span class="lesson-id">9.4b</span>
+    <a href="9.4c.html">9.4c ▶</a>
+</div>
+
+<h1>9.4b — Implementing Interfaces: Multiple Behaviors</h1>
+
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Multi-Ability Character</h3>
+        <p>Yesterday you saw that interfaces define contracts. A class can implement multiple interfaces — something inheritance alone can't do. You'll build a character that can attack AND heal AND defend.</p>
+        <p>Create three interfaces:</p>
+        <ol>
+            <li><code>Attacker</code>: method <code>int attack()</code></li>
+            <li><code>Healer</code>: method <code>int heal()</code></li>
+            <li><code>Defender</code>: method <code>int defend(int incomingDamage)</code></li>
+        </ol>
+        <p>Create <code>Paladin</code> that implements ALL THREE:</p>
+        <ol>
+            <li><code>attack()</code>: deals 15 damage.</li>
+            <li><code>heal()</code>: restores 10 HP.</li>
+            <li><code>defend(int dmg)</code>: reduces damage by 8.</li>
+        </ol>
+        <p>Create <code>Priest</code> that implements Healer and Defender only (no attack).</p>
+        <p>Test by storing a Paladin in each interface type — what methods are available?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-9/interfaces.html">Interfaces</a></li>
+        <li><a href="../docs/unit-9/inheritance.html">Inheritance</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

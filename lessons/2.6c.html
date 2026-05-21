@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.6c Wrapper Classes: Stat Serializer — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="2.6b.html">◀ 2.6b</a>
+    <span class="lesson-id">2.6c</span>
+    <a href="2.7a.html">2.7a ▶</a>
+</div>
+
+<h1>2.6c — Wrapper Classes: Build a Stat Serializer</h1>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <p>
+        RPGs need to save and load character data. You can't write <code>int</code>
+        directly to a file — you convert numbers to Strings first. Wrapper classes
+        handle both directions: <code>int → String</code> for saving and
+        <code>String → int</code> for loading.
+    </p>
+
+    <div class="callout">
+        <strong>Serialization</strong> is the process of converting data into a format
+        that can be stored or transmitted. <strong>Deserialization</strong> is converting
+        it back. Wrapper classes are Java's simplest serialization tools.
+    </div>
+
+    <h3>Build 1: StatSerializer — Save and Load</h3>
+
+    <p>Create <code>StatSerializer.java</code> with two main sections:</p>
+    <ul>
+        <li><strong>Save:</strong> Convert character stats to a formatted String</li>
+        <li><strong>Load:</strong> Parse a formatted String back into stats</li>
+    </ul>
+
+    <pre><code>// SAVE
+int hp = 85;  double luck = 0.625;  boolean alive = true;
+String saved = hp + "|" + luck + "|" + alive;
+System.out.println("Saved: " + saved);
+// Output: Saved: 85|0.625|true
+
+// LOAD
+String loaded = "85|0.625|true";
+// Split on "|", parse each piece back:
+// Piece 0 → Integer.parseInt → int
+// Piece 1 → Double.parseDouble → double
+// Piece 2 → Boolean.parseBoolean → boolean
+System.out.println("hp=" + hp + " luck=" + luck + " alive=" + alive);</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>You used <code>"|"</code> as a separator. What would happen if a stat value contained a pipe character? (It can't — but what if you stored a String field instead?)</li>
+            <li>Why use Double.parseDouble() instead of Integer.parseInt() for luck? What would Integer.parseInt("0.625") do?</li>
+            <li>You used String <code>+</code> to concatenate. What's another way to build this string? Check the <a href="../docs/unit-05/string-class.html">String docs</a> for alternatives.</li>
+        </ol>
+    </div>
+
+    <h3>Build 2: Multi-Stat Serializer</h3>
+
+    <p>Now handle more complex data: multiple stats, min/max validation on load.</p>
+
+    <pre><code>// Save format: name,str,dex,int,gold,alive
+"Thorn|14|18|10|25.5|true"
+
+// Load: verify each stat is in valid range
+// str 1-20, dex 1-20, int 1-20, gold >= 0
+// If any stat is out of range, clamp it and print a warning</code></pre>
+
+    <div class="tinker">
+        <h3>Tinker: What If It Goes Wrong?</h3>
+        <p>Build a <code>safeParseInt(String s, int defaultValue)</code> method:</p>
+        <ul>
+            <li>Try to parse the string with Integer.parseInt()</li>
+            <li>If it throws NumberFormatException, return the defaultValue instead</li>
+            <li>But wait — you haven't learned try-catch yet. Is there another way?</li>
+        </ul>
+        <p>
+            Without try-catch, you'd need to check every character manually. With it,
+            you just catch the exception. Look at the <a href="../docs/unit-02/wrapper-classes.html">Wrapper docs — exceptions section</a>
+            for the syntax. This is your first encounter with exception handling —
+            notice how much simpler it makes the code.
+        </p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Reversed Delimiter</h3>
+        <p>
+            A teammate changed the save format from <code>"|"</code> to <code>":"</code>.
+            Your load code still splits on <code>"|"</code>. What happens when you try
+            to parse <code>"85:0.625"</code> using split("|")? How many pieces do
+            you get? Why?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Serialize multiple stats into a delimited String</li>
+            <li>Parse a delimited String back into typed values with wrapper classes</li>
+            <li>Validate parsed values against acceptable ranges</li>
+            <li>Recognize when to use try-catch vs manual character checking</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/wrapper-classes.html">Wrapper Classes</a> — parsing, autoboxing, exceptions</li>
+        <li><a href="../docs/unit-02/string.html">The String Class</a> — split(), concatenation</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

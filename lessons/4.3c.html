@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.3c String Traversal: Scroll Decoder — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="4.3b.html">◀ 4.3b</a>
+    <span class="lesson-id">4.3c</span>
+    <a href="4.4a.html">4.4a ▶</a>
+</div>
+
+<h1>4.3c — String Traversal: Build a Scroll Decoder</h1>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <p>
+        Ancient scrolls in the dungeon are encoded with a Vigenère cipher — a
+        Caesar cipher where the shift changes for each character based on a keyword.
+        Today you decrypt one.
+    </p>
+
+    <div class="callout">
+        <strong>Vigenère cipher:</strong> Like Caesar, but the shift varies. If the
+        keyword is "KEY", the first letter shifts by K (10), second by E (4), third
+        by Y (24), fourth by K again, and so on.
+    </div>
+
+    <h3>Build: ScrollDecoder.java</h3>
+
+    <p>The encoded message is: <code>"UYMKPV XQJ WQJ"</code></p>
+    <p>The keyword is: <code>"CIPHER"</code></p>
+
+    <p>Decode it:</p>
+    <ol>
+        <li>For each character in the encoded message:</li>
+        <li>Get the corresponding keyword character (keyword[i % keyword.length()])</li>
+        <li>Calculate the shift: keyword char - 'A' (e.g., 'C' - 'A' = 2)</li>
+        <li>Shift the encoded char BACKWARD by that amount (Caesar decrypt)</li>
+        <li>Spaces pass through unchanged</li>
+    </ol>
+
+    <pre><code>// Working through the first character:
+// Encoded: U (position 0), Keyword: C (shift = 'C' - 'A' = 2)
+// Shift backward 2: U → T → S
+// First decoded char: S
+
+// Full message should decode to something recognizable.</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>How do you access <code>keyword.charAt(i % keyword.length())</code>? Why modulo the index by the keyword length?</li>
+            <li>When you shift backward past 'A', where should you wrap to? What's the formula?</li>
+            <li>If the keyword contained lowercase letters, how would you handle them? Could you convert everything to uppercase first?</li>
+        </ol>
+    </div>
+
+    <h3>Build 2: Message Analyzer</h3>
+
+    <p>Create <code>MessageAnalyzer.java</code> that answers questions about a decrypted message:</p>
+    <ul>
+        <li>Count each vowel (a, e, i, o, u) separately — not just a total</li>
+        <li>Find the most frequent character (ignoring spaces)</li>
+        <li>Print a frequency table: "a: 3, b: 1, c: 0, ..."</li>
+    </ul>
+
+    <p>For the frequency table, you'll need an array of 26 counters. Loop through the message and increment the right counter based on each character. Think: <code>counts[ch - 'a']++</code>.</p>
+
+    <div class="tinker">
+        <h3>Tinker: Auto-Decrypt (Frequency Analysis)</h3>
+        <p>
+            If you don't know the keyword, you can still break the cipher. In English,
+            'e' is the most common letter. Count the most frequent letter in the
+            encoded message — if it's 'M', and 'e' should be most common, the shift
+            is probably 8 (M - E = 8). Try it: can you auto-detect the shift for a
+            multi-paragraph encrypted text?
+        </p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Wrapping Formula</h3>
+        <p>
+            A student wrote <code>decoded = (char)((encoded - 'A' - shift) % 26 + 'A')</code>.
+            Test it with encoded='A', shift=1. The result should be 'Z'. What does
+            Java's modulo do with negative numbers in this context? Does it give you
+            what you want?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Implement a Vigenère cipher using indexed keyword access with modulo</li>
+            <li>Build frequency tables using character-to-array-index mapping</li>
+            <li>Handle negative modulo wrap-around for decryption</li>
+            <li>Use Character methods (isLetter, toUpperCase) from the Wrapper docs</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/string-loops.html">Loops + Strings</a> — traversal patterns</li>
+        <li><a href="../docs/unit-02/wrapper-classes.html">Wrapper Classes</a> — Character methods</li>
+        <li><a href="../docs/unit-06/arrays.html">Arrays</a> — frequency counting</li>
+        <li><a href="../docs/unit-01/arithmetic.html">Arithmetic &amp; Operators</a> — modulo with negatives</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

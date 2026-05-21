@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10.3c Recursive Palindrome — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="10.3b.html">&#9664; 10.3b</a>
+    <span class="lesson-id">10.3c</span>
+    <a href="10.4a.html">10.4a &#9654;</a>
+</div>
+
+<h1>10.3c &#8212; Recursive Palindrome Checker</h1>
+
+<p>
+    <strong>Type:</strong> Expand Application. Fibonacci had a formula you
+    could just translate. Now design recursion from scratch &#8212; what's the
+    base case? What's the recursive step? The palindrome problem forces you
+    to think like a recursive designer.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Write a recursive method that checks if a String is a palindrome
+    (reads the same forward and backward). Then compare it to the
+    iterative version from Unit 4. Which is clearer?</p>
+
+    <pre><code><span class="output">"racecar"     => true
+"hello"       => false
+"abba"        => true
+"a"           => true (base case!)
+""            => true (base case!)
+"A man a plan a canal Panama"  => true (ignoring spaces/case)</span></code></pre>
+
+    <h3>Build It: isPalindrome()</h3>
+
+    <p>Create <code>PalindromeChecker.java</code>. Think about the recursive
+    definition of a palindrome:</p>
+    <ul>
+        <li>An empty string is a palindrome (base case)</li>
+        <li>A single character is a palindrome (base case)</li>
+        <li>A string is a palindrome if first == last AND the middle is
+            a palindrome</li>
+    </ul>
+
+    <pre><code>public class PalindromeChecker {
+    public static boolean isPalindrome(String s) {
+        // Base cases
+        if (s.length() <= 1) {
+            return true;
+        }
+
+        // Compare first and last characters
+        char first = s.charAt(0);
+        char last = s.charAt(s.length() - 1);
+
+        if (first != last) {
+            return false;
+        }
+
+        // Recursive step: check the middle
+        String middle = s.substring(1, s.length() - 1);
+        return isPalindrome(middle);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(isPalindrome("racecar")); // true
+        System.out.println(isPalindrome("hello"));   // false
+        System.out.println(isPalindrome("abba"));    // true
+    }
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Trace <code>isPalindrome("abba")</code>. Draw the call
+                stack. What's the sequence of recursive calls?</li>
+            <li>Why does <code>s.length() <= 1</code> cover both the
+                empty string AND single-character cases? How does an
+                even-length palindrome like "abba" eventually reach
+                this base case?</li>
+            <li>What does <code>substring(1, s.length()-1)</code> return
+                for "abba"? For "racecar"? Trace it.</li>
+        </ol>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>The code above fails for "Racecar" (capital R). Fix it so
+        case doesn't matter. Then fix it so spaces don't matter
+        (for multi-word palindromes). Which approach is simpler:
+        cleaning the string BEFORE recursion, or handling it INSIDE
+        each recursive call?</p>
+    </div>
+
+    <h3>Recursive vs. Iterative</h3>
+
+    <p>In 4.5c you built an iterative palindrome checker (loop from
+    both ends). Now you have both. Compare them:</p>
+
+    <pre><code>// Iterative (Unit 4)
+for (int i = 0; i < s.length() / 2; i++) {
+    if (s.charAt(i) != s.charAt(s.length() - 1 - i)) {
+        return false;
+    }
+}
+return true;
+
+// Recursive (this unit)
+if (s.length() <= 1) return true;
+if (s.charAt(0) != s.charAt(s.length() - 1)) return false;
+return isPalindrome(s.substring(1, s.length() - 1));</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Which version is more efficient? Why? (Think about
+                String creation: <code>substring()</code> creates
+                a new String object every recursive call.)</li>
+            <li>Which version is easier to understand? Why?</li>
+            <li>When would you choose recursion over iteration, even
+                if it's less efficient?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Extend It (pick one)</h3>
+        <ul>
+            <li>Write a recursive method that reverses a string (same
+                pattern: first char goes to the end).</li>
+            <li>Write a recursive method that counts vowels in a string.</li>
+            <li>Write a recursive method that finds the longest
+                palindromic substring within a longer string.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-10/recursive-search.html">Recursive Search</a></li>
+        <li><a href="../docs/unit-10/recursion-basics.html">Recursion Basics</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-04/for-loops.html">For Loops (iterative comparison)</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

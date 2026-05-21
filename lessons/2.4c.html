@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.4c Scanner + Strings RPG — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="2.4b.html">◀ 2.4b</a>
+    <span class="lesson-id">2.4c</span>
+    <a href="2.5a.html">2.5a ▶</a>
+</div>
+
+<h1>2.4c — Scanner + Strings: Build a Shop</h1>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <p>
+        Today you combine everything: Scanner to read input, String methods to
+        process it. Pick one project below and build it. Read the docs. No copy-paste.
+    </p>
+
+    <div class="callout">
+        <strong>Rule of the day:</strong> If you get stuck, your FIRST move is to
+        open the docs — <a href="../docs/unit-02/string.html">String page</a> or
+        <a href="../docs/unit-02/scanner.html">Scanner page</a>. Try something.
+        Only ask for help after you've made a real attempt.
+    </div>
+
+    <h3>Project A: Name Analyzer</h3>
+
+    <p>Read a full name from the user and analyze it:</p>
+    <ul>
+        <li>Print the full name as entered</li>
+        <li>Print just the first name</li>
+        <li>Print just the last name</li>
+        <li>Print the initials (first letter of first + first letter of last)</li>
+        <li>Print the total character count (don't count spaces)</li>
+    </ul>
+
+    <p>You'll need methods from the
+    <a href="../docs/unit-02/string.html">String docs</a>. Which ones let you
+    find a space? Which ones let you extract part of a String? Figure out the
+    combination.</p>
+
+    <pre><code><span class="output">Enter your full name: Aragorn son of Arathorn
+Full name: Aragorn son of Arathorn
+First name: Aragorn
+Last name: Arathorn
+Initials: AA
+Character count (no spaces): 19</span></code></pre>
+
+    <div class="tinker">
+        <h3>Tinker Challenge: Middle Name</h3>
+        <p>
+            What if the user has a middle name? "Aragorn Elessar Arathorn" —
+            can you extract all three parts? Where does indexOf find the first
+            space vs the last space?
+        </p>
+    </div>
+
+    <h3>Project B: Password Validator</h3>
+
+    <p>Read a password from the user and check ALL of these rules:</p>
+    <ul>
+        <li>At least 8 characters long</li>
+        <li>Contains at least one digit (0-9)</li>
+        <li>Contains at least one uppercase letter</li>
+        <li>Does NOT contain the word "password" (case-insensitive)</li>
+    </ul>
+
+    <p>Print "VALID" or list every rule it failed.</p>
+
+    <pre><code><span class="output">Enter password: hello
+FAILED:
+- Must be at least 8 characters
+- Must contain at least one digit
+- Must contain at least one uppercase letter</span></code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>How do you check for uppercase letters? There's no method called
+                <code>isUpperCase()</code> on a String. What methods DO exist that
+                could help? Open the <a href="../docs/unit-02/string.html">String docs</a>
+                and find something that transforms case.</li>
+            <li>How do you check if a password contains the word "password" regardless
+                of case? You'll need to combine two String methods. The docs have
+                all of them — which pair solves this?</li>
+        </ol>
+    </div>
+
+    <h3>Project C: Mad Libs</h3>
+
+    <p>Build a fill-in-the-blank story generator:</p>
+    <ol>
+        <li>Read 6 words from the user: a noun, a verb, an adjective, another noun, a number, and an exclamation</li>
+        <li>Insert them into a pre-written story template using concatenation</li>
+        <li>Print the completed story</li>
+    </ol>
+
+    <pre><code><span class="output">Noun: dragon
+Verb: danced
+Adjective: sparkly
+Noun: potato
+Number: 42
+Exclamation: By the gods!
+---
+The sparkly dragon danced through the dungeon carrying a potato.
+"By the gods!" shouted the knight. "There are 42 of them!"</span></code></pre>
+
+    <div class="callout trap">
+        <strong>Buffer Trap Alert:</strong> If you mix <code>nextInt()</code> (for the number)
+        with <code>nextLine()</code> (for the other words), you'll hit the same issue
+        you diagnosed in 2.3a. Find it and fix it before testing.
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Combine Scanner input with String processing in one program</li>
+            <li>Diagnose and fix buffer traps without being told where they are</li>
+            <li>Use substring + indexOf together to extract parts of a String</li>
+            <li>Find the docs page you need without asking the instructor</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/string.html">The String Class</a> — full method reference</li>
+        <li><a href="../docs/unit-02/scanner.html">Scanner — Reading Input</a> — buffer trap fix</li>
+        <li><a href="../docs/unit-02/mad-libs.html">Mad Libs Walkthrough</a> — teacher demo reference</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

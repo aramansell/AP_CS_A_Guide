@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.4b String Comparison Lab — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="3.4a.html">◀ 3.4a</a>
+    <span class="lesson-id">3.4b</span>
+    <a href="3.4c.html">3.4c ▶</a>
+</div>
+
+<h1>3.4b — String Comparison: Password &amp; Command Checker</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Password Validator</h3>
+        <p>Yesterday you learned that <code>==</code> doesn't work for comparing String <em>contents</em> — you need <code>.equals()</code>. Today you'll build a password checker that also handles case-insensitive matching.</p>
+        <p>Create a class called <code>PasswordChecker</code>. Hardcode a <code>String userInput</code> and a <code>String correctPassword</code> (set to "DragonFire42").</p>
+        <ol>
+            <li>Use <code>.equals()</code> to check for an exact match. Print "Access granted" or "Access denied".</li>
+            <li>Add a check using <code>.equalsIgnoreCase()</code> — if the user typed the right letters but wrong case, print "Check your caps lock!"</li>
+            <li>Add a length check: if the input is shorter than 8 characters, print "Password too short."</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Trap to Discover</h3>
+        <p>Try comparing with <code>==</code> instead of <code>.equals()</code>. Make userInput = "DragonFire42" (same text). What happens? Now make userInput = new String("DragonFire42"). What happens now? Why are they different?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-3/comparing.html">Comparing Objects</a></li>
+        <li><a href="../docs/unit-2/strings.html">String Methods</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

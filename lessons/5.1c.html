@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.1c RPG Character Sheet — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="5.1b.html">◀ 5.1b</a>
+    <span class="lesson-id">5.1c</span>
+    <a href="5.2a.html">5.2a ▶</a>
+</div>
+
+<h1>5.1c — RPG Character Sheet: Build Your Hero</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: CharacterSheet Class</h3>
+        <p>Every RPG has a character sheet: name, class, level, HP, MP, and stats. You'll build the Java class that represents one.</p>
+        <p>Create a class called <code>CharacterSheet</code>:</p>
+        <ol>
+            <li>Instance variables (all private):
+                <ul>
+                    <li><code>String name</code></li>
+                    <li><code>String characterClass</code> (Fighter, Wizard, Rogue)</li>
+                    <li><code>int level</code></li>
+                    <li><code>int hp, maxHp, mp, maxMp</code></li>
+                    <li><code>int strength, dexterity, intelligence</code></li>
+                </ul>
+            </li>
+            <li>Constructor: takes <code>name</code> and <code>characterClass</code>. Calculates stats based on class:
+                <ul>
+                    <li>Fighter: str=16, dex=10, int=8, hp=40, mp=10</li>
+                    <li>Wizard: str=8, dex=10, int=16, hp=20, mp=40</li>
+                    <li>Rogue: str=10, dex=16, int=10, hp=25, mp=15</li>
+                </ul>
+            </li>
+            <li>Method <code>void printSheet()</code> that displays all stats in a formatted character sheet.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Think: Where Should the Logic Go?</h3>
+        <p>You could put the stat-calculation logic in the constructor, or in a separate method. Which makes more sense? What if you later add a "levelUp()" method — where would the new stats be calculated?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-5/classes.html">Writing Classes</a></li>
+        <li><a href="../docs/unit-5/constructors.html">Constructors</a></li>
+        <li><a href="../docs/unit-3/booleans.html">Booleans &amp; if Statements</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

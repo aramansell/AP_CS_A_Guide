@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.3c Combat Round Resolver — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="3.3b.html">◀ 3.3b</a>
+    <span class="lesson-id">3.3c</span>
+    <a href="3.4a.html">3.4a ▶</a>
+</div>
+
+<h1>3.3c — Combat Round Resolver: Who Goes First?</h1>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Initiative Resolver</h3>
+        <p>In tabletop RPGs, combat order is determined by an initiative roll. The highest roll goes first. Build a system that compares two initiative rolls and determines the combat order.</p>
+        <p>Create a class called <code>InitiativeResolver</code>. Hardcode two <code>int</code> values: <code>playerRoll</code> and <code>enemyRoll</code> (values from 1-20).</p>
+    </div>
+
+    <div class="section">
+        <h3>Rules</h3>
+        <ol>
+            <li>If playerRoll > enemyRoll: player goes first. Print the turn order.</li>
+            <li>If enemyRoll > playerRoll: enemy goes first. Print the turn order.</li>
+            <li>If they're tied: compare a <code>int playerDex</code> and <code>int enemyDex</code> — higher dex wins the tie.</li>
+            <li>If STILL tied after dex: flip a coin (use Math.random() > 0.5) — heads means player wins.</li>
+            <li>Print the full resolution: who rolled what, who had higher dex, and who goes first.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Edge Cases</h3>
+        <p>What happens if both players roll the same AND have the same dex? Does your tiebreaker work? Test it with matching values.</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-3/booleans.html">Booleans &amp; if Statements</a></li>
+        <li><a href="../docs/unit-1/math.html">Math.random()</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

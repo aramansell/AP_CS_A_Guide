@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.3c Damage with Validation — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="5.3b.html">◀ 5.3b</a>
+    <span class="lesson-id">5.3c</span>
+    <a href="5.4a.html">5.4a ▶</a>
+</div>
+
+<h1>5.3c — Damage with Validation: HP Can't Go Negative</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Combatant Class</h3>
+        <p>Every RPG character has HP that can go down... but never below zero. And healing shouldn't exceed max HP. Mutators enforce these rules so no other code can mess it up.</p>
+        <p>Create a class called <code>Combatant</code>:</p>
+        <ol>
+            <li>Private instance variables: <code>String name</code>, <code>int hp</code>, <code>int maxHp</code>, <code>boolean isAlive</code></li>
+            <li>Constructor takes name and maxHp. Sets hp = maxHp, isAlive = true.</li>
+            <li><code>void takeDamage(int amount)</code>: subtract from hp. If hp <= 0, set hp = 0 and isAlive = false. Print a death message.</li>
+            <li><code>void heal(int amount)</code>: add to hp. If hp > maxHp, set hp = maxHp. Print "Already at full health!" if hp was already max.</li>
+            <li>Getter: <code>getHp()</code> — but <strong>no public setter</strong> for hp. Why? Because damage/healing should always go through validation.</li>
+            <li><code>boolean isAlive()</code> — getter for alive status.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Test Your Guards</h3>
+        <p>Create a Combatant with 20 HP. Take 25 damage — should be at 0 HP and dead. Try to heal — does it work on a dead character? (You decide: should it?) Take 10 damage to a dead character — what happens?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-5/accessors.html">Accessors &amp; Mutators</a></li>
+        <li><a href="../docs/unit-3/booleans.html">Booleans &amp; if Statements</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

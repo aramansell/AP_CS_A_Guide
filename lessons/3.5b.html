@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.5b Number Guessing — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="3.5a.html">&#9664; 3.5a</a>
+    <span class="lesson-id">3.5b</span>
+    <a href="3.5c.html">3.5c &#9654;</a>
+</div>
+
+<h1>3.5b &#8212; Number Guessing Game (Build Together)</h1>
+
+<p>
+    <strong>Type:</strong> Basic Application. The teacher builds, you follow along.
+    This pulls together everything from Unit 3: if/else, boolean logic, and
+    relational operators &#8212; plus Scanner from Unit 2.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~35 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Build a game that picks a random number (1&#8211;100) and lets the
+    player guess until they get it right. After each guess, print
+    "too high" or "too low."</p>
+
+    <pre><code><span class="output">I'm thinking of a number from 1 to 100.
+Your guess: 50
+Too high!
+Your guess: 25
+Too low!
+Your guess: 37
+Correct! It took 3 guesses.</span></code></pre>
+
+    <h3>Iteration 1: One Guess Only</h3>
+
+    <p>Create <code>NumberGuessing.java</code>. Start with a single
+    round &#8212; no loop yet. Get the skeleton working.</p>
+
+    <pre><code>import java.util.Scanner;
+
+public class NumberGuessing {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        int secret = (int) (Math.random() * 100) + 1;
+
+        System.out.println("I'm thinking of a number from 1 to 100.");
+        System.out.print("Your guess: ");
+        int guess = input.nextInt();
+
+        System.out.println("Secret was: " + secret);
+        System.out.println("You guessed: " + guess);
+    }
+}</code></pre>
+
+    <p>Run it. Confirm that <code>secret</code> changes every run.</p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why does <code>secret</code> need to be an <code>int</code>
+                and not a <code>double</code>?</li>
+            <li>What does <code>+ 1</code> do in the random formula? What
+                happens if you remove it?</li>
+        </ol>
+    </div>
+
+    <h3>Iteration 2: Add the if/else Chain</h3>
+
+    <p>Compare the guess to the secret. Add this after reading the guess:</p>
+
+    <pre><code>// REPLACE the last two println lines with this:
+if (guess == secret) {
+    System.out.println("Correct!");
+} else {
+    System.out.println("Wrong!");
+}</code></pre>
+
+    <div class="tinker">
+        <h3>Tinker Challenge</h3>
+        <p>Replace the "Wrong!" message with something more helpful.
+        Use the <a href="../docs/unit-03/number-guessing.html">Number
+        Guessing walkthrough</a> to see how. The game should say whether
+        the guess was too high or too low.</p>
+    </div>
+
+    <h3>Iteration 3: The while-Loop Trap</h3>
+
+    <p>Now make the game repeat until the player guesses correctly.
+    Add a while loop around the guess+if/else. <strong>But here's the
+    broken version:</strong></p>
+
+    <div class="callout trap">
+    <pre><code>Scanner input = new Scanner(System.in);
+int secret = (int) (Math.random() * 100) + 1;
+int guess = 0;
+
+System.out.println("I'm thinking of a number from 1 to 100.");
+
+while (guess != secret) {
+    System.out.print("Your guess: ");
+    guess = input.nextInt();
+    // compare here...
+}
+System.out.println("Correct! It took X guesses.");</code></pre>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>Copy this code. Run it. The game works, but something
+        is missing. How many guesses did the player make? The program
+        never tells them. Add a counter variable. Where does it go?
+        When do you increment it? What's the initial value?</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Extend It (pick one)</h3>
+        <ul>
+            <li>Reverse the game: the player picks a number, the
+                computer guesses using binary search.</li>
+            <li>Add a "play again?" prompt that resets the game.</li>
+            <li>Give the player a difficulty choice: easy (1&#8211;50),
+                medium (1&#8211;100), hard (1&#8211;500).</li>
+        </ul>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint &#8212; before moving on, you must be able to:</h3>
+        <ul>
+            <li>Explain why <code>guess</code> must be initialized before
+                the while loop condition</li>
+            <li>Trace the loop for a specific sequence of guesses</li>
+            <li>Explain the difference between <code>==</code> and
+                <code>!=</code> in the loop condition</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-03/number-guessing.html">Number Guessing Walkthrough</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-03/boolean-logic.html">Boolean Logic</a></li>
+        <li><a href="../docs/unit-03/relational-operators.html">Relational Operators</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

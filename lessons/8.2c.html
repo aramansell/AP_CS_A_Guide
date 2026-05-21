@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.2c Battle Grid — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="8.2b.html">◀ 8.2b</a>
+    <span class="lesson-id">8.2c</span>
+    <a href="8.3a.html">8.3a ▶</a>
+</div>
+
+<h1>8.2c — Battle Grid: Range and Area Attacks</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: BattleGrid Scanner</h3>
+        <p>Tactical RPGs use a grid where every tile has a unit or is empty. Area attacks affect tiles in a pattern — a cross, a square, a diamond. 2D traversal patterns make this possible.</p>
+        <p>Create a class called <code>BattleGrid</code> with <code>char[][] grid = new char[6][6]</code>, initialized to '.' (empty). Place 'P' for player at (2,2) and 'E' enemies at (1,2), (3,2), (2,1), (2,3).</p>
+        <ol>
+            <li><code>void render()</code>: print the grid with coordinate labels.</li>
+            <li><code>boolean isInRange(int row, int col, int range)</code>: return true if the tile is within <code>range</code> steps from the player using <strong>Manhattan distance</strong>: |row - playerRow| + |col - playerCol| <= range.</li>
+            <li><code>ArrayList&lt;String&gt; getTargetsInRange(int range)</code>: return coordinates of all enemies within range.</li>
+            <li><code>void attackCross()</code>: mark all tiles in a cross pattern (same row OR same column as player) with 'X'.</li>
+        </ol>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-8/2d-arrays.html">2D Arrays</a></li>
+        <li><a href="../docs/unit-7/arraylist.html">ArrayList</a></li>
+    </ul>
+</div>
+
+</div>
+</body>
+</html>

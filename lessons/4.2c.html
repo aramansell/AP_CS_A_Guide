@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.2c for Loops: Build an Encounter Generator — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="4.2b.html">◀ 4.2b</a>
+    <span class="lesson-id">4.2c</span>
+    <a href="4.3a.html">4.3a ▶</a>
+</div>
+
+<h1>4.2c — for Loops: Build a Dungeon Encounter Generator</h1>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <p>
+        Dungeon Masters generate encounters: for each room, roll on a table to
+        determine what's inside. Today you build a procedural encounter generator
+        that creates a multi-room dungeon.
+    </p>
+
+    <h3>Build: DungeonGenerator.java</h3>
+
+    <p>The program generates a dungeon with exactly 8 rooms. Each room gets:</p>
+    <ul>
+        <li>A room number (1-8)</li>
+        <li>A random encounter type (roll 1-100):</li>
+    </ul>
+    <table>
+        <tr><th>Roll</th><th>Encounter</th><th>Description</th></tr>
+        <tr><td>1-50</td><td>Empty Room</td><td>Nothing but cobwebs</td></tr>
+        <tr><td>51-75</td><td>Goblin (1-3)</td><td>Small, weak, numerous</td></tr>
+        <tr><td>76-90</td><td>Skeleton</td><td>Undead, resists piercing</td></tr>
+        <tr><td>91-98</td><td>Chest</td><td>Contains 10-50 gold</td></tr>
+        <tr><td>99-100</td><td>Dragon!</td><td>Boss encounter</td></tr>
+    </table>
+
+    <pre><code>═══ DUNGEON MAP ═══
+Room 1: Empty Room
+Room 2: 2 Goblins
+Room 3: Chest (38 gold)
+Room 4: Empty Room
+Room 5: Skeleton
+Room 6: Empty Room
+Room 7: 3 Goblins
+Room 8: DRAGON!
+═══════════════════
+Summary: 2 empty, 5 goblins, 1 skeleton, 1 chest, 1 dragon</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>You need to count how many goblins appear across all rooms. Where does the counter go — inside the loop or outside? And where do you update it?</li>
+            <li>For "Goblin (1-3)", how do you generate a random number from 1 to 3? The formula is in the Math docs — find it.</li>
+            <li>The summary line says "1 dragon" even when there are zero. How would you only print "X dragon" if X > 0? What statement do you need?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker: Difficulty Modifier</h3>
+        <p>
+            Add a difficulty setting. The player can choose Easy, Normal, or Hard.
+            Modify the roll ranges:
+        </p>
+        <ul>
+            <li><strong>Easy:</strong> Dragon only on 100. More empty rooms (1-60).</li>
+            <li><strong>Normal:</strong> Current table.</li>
+            <li><strong>Hard:</strong> Dragon on 95-100. Fewer empty rooms (1-40).</li>
+        </ul>
+        <p>
+            You'll need to change the roll ranges — but the encounter types stay the
+            same. Can you write this without duplicating all the range checks?
+        </p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Missing Room 8</h3>
+        <p>
+            A student wrote <code>for (int i = 0; i < 8; i++)</code> and printed
+            "Room " + i. The output showed Room 0 through Room 7. Where's Room 8?
+            What's the fix — change the loop or change the print statement?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Use if-else chains inside a for loop to categorize data</li>
+            <li>Accumulate running totals across loop iterations</li>
+            <li>Generate random numbers within custom ranges using Math.random()</li>
+            <li>Conditionally print summary data only when counters are non-zero</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — full reference</li>
+        <li><a href="../docs/unit-02/math-class.html">The Math Class</a> — random ranges</li>
+        <li><a href="../docs/unit-03/boolean-expressions.html">Boolean Expressions</a> — if/else chains</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

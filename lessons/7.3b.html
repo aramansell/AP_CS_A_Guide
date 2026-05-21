@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7.3b Music Playlist — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="7.3a.html">&#9664; 7.3a</a>
+    <span class="lesson-id">7.3b</span>
+    <a href="7.3c.html">7.3c &#9654;</a>
+</div>
+
+<h1>7.3b &#8212; Music Playlist (Build Together)</h1>
+
+<p>
+    <strong>Type:</strong> Basic Application. The teacher builds, you follow along.
+    Your first ArrayList &#8212; dynamic sizing, add/remove/get, and iteration.
+    No more fixed-size arrays.
+</p>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <h3>The Goal</h3>
+
+    <p>Build a playlist manager using ArrayList. Add songs, remove songs,
+    shuffle the order, and print the full playlist.</p>
+
+    <pre><code><span class="output">=== MY PLAYLIST ===
+1. Bohemian Rhapsody - Queen
+2. Billie Jean - Michael Jackson
+3. Hotel California - Eagles
+---
+Shuffling...
+---
+1. Hotel California - Eagles
+2. Bohemian Rhapsody - Queen
+3. Billie Jean - Michael Jackson</span></code></pre>
+
+    <p><strong>Reference:</strong>
+    <a href="../docs/unit-07/music-playlist.html">Music Playlist Walkthrough</a>
+    &#8212; full reference.</p>
+
+    <h3>Iteration 1: Create the Playlist</h3>
+
+    <p>Create <code>PlaylistManager.java</code>:</p>
+
+    <pre><code>import java.util.ArrayList;
+
+public class PlaylistManager {
+    public static void main(String[] args) {
+        ArrayList&lt;String&gt; songs = new ArrayList&lt;&gt;();
+
+        songs.add("Bohemian Rhapsody - Queen");
+        songs.add("Billie Jean - Michael Jackson");
+        songs.add("Hotel California - Eagles");
+
+        // Print with numbers
+        for (int i = 0; i < songs.size(); i++) {
+            System.out.println((i+1) + ". " + songs.get(i));
+        }
+    }
+}</code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>What's the difference between <code>songs.size()</code>
+                and <code>songs.length</code>? One works, one doesn't.
+                Why?</li>
+            <li>What are the angle brackets <code>&lt;String&gt;</code> for?
+                What happens if you leave them off?</li>
+            <li>Why doesn't ArrayList need a fixed size like arrays do?</li>
+        </ol>
+    </div>
+
+    <h3>Iteration 2: Add and Remove</h3>
+
+    <p>Add Scanner and let the user manage the playlist:</p>
+
+    <pre><code>import java.util.Scanner;
+
+// ... inside main, after the initial songs:
+Scanner input = new Scanner(System.in);
+
+while (true) {
+    System.out.print("Add, Remove, Print, or Quit? ");
+    String cmd = input.nextLine();
+
+    if (cmd.equalsIgnoreCase("add")) {
+        System.out.print("Song: ");
+        songs.add(input.nextLine());
+    } else if (cmd.equalsIgnoreCase("remove")) {
+        System.out.print("Number to remove: ");
+        int num = input.nextInt();
+        input.nextLine();  // buffer trap!
+        songs.remove(num - 1);  // why -1?
+    } else if (cmd.equalsIgnoreCase("print")) {
+        // print loop here
+    } else if (cmd.equalsIgnoreCase("quit")) {
+        break;
+    }
+}</code></pre>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt</h3>
+        <p>What happens if the user types "remove 99" when there are
+        only 3 songs? Try it. Then fix it: check that the number is
+        valid before calling <code>remove()</code>.</p>
+    </div>
+
+    <h3>Iteration 3: Shuffle</h3>
+
+    <p>Add a shuffle command. The algorithm is the same swap pattern
+    you used for Card Deck, but <code>songs.get(i)</code> and
+    <code>songs.set(i, value)</code> replace array bracket access:</p>
+
+    <pre><code>// Shuffle: same swap algorithm, ArrayList-style
+for (int i = 0; i < songs.size(); i++) {
+    int swapIndex = (int) (Math.random() * songs.size());
+    String temp = songs.get(i);
+    songs.set(i, songs.get(swapIndex));
+    songs.set(swapIndex, temp);
+}</code></pre>
+
+    <div class="checklist">
+        <h3>Checkpoint &#8212; your playlist must:</h3>
+        <ul>
+            <li>Add new songs from user input</li>
+            <li>Remove songs by number (with bounds checking)</li>
+            <li>Shuffle using the swap algorithm</li>
+            <li>Print the playlist with numbers</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-07/music-playlist.html">Music Playlist Walkthrough</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-07/arraylist.html">ArrayList</a> &#8212; full reference</li>
+        <li><a href="../docs/unit-07/arraylist-vs-arrays.html">ArrayList vs Arrays</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>
