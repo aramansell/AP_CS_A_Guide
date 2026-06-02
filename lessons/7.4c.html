@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7.4c Inventory Integration &amp; Unit Retrospective — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="7.4b.html">◀ 7.4b</a>
+    <span class="lesson-id">7.4c</span>
+    <a href="8.1a.html">8.1a ▶</a>
+</div>
+
+<h1>7.4c — Inventory: Trade, Merge &amp; Unit 7 Retrospective</h1>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        You have a DynamicInventory. You've wired it into DungeonCrawl. But an RPG
+        inventory isn't just storage — it's trading, merging, and making choices
+        about what to keep. Today you add the operations that make an inventory
+        feel alive.
+    </p>
+
+    <h3>Part 1: Trade Between Inventories</h3>
+
+    <p>Add a trade command to your game loop. The player encounters a traveling
+    merchant who offers to trade:</p>
+
+    <pre><code>DynamicInventory merchant = new DynamicInventory();
+merchant.add(new Item("Healing Potion", "Common", 25));
+merchant.add(new Item("Fire Scroll", "Rare", 100));
+merchant.add(new Item("Map Fragment", "Epic", 250));</code></pre>
+
+    <p>Implement <code>trade(Item give, Item receive)</code> on your inventory:</p>
+    <ul>
+        <li>Remove <code>give</code> from the player's inventory</li>
+        <li>Add <code>receive</code> to the player's inventory</li>
+        <li>If the player doesn't have <code>give</code>, print an error</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>What happens if you call <code>inventory.remove("Potion")</code> and
+                the player has three Potions? Which one gets removed — and should your
+                code care?</li>
+            <li>The merchant's inventory is a DynamicInventory too. Could you display it
+                the same way? What does this tell you about the power of using the same
+                class for both player and NPC inventories?</li>
+        </ol>
+    </div>
+
+    <h3>Part 2: Merge Backpacks</h3>
+
+    <p>Add <code>merge(DynamicInventory other)</code>: takes all items from
+    <code>other</code> and adds them to this inventory. After merging, <code>other</code>
+    should be empty.</p>
+
+    <pre><code>// Player defeats the merchant and loots their bag
+playerInventory.merge(merchantInventory);
+// merchantInventory is now empty; player has everything</code></pre>
+
+    <div class="tinker">
+        <h3>Tinker: Inventory Weight Limit</h3>
+        <p>Add a <code>totalWeight</code> field to Item and a <code>getTotalWeight()</code>
+        method to DynamicInventory. Then add a max carry weight. The player can't pick
+        up an item if it would exceed their limit. Now your "unlimited" inventory has
+        a meaningful constraint — and you'll appreciate the ArrayList when the limit
+        is high but items are heavy.</p>
+    </div>
+
+    <h3>Part 3: Unit 7 Retrospective — Arrays vs ArrayList</h3>
+
+    <p>You've now built two complete inventory systems:</p>
+    <ul>
+        <li><strong>FixedInventory</strong> (Unit 6): plain array, manual shift, fixed capacity</li>
+        <li><strong>DynamicInventory</strong> (Unit 7): ArrayList, automatic resize, simpler code</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — Compare &amp; Contrast</h3>
+        <ol>
+            <li>Count the lines in FixedInventory.add() vs DynamicInventory.add().
+                Where did the shifting code go? Who wrote it?</li>
+            <li>Your DungeonCrawl game loop didn't change when you swapped inventory
+                implementations. What property of both classes made this possible?</li>
+            <li>ArrayList is built on top of a plain array. If you had to write
+                ArrayList from scratch, what would the private array look like?
+                What would happen during add() when the array fills up?</li>
+            <li>You now have: Dice.java (utility class), Character.java / Player.java /
+                Monster.java (entity classes), FixedInventory / DynamicInventory
+                (collection classes). As your RPG grows, where does new code go?
+                How do you decide whether to create a new class?</li>
+            <li>Look ahead to Unit 8: 2D arrays. Your dungeon map currently uses
+                scattered room variables. If you stored the map in a grid, what
+                would the data type be?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on to Unit 8, you must be able to:</h3>
+        <ul>
+            <li>Trade items between two ArrayList-backed inventories</li>
+            <li>Merge two inventories into one (and explain what happens to the source)</li>
+            <li>Articulate the trade-offs between fixed arrays and ArrayList</li>
+            <li>Explain why swapping one collection for another doesn't break the game — and name the design principle</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-07/dynamic-inventory.html">Dynamic Inventory (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-07/searching-sorting.html">Searching &amp; Sorting</a></li>
+        <li><a href="../docs/unit-07/arraylist-basics.html">ArrayList Basics</a></li>
+        <li><a href="../docs/unit-07/arraylist-traversal.html">ArrayList Traversal</a></li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

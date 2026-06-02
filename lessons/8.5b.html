@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.5b Convolution &amp; Edge Detection — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../demos.html">Demos</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="8.5a.html">◀ 8.5a</a>
+    <span class="lesson-id">8.5b</span>
+    <a href="8.5c.html">8.5c ▶</a>
+</div>
+
+<h1>8.5b — Convolution: Blur, Sharpen, Edge Detect</h1>
+
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>Requirement 1: Box Blur</h3>
+
+    <p>A blur replaces each pixel with the average of its 3×3 neighborhood. That
+    sliding 3×3 window is called a kernel.</p>
+
+    <pre><code><span class="output">Kernel (each cell = 1/9):
+┌─────────────┐
+│ 1/9  1/9  1/9 │
+│ 1/9  1/9  1/9 │   Apply to every pixel
+│ 1/9  1/9  1/9 │
+└─────────────┘
+
+Before:           After:
+██  ██  ██       ▒▒  ▒▒  ▒▒
+██  ██  ██  →    ▒▒  ▒▒  ▒▒
+██  ██  ██       ▒▒  ▒▒  ▒▒</span></code></pre>
+
+    <p>Build <code>boxBlur(int[][] img)</code> that returns a new image. For pixels
+    at the border (row 0, col 0, etc), only average the valid neighbors — don't
+    go out of bounds.</p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>You need to modify a new array (not the original) while reading from the
+        original. Why? What would happen if you modified pixels in-place while
+        reading?</p>
+    </div>
+
+    <h3>Requirement 2: Edge Detection</h3>
+
+    <p>Edges are places where pixel values change rapidly. A simple edge detector
+    compares each pixel to its right and bottom neighbors:</p>
+
+    <pre><code>For pixel at [r][c]:
+  rightDiff = |img[r][c] - img[r][c+1]|
+  downDiff  = |img[r][c] - img[r+1][c]|
+  edge[r][c] = Math.max(rightDiff, downDiff)</code></pre>
+
+    <p>If the difference is large (> 50), there's an edge. Draw a horizontal
+    gradient (0 to 255 across the image). Run your edge detector. Where does
+    it fire? Where does it stay silent? Why?</p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>A gradient has no sharp edges — values change smoothly. What kind of
+        image WOULD trigger edge detection? Draw a sharp jump (0→255 between
+        adjacent pixels) and test. Now draw a checkerboard pattern. Which method
+        is it — row-major or column-major — and does the edge detection pattern
+        match?</p>
+    </div>
+
+    <h3>Requirement 3: Heat Map Filter</h3>
+
+    <p>Transform grayscale into a "heat map" where:</p>
+    <ul>
+        <li>0-63 → deep blue (print "B")</li>
+        <li>64-127 → green (print "G")</li>
+        <li>128-191 → orange (print "O")</li>
+        <li>192-255 → red (print "R")</li>
+    </ul>
+
+    <p>Generate a gradient image, apply the heat map, and describe what you see.
+    Now apply edge detection FIRST, then the heat map. Now what do you see?</p>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Implement a box blur using a 3×3 neighborhood average</li>
+            <li>Detect edges by comparing adjacent pixel values</li>
+            <li>Explain why convolution requires a separate output array</li>
+            <li>Combine filters (edge detect → heat map) into a processing pipeline</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-08/2d-array-basics.html">2D Array Basics</a></li>
+        <li><a href="../docs/unit-08/2d-traversal.html">2D Array Traversal</a></li>
+    </ul>
+</div>
+
+</div></body></html>
