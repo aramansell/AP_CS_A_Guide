@@ -1,0 +1,49 @@
+---
+// Migrated from lessons/10.1c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>10.1c — Recursive Dungeon Crawler: Explore All Rooms</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Dungeon Explorer</h3>
+        <p>Dungeons are a natural fit for recursion. A room has doors to other rooms, which have doors to more rooms... recursion explores them all without needing to know the layout in advance.</p>
+        <p>Create a class called <code>DungeonExplorer</code> with this dungeon represented as a 2D char array:</p>
+        <pre>char[][] dungeon = {
+    {'#', '#', '#', '#', '#'},
+    {'#', '.', '.', '.', '#'},
+    {'#', '.', '.', '.', '#'},
+    {'#', '.', '.', '.', '#'},
+    {'#', '#', '#', '#', '#'}
+};</pre>
+        <ol>
+            <li><code>void explore(int row, int col, boolean[][] visited)</code>: mark the current tile visited. Then recursively explore all 4 adjacent tiles that are floor ('.') and not yet visited.</li>
+            <li><code>int countRooms()</code>: start from any floor tile, call explore, and return the number of tiles visited.</li>
+            <li>Add a treasure room: change one tile to 'T'. Your explore method should print a message when it finds treasure.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Base Case Check</h3>
+        <p>What are ALL the base cases in your explore method? List them. Missing even one causes infinite recursion or array bounds errors.</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-10/recursion-basics.html">Recursion</a></li>
+        <li><a href="../docs/unit-08/2d-array-basics.html">2D Arrays</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="10.1c" title="10.1c Recursive Dungeon Crawler — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

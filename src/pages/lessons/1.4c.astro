@@ -1,0 +1,107 @@
+---
+// Migrated from lessons/1.4c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>1.4c — Slot Machine: Payouts &amp; Polish</h1>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <p>
+        Your slot machine works, but it's basic. A real slot machine has different
+        payout tiers, a running balance, and feels like a game — not a math problem.
+        Time to expand it.
+    </p>
+
+    <h3>Requirement 1: Payout Tiers</h3>
+
+    <p>Right now you have a binary "JACKPOT or nothing" system. Add these tiers:</p>
+    <ul>
+        <li><strong>Three match:</strong> JACKPOT — multiply bet by 10</li>
+        <li><strong>Two match:</strong> Small win — multiply bet by 2</li>
+        <li><strong>No match:</strong> Lose the bet</li>
+    </ul>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Pairing Problem</h3>
+        <p>Here's a naive approach to checking for two-of-a-kind:</p>
+        <pre><code>if (reel1 == reel2 || reel1 == reel3 || reel2 == reel3)</code></pre>
+        <p>Run your slot machine with this check. Then run it again. And again.
+        When three reels match, what happens? Does the program print BOTH
+        "Small win!" AND "JACKPOT!"? What logic do you need to add to fix this?</p>
+    </div>
+
+    <h3>Requirement 2: Running Balance</h3>
+
+    <p>Track a balance that persists between spins:</p>
+    <ul>
+        <li>Start with 100 coins</li>
+        <li>The player bets 10 coins per spin</li>
+        <li>After each spin, show: bet, win/loss amount, new balance</li>
+        <li>Game ends when balance reaches 0 — print a summary</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>You need the balance to survive across spins. Where in the program
+                do you declare it? Why can't you put it inside the spin logic?</li>
+            <li>Your payout tiers check three reels for equality. How many
+                <code>if</code> statements did you write? Could you reduce them
+                using a different approach?</li>
+            <li>What happens when you bet 10 but your balance is 5? Should your
+                program let that happen? How would you prevent it?</li>
+        </ol>
+    </div>
+
+    <h3>Requirement 3: Polish the Output</h3>
+
+    <p>Make it look like a real game:</p>
+    <pre><code><span class="output">═══════════════════════════
+  SLOT MACHINE
+  Balance: 85 coins
+═══════════════════════════
+  [ Cherry | Lemon | Cherry ]
+  Two of a kind! You win 20 coins!
+  New balance: 105 coins
+═══════════════════════════</span></code></pre>
+
+    <div class="tinker">
+        <h3>Tinker: Push It Further (pick one)</h3>
+        <ul>
+            <li>Add a "double or nothing" option after a win — flip a coin (50% chance), double your winnings or lose it all</li>
+            <li>Track total spins, total wins, and net profit. Print final stats when the player busts.</li>
+            <li>Add a "Lucky 7" special payout: if any reel shows 7, return half the bet regardless of matching</li>
+        </ul>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Implement multi-tier conditional logic (three match / two match / none)</li>
+            <li>Track state that changes across multiple operations (running balance)</li>
+            <li>Prevent overlapping conditionals (three-of-a-kind also triggers two-of-a-kind check)</li>
+            <li>Format output into clean, readable game displays</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-01/slot-machine.html">Slot Machine Walkthrough</a></li>
+        <li><a href="../docs/unit-01/math-random.html">Math.random()</a></li>
+        <li><a href="../docs/unit-01/three-step-pattern.html">Three-Step Pattern</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="1.4c" title="1.4c Slot Machine Extend — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

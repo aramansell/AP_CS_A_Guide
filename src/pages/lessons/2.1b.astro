@@ -1,0 +1,43 @@
+---
+// Migrated from lessons/2.1b.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>2.1b — Object Inspection: Call Methods, Read Fields</h1>
+
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Object Inspector</h3>
+        <p>Yesterday you discovered that objects have state (fields) and behavior (methods). Today you'll create multiple objects and inspect them — calling their methods, reading their fields, and seeing how each object is independent.</p>
+        <p>Create a class called <code>ObjectInspector</code> with a main method:</p>
+        <ol>
+            <li>Create two String objects with different values: "Hello" and "Goodbye".</li>
+            <li>Call <code>.length()</code>, <code>.toUpperCase()</code>, and <code>.charAt(0)</code> on each. Print all results.</li>
+            <li>Create a Rectangle object (from the engine): <code>new Rectangle(0, 0, 50, 30)</code>. Call <code>getWidth()</code> and <code>getHeight()</code>.</li>
+            <li>Create a second Rectangle with different values. Call the same methods. Are the results the same?</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Observe</h3>
+        <p>Two objects of the same class, created with different constructor arguments, return different values from the same method call. What does this tell you about where the data lives?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/objects-and-classes.html">Objects &amp; Classes</a></li>
+        <li><a href="../docs/unit-02/string.html">String Methods</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="2.1b" title="2.1b Object Inspection — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

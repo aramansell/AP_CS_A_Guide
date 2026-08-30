@@ -1,0 +1,176 @@
+---
+// Migrated from docs/unit-07/searching-sorting.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 7</a>
+    <span class="sep">/</span>
+    <span class="here">Searching &amp; Sorting</span>
+</nav>`;
+const body = `<h1>Searching &amp; Sorting</h1>
+
+<p>
+    CED topics 4.14 and 4.15. You wrote the loop versions in 7.3; this page is
+    the complete reference, plus the two ideas that make the topic click: the
+    precondition contract of binary search, and the trade between the two sorts.
+</p>
+
+<h2>Linear Search</h2>
+
+<pre><code>// returns index of first match, or -1
+public static int linearSearch(ArrayList&lt;Integer&gt; list, int target) {
+    for (int i = 0; i &lt; list.size(); i++) {
+        if (list.get(i) == target) return i;
+    }
+    return -1;
+}</code></pre>
+
+<ul>
+    <li>Works on ANY data, sorted or not. No preconditions.</li>
+    <li>Best case 1 step (target first). Worst case n (target last or missing).
+    On average, about n/2. All linear.</li>
+    <li>Finds the FIRST occurrence. To find all occurrences, drop the early
+    return and collect.</li>
+</ul>
+
+<h2>Binary Search</h2>
+
+<pre><code>// PRECONDITION: list is sorted ascending. Returns an index of target, or -1.
+public static int binarySearch(ArrayList&lt;Integer&gt; list, int target) {
+    int lo = 0, hi = list.size() - 1;
+    while (lo &lt;= hi) {
+        int mid = (lo + hi) / 2;
+        if (list.get(mid) == target)     return mid;
+        else if (list.get(mid) &lt; target) lo = mid + 1;
+        else                             hi = mid - 1;
+    }
+    return -1;
+}</code></pre>
+
+<ul>
+    <li>Each iteration throws away half the remaining range. 1000 items: 10
+    steps max. A million: 20. A billion: 30.</li>
+    <li>The loop invariant: the target, if present, is always between lo and hi.
+    Every line of the method exists to keep that sentence true.</li>
+    <li>When lo crosses hi, the range is empty and the answer is "not here."</li>
+</ul>
+
+<div class="callout trap">
+    <strong>The precondition is part of the algorithm.</strong> Binary search on
+    unsorted data does not crash. It CONFIDENTLY RETURNS GARBAGE. The exam
+    loves this: "the list is not sorted, what does this binary search return?"
+    The honest answer is "an index that may be wrong, and -1 is possible even
+    when the target exists." A sorted-list precondition is a contract, and
+    violating it silently is the most exam-testable fact in this topic.
+</div>
+
+<h2>Trace Table: Watch It Halve</h2>
+
+<p>List <code>[3, 7, 11, 15, 19, 25, 31, 39]</code>, target 25:</p>
+
+<table>
+    <tr><th>Step</th><th>lo</th><th>hi</th><th>mid</th><th>list[mid]</th><th>Action</th></tr>
+    <tr><td>1</td><td>0</td><td>7</td><td>3</td><td>15</td><td>15 &lt; 25, go right: lo = 4</td></tr>
+    <tr><td>2</td><td>4</td><td>7</td><td>5</td><td>25</td><td>found! return 5</td></tr>
+</table>
+
+<p>Two steps. Linear search needed six. Now target 8 (absent):</p>
+
+<table>
+    <tr><th>Step</th><th>lo</th><th>hi</th><th>mid</th><th>list[mid]</th><th>Action</th></tr>
+    <tr><td>1</td><td>0</td><td>7</td><td>3</td><td>15</td><td>15 &gt; 8, go left: hi = 2</td></tr>
+    <tr><td>2</td><td>0</td><td>2</td><td>1</td><td>7</td><td>7 &lt; 8, go right: lo = 2</td></tr>
+    <tr><td>3</td><td>2</td><td>2</td><td>2</td><td>11</td><td>11 &gt; 8, go left: hi = 1</td></tr>
+    <tr><td>4</td><td>2</td><td>1</td><td></td><td></td><td>lo &gt; hi: empty range, return -1</td></tr>
+</table>
+
+<h2>Selection Sort</h2>
+
+<p>Find the smallest in the unsorted region, swap it to the front, shrink the
+region. The full treatment with traces, code, and the insertion sort comparison
+lives in <a href="sorting.html">Sorting</a>. Summary for this page:</p>
+
+<table>
+    <tr><th></th><th>Selection sort</th><th>Insertion sort</th></tr>
+    <tr><td>Comparisons</td><td>always ~n²/2</td><td>n-1 best (sorted input), ~n²/2 worst</td></tr>
+    <tr><td>Moves</td><td>at most n-1 swaps</td><td>up to ~n²/2 shifts</td></tr>
+    <tr><td>Shines when</td><td>swaps are expensive (big objects)</td><td>data is nearly sorted</td></tr>
+    <tr><td>Both</td><td colspan="2">quadratic overall. Correct, simple, slow at scale.</td></tr>
+</table>
+
+<h2>Binary Search + Sorting = One System</h2>
+
+<p>The trade: sorting once costs ~n²/2 (selection) or better, and buys log n
+searches forever after. If you search once, linear wins (sort costs more than
+it saves). If you search many times against a growing dataset, sort (or keep
+sorted on insert) and binary search wins massively. Merge sort (10.3) is the
+better sort, and 10.6 gives you its recursive search partner. This pricing
+logic is exactly what 4.7a's run-time analysis is for.</p>
+
+<h2>Tinker Challenge: The Insertion Search</h2>
+
+<div class="tinker">
+    <h3>Keep It Sorted As You Build</h3>
+    <p>Instead of loading monsters and sorting after: insert each monster into
+    its correct sorted position as you read the file (your 6.3b insert
+    algorithm, upgraded to ArrayList). Benefits: the list is always
+    binary-searchable, mid-load. Costs: every insert shifts elements, so
+    building is quadratic in the worst case. Build the same bestiary both ways
+    and count total element-moves with a counter. Which wins for 8 monsters?
+    Would the answer change for 8000? Defend with shapes, not vibes.</p>
+</div>
+
+<h2>Bug Hunt</h2>
+
+<div class="bug-hunt">
+    <h3>Three Broken Searches</h3>
+    <pre><code>// A: the off-by-one forever loop
+while (lo &lt; hi) {                    // should be &lt;=
+    ...
+    else lo = mid;                    // should be mid + 1
+}
+
+// B: the skipper
+else if (list.get(mid) &lt; target) lo = mid + 2;   // +2 jumps over a candidate
+
+// C: the amnesiac
+return -1;    // inside the loop, after the first comparison</code></pre>
+    <p>For each: pick the symptom (infinite loop / wrong index / always -1 /
+    missed elements), then run it to confirm. The infinite one will print your
+    own debug lines forever; kill it and note how Java reports
+    StackOverflowError versus just hanging. Some bugs are loud. The dangerous
+    ones are B and C: they finish, and they lie.</p>
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why does the exam prefer tracing binary search to writing it?</h3>
+    <p>Because the trace proves the invariant, and the invariant is the
+    understanding. "If it exists, it is in [lo, hi]" is a sentence you can
+    check by hand on every row of a trace table. Writing the code from memory
+    is 10.6's job; reading a stranger's binary search and predicting its
+    behavior, including its failure modes, is the exam-level skill.</p>
+    <h3>When is -1 a lie?</h3>
+    <p>When the list was not sorted. -1 means "not in the list" only under the
+    precondition. The exam's sneakiest questions hand you an unsorted list and
+    a correct-looking binary search, and ask what it returns for a present
+    element. Sometimes it accidentally finds it. Sometimes -1. You must TRACE,
+    not assume. That is the whole lesson of preconditions.</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="sorting.html">Sorting</a> — selection and insertion in full</li>
+    <li><a href="../unit-10/recursive-search.html">Recursive Search (Unit 10)</a> — the recursive form of this page</li>
+    <li><a href="../unit-04/run-time-analysis.html">Run-Time Analysis</a> — the pricing logic</li>
+    <li><a href="arraylist-traversal.html">ArrayList Traversal</a> — the loops everything here is built from</li>
+</ul>`;
+---
+<Base title="Searching &amp; Sorting — Unit 7" active="docs" root="../.." docsHome="../index.html" css="../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>

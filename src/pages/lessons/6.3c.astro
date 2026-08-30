@@ -1,0 +1,43 @@
+---
+// Migrated from lessons/6.3c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>6.3c — Combat Initiative Tracker: Sort and Shift</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Turn Order System</h3>
+        <p>In tactical RPGs, combatants act in turn order based on their speed stat. When someone's turn ends, they move to the back of the queue. You'll build this using array shift operations.</p>
+        <p>Create a class called <code>TurnOrder</code>:</p>
+        <ol>
+            <li>Declare arrays: <code>String[] combatants</code> and <code>int[] speeds</code> — parallel arrays of size 6.</li>
+            <li>Initialize with 4 combatants: "Hero"(12), "Goblin"(8), "Mage"(15), "Orc"(6).</li>
+            <li>Method <code>void sortBySpeed()</code>: sort combatants and speeds together by speed descending (highest first).</li>
+            <li>Method <code>String takeTurn()</code>: return the name of the first combatant, then rotate the array — move first element to the end, shift everything else left.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Test Multiple Rounds</h3>
+        <p>Call takeTurn() 8 times in a loop and print who acts. Does the order cycle correctly? After a full cycle, is the order the same as the start?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-06/array-algorithms.html">Array Algorithms</a></li>
+        <li><a href="../docs/unit-06/array-traversal.html">Array Traversal</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="6.3c" title="6.3c Combat Tracker — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

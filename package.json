@@ -5,7 +5,7 @@
   "type": "module",
   "description": "IBW AP Computer Science A course site — Astro static build for GitHub Pages",
   "engines": {
-    "node": ">=18.17"
+    "node": ">=23.6.0"
   },
   "scripts": {
     "dev": "astro dev",

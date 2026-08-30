@@ -1,0 +1,159 @@
+---
+// Migrated from docs/unit-01/compound-assignment.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 1</a>
+    <span class="sep">/</span>
+    <span class="here">Compound Assignment &amp; Range</span>
+</nav>`;
+const body = `<h1>Compound Assignment &amp; Range of Variables</h1>
+
+<p>
+    Two short topics that the exam loves because both hide in plain sight. The
+    first is shorthand you already use. The second is the discovery that a number
+    type is a box with walls, and Java will not tell you when you hit them.
+</p>
+
+<h2>The Compound Family</h2>
+
+<table>
+    <tr><th>Shorthand</th><th>Long form</th><th>In the game</th></tr>
+    <tr><td><code>x += 5</code></td><td><code>x = x + 5</code></td><td>loot gold</td></tr>
+    <tr><td><code>x -= 5</code></td><td><code>x = x - 5</code></td><td>take damage</td></tr>
+    <tr><td><code>x *= 2</code></td><td><code>x = x * 2</code></td><td>double gold, powerups</td></tr>
+    <tr><td><code>x /= 2</code></td><td><code>x = x / 2</code></td><td>halve a stack, curses</td></tr>
+    <tr><td><code>x %= 10</code></td><td><code>x = x % 10</code></td><td>last digit, wraparound counters</td></tr>
+    <tr><td><code>x++</code></td><td><code>x = x + 1</code></td><td>loop counters, level up</td></tr>
+    <tr><td><code>x--</code></td><td><code>x = x - 1</code></td><td>ammo, cooldowns</td></tr>
+</table>
+
+<p>The whole right side is computed first, then combined. <code>hp -= damage * 2</code>
+means <code>hp = hp - (damage * 2)</code>, not <code>(hp - damage) * 2</code>.</p>
+
+<h2>Pre and Post Increment</h2>
+
+<p><code>x++</code> and <code>++x</code> both add 1. The difference only appears
+when the value is USED at the same moment it changes:</p>
+
+<pre><code>int x = 5;
+int a = x++;   // a gets 5, THEN x becomes 6   (post: use old value, then add)
+System.out.println(a + " " + x);   // 5 6
+
+int y = 5;
+int b = ++y;   // y becomes 6 FIRST, then b gets 6   (pre: add, then use)
+System.out.println(b + " " + y);   // 6 6</code></pre>
+
+<p>In a plain statement, <code>x++;</code> alone, the two are identical. The exam
+creates the difference by embedding the increment in an assignment or a print.</p>
+
+<h2>Range: Every Type Has Walls</h2>
+
+<table>
+    <tr><th>Type</th><th>Smallest</th><th>Largest</th><th>Game use</th></tr>
+    <tr><td><code>int</code></td><td><code>Integer.MIN_VALUE</code><br>(-2,147,483,648)</td>
+        <td><code>Integer.MAX_VALUE</code><br>(2,147,483,647)</td><td>HP, gold, scores</td></tr>
+    <tr><td><code>double</code></td><td>about -1.8 x 10^308</td><td>about 1.8 x 10^308</td>
+        <td>rates, ratios, exact-enough math</td></tr>
+</table>
+
+<p>An int counts from about negative 2.1 billion to positive 2.1 billion. That
+sounds infinite until you double things.</p>
+
+<h2>Overflow: The Silent Wraparound</h2>
+
+<pre><code>System.out.println(Integer.MAX_VALUE);      // 2147483647
+System.out.println(Integer.MAX_VALUE + 1); // -2147483648
+System.out.println(Integer.MIN_VALUE - 1); // 2147483647</code></pre>
+
+<p>Past the top, ints wrap to the bottom. Past the bottom, they wrap to the top.
+No exception. No warning. The odometer rolled over. Any arithmetic that can cross
+2.1 billion silently produces wrong answers from that point on.</p>
+
+<div class="callout trap">
+    <strong>When this actually bites:</strong> doubling loops (1 to 2 billion is
+    only 31 doublings), factorials (13! overflows an int), and accumulating totals
+    across a long campaign (1 billion damage in a year of play is a rounding error
+    away). If a counter can double, or a total can grow without bound, ask: "will
+    this pass 2.1 billion?" If maybe, widen to double (or long, which is an even
+    bigger int box, though the CED scope uses int and double).
+</div>
+
+<h2>Tinker Challenge: Find the Wall</h2>
+
+<div class="tinker">
+    <h3>The Doubling Room</h3>
+    <pre><code>int gold = 1;
+int rooms = 0;
+while (gold &gt; 0) {
+    gold *= 2;
+    rooms++;
+    System.out.println(rooms + ": " + gold);
+}</code></pre>
+    <p>Run it. The loop exits not when gold gets huge, but when it goes NEGATIVE
+    (overflow wrapped it). Count the rooms. Now compute by hand: 2 to the 30th is
+    1,073,741,824. 2 to the 31st is 2,147,483,648, one past MAX_VALUE. The wall is
+    at room 31. The loop ends at room 32, when the wrap makes gold negative. The
+    program "works" the whole time. That is the horror and the fun.</p>
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why doesn't Java just stop with an error at overflow?</h3>
+    <p>Speed. Integer arithmetic at hardware speed means no range checks on every
+    operation. Java's designers chose fast-and-silent over safe-and-slow, and put
+    the responsibility on the programmer. Knowing when to check is part of knowing
+    how to program. (Some languages do check. There is a real tradeoff here, and
+    it is a great thing to argue about.)</p>
+    <h3>Why is 13! the first factorial that overflows?</h3>
+    <p>12! is 479,001,600, comfortably inside 2.1 billion. 13! is 6,227,020,800,
+    past the wall. Compute both with a loop and watch 12! print correctly and 13!
+    print garbage. Then write one sentence: "n! overflows an int at n = 13 because
+    ___."</p>
+</div>
+
+<h2>Bug Hunt</h2>
+
+<div class="bug-hunt">
+    <h3>Bug 1: The Loot Bonus</h3>
+    <pre><code>int totalGold = 2_000_000_000;   // campaign total so far
+int bonus = totalGold + 500_000_000;
+System.out.println("Bonus total: " + bonus);</code></pre>
+    <p>Predict, then run. The total crosses 2.1 billion. What prints? What SHOULD
+    print? Fix it with double and note what changes about the output formatting.</p>
+    <h3>Bug 2: The Post-Increment Confusion</h3>
+    <pre><code>int level = 3;
+System.out.println("Level up! Now level " + level++);
+System.out.println("Level check: " + level);
+System.out.println("Doubled: " + ++level * 2);</code></pre>
+    <p>Predict all three lines, then run. Line 1 prints 3 (old value used, level
+    becomes 4 after). Line 2 prints 4. Line 3: level becomes 5 first, then times 2,
+    so 10. If any line surprised you, write the rule in your notes.</p>
+    <h3>Bug 3: The Halving Loop</h3>
+    <pre><code>int stack = 100;
+while (stack != 0) {
+    stack /= 2;
+}</code></pre>
+    <p>This one is about integer division, not range. Trace it: 100, 50, 25, 12,
+    6, 3, 1, then 1/2 is 0. Loop ends. Fine. Now change the divisor to 3. Trace:
+    100, 33, 11, 3, 1, 1/3 is 0. Also fine. So when does this loop hang? (When
+    stack starts at 0: 0/2 is 0 forever. Off-by-one on the start condition, the
+    oldest bug in computing.)</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="casting.html">Casting &amp; Integer Division</a> — the other half of the int/double border story</li>
+    <li><a href="arithmetic.html">Arithmetic</a> — operators and precedence</li>
+    <li><a href="variables.html">Variables &amp; Types</a> — the boxes themselves</li>
+    <li><a href="../../exam/java-quick-reference.html">Java Quick Reference</a> — Integer.MIN_VALUE and MAX_VALUE are on the sheet</li>
+</ul>`;
+---
+<Base title="Compound Assignment &amp; Range of Variables — Unit 1" active="docs" root="../.." docsHome="../index.html" css="../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>

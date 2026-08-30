@@ -1,0 +1,50 @@
+---
+// Migrated from lessons/4.1c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>4.1c — Combat Loop: Fight Until Someone Falls</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Combat Loop</h3>
+        <p>RPG combat isn't one hit and done. It's a loop: hit, hit, hit, until someone's HP reaches zero. You now understand while loops well enough to build this.</p>
+        <p>Create a class called <code>CombatLoop</code>:</p>
+        <ol>
+            <li>Declare <code>int playerHP = 30</code> and <code>int enemyHP = 25</code>.</li>
+            <li>Use a <code>while</code> loop: <strong>while (playerHP > 0 && enemyHP > 0)</strong>.</li>
+            <li>Inside the loop:
+                <ul>
+                    <li>Player attacks: enemyHP decreases by a random amount (5-10).</li>
+                    <li>Enemy attacks: playerHP decreases by a random amount (3-8).</li>
+                    <li>Print the current HP values after each exchange.</li>
+                </ul>
+            </li>
+            <li>After the loop ends, print who won.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Think: Loop Exit Conditions</h3>
+        <p>Your loop condition uses <code>&&</code>. What happens if you use <code>||</code> instead? What does the <code>&&</code> guarantee that <code>||</code> wouldn't?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/while-loops.html">Iteration: while &amp; for</a></li>
+        <li><a href="../docs/unit-03/boolean-logic.html">Booleans &amp; if Statements</a></li>
+        <li><a href="../docs/unit-02/math-class.html">Math.random()</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="4.1c" title="4.1c Combat Loop System — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

@@ -1,0 +1,104 @@
+---
+// Migrated from lessons/1.5c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>1.5c — Tip Calculator: Bill Splitter &amp; RPG Gold</h1>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <p>
+        Your Tip Calculator handles one bill, one tip, one total. Real programs
+        handle multiple inputs, split checks, and round to cents. And your RPG
+        already has gold — the same arithmetic powers loot distribution.
+    </p>
+
+    <h3>Requirement 1: Split the Check</h3>
+
+    <p>Add to your TipCalculator:</p>
+    <ul>
+        <li>Declare a variable for the number of people splitting the bill</li>
+        <li>After computing the total (including tip), calculate each person's share</li>
+        <li>Display: "Each person pays: $X.XX"</li>
+    </ul>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Rounding Trap</h3>
+        <p>Run your split with: bill $100.00, 20% tip, 3 people. Each share is
+        $120.00 ÷ 3 = $40.00. That divides evenly. Now try: bill $45.67, 18% tip,
+        4 people. What do you actually get vs. what you expect?</p>
+        <p>Java doubles don't divide money cleanly. Don't fix it — just observe it.
+        You'll learn the proper fix (using integers for cents) in Unit 2.</p>
+    </div>
+
+    <h3>Requirement 2: Service Rating</h3>
+
+    <p>Instead of hard-coding the tip percentage, use a service rating system:</p>
+    <ul>
+        <li>Poor service = 10%, Average = 15%, Great = 20%, Outstanding = 25%</li>
+        <li>Declare a variable for the rating — use it to set the tip percentage</li>
+        <li>Print the rating alongside the receipt</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>In the Slot Machine, you used Math.random(). In the Tip Calculator,
+                you used arithmetic. In the RPG, you need BOTH. Where does each one
+                appear? Can you explain why some problems need randomness and some
+                don't?</li>
+            <li>You've now seen three applications of the three-step pattern. What's
+                the pattern behind the pattern? If you had to describe it to someone
+                who's never coded, what would you say?</li>
+        </ol>
+    </div>
+
+    <h3>Requirement 3: RPG Gold — Party Split</h3>
+
+    <p>Open a new file: <code>GoldSplit.java</code>. A party of 4 adventurers just
+    defeated a dragon with 847 gold pieces.</p>
+
+    <ol>
+        <li>Declare the total gold</li>
+        <li>Calculate each member's share (integer division is fine for now)</li>
+        <li>Calculate the remainder — the coins that don't split evenly</li>
+        <li>Print: "Each gets 211 gold. 3 coins remain (donate to the tavern)."</li>
+    </ol>
+
+    <div class="tinker">
+        <h3>Tinker: Unequal Split</h3>
+        <p>The fighter gets 40%, the rogue gets 30%, the cleric gets 20%, and the
+        wizard gets 10% (they stayed in the back). Recalculate the split and print
+        each member's share. Check: do all four shares add up to the total?</p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write a program that splits a value across multiple recipients</li>
+            <li>Use integer division and modulo to handle remainders</li>
+            <li>Apply the three-step pattern to a completely new problem — without being told where each step goes</li>
+            <li>Articulate what the three-step pattern IS — not just follow it, but explain it</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-01/tip-calculator.html">Tip Calculator Walkthrough</a></li>
+        <li><a href="../docs/unit-01/arithmetic.html">Arithmetic &amp; Operators</a></li>
+        <li><a href="../docs/unit-01/three-step-pattern.html">Three-Step Pattern</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="1.5c" title="1.5c Tip Calculator Extend — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

@@ -1,0 +1,55 @@
+---
+// Migrated from lessons/9.4c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>9.4c — Combat Abilities Engine: Interface-Driven Combat</h1>
+
+<div class="callout warn">
+    <strong>Season 2: beyond the exam.</strong> This topic is no longer tested
+    (the 2025 CED removed inheritance from the exam). We build it after May 12
+    because it makes the RPG engine dramatically better, and because you are
+    ready for it. Pure craft, zero test anxiety.
+</div>
+
+
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Ability System</h3>
+        <p>Professional RPGs use an interface for all combat actions. "Attack", "Heal", "Fireball", "Shield Block" — they all conform to the same contract. This lets you build an ability bar that works with anything.</p>
+        <p>Create interface <code>CombatAction</code>:</p>
+        <ol>
+            <li><code>String getName()</code></li>
+            <li><code>int getPower()</code></li>
+            <li><code>String getTargetType()</code> — returns "enemy", "ally", or "self"</li>
+            <li><code>String execute()</code> — returns a description of what happened</li>
+        </ol>
+        <p>Create at least 4 implementations:</p>
+        <ol>
+            <li><code>Slash</code>: power=12, target=enemy</li>
+            <li><code>Fireball</code>: power=25, target=enemy</li>
+            <li><code>HealingLight</code>: power=15, target=ally</li>
+            <li><code>DefensiveStance</code>: power=0, target=self — execute() returns "Defense doubled for 2 turns!"</li>
+        </ol>
+        <p>Store all 4 in a <code>CombatAction[]</code> array. Print each action's name, power, target, and execution result.</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/object-interfaces-casting.html">Interfaces</a></li>
+        <li><a href="../docs/unit-09/extends-and-super.html">Inheritance</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="9.4c" title="9.4c Combat Abilities Engine — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

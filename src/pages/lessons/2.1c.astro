@@ -1,0 +1,41 @@
+---
+// Migrated from lessons/2.1c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>2.1c — RPG Character Creator: Objects Are Your Heroes</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Character Sheets as Objects</h3>
+        <p>Every RPG character is an object. Their name, HP, strength, and inventory are instance fields. Their methods — attack, defend, heal — operate on that data. You'll create character objects and make them interact.</p>
+        <p>Create a class called <code>Hero</code>:</p>
+        <ol>
+            <li>Instance fields: <code>String name</code>, <code>int hp</code>, <code>int maxHp</code>, <code>int attackPower</code>.</li>
+            <li>Constructor: takes name, hp, attackPower. Sets maxHp = hp.</li>
+            <li>Method <code>void attack(Hero target)</code>: target.hp decreases by attackPower. Print "[name] attacks [target.name] for [attackPower] damage!"</li>
+            <li>Method <code>void heal(int amount)</code>: hp increases (capped at maxHp).</li>
+            <li>Method <code>boolean isAlive()</code>: return hp > 0.</li>
+            <li>Method <code>void printStatus()</code>: display name, HP, and alive status.</li>
+        </ol>
+        <p>In your main method: create two heroes, have them attack each other in turns until one falls. Print status after each attack.</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/objects-and-classes.html">Objects &amp; Classes</a></li>
+        <li><a href="../docs/unit-01/printing.html">Printing &amp; Output</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="2.1c" title="2.1c RPG Character Creator — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

@@ -1,0 +1,138 @@
+---
+// Migrated from lessons/10.6a.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>10.6a — Recursive Search: Halving the Dungeon</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~40 min</span>
+    </div>
+
+    <p>
+        You wrote binary search with a while loop in 7.3. Today you write it the way
+        the CED wants it: recursive. And you will feel something strange happen, the
+        same algorithm, the same halving, but the loop is gone and the method calls
+        itself. This is the last required topic of the entire course. After today,
+        every CED box is checked, and the sprint begins.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment 1: The Story First</h3>
+        <p>Your bestiary is sorted by gold value. You want the monster worth exactly
+        150 gold. The linear version asks every monster in order. The binary version
+        asks a monster in the middle, and depending on the answer, throws away half
+        the bestiary without ever asking them. Here is the recursive shape:</p>
+        <pre><code>public static int binarySearch(int[] data, int target, int lo, int hi) {
+    if (lo &gt; hi) {
+        return -1;                      // BASE CASE: empty range, not found
+    }
+    int mid = (lo + hi) / 2;
+    if (data[mid] == target) {
+        return mid;                     // BASE CASE: found it
+    } else if (data[mid] &lt; target) {
+        return binarySearch(data, target, mid + 1, hi);   // right half
+    } else {
+        return binarySearch(data, target, lo, mid - 1);   // left half
+    }
+}</code></pre>
+        <p>Do not type it yet. Trace it on paper first: data =
+        <code>[5, 10, 15, 20, 25, 30, 35]</code>, target 20. Draw each call: lo, hi,
+        mid, which half survives. How many calls until "return mid"? Now target 22.
+        Trace until the base case. Where does it end up? (lo crosses hi: 3 &gt; 2.
+        Return -1.)</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 2: Now Type It and Instrument It</h3>
+        <p>Create <code>RecursiveSearchLab.java</code>. Type the method. Then add a
+        print at the top: <code>System.out.println("search(" + lo + ", " + hi + ")");</code>
+        and run searches for the first, middle, last, and a missing element on a
+        sorted array of 1000 elements. Read the call trail. Each call's range is half
+        the previous. 1000 to 500 to 250 to 125... The trail IS the log n you were
+        promised in 4.7a. Count the calls for each search and put them in your table
+        next to the linear counts from 4.7a.</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>The three exam traps, all in one method:</strong><br>
+        1. <strong>mid + 1 / mid - 1, never mid.</strong> If the recursive call
+        includes mid, ranges stop shrinking and you get infinite recursion. Try it:
+        change <code>mid + 1</code> to <code>mid</code> and search for a missing
+        value. Watch the StackOverflowError. Feel it. Put it back.<br>
+        2. <strong>Both base cases are mandatory.</strong> Found (return mid) and
+        not-found (lo &gt; hi, return -1). Miss either one and the method never
+        terminates.<br>
+        3. <strong>The data must be sorted.</strong> Same rule as the loop version.
+        Binary search on unsorted data returns garbage confidently.
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 3: Search Your Bestiary</h3>
+        <p>Back to the RPG. Load <a href="../data/monsters.txt">monsters.txt</a>,
+        build an int[] of gold values, sort it with your 10.3 merge sort (or selection
+        sort, if you want to feel the speed difference), then write
+        <code>findMonsterByGold(int target)</code> on top of recursive binary search.
+        Which monster is worth exactly 150 gold? Now time both searches on 8 entries,
+        then imagine the bestiary at 8 million: one search reads every entry, the
+        other reads 23. (log2(8,000,000) is about 23. Two to the 23rd is about 8
+        million. You now own this fact.)</p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: Break the Recursion</h3>
+        <p>Three broken variants are in the
+        <a href="../docs/unit-10/recursive-search.html">recursive search docs</a>.
+        One loops forever (bad bounds), one skips elements (mid vs mid+1 mixed up on
+        one side only), one returns the wrong index type entirely. For each: predict
+        the symptom, run it, confirm, fix. Infinite recursion prints a wall of
+        your own trace lines before dying. It is the loudest bug in Java and it is
+        unforgettable.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>In one sentence: why must the recursive call use mid+1 or mid-1 and
+            never plain mid? Use the word "smaller."</li>
+            <li>The loop version and the recursive version do identical work. Same
+            step counts, same halving. So why does the CED care about the recursive
+            one? (What can recursive binary search do that the loop cannot generalize
+            to? Think about what else gets halved: quicksort's partitions, tree
+            walks, flood fill.)</li>
+            <li>Last CED check of the year: topic 4.17 is "Recursive Searching and
+            Sorting." You have recursive binary search and recursive merge sort.
+            Write in your notes: one thing recursion finally made click, and one
+            thing you still want to drill before the mock. Bring the second one to
+            the clinics.</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write recursive binary search with both base cases, from memory</li>
+            <li>Trace a search on paper, showing lo/hi/mid per call</li>
+            <li>Explain and demonstrate the mid vs mid+1 infinite-recursion bug</li>
+            <li>State the log n call count for 1000 and 1,000,000 elements</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-10/recursive-search.html">Recursive Search</a> — full trace tables, the three broken variants, merge sort's recursive shape</li>
+        <li><a href="../docs/unit-10/backtracking.html">Backtracking &amp; Pathfinding</a> — where recursion goes next (Season 2)</li>
+        <li><a href="../docs/unit-04/run-time-analysis.html">Run-Time Analysis</a> — the 4.7a pricing you just confirmed</li>
+    </ul>
+</div>`;
+---
+<Lesson id="10.6a" title="10.6a Recursive Search: Halving the Dungeon — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

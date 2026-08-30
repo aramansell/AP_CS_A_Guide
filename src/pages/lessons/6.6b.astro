@@ -1,0 +1,122 @@
+---
+// Migrated from lessons/6.6b.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>6.6b — Data Sets: Clean, Aggregate, Answer</h1>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~40 min</span>
+    </div>
+
+    <p>
+        Yesterday you answered questions about 30 players. Today you learn what happens
+        when data is not so kind: missing fields, impossible values, rows that lie.
+        Real datasets are messy on purpose. The workflow is always the same three
+        moves: clean, aggregate, answer. Master it on 30 rows and you can run it on
+        30 million.
+    </p>
+
+    <div class="tinker">
+        <h3>Part 1: The Messy File</h3>
+        <p>Here is a slice of telemetry with problems added. Copy these lines into a
+        <code>String[]</code> in <code>MessyData.java</code>:</p>
+        <pre><code>player_id,class,level,session_minutes,gold,quit_flag
+201,Wizard,5,60,120,0
+202,Wizard,0,,90,1          // missing minutes
+203,Warrior,-3,45,60,1      // negative level?
+204,,7,80,200,0             // missing class
+205,Mage,4,55,,-1           // missing gold, quit_flag -1?
+206,Warrior,2,99999,10,0    // session longer than a day
+207,Mage,6,70,150</code></pre>
+        <p>Write a loader that processes every line and, for each row, classifies it as
+        CLEAN or BAD with a reason. Rules for BAD: wrong field count, empty required
+        field, negative level, session minutes over 1440, quit_flag not 0 or 1. Print
+        a report: row id, CLEAN/BAD, reason. Count each kind of problem.</p>
+    </div>
+
+    <div class="callout">
+        <strong>The pattern you just built has a name: guard clauses.</strong> Check
+        field count, then check each field, and reject early with a reason. The same
+        pattern guards your command parser from 2.2c and will guard your file loader
+        in 7.6. Data cleaning is 60% of real data work. Congratulations, you are now
+        employable.
+    </div>
+
+    <div class="tinker">
+        <h3>Part 2: Aggregation Patterns</h3>
+        <p>Back on the clean <a href="../data/telemetry.csv">telemetry.csv</a> data,
+        build these four aggregations. Each is one loop plus one accumulator. These
+        four patterns cover most of FRQ 3 forever:</p>
+        <ol>
+            <li><strong>Total and mean:</strong> total gold across all players, then
+            average gold. (Accumulate, then divide. Watch your int division! Cast to
+            double first. Thank you, 1.8a.)</li>
+            <li><strong>Count by category:</strong> how many Warriors, Mages, Rogues?
+            (One counter per category. Try it with parallel arrays now; when you meet
+            ArrayList in three lessons, you will feel the upgrade.)</li>
+            <li><strong>Max/min and who:</strong> most gold and WHO holds it. You must
+            track the value AND the index. Classic exam move.</li>
+            <li><strong>Conditional aggregate:</strong> average quests_done for
+            players who did NOT quit. (Filter inside the loop: one accumulator plus
+            one counter, both under the if.)</li>
+        </ol>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Average That Wasn't</h3>
+        <p>A student averaged session minutes for non-quitters like this:</p>
+        <pre><code>int total = 0;
+for (int i = 0; i &lt; lines.length; i++) {
+    if (quit[i] == 0) {
+        total += minutes[i];
+    }
+}
+double avg = total / lines.length;   // bug?</code></pre>
+        <p>Two bugs. One is about which rows belong in the average. One is integer
+        division. Find both, fix both, prove the fix with a hand count of 3 rows.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Your cleaning rules rejected session_minutes over 1440. Is 99999
+            minutes "bad data" or "a lie"? What is the difference between cleaning
+            and censoring, and who decides the rules?</li>
+            <li>Row 204 has an empty class field. Another student says "just fill it
+            with Warrior, that's the most common." What is that called, and what
+            danger does it hide? (Imputation. When is it OK, when is it fabrication?)</li>
+            <li>Of the four aggregation patterns, which two showed up in your FRQ 3
+            practice? Check <a href="../exam/frq/data-analysis.html">the FRQ 3 page</a>
+            if you do not remember. They will be back on the mock exam.</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write guard clauses that reject bad rows with reasons</li>
+            <li>Build total/mean, count-by-category, max-and-who, and conditional aggregates</li>
+            <li>Spot the denominator bug and the int-division bug in an average</li>
+            <li>Explain imputation and its risks</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-06/datasets.html">Working with Data Sets</a> — cleaning rules, the four aggregation patterns</li>
+        <li><a href="../docs/unit-06/data-ethics.html">Data Ethics &amp; Privacy</a> — for the questions cleaning raises</li>
+        <li><a href="../data/telemetry.csv">telemetry.csv</a> — the clean file</li>
+    </ul>
+</div>`;
+---
+<Lesson id="6.6b" title="6.6b Data Sets: Clean, Aggregate, Answer — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

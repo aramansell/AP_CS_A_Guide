@@ -1,0 +1,76 @@
+---
+// Migrated from docs/reference/unit-08-quickref.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="../unit-08/index.html">Unit 8</a>
+    <span class="sep">/</span>
+    <span class="here">Quick Reference</span>
+</nav>`;
+const body = `<h1>2D Arrays: Quick Reference</h1>
+
+<p>One page, no story, no lab. The shapes, signatures, and traps of the unit,
+compressed. This is the page to keep open during builds and to re-read the
+night before a test. Print it and mark it up.</p>
+
+<h2>Creation</h2>
+<pre><code>int[][] grid = new int[4][5];      // 4 rows, 5 cols, all 0
+int[][] m = {{1,2,3},{4,5,6}};     // 2 rows, 3 cols
+char[][] map = new char[rows][];   // jagged: rows first, fill later</code></pre>
+
+<h2>Dimensions</h2>
+<table>
+    <tr><th>Expression</th><th>Is</th></tr>
+    <tr><td>grid.length</td><td>the number of ROWS</td></tr>
+    <tr><td>grid[r].length</td><td>the length of row r (columns, if rectangular)</td></tr>
+    <tr><td>grid[r][c]</td><td>the cell at row r, column c</td></tr>
+</table>
+
+
+<h2>The Walks</h2>
+<pre><code>// row-major (the default)
+for (int r = 0; r &lt; grid.length; r++)
+    for (int c = 0; c &lt; grid[r].length; c++)
+        visit(grid[r][c]);
+
+// column-major
+for (int c = 0; c &lt; grid[0].length; c++)
+    for (int r = 0; r &lt; grid.length; r++)
+        visit(grid[r][c]);</code></pre>
+
+<h2>Neighbors (4-directional)</h2>
+<pre><code>if (r &gt; 0)                  check grid[r-1][c]   // up
+if (r &lt; grid.length-1)       check grid[r+1][c]   // down
+if (c &gt; 0)                  check grid[r][c-1]   // left
+if (c &lt; grid[r].length-1)   check grid[r][c+1]   // right</code></pre>
+
+<h2>Box traversal (bounded)</h2>
+<pre><code>for (int r = Math.max(0, r1); r &lt;= Math.min(grid.length-1, r2); r++)
+    for (int c = Math.max(0, c1); c &lt;= Math.min(grid[r].length-1, c2); c++)
+        visit(grid[r][c]);</code></pre>
+
+
+<h2>The Unit's Traps, One Line Each</h2>
+<ul>
+    <li>grid.length is ROWS. Row-first thinking: [row][col], always.</li>
+    <li>Jagged rows are legal. Use grid[r].length per row; a width constant breaks.</li>
+    <li>Swapped bounds compile on square grids and crash on rectangles. Match variable to bound.</li>
+    <li>Negative indices do not exist. Bounds checks BEFORE access, every neighbor, every time.</li>
+</ul>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="../unit-08/2d-array-basics.html">2D Array Basics</a></li>
+    <li><a href="../unit-08/2d-array-traversal.html">2D Array Traversal</a></li>
+    <li><a href="../unit-08/2d-algorithms.html">2D Array Algorithms</a></li>
+    <li><a href="../unit-08/neighbors-boundaries.html">Neighbors &amp; Boundaries</a></li>
+    <li><a href="../unit-08/maps-from-files.html">Maps From Files</a></li>
+</ul>`;
+---
+<Base title="2D Arrays — Quick Reference — Unit 8" active="docs" root="../.." docsHome="../index.html" css="../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>

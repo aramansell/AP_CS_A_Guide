@@ -1,0 +1,70 @@
+---
+// Migrated from docs/reference/unit-03-quickref.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="../unit-03/index.html">Unit 3</a>
+    <span class="sep">/</span>
+    <span class="here">Quick Reference</span>
+</nav>`;
+const body = `<h1>Boolean Expressions &amp; if: Quick Reference</h1>
+
+<p>One page, no story, no lab. The shapes, signatures, and traps of the unit,
+compressed. This is the page to keep open during builds and to re-read the
+night before a test. Print it and mark it up.</p>
+
+<h2>Relational Operators</h2>
+<table>
+    <tr><th>Op</th><th>True when</th></tr>
+    <tr><td>== !=</td><td>equal / not equal (values for primitives)</td></tr>
+    <tr><td>&lt; &gt; &lt;= &gt;=</td><td>comparisons; &lt;= and &gt;= include the boundary</td></tr>
+</table>
+
+
+<h2>Logic</h2>
+<table>
+    <tr><th>Expr</th><th>Means</th></tr>
+    <tr><td>a &amp;&amp; b</td><td>both (short-circuits: b skipped if a false)</td></tr>
+    <tr><td>a || b</td><td>at least one (short-circuits too)</td></tr>
+    <tr><td>!a</td><td>not</td></tr>
+</table>
+
+
+<h2>De Morgan</h2>
+<pre><code>!(a &amp;&amp; b)  ==  !a || !b
+!(a || b)  ==  !a &amp;&amp; !b</code></pre>
+
+<h2>The if Family</h2>
+<pre><code>if (cond) { ... }                     // maybe
+else if (other) { ... }               // chain: first true wins
+else { ... }                          // none matched</code></pre>
+
+<h2>Comparing Objects</h2>
+<pre><code>a.equals(b)      // content. the right way
+a == b           // same object? almost never what you mean
+s.compareTo(t)   // ordering: neg / 0 / pos</code></pre>
+
+
+<h2>The Unit's Traps, One Line Each</h2>
+<ul>
+    <li>= assigns, == compares. if (x = 5) does not even compile for ints, and the boolean version is worse.</li>
+    <li>else-if chains: order matters. 90+ must be tested before 70+ in a grade chain.</li>
+    <li>Double comparisons with == are unreliable (0.1 + 0.2 != 0.3). Compare with a tolerance.</li>
+    <li>De Morgan flip: AND becomes OR. The operators swap AND the parts negate. All three changes or none.</li>
+</ul>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="../unit-03/boolean-logic.html">Boolean Logic</a></li>
+    <li><a href="../unit-03/de-morgan.html">De Morgan's Laws</a></li>
+    <li><a href="../unit-03/else-if-chains.html">else-if Chains</a></li>
+    <li><a href="../unit-03/comparing-objects.html">Comparing Objects</a></li>
+</ul>`;
+---
+<Base title="Boolean Expressions &amp; if — Quick Reference — Unit 3" active="docs" root="../.." docsHome="../index.html" css="../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>

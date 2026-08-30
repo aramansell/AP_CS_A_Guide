@@ -1,0 +1,81 @@
+---
+// Migrated from docs/reference/unit-07-quickref.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="../unit-07/index.html">Unit 7</a>
+    <span class="sep">/</span>
+    <span class="here">Quick Reference</span>
+</nav>`;
+const body = `<h1>ArrayList: Quick Reference</h1>
+
+<p>One page, no story, no lab. The shapes, signatures, and traps of the unit,
+compressed. This is the page to keep open during builds and to re-read the
+night before a test. Print it and mark it up.</p>
+
+<h2>Setup and Core Methods (JQR set)</h2>
+<table>
+    <tr><th>Call</th><th>Does</th></tr>
+    <tr><td>new ArrayList&lt;E&gt;()</td><td>empty list; E is a class, Integer not int</td></tr>
+    <tr><td>list.size()</td><td>count (method! not .length)</td></tr>
+    <tr><td>list.add(obj)</td><td>append; returns true</td></tr>
+    <tr><td>list.add(i, obj)</td><td>insert at i, shifting right; returns void</td></tr>
+    <tr><td>list.get(i)</td><td>element at i</td></tr>
+    <tr><td>list.set(i, obj)</td><td>REPLACE at i; returns the OLD element</td></tr>
+    <tr><td>list.remove(i)</td><td>remove at i, shifting left; returns the REMOVED element</td></tr>
+</table>
+
+
+<h2>Loops</h2>
+<pre><code>for (int i = 0; i &lt; list.size(); i++)   // index: mutation-safe backwards
+for (String s : list)                    // read-only tour
+
+// REMOVAL LOOP: backwards only
+for (int i = list.size() - 1; i &gt;= 0; i--)
+    if (list.get(i) == null || bad(list.get(i))) list.remove(i);</code></pre>
+
+<h2>Search and Sort</h2>
+<table>
+    <tr><th>Algorithm</th><th>Notes</th></tr>
+    <tr><td>linear search</td><td>any data; about n steps</td></tr>
+    <tr><td>binary search</td><td>SORTED data only; halve each step; about log n</td></tr>
+    <tr><td>selection sort</td><td>find min, swap to front; always ~n²/2 comparisons</td></tr>
+    <tr><td>insertion sort</td><td>insert into sorted prefix; n-1 best case</td></tr>
+</table>
+
+
+<h2>Files (7.6)</h2>
+<pre><code>import java.util.Scanner; import java.io.File;
+Scanner in = new Scanner(new File("monsters.txt"));
+while (in.hasNext()) {
+    String[] f = in.nextLine().trim().split(",");
+    if (f.length == 5) list.add(new Monster(f[0],
+        Integer.parseInt(f[1]), Integer.parseInt(f[2])));
+}
+in.close();</code></pre>
+
+
+<h2>The Unit's Traps, One Line Each</h2>
+<ul>
+    <li>ArrayList&lt;int&gt; is illegal. Integer + autoboxing is the way.</li>
+    <li>remove(i) and set(i, obj) RETURN values. Ignoring them is legal and usually a bug.</li>
+    <li>Removing forward skips: after remove(i), the next element slides into i, and i++ jumps it.</li>
+    <li>Binary search on unsorted data returns confident garbage, not an error.</li>
+    <li>size() inside the loop condition when the loop removes: cache it or loop backwards.</li>
+</ul>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="../unit-07/arraylist-basics.html">ArrayList Basics</a></li>
+    <li><a href="../unit-07/arraylist-traversal.html">ArrayList Traversal</a></li>
+    <li><a href="../unit-07/searching-sorting.html">Searching &amp; Sorting</a></li>
+    <li><a href="../unit-07/reading-files.html">Reading Files</a></li>
+</ul>`;
+---
+<Base title="ArrayList — Quick Reference — Unit 7" active="docs" root="../.." docsHome="../index.html" css="../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>

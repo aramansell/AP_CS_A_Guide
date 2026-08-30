@@ -1,0 +1,69 @@
+---
+// CED Coverage Matrix — rebuilt at every `npm run build` from
+// src/data/curriculum.ts (the port of scripts/gen_coverage.py).
+import Base from '../../layouts/BaseLayout.astro';
+import { SEQUENCE, CED_TOPICS, firstTeaching, shortDate } from '../../data/curriculum';
+
+const topics = Object.keys(CED_TOPICS).sort((a, b) => {
+    const [au, ad] = a.split('.').map(Number);
+    const [bu, bd] = b.split('.').map(Number);
+    return au - bu || ad - bd;
+});
+const unitOf = (t: string) => `CED Unit ${t.split('.')[0]}`;
+---
+<Base title="CED Coverage Matrix \u2014 AP CS A" active="docs" root=".." docsHome="index.html" css="style.css">
+<h1>CED Coverage Matrix</h1>
+
+<p>
+    Every required topic of the AP Computer Science A Course and Exam
+    Description (effective Fall 2025), mapped to when we teach it and with
+    what. {topics.length} of {topics.length} topics covered. The last
+    required topic lands April 26, sixteen days before the exam.
+</p>
+
+<p>
+    "NEW CONTENT" marks topics that did not exist in the pre-2025 course:
+    file reading, datasets, ethics, casting as a topic, and the rest. The
+    lessons carrying that badge were written for this framework.
+</p>
+
+<table>
+    <tr><th>Topic</th><th>Title</th><th>CED unit</th><th>Taught</th><th>Lessons</th></tr>
+    {topics.map((t) => {
+        const e = firstTeaching(t);
+        if (!e) throw new Error(`CED topic ${t} is never taught in SEQUENCE`);
+        return (
+        <tr>
+            <td><strong>{t}</strong></td>
+            <td>{CED_TOPICS[t]}</td>
+            <td>{unitOf(t)}</td>
+            <td>
+                {shortDate(e.d)}
+                {e.new && <span class="badge discovery" style="margin-left:.5rem">NEW CONTENT</span>}
+            </td>
+            <td>{e.lessons.length ? e.lessons.join(', ') : '\u2014'}</td>
+        </tr>
+        );
+    })}
+</table>
+
+<h2>Weighting Check</h2>
+
+<p>Where the exam's points come from, and how much calendar each gets:</p>
+
+<table>
+    <tr><th>CED Unit</th><th>Exam weight</th><th>Our phase</th><th>Calendar span</th><th>A-days</th></tr>
+    <tr><td>1: Using Objects and Methods</td><td>15-25%</td><td>Phase 1</td><td>Aug 31 - Oct 22</td><td>18</td></tr>
+    <tr><td>2: Selection and Iteration</td><td>25-35%</td><td>Phase 2</td><td>Oct 26 - Dec 22</td><td>15</td></tr>
+    <tr><td>3: Class Creation</td><td>10-18%</td><td>Phase 3</td><td>Jan 5 - Jan 29</td><td>9</td></tr>
+    <tr><td>4: Data Collections</td><td>30-40%</td><td>Phase 4</td><td>Feb 2 - Apr 26</td><td>24</td></tr>
+    <tr><td>(sprint: mock + clinics)</td><td>\u2014</td><td>Sprint</td><td>Apr 28 - May 10</td><td>4</td></tr>
+</table>
+
+<p>
+    The proportions track the weightings: the heaviest unit (Data Collections,
+    30-40%) gets the most days (24) and the latest calendar position, which
+    also means it is freshest at exam time. The sprint re-touches everything
+    in weight order.
+</p>
+</Base>

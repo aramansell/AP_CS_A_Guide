@@ -1,0 +1,69 @@
+---
+// Migrated from lessons/2.4a.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>2.4a — Scanner: Let the User Talk Back</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Explore: Hello Scanner</h3>
+        <p>So far your programs talk AT the user. Today you'll let the user talk BACK. Java's Scanner class reads what the user types.</p>
+        <p>Create a class called <code>ScannerExplore</code>. Type this code exactly:</p>
+        <div class="code-block"><pre>import java.util.Scanner;
+
+public class ScannerExplore {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("What is your name? ");
+        String name = input.nextLine();
+
+        System.out.print("How old are you? ");
+        int age = input.nextInt();
+
+        System.out.println("Hello, " + name + "! You are " + age + " years old.");
+        input.close();
+    }
+}</pre></div>
+    </div>
+
+    <div class="section">
+        <h3>Experiment</h3>
+        <ol>
+            <li>Run it. Type your name and age. Does it work?</li>
+            <li>Now type your full name (like "Ada Lovelace"). What happens to age? Why?</li>
+            <li>After the <code>nextInt()</code> call, add a second <code>input.nextLine()</code> — what does that line do? Why is it needed?</li>
+            <li>Try <code>nextDouble()</code> instead of <code>nextInt()</code>. What happens if you type "twelve" instead of 12?</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Document</h3>
+        <p>Answer in your lab notes:</p>
+        <ol>
+            <li>What does <code>new Scanner(System.in)</code> do?</li>
+            <li>What's the difference between <code>nextLine()</code> and <code>nextInt()</code>?</li>
+            <li>What's the "leftover newline" problem and how do you fix it?</li>
+        </ol>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/scanner.html">Scanner Input</a></li>
+        <li><a href="../docs/unit-01/printing.html">Printing &amp; Output</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="2.4a" title="2.4a Scanner Discovery — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

@@ -1,0 +1,43 @@
+---
+// Migrated from lessons/8.1c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>8.1c — Tile Map Editor: Paint Your Dungeon</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: TileMap Class</h3>
+        <p>Tile-based games use a 2D array of integers where each number represents a different tile type: 0=floor, 1=wall, 2=door, 3=chest, 4=enemy. Build the editor that manipulates this map.</p>
+        <p>Create a class called <code>TileMap</code> with <code>int[][] map = new int[8][8]</code>:</p>
+        <ol>
+            <li>Initialize: fill borders with 1 (walls), interior with 0 (floor).</li>
+            <li>Method <code>void setTile(int row, int col, int type)</code>: set a tile. Refuse if out of bounds or if it's a border wall.</li>
+            <li>Method <code>void placeRoom(int startRow, int startCol, int width, int height)</code>: clear a rectangular area to floor (0), surrounded by walls (1).</li>
+            <li>Method <code>void render()</code>: print the map using symbols: '.' for floor, '#' for wall, '+' for door, '$' for chest, 'E' for enemy.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Test: Build a Level</h3>
+        <p>Place a 3x3 room at (2, 2). Place a chest at (3, 3). Place an enemy at (2, 3). Place a door connecting the room to the edge. Render after each operation.</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-08/2d-array-basics.html">2D Arrays</a></li>
+        <li><a href="../docs/unit-04/while-loops.html">Iteration</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="8.1c" title="8.1c Tile Map Editor — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

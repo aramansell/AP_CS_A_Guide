@@ -1,0 +1,154 @@
+---
+// Migrated from docs/unit-02/string-split.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 2</a>
+    <span class="sep">/</span>
+    <span class="here">split() &amp; Data Lines</span>
+</nav>`;
+const body = `<h1>split() &amp; Data Lines</h1>
+
+<p>
+    <code>split</code> is the bridge between text and data. One line of text in, an
+    array of pieces out. It was added to the exam's Java Quick Reference in the
+    2025 revision, and that is not a small fact: it means every exam from 2026 on
+    can hand you a line of data and expect you to take it apart. Loaders, parsers,
+    save files, datasets: all of it runs on this one method.
+</p>
+
+<h2>The Signature</h2>
+
+<pre><code>String[] split(String del)</code></pre>
+
+<p>Called on a String, with a delimiter. Returns an ARRAY of Strings. The
+delimiter itself is removed. The pieces are in order.</p>
+
+<pre><code>String loot = "sword,iron,50";
+String[] parts = loot.split(",");
+
+parts[0]        // "sword"
+parts[1]        // "iron"
+parts[2]        // "50"       (a STRING, not the number 50)
+parts.length    // 3</code></pre>
+
+<h2>The Four Rules</h2>
+
+<ol>
+    <li><strong>Pieces are always Strings.</strong> Convert with
+    <code>Integer.parseInt</code> or <code>Double.parseDouble</code> (JQR, Integer
+    class table) when you need numbers.</li>
+    <li><strong>Empty fields survive as empty Strings.</strong>
+    <code>"dragon,,500".split(",")</code> has length 3, and <code>parts[1]</code>
+    is <code>""</code>. It is not null, and it is not skipped.</li>
+    <li><strong>split does not trim spaces.</strong> <code>"a, b".split(",")</code>
+    gives <code>["a", " b"]</code>. That leading space will crash
+    <code>parseInt(" b")</code>. Clean it (trim by hand or substring) or design
+    your files without spaces after delimiters.</li>
+    <li><strong>Trailing empty pieces can vanish.</strong>
+    <code>"a,b,".split(",")</code> has length 2, not 3: Java drops trailing empty
+    strings. Leading and middle empties stay. This asymmetry is weird, true, and
+    occasionally testable.</li>
+</ol>
+
+<h2>Choosing a Delimiter</h2>
+
+<table>
+    <tr><th>Delimiter</th><th>Good for</th><th>Danger</th></tr>
+    <tr><td><code>","</code></td><td>CSV files, item databases</td><td>data containing commas (names like "Blade, the Cruel")</td></tr>
+    <tr><td><code>" "</code></td><td>commands: "attack goblin"</td><td>multiple spaces create empty pieces; data with spaces breaks entirely</td></tr>
+    <tr><td><code>";"</code></td><td>save games with text fields</td><td>rare in data, so collisions are rare</td></tr>
+    <tr><td><code>"|"</code></td><td>save games, pipe-separated</td><td>almost never appears in real text. The professional's choice.</td></tr>
+</table>
+
+<p>The design rule: your delimiter must never appear inside your data. That is
+why the course data files use commas for numbers and single-word names, and why
+7.6b asks what character could NEVER appear in a player name.</p>
+
+<h2>The Standard Loader Pattern</h2>
+
+<pre><code>// one record per line, one field per piece
+String line = "goblin 8 3 25 slime";
+String[] f = line.split(" ");
+
+String name = f[0];
+int hp = Integer.parseInt(f[1]);
+int atk = Integer.parseInt(f[2]);
+int gold = Integer.parseInt(f[3]);</code></pre>
+
+<p>With a guard, which every real loader has:</p>
+
+<pre><code>String[] f = line.split(" ");
+if (f.length == 5) {
+    // safe to use f[0] .. f[4]
+} else {
+    System.out.println("bad line: " + line);
+}</code></pre>
+
+<h2>Tinker Challenge: Parser Rewrite</h2>
+
+<div class="tinker">
+    <h3>Your 2.2c Parser, Shrunk</h3>
+    <p>Your indexOf/substring command parser from 2.2c was probably 10-15 lines.
+    Rewrite it around split:</p>
+    <pre><code>String command = "attack goblin";
+String[] words = command.split(" ");
+String verb = words[0];
+String target = words.length &gt; 1 ? words[1] : "none";</code></pre>
+    <p>Then stress it with the 2.2c edge cases: "attack    dragon" (many spaces),
+    leading and trailing spaces, "attack" alone, empty string. Old split-on-space
+    truth: multiple spaces make empty pieces. Print <code>words.length</code> for
+    each case and watch the count lie to you. Fix it by collapsing spaces or
+    rejecting lines that start or end with the delimiter.</p>
+</div>
+
+<h2>Bug Hunt</h2>
+
+<div class="bug-hunt">
+    <h3>The Three Loader Bugs</h3>
+    <pre><code>// Bug 1: numbers that never became numbers
+int total = 0;
+total += parts[2];              // parts[2] is "50", a String
+
+// Bug 2: the unguarded index
+int hp = Integer.parseInt(f[1]);   // f.length might be 1
+
+// Bug 3: the space after the comma
+int v = Integer.parseInt(f[2]);    // f[2] is " 50"</code></pre>
+    <p>For each: what is the exact failure (compile error, exception, or silent
+    wrong answer)? Silent wrong answers are the worst kind; which of these can
+    produce one? (Only none: all three are loud. The silent killer is rule 4, the
+    vanished trailing piece, when you compute an average over parts.length.)</p>
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why was split added to the JQR in 2025?</h3>
+    <p>The revised CED added file reading (4.6) and datasets (4.2). Both live on
+    text lines that must become data. Without split, file questions require
+    tedious indexOf/substring work that tests finger skills, not thinking. With
+    split, the exam can test the real skill: parsing, guarding, and aggregating.
+    The sheet follows the curriculum.</p>
+    <h3>Why does split return an array and not an ArrayList?</h3>
+    <p>It is a String method, and String lives in java.lang, which cannot know
+    about java.util.ArrayList (that would be a backwards dependency). Arrays are
+    the lowest common denominator. You meet arrays formally in Unit 6 and convert
+    freely afterward.</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="string.html">The String Class</a> — the family split belongs to</li>
+    <li><a href="../unit-07/reading-files.html">Reading Files (Unit 7.6)</a> — where split carries whole programs</li>
+    <li><a href="../unit-06/datasets.html">Working with Data Sets (Unit 6.6)</a> — split on real data</li>
+    <li><a href="../../exam/java-quick-reference.html">Java Quick Reference</a> — the split row, verbatim</li>
+</ul>`;
+---
+<Base title="split() &amp; Data Lines — Unit 2" active="docs" root="../.." docsHome="../index.html" css="../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>

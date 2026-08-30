@@ -1,0 +1,155 @@
+---
+// Migrated from lessons/2.5a.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>2.5a — The Math Class: Static Methods</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code> —
+        you learned those in Unit 1. The Math class gives you more powerful operations.
+        But Math works differently from the objects you've used so far.
+    </p>
+
+    <h3>Static vs Instance — What's Different?</h3>
+
+    <pre><code>// Instance method call (the pattern you know):
+Scanner input = new Scanner(System.in);  // create an object FIRST
+String s = input.nextLine();             // then call methods ON the object
+
+// Static method call (new pattern):
+double result = Math.sqrt(25);           // call directly on the CLASS</code></pre>
+
+    <p>
+        You never write <code>new Math()</code>. Math methods are <strong>static</strong> —
+        they belong to the class itself, not to individual objects. Think of Math as a
+        toolbox bolted to the wall — everyone reaches into the same toolbox.
+    </p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why do you need <code>new Scanner(...)</code> but NOT <code>new Math()</code>?</li>
+            <li>If Math methods are static, what word is probably in their method signatures?
+                (Hint: you saw static methods in Dice.java during Unit 1.)</li>
+        </ol>
+    </div>
+
+    <h3>The Essential Math Methods</h3>
+
+    <p>Create <code>MathLab.java</code>. For each method, write your prediction, run it, then record what happened.</p>
+
+    <h3>Math.abs(x) — distance, never negative</h3>
+    <pre><code>System.out.println(Math.abs(-7));     // predict: ____
+System.out.println(Math.abs(7));      // predict: ____
+System.out.println(Math.abs(-3.5));   // predict: ____
+
+// RPG use: "How far apart are two coordinates?"
+int diff = Math.abs(playerX - enemyX);</code></pre>
+
+    <h3>Math.pow(base, exp) — raise to a power</h3>
+    <pre><code>System.out.println(Math.pow(2, 3));    // predict: ____  (2³)
+System.out.println(Math.pow(5, 2));    // predict: ____  (5²)
+System.out.println(Math.pow(10, 0));   // predict: ____ (anything^0)
+
+// Warning: Math.pow returns a double!
+int squared = (int) Math.pow(7, 2);  // cast to int if you need an int</code></pre>
+
+    <h3>Math.sqrt(x) — square root</h3>
+    <pre><code>System.out.println(Math.sqrt(25));    // predict: ____
+System.out.println(Math.sqrt(2));     // predict: ____ (not a clean number)
+System.out.println(Math.sqrt(-1));    // predict: ____ (what happens?)</code></pre>
+
+    <h3>Math.min(a,b) and Math.max(a,b)</h3>
+    <pre><code>System.out.println(Math.min(3, 7));   // predict: ____
+System.out.println(Math.max(3, 7));   // predict: ____
+
+// Combine them to clamp a value:
+int clamped = Math.max(0, Math.min(value, 100));
+// If value = -5  → max(0, -5)  = 0
+// If value = 50  → max(0, 50)  = 50
+// If value = 150 → max(0, 100) = 100</code></pre>
+
+    <div class="tinker">
+        <h3>Tinker Challenge: Math Predictions</h3>
+        <pre><code>// What prints? Predict ALL FOUR before running.
+System.out.println(Math.abs(-12));
+System.out.println(Math.pow(3, 2));
+System.out.println(Math.max(Math.min(7, 3), 5));
+System.out.println((int) Math.sqrt(10));</code></pre>
+        <p>
+            The last one is tricky. What happens when you cast a decimal
+            number to <code>int</code>? Does it round, or does it chop off
+            the decimal? Run it to find out, then explain the difference.
+            (If you're not sure what casting does, check the
+            <a href="../docs/unit-02/math-class.html">Math docs</a>
+            for a warning about this.)
+        </p>
+    </div>
+
+    <h3>Build It: Combat Math Helper</h3>
+
+    <p>Create <code>CombatMath.java</code>. It calculates hit chance for an RPG attack:</p>
+    <ul>
+        <li>Roll a d20 using Math.random() (the formula is in the
+            <a href="../docs/unit-02/math-class.html">Math docs</a>)</li>
+        <li>Add your attack bonus (pick a number, like 5)</li>
+        <li>Compare to enemy Armor Class (pick a number, like 15)</li>
+        <li>Roll damage between 1 and 8. But damage can never be below 1 —
+            which Math method guarantees a minimum value? Check the docs.</li>
+        <li>Print whether you hit, and how much damage you dealt</li>
+    </ul>
+
+    <pre><code><span class="output">You rolled a 12 + 5 = 17 vs AC 15. HIT!
+You deal 6 damage.</span></code></pre>
+
+    <div class="tinker">
+        <h3>Tinker Challenge: Bounded Stats</h3>
+        <p>
+            In an RPG, stats have caps. Strength can't go above 20. After applying
+            a +3 strength bonus, you need to cap it. Which Math method creates an
+            upper limit? Check the docs — there's one that returns "the smaller of
+            two values."
+        </p>
+        <p>
+            Health can't drop below 0. After taking damage, you need to ensure HP
+            stays non-negative. Which Math method creates a lower limit?
+        </p>
+        <p>
+            Add these bounds to your Combat Math Helper. What happens when someone
+            takes 50 damage with only 30 HP? What happens when a strength bonus
+            pushes the stat to 24?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Explain the difference between static and instance method calls</li>
+            <li>Use abs(), pow(), sqrt(), min(), and max() correctly</li>
+            <li>Predict when Math.pow returns a double vs when you need to cast</li>
+            <li>Use Math.min and Math.max together to clamp a value between bounds</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/math-class.html">The Math Class</a> — full method reference</li>
+        <li><a href="../docs/unit-02/objects-and-classes.html">Objects &amp; Classes</a> — static vs instance</li>
+    </ul>
+</div>`;
+---
+<Lesson id="2.5a" title="2.5a The Math Class — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

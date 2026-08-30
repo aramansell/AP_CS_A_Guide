@@ -1,0 +1,57 @@
+---
+// Migrated from lessons/9.1b.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>9.1b — Writing Subclasses: Extend and Customize</h1>
+
+<div class="callout warn">
+    <strong>Season 2: beyond the exam.</strong> This topic is no longer tested
+    (the 2025 CED removed inheritance from the exam). We build it after May 12
+    because it makes the RPG engine dramatically better, and because you are
+    ready for it. Pure craft, zero test anxiety.
+</div>
+
+
+
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Character Hierarchy</h3>
+        <p>Yesterday you explored IS-A relationships. Today you'll build the hierarchy: a base Character class and subclasses that inherit from it.</p>
+        <p>Create <code>Character</code> (parent):</p>
+        <ol>
+            <li>Protected fields: <code>String name</code>, <code>int hp</code>, <code>int attack</code>.</li>
+            <li>Constructor takes name, hp, attack.</li>
+            <li>Methods: <code>void takeDamage(int dmg)</code>, <code>void attack(Character target)</code>.</li>
+        </ol>
+        <p>Create <code>Warrior extends Character</code>:</p>
+        <ol>
+            <li>Additional field: <code>int armor</code>.</li>
+            <li>Constructor: calls <code>super(name, hp, attack)</code>, then sets armor.</li>
+            <li>Override <code>takeDamage()</code>: reduce damage by armor first (minimum 0 damage).</li>
+        </ol>
+        <p>Create <code>Mage extends Character</code>:</p>
+        <ol>
+            <li>Additional field: <code>int mana</code>.</li>
+            <li>Override <code>attack()</code>: if mana >= 10, deal double damage and spend 10 mana. Otherwise normal attack.</li>
+        </ol>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/extends-and-super.html">Inheritance</a></li>
+        <li><a href="../docs/unit-05/class-design.html">Writing Classes</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="9.1b" title="9.1b Writing Subclasses — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

@@ -1,0 +1,111 @@
+---
+// Migrated from docs/unit-07/index.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <span class="here">Unit 7: ArrayList</span>
+</nav>`;
+const body = `<h1>Unit 7: ArrayList</h1>
+
+<p>
+    Arrays from Unit 6 are <strong>fixed-size</strong>. You decide the size when you create
+    them, and that's it. But most collections in real programs grow and shrink. Your inventory
+    shouldn't have a cap. Your spellbook shouldn't be locked at 8 slots. Your leaderboard
+    shouldn't need a pre-determined size.
+</p>
+
+<p>
+    This unit introduces <strong>ArrayList</strong> — a dynamic, resizable list that grows
+    as you add things. You'll also learn sorting (selection sort, insertion sort) to organize
+    your collections, and the standard search pattern for finding items.
+</p>
+
+<h2>Concepts</h2>
+
+<table>
+    <tr><th>Topic</th><th>What you'll learn</th></tr>
+    <tr>
+        <td><a href="arraylist-basics.html">ArrayList Basics</a></td>
+        <td>Declaration, add, remove, get, set, size. Generic types.</td>
+    </tr>
+    <tr>
+        <td><a href="arraylist-traversal.html">Traversal &amp; Algorithms</a></td>
+        <td>For-each loop. Finding, counting, filtering, accumulating with ArrayList.</td>
+    </tr>
+    <tr>
+        <td><a href="sorting.html">Sorting</a></td>
+        <td>Selection sort and insertion sort. Comparing elements.</td>
+    </tr>
+    <tr>
+        <td><a href="reading-files.html">Reading Files: File + Scanner</a></td>
+        <td>hasNext/nextLine loop, all JQR methods, the exception story, loaders. New CED 4.6.</td>
+    </tr>
+    <tr>
+        <td><a href="searching-sorting.html">Searching &amp; Sorting</a></td>
+        <td>Linear and binary search, the sorted precondition, trace tables, sort trade-offs. CED 4.14/4.15.</td>
+    </tr>
+</table>
+
+<h2>Teacher Projects (Standalone Demos)</h2>
+
+<table>
+    <tr><th>Project</th><th>What it demonstrates</th></tr>
+    <tr>
+        <td><a href="leaderboard.html">Leaderboard</a></td>
+        <td>ArrayList of highscores. Add, sort, display top-N. Dynamic sizing.</td>
+    </tr>
+    <tr>
+        <td><a href="music-playlist.html">Music Playlist</a></td>
+        <td>ArrayList of songs. Add, remove, shuffle, search. Full CRUD operations.</td>
+    </tr>
+</table>
+
+<h2>Your RPG Project</h2>
+
+<table>
+    <tr><th>Guide</th><th>What you'll build</th></tr>
+    <tr>
+        <td><a href="dynamic-inventory.html">DynamicInventory.java (Student RPG Guide)</a></td>
+        <td>Replace your fixed inventory array with an ArrayList. Add items, remove items, search by name, sort by value. No more "inventory full" messages.</td>
+    </tr>
+</table>
+
+<h2>RPG Thread</h2>
+
+<p>
+    Your inventory from Unit 6 gets upgraded from Item[] to ArrayList&lt;Item&gt;. The sorting
+    algorithms you learn here (selection sort, insertion sort) are the same ones that sort
+    your inventory by value or your leaderboard by score. In Unit 8, 2D arrays work alongside
+    ArrayList — the dungeon map is a grid, but your party roster is a dynamic list.
+</p>
+
+<h2>Prerequisites</h2>
+
+<p>Before starting this unit, you should be comfortable with:</p>
+<ul>
+    <li>Arrays, traversal, and array algorithms: <a href="../unit-06/index.html">Unit 6</a></li>
+    <li>Writing classes, constructors, and methods: <a href="../unit-05/index.html">Unit 5</a></li>
+    <li>Loops (while, for, for-each): <a href="../unit-04/index.html">Unit 4</a></li>
+</ul>
+
+<h2>Reference Materials</h2>
+
+<ul>
+    <li><strong>Quick Reference:</strong> <a href="../reference/unit-07-quickref.html">ArrayList Quick Ref</a> &mdash; methods, traversal, searching and sorting, file loading</li>
+</ul>
+
+<h2>Assessment</h2>
+
+<ul>
+    <li><strong>Part A:</strong> Knowledge — ArrayList vs array, generic types, ArrayList methods</li>
+    <li><strong>Part B:</strong> Code trace — predict output of ArrayList operations and traversal</li>
+    <li><strong>Part C:</strong> Write code — implement an ArrayList-based solution from a specification</li>
+</ul>`;
+---
+<Base title="Unit 7: ArrayList — AP CS A" active="docs" root="../.." docsHome="../index.html" css="../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>

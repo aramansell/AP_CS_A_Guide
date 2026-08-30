@@ -1,0 +1,109 @@
+---
+// Migrated from lessons/10.5b.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>10.5b — Maze Solver: Recursive Backtracking in a Grid</h1>
+
+<div class="callout warn">
+    <strong>Season 2: beyond the exam.</strong> This topic is no longer tested
+    (the 2025 CED removed inheritance from the exam). We build it after May 12
+    because it makes the RPG engine dramatically better, and because you are
+    ready for it. Pure craft, zero test anxiety.
+</div>
+
+
+
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>Requirement 1: Maze Representation</h3>
+
+    <p>A maze is a 2D char array:</p>
+    <pre><code><span class="output">S = Start  E = End  # = Wall  . = Open
+
+S . # . .
+. # . # .
+. . . # .
+# . # . .
+. # . . E</span></code></pre>
+
+    <h3>Requirement 2: Recursive Maze Solver</h3>
+
+    <p><code>solve(r, c)</code> returns true if a path exists from (r,c) to E:</p>
+    <ol>
+        <li>If out of bounds → return false</li>
+        <li>If wall → return false</li>
+        <li>If already visited → return false</li>
+        <li>If this is E → return true (found it!)</li>
+        <li>Mark as visited (change '.' to 'x')</li>
+        <li>Try all 4 directions: up, down, left, right</li>
+        <li>If any direction returns true → return true</li>
+        <li>None worked → unmark (change 'x' back to '.'), return false</li>
+    </ol>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>Step 8 (unmark) is the "backtrack" part. Why is it necessary? If you
+        DON'T unmark, and the solver tries a dead-end path first, what happens
+        when it needs to try a different route through the same cell? Draw a small
+        maze with a T-junction and trace both versions (with and without unmark).</p>
+    </div>
+
+    <h3>Requirement 3: Find ALL Paths</h3>
+
+    <p>Modify the solver to find every path from S to E (not just one). Print each
+    complete path as a list of coordinates. Count them. For the maze above, how
+    many unique paths exist?</p>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: Path vs. Cell Visitation</h3>
+        <p>In the ALL-paths version, you can't just mark cells as "visited" and
+        never revisit them — different paths might share cells. What should you
+        track instead? How do you prevent infinite loops while still allowing
+        multiple paths through the same cell?</p>
+    </div>
+
+    <h3>Requirement 4: Subset Generation</h3>
+
+    <p>A different backtracking problem: given {A, B, C}, generate all subsets:</p>
+
+    <pre><code><span class="output">{ }, {A}, {B}, {C}, {A,B}, {A,C}, {B,C}, {A,B,C}</span></code></pre>
+
+    <p>The decision tree: for each element, you either INCLUDE it or EXCLUDE it.
+    Two choices per element, N elements → 2^N subsets.</p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>Which is more efficient: generating all permutations of ABC (6 total)
+        or all subsets of ABC (8 total)? What about for 10 elements? Which grows
+        faster — n! or 2^n?</p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Solve a maze using recursive backtracking with visited marking</li>
+            <li>Explain why backtracking requires UN-marking cells</li>
+            <li>Find all paths through a maze (not just the first one)</li>
+            <li>Generate all subsets using include/exclude recursion</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-10/recursion-basics.html">Recursion Basics</a></li>
+        <li><a href="../docs/unit-10/trees-and-traversal.html">Trees &amp; Traversal</a></li>
+        <li><a href="../docs/unit-08/2d-array-basics.html">2D Array Basics</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="10.5b" title="10.5b Maze Solver &amp; Subsets — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

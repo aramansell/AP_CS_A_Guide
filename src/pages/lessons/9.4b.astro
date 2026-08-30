@@ -1,0 +1,54 @@
+---
+// Migrated from lessons/9.4b.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>9.4b — Implementing Interfaces: Multiple Behaviors</h1>
+
+<div class="callout warn">
+    <strong>Season 2: beyond the exam.</strong> This topic is no longer tested
+    (the 2025 CED removed inheritance from the exam). We build it after May 12
+    because it makes the RPG engine dramatically better, and because you are
+    ready for it. Pure craft, zero test anxiety.
+</div>
+
+
+
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Multi-Ability Character</h3>
+        <p>Yesterday you saw that interfaces define contracts. A class can implement multiple interfaces — something inheritance alone can't do. You'll build a character that can attack AND heal AND defend.</p>
+        <p>Create three interfaces:</p>
+        <ol>
+            <li><code>Attacker</code>: method <code>int attack()</code></li>
+            <li><code>Healer</code>: method <code>int heal()</code></li>
+            <li><code>Defender</code>: method <code>int defend(int incomingDamage)</code></li>
+        </ol>
+        <p>Create <code>Paladin</code> that implements ALL THREE:</p>
+        <ol>
+            <li><code>attack()</code>: deals 15 damage.</li>
+            <li><code>heal()</code>: restores 10 HP.</li>
+            <li><code>defend(int dmg)</code>: reduces damage by 8.</li>
+        </ol>
+        <p>Create <code>Priest</code> that implements Healer and Defender only (no attack).</p>
+        <p>Test by storing a Paladin in each interface type — what methods are available?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/object-interfaces-casting.html">Interfaces</a></li>
+        <li><a href="../docs/unit-09/extends-and-super.html">Inheritance</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="9.4b" title="9.4b Implementing Interfaces — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

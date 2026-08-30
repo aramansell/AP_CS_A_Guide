@@ -1,0 +1,78 @@
+---
+// Migrated from lessons/7.4a.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>7.4a — DynamicInventory: ArrayList-Powered Backpack</h1>
+
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <p>
+        Your FixedInventory from Unit 6 works, but it has a hard limit. If the player
+        finds a Legendary Sword in room 12 but their 20-slot backpack is full, they
+        can't pick it up. That's a terrible RPG experience. It's time to replace
+        the fixed array with an ArrayList that grows forever.
+    </p>
+
+    <p>
+        Open the <a href="../docs/unit-07/dynamic-inventory.html">Dynamic Inventory
+        (Student RPG Guide)</a>. The specification is nearly identical to FixedInventory
+        — same method names, same Item objects — but the implementation is dramatically
+        simpler.
+    </p>
+
+    <div class="tinker">
+        <h3>Build: DynamicInventory.java</h3>
+        <p>Create <code>DynamicInventory.java</code> using <code>ArrayList&lt;Item&gt;</code>:</p>
+        <ul>
+            <li><code>void add(Item item)</code> — one line: <code>items.add(item)</code>. No capacity limit.</li>
+            <li><code>boolean remove(String name)</code> — find by name, call <code>items.remove(index)</code>. ArrayList handles the shift.</li>
+            <li><code>boolean contains(String name)</code> — same logic as FixedInventory</li>
+            <li><code>int getTotalValue()</code> — sum traversal with enhanced for-loop</li>
+            <li><code>void display()</code> — numbered list with rarity and value</li>
+        </ul>
+        <p>Count the lines of code. Compare to FixedInventory. Where did all the
+        array management code go?</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>ArrayList is built on top of a plain array. Where does the capacity
+            logic go? How does it know when to grow?</li>
+            <li>Your remove() in FixedInventory manually shifted elements. ArrayList's
+            remove() does it for you. But someone still wrote that shift code —
+            who, and where is it?</li>
+            <li>What happens when you call <code>items.remove("Potion")</code> and the
+            player has three Potions? Which one gets removed?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — your DynamicInventory must:</h3>
+        <ul>
+            <li>Accept unlimited items (no capacity parameter in constructor)</li>
+            <li>Match FixedInventory method signatures exactly</li>
+            <li>Pass all acceptance tests in the Student RPG Guide</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-07/dynamic-inventory.html">Dynamic Inventory (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-07/arraylist-basics.html">ArrayList Basics</a></li>
+        <li><a href="../docs/unit-07/arraylist-traversal.html">ArrayList Traversal</a></li>
+        <li><a href="../docs/unit-06/inventory-builder.html">Inventory Builder (Unit 6)</a> — compare</li>
+    </ul>
+</div>`;
+---
+<Lesson id="7.4a" title="7.4a Dynamic Inventory — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

@@ -1,0 +1,128 @@
+---
+// Migrated from lessons/10.5c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>10.5c — RPG Pathfinding &amp; Course Retrospective</h1>
+
+<div class="callout warn">
+    <strong>Season 2: beyond the exam.</strong> This topic is no longer tested
+    (the 2025 CED removed inheritance from the exam). We build it after May 12
+    because it makes the RPG engine dramatically better, and because you are
+    ready for it. Pure craft, zero test anxiety.
+</div>
+
+
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>Part 1: Monster Chase AI</h3>
+
+    <p>Your dungeon has a monster that chases the player. The monster needs to find
+    the shortest path. Use recursive backtracking to find a path, then have the
+    monster take the first step along it.</p>
+
+    <pre><code><span class="output">M = Monster  P = Player  # = Wall
+
+. M . # .
+. # . # P
+. . . # .
+# . # . .
+. . . . .
+
+Monster finds path: [(1,1)→(2,1)→(2,2)→(1,2)→(1,3)→(1,4)]
+Monster moves one step: to (2,1)
+
+. . . # .
+. # M # P
+. . . # .
+# . # . .
+. . . . .</span></code></pre>
+
+    <p>Requirements:</p>
+    <ul>
+        <li>Monster moves one cell per turn toward the player</li>
+        <li>If no path exists (player is walled off), monster wanders randomly</li>
+        <li>If monster reaches the player → combat!</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>Finding the full path every turn is wasteful — the monster only takes
+        one step. Could you use a simpler algorithm? What if the monster just
+        moves toward the player's row/column, one step at a time? When would that
+        fail? Design a maze where "move toward" gets stuck but backtracking
+        succeeds.</p>
+    </div>
+
+    <h3>Part 2: N-Queens Problem</h3>
+
+    <p>Place N queens on an N×N chessboard so no two queens attack each other.
+    Queens attack along rows, columns, and diagonals.</p>
+
+    <pre><code><span class="output">4×4 solutions:
+. Q . .    . . Q .
+. . . Q    Q . . .
+Q . . .    . . . Q
+. . Q .    . Q . .</span></code></pre>
+
+    <p>Backtracking approach: place one queen per column. For column C, try every
+    row. If the placement is safe (no other queen in the same row or diagonal),
+    recurse to column C+1. If no row works, backtrack to column C-1.</p>
+
+    <div class="tinker">
+        <h3>Tinker: RPG Equipment Constraints</h3>
+        <p>Your player has 4 equipment slots (head, chest, hands, feet) and 8 items.
+        Some items conflict: you can't wear a helmet AND a crown (both head slot).
+        You can't wear chainmail AND a robe (both chest). Use backtracking to find
+        all valid equipment combinations that maximize total armor rating. This is
+        the exact same problem as N-Queens, just with different "attack" rules.</p>
+    </div>
+
+    <h3>Part 3: Course Retrospective</h3>
+
+    <p>Build a "player stats" screen that shows everything you've wired in over
+    10 units:</p>
+    <ul>
+        <li><strong>Character:</strong> Name, HP, XP, level — built with classes (Unit 5)</li>
+        <li><strong>Inventory:</strong> ArrayList of Items with names, weights, values (Unit 7)</li>
+        <li><strong>Combat Log:</strong> Last 10 fights stored in a fixed-size array (Unit 6)</li>
+        <li><strong>Dungeon Map:</strong> 2D array with fog-of-war overlay (Unit 8)</li>
+        <li><strong>Item Drops:</strong> Weighted loot table (Unit 7)</li>
+        <li><strong>Pathfinding:</strong> Monster AI that chases (Unit 10)</li>
+    </ul>
+
+    <p>Write a final reflection (3-5 paragraphs) comparing how you wrote code in
+    Unit 1 (if-else ranges for loot drops, raw formulas for random numbers) to
+    how you write code now (data-driven loot tables, class-based architecture,
+    recursive algorithms). What's the biggest shift in how you think about
+    programming?</p>
+
+    <div class="checklist">
+        <h3>Course Completion Checkpoint:</h3>
+        <ul>
+            <li>Monster uses recursive pathfinding to chase the player</li>
+            <li>N-Queens solver using column-by-column backtracking</li>
+            <li>Full RPG integration: character, inventory, combat, dungeon, loot</li>
+            <li>Written reflection on your growth from Unit 1 to Unit 10</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-10/recursion-basics.html">Recursion Basics</a></li>
+        <li><a href="../docs/unit-10/trees-and-traversal.html">Trees &amp; Traversal</a></li>
+        <li><a href="../docs/unit-08/dungeon-map.html">Dungeon Map Builder</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="10.5c" title="10.5c RPG Pathfinding — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

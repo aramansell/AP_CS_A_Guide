@@ -1,0 +1,98 @@
+---
+// Migrated from lessons/7.5b.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>7.5b — Pair Sum &amp; Rotation: Find Pairs That Sum to Target</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <h3>Requirement 1: Two-Sum Finder</h3>
+
+    <p>Given an ArrayList of integers and a target sum, find all pairs of distinct
+    indices (i, j) where <code>list.get(i) + list.get(j) == target</code>.</p>
+
+    <pre><code><span class="output">Input: [2, 7, 11, 15, 3, 8], target=10
+Pairs:
+  index 0 (2) + index 1 (7) = 10
+  index 4 (3) + index 5 (8) = 11  ← NOT a pair (target=10)
+Output pairs: [[0,1]]</span></code></pre>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>Naive approach: nested loops — compare every element with every other.
+        For N=100, that's ~5000 comparisons. What if the list were sorted? Could
+        you use a different strategy with sorted data?</p>
+    </div>
+
+    <h3>Requirement 2: Pairs in RPG Drops</h3>
+
+    <p>A merchant has 8 items, each with a gold value. The player has exactly 100
+    gold to spend and must buy exactly TWO items (no more, no less). Find every
+    pair whose combined cost equals exactly 100.</p>
+
+    <p>Print: "Buy [Item A] + [Item B] = 100 gold" for each valid pair.</p>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: Double Count</h3>
+        <p>If item at index 2 and index 5 sum to 100, your loop might also report
+        index 5 and index 2. Both are the same pair. How do you prevent this?</p>
+        <p>Then: what if two items have the SAME value? [50, 50] with target 100.
+        Does your code find them? Does it double-count?</p>
+    </div>
+
+    <h3>Requirement 3: Rotate an ArrayList</h3>
+
+    <p>Write a method that rotates an ArrayList N positions to the right. Elements
+    that fall off the end wrap around to the front.</p>
+
+    <pre><code><span class="output">Original: [A, B, C, D, E]
+rotate(1):  [E, A, B, C, D]
+rotate(3):  [C, D, E, A, B]
+rotate(5):  [A, B, C, D, E]  ← same as original when N = size</span></code></pre>
+
+    <p>Requirements:</p>
+    <ul>
+        <li>Handle N larger than the list size (N % size)</li>
+        <li>Handle negative N (rotate left instead of right)</li>
+        <li>Modify the original list — don't create a new one then copy</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>You could solve rotation by removing from the end and inserting at the
+        front, N times. But remove+insert in ArrayList is expensive — every removal
+        shifts elements. What's a faster approach? Hint: can you use subList() and
+        addAll() to avoid element-by-element shifting?</p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Find all pairs that sum to a target using nested loops</li>
+            <li>Avoid double-counting identical pairs</li>
+            <li>Rotate an ArrayList efficiently (without N separate remove/insert operations)</li>
+            <li>Explain the cost of ArrayList.remove(0) and why it matters</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-07/arraylist-basics.html">ArrayList Basics</a></li>
+        <li><a href="../docs/unit-07/arraylist-traversal.html">ArrayList Traversal</a></li>
+        <li><a href="../docs/unit-07/searching-sorting.html">Searching &amp; Sorting</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="7.5b" title="7.5b Pair Finding &amp; Rotation — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

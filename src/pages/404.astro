@@ -1,0 +1,36 @@
+---
+// GitHub Pages serves /404.html for any missing path — and it serves it AT
+// the broken URL, so relative links would resolve wrongly. This page uses
+// absolute links derived from the configured base path instead.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 \u2014 AP CS A</title>
+<link rel="stylesheet" href={`${base}/style.css`}>
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href={`${base}/index.html`}>Dashboard</a>
+    <a href={`${base}/docs/index.html`}>Docs</a>
+    <a href={`${base}/projects.html`}>Projects</a>
+    <a href={`${base}/exam/index.html`}>Exam</a>
+    <a href={`${base}/search.html`}>Search</a>
+</nav>
+
+<div class="page" data-pagefind-ignore>
+<h1>404 \u2014 Page Not Found</h1>
+<p>
+    That page does not exist (or moved). Try the
+    <a href={`${base}/index.html`}>Dashboard</a>, the
+    <a href={`${base}/search.html`}>site search</a>, or the
+    <a href={`${base}/docs/index.html`}>documentation index</a>.
+</p>
+</div><!-- .page -->
+
+</body>
+</html>

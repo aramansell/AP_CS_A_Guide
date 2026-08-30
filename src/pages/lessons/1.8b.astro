@@ -1,0 +1,123 @@
+---
+// Migrated from lessons/1.8b.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>1.8b — Compound Assignment &amp; The Overflow Bug</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <p>
+        Your combat loop has been doing damage for a whole unit. You have probably
+        written <code>hp = hp - damage;</code> hundreds of times. Today you meet the
+        shorthand, and then something stranger: a number that breaks.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment: The Shorthand Family</h3>
+        <p>Create <code>CompoundLab.java</code>. Predict every line first:</p>
+        <pre><code>int gold = 100;
+gold += 50;    System.out.println(gold);   // ?
+gold -= 25;    System.out.println(gold);   // ?
+gold *= 2;     System.out.println(gold);   // ?
+gold /= 3;     System.out.println(gold);   // ?
+gold %= 7;     System.out.println(gold);   // ?</code></pre>
+        <p>Run it. Then prove to yourself that <code>gold += 50</code> and
+        <code>gold = gold + 50</code> are the same thing by writing both forms side by
+        side with different variables.</p>
+    </div>
+
+    <div class="callout">
+        <strong>The pattern:</strong> <code>x op= y</code> means <code>x = x op y</code>
+        for the operators <code>+ - * / %</code>. The exam expects you to read these
+        fluently. Also in the family: <code>x++</code> (add 1) and <code>x--</code>
+        (subtract 1), which you have been using in loop counters for weeks.
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 2: The Gold Doubler</h3>
+        <p>A treasure room doubles your gold every time you enter. Model it:</p>
+        <pre><code>int gold = 1;
+for (int i = 0; i &lt; 40; i++) {
+    gold *= 2;
+}
+System.out.println("Gold after 40 rooms: " + gold);</code></pre>
+        <p>Before running: gold should be huge. Predict the shape of the number. Then run
+        it. Write down exactly what prints. Is it positive? Did anything strange happen
+        around a specific room count? Try 30 rooms, then 31, 32, 33. Find the exact
+        room where the number goes wrong.</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Overflow.</strong> An <code>int</code> can only count so high. The
+        biggest one is <code>Integer.MAX_VALUE</code>, which is 2,147,483,647 (about
+        2.1 billion). Past the top, the number <strong>wraps around to negative</strong>.
+        This is not a crash. It is not an error message. Your program keeps running with
+        a wrong number, silently. That is what makes overflow dangerous in real systems:
+        nothing warns you.
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 3: Meet the Edges</h3>
+        <pre><code>System.out.println(Integer.MAX_VALUE);
+System.out.println(Integer.MAX_VALUE + 1);
+System.out.println(Integer.MIN_VALUE);
+System.out.println(Integer.MIN_VALUE - 1);</code></pre>
+        <p>Predict all four. The last two are the strangest in all of Java. Run it.
+        Then explain in your notes: why does adding 1 to the biggest int give a negative
+        number? (Hint: think of an odometer rolling over.)</p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Bank That Went Negative</h3>
+        <p>From the <a href="../docs/unit-01/compound-assignment.html">compound
+        assignment docs</a>: three short programs, each with exactly one bug. Find it,
+        predict the wrong output, fix it, prove the fix. The third one is an overflow
+        bug hiding inside a perfectly reasonable-looking loot bonus.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Rewrite <code>hp -= damage * 2</code> in long form. Careful: the whole
+            right side is computed first.</li>
+            <li>Your RPG tracks total damage dealt over a whole campaign. A very long
+            campaign might deal billions of damage. Is <code>int</code> safe here?
+            What type would you reach for instead?</li>
+            <li><code>int x = 5; int y = x++;</code> vs <code>int x = 5; int y = ++x;</code>
+            Run both. What is y in each? The difference is pre vs post increment. The
+            exam tests this.</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Read and write <code>+= -= *= /= %=</code> fluently</li>
+            <li>State <code>Integer.MAX_VALUE</code> and explain overflow wraparound</li>
+            <li>Predict when a loop-based calculation will overflow</li>
+            <li>Explain the difference between <code>x++</code> and <code>++x</code> in
+            an assignment</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-01/compound-assignment.html">Compound Assignment &amp; Range of Variables</a> — the shorthand table, overflow, the edge cases</li>
+        <li><a href="../docs/unit-01/variables.html">Variables &amp; Types</a> — what an int can hold</li>
+        <li><a href="../exam/java-quick-reference.html">Java Quick Reference</a> — Integer.MIN_VALUE / MAX_VALUE are printed on your exam sheet</li>
+    </ul>
+</div>`;
+---
+<Lesson id="1.8b" title="1.8b Compound Assignment &amp; The Overflow Bug — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

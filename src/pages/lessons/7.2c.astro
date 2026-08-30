@@ -1,0 +1,43 @@
+---
+// Migrated from lessons/7.2c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>7.2c — Enemy Horde Manager: Spawn, Damage, Remove</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Horde Manager</h3>
+        <p>In action RPGs, enemies constantly spawn and die. The enemy list is dynamic — ArrayList is the natural choice. But removing dead enemies while iterating requires the safe pattern you just learned.</p>
+        <p>Create a class called <code>HordeManager</code>. Use TWO parallel ArrayLists: <code>ArrayList&lt;String&gt; enemyNames</code> and <code>ArrayList&lt;Integer&gt; enemyHP</code>.</p>
+        <ol>
+            <li><code>void spawn(String name, int hp)</code>: add a new enemy.</li>
+            <li><code>void damageAll(int amount)</code>: subtract amount from every enemy's HP.</li>
+            <li><code>void removeDead()</code>: traverse <strong>backwards</strong> and remove any enemy with HP <= 0. Print a death message for each.</li>
+            <li><code>void displayHorde()</code>: print all living enemies with their HP.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Stress Test</h3>
+        <p>Spawn 6 enemies with HP 10. Call damageAll(4). Remove dead. DamageAll(4). Remove dead. How many are left? Call removeDead() when none are dead — does it crash?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-07/arraylist-basics.html">ArrayList</a></li>
+        <li><a href="../docs/unit-06/array-traversal.html">Array Traversal</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="7.2c" title="7.2c Enemy Horde Manager — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

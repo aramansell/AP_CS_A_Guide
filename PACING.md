@@ -1,6 +1,6 @@
 # AP CS A Pacing, 2026-27 (IBW, A days)
 
-Exam: **Wednesday, May 12, 2027**, 12:00 PM (Session 2). Source of truth: scripts/curriculum_data.py. Regenerate pages with scripts/gen_dashboard.py.
+Exam: **Wednesday, May 12, 2027**, 12:00 PM (Session 2). Source of truth: src/data/curriculum.ts. Regenerated automatically by `npm run build` (src/integrations/pacing-md.ts).
 
 | Date | Type | Group | Title | CED |
 |---|---|---|---|---|

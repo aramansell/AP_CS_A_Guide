@@ -1,0 +1,51 @@
+---
+// Migrated from lessons/3.1c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>3.1c — Combat Hit Check: Building a Damage System</h1>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Hit or Miss?</h3>
+        <p>In most RPGs, an attack doesn't always land. There's a hit chance, a damage roll, and sometimes a critical hit. You now know enough about <code>if</code> statements to build the core of a combat damage calculator.</p>
+        <p>Create a class called <code>CombatHitCheck</code>. It should:</p>
+        <ol>
+            <li>Declare <code>int attackRoll</code> and assign it a value from 1-20 (hardcode a few test values).</li>
+            <li>Declare <code>int targetAC</code> (armor class) — set it to 12.</li>
+            <li>If attackRoll >= targetAC: the attack <strong>hits</strong>. Print damage.</li>
+            <li>If attackRoll == 20: it's a <strong>critical hit</strong> — double the damage.</li>
+            <li>If attackRoll == 1: it's a <strong>critical miss</strong> — no damage, and print a funny message.</li>
+            <li>Otherwise: the attack misses.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Test Values</h3>
+        <p>Run your program with attackRoll = 20, 15, 8, 1. Does each produce the correct output? Trace through your if/else chain on paper for the 15 case — which condition fires first?</p>
+    </div>
+
+    <div class="section">
+        <h3>Think: Order Matters</h3>
+        <p>You have two special cases (20 and 1) and a general case. If you check <code>attackRoll >= targetAC</code> <em>before</em> checking <code>attackRoll == 20</code>, what happens? Why must special cases come first?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-03/boolean-logic.html">Booleans &amp; if Statements</a></li>
+        <li><a href="../docs/unit-03/comparing-objects.html">Comparing Objects</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="3.1c" title="3.1c Combat Hit Check — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

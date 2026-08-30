@@ -1,0 +1,132 @@
+---
+// Migrated from lessons/2.1a.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>2.1a — Objects &amp; Classes: What's an Object?</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~15 min</span>
+    </div>
+
+    <p>
+        Unit 1 was all about <strong>primitive types</strong>: int, double, boolean.
+        Each one holds exactly one value. That's like a single piece of paper.
+    </p>
+
+    <p>
+        An <strong>object</strong> is like a folder. It bundles multiple pieces of
+        data AND the operations that work on that data — all in one package.
+        In Java, almost everything you use day-to-day is an object.
+    </p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>What's in a player character? Name, HP, strength, gold, inventory...
+                Why would a player character be a terrible candidate for a single
+                <code>int</code> variable?</li>
+            <li>You already used objects in Unit 1. <code>System.out</code> is an object.
+                <code>"hello".length()</code> — what kind of object is "hello"?
+                How many objects have you used without realizing it?</li>
+        </ol>
+    </div>
+
+    <h3>The Three-Step Object Pattern</h3>
+
+    <p>Every object in Java follows this pattern:</p>
+
+    <pre><code>// 1. DECLARE — give it a type and a name
+Scanner input;
+
+// 2. CONSTRUCT — create it with new
+input = new Scanner(System.in);
+
+// 3. USE — call methods on it with the dot operator
+String name = input.nextLine();</code></pre>
+
+    <p>Or all at once:</p>
+
+    <pre><code>Scanner input = new Scanner(System.in);  // declare + construct
+String name = input.nextLine();            // use</code></pre>
+
+    <div class="callout">
+        <strong>Key insight:</strong> <code>new</code> is the magic word that
+        creates objects. Without <code>new</code>, you're just declaring
+        a variable that points to nothing (null).
+    </div>
+
+    <h3>Try It: The Dice Object</h3>
+
+    <p>In Unit 1.7, you built a <code>Dice.java</code> utility class. But you used
+    it with <strong>static methods</strong> — <code>Dice.roll(20)</code>. That works
+    for utilities, but it's not how most objects work.</p>
+
+    <p><strong>Your task:</strong> Create a non-static <code>DiceObject</code> class
+    and a <code>DiceTester</code> that uses the three-step pattern to roll a d20.
+    No starter code — build it from scratch.</p>
+
+    <p>The <code>Dice.java</code> from Unit 1.7 gives you the formula for rolling,
+    but you'll need to change it from static to instance. How?</p>
+
+    <div class="callout">
+        <strong>Docs first:</strong> If you're stuck on declaring, constructing, or using
+        an object, check the <a href="../docs/unit-02/objects-and-classes.html">Objects &amp; Classes</a>
+        reference page. It shows the three-step pattern.
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>What keyword did you use to CREATE the DiceObject?</li>
+            <li>What operator did you use to CALL the roll method?</li>
+            <li>Why did you need <code>new DiceObject()</code> here but NOT
+                for <code>Dice.roll(20)</code> in Unit 1.7?</li>
+            <li>If you forget <code>new</code> and just write
+                <code>DiceObject d20;</code> then <code>d20.roll(20);</code>,
+                what happens? Try it.</li>
+        </ol>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: NullPointerException — Your New Nemesis</h3>
+        <ol>
+            <li>Write a program that declares a String variable but never assigns
+                it, then call <code>.length()</code> on it. What error do you get?</li>
+            <li>Now read the error message carefully. What does "null" mean? What
+                does "pointer" mean? What does "exception" mean? Break down each word.
+                <a href="../docs/unit-02/objects-and-classes.html">Check the Objects docs</a>
+                if you need help.</li>
+            <li>Write a program that declares a Scanner, never calls <code>new</code>,
+                and tries to read input. Same error? Why?</li>
+            <li>How do you fix it? Don't guess — look at the three-step pattern
+                in the docs and identify which step you skipped.</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Explain what an object is and how it differs from a primitive</li>
+            <li>Write the three-step pattern (declare, construct, use) from memory</li>
+            <li>Identify the <code>new</code> keyword and explain what it does</li>
+            <li>Recognize and fix a NullPointerException</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/objects-and-classes.html">Objects &amp; Classes</a> — full concept reference</li>
+    </ul>
+</div>`;
+---
+<Lesson id="2.1a" title="2.1a Objects & Classes — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

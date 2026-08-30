@@ -1,0 +1,155 @@
+---
+// Migrated from lessons/7.6a.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>7.6a — Reading Files: The Bestiary Loads Itself</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~40 min</span>
+    </div>
+
+    <p>
+        Every monster so far has been hardcoded into your Java. Today the bestiary
+        moves out of the code and into a file. This is the moment your RPG becomes a
+        real game: data separate from engine. Modders can add monsters without
+        touching your code. Designers can rebalance without a recompile. And you get
+        to use the two most beautiful words in the language:
+        <code>new File</code>.
+    </p>
+
+    <div class="callout">
+        <strong>Download the data files first.</strong> Grab
+        <a href="../data/monsters.txt" download>monsters.txt</a> and
+        <a href="../data/items.txt" download>items.txt</a> and put them in the same
+        folder as your .java files. (Right-click, Save As if the browser shows them
+        as a page.) monsters.txt: name, hp, attack, gold, type, one monster per line.
+        items.txt: name, weight, value, rarity.
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 1: First Read</h3>
+        <p>Create <code>FileLab.java</code>. You know Scanner from keyboard input.
+        The only new idea: Scanner can wrap a File instead of System.in. Type this:</p>
+        <pre><code>import java.util.Scanner;
+import java.io.File;
+
+Scanner fileScanner = new Scanner(new File("monsters.txt"));
+while (fileScanner.hasNext()) {
+    String line = fileScanner.nextLine();
+    System.out.println(line);
+}
+fileScanner.close();</code></pre>
+        <p>Run it. The whole bestiary prints. Six lines of code. Now the important
+        question: what does <code>hasNext()</code> actually ask? Predict, then test:
+        what happens if you call <code>nextLine()</code> one more time AFTER the loop
+        ends? Uncomment a <code>nextLine()</code> after the loop and read the
+        exception. Then put it back. The loop shape
+        <code>while (hasNext()) { nextLine(); }</code> is "ask permission, then act."
+        Memorize the shape; the exam expects you to write it cold.</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>The exception you cannot ignore:</strong> putting
+        <code>new Scanner(new File(...))</code> in main makes the compiler demand
+        <code>throws FileNotFoundException</code> on the main signature. You will see
+        <code>public static void main(String[] args) throws FileNotFoundException</code>
+        all through this course. That is you telling Java "I know the file might not
+        exist, I accept the consequences." Add it when the compiler asks. The exam
+        gives you this for free in its starter code; in our class you write it
+        yourself so it never looks strange.
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 2: Split the Lines Into Data</h3>
+        <p>Printing lines is for tourists. Combine with 2.9a: split each line, parse
+        the numbers, and build Monster objects (your Unit 5 class). Structure:</p>
+        <pre><code>ArrayList&lt;Monster&gt; bestiary = new ArrayList&lt;Monster&gt;();
+while (fileScanner.hasNext()) {
+    String line = fileScanner.nextLine();
+    String[] f = line.split(" ");
+    // f[0] name, f[1] hp, f[2] attack, f[3] gold, f[4] type
+    Monster m = new Monster(f[0], Integer.parseInt(f[1]),
+                            Integer.parseInt(f[2]), Integer.parseInt(f[3]));
+    bestiary.add(m);
+}
+System.out.println("Loaded " + bestiary.size() + " monsters.");</code></pre>
+        <p>Then answer with code: which monster has the most hp? What is the total
+        gold value of the bestiary? Sort by attack and print the top 3
+        (your 7.3 selection sort, three weeks of foreshadowing paying off).</p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Three Classic File Bugs</h3>
+        <ol>
+            <li><strong>The missing file:</strong> change the filename to
+            "monsters.txtt" (extra t). Read the exception. Where does it say the file
+            name? Where does it say the line of YOUR code that triggered it? Reading
+            FileNotFoundExceptions is a job skill.</li>
+            <li><strong>The wrong delimiter:</strong> items.txt uses commas. Split it
+            on a space by mistake and what happens? (Everything ends up in
+            <code>f[0]</code> and f.length is 1. Then <code>f[1]</code> throws
+            ArrayIndexOutOfBounds. Trace it.)</li>
+            <li><strong>The number that isn't:</strong> add a line to monsters.txt
+            with "many" as the hp. parseInt throws. Catch it with a guard: check
+            <code>f.length == 5</code> first, and skip-and-report bad lines instead
+            of crashing. Your 6.6b cleaning rules, now load-bearing.</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 3: Save Games (the other direction)</h3>
+        <p>Reading is half the loop. For saving we cheat with System.out redirection
+        in your terminal:</p>
+        <pre><code>$ java Game &gt; save.txt</code></pre>
+        <p>Print the player's name, hp, and gold in the same "name hp gold" format
+        your loader expects. Close the loop: run the game, save, edit the save file
+        by hand (give yourself a million gold, you earned it), load, verify the cheat
+        worked. Data and engine, fully separated. You just made a save system.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why is "data in files, engine in code" better than hardcoding? Give
+            the modder argument and the designer argument, then the memory argument
+            (what happens when you hardcode 10,000 monsters?).</li>
+            <li>The JQR Scanner table lists <code>hasNext()</code>, not
+            <code>hasNextLine()</code>. Look at both rows on the
+            <a href="../exam/java-quick-reference.html">JQR</a>. In our loop, we used
+            hasNext() + nextLine() together. Why is that safe here, and when would
+            mixing them bite you? (Hint: 8.6, reading maps char by char.)</li>
+            <li>Telemetry.csv from 6.6 had a header row. Your monsters.txt does not.
+            Where in your loader would you skip a header, and how do you detect a
+            header without hardcoding "skip line 1"?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write the hasNext/nextLine loop from memory</li>
+            <li>Load a data file into ArrayLists of objects with split and parseInt</li>
+            <li>Diagnose FileNotFoundException, wrong-delimiter, and bad-number errors</li>
+            <li>Explain why data lives in files and engines live in code</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-07/reading-files.html">Reading Files (File + Scanner)</a> — the full guide, every JQR method, the exception story</li>
+        <li><a href="../docs/unit-02/string-split.html">split() &amp; Data Lines</a> — the other half of the pattern</li>
+        <li><a href="../data/monsters.txt">monsters.txt</a> · <a href="../data/items.txt">items.txt</a> — the data files</li>
+    </ul>
+</div>`;
+---
+<Lesson id="7.6a" title="7.6a Reading Files: The Bestiary Loads Itself — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

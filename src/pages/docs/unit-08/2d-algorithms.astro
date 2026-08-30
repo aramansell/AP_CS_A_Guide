@@ -1,0 +1,185 @@
+---
+// Migrated from docs/unit-08/2d-algorithms.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 8</a>
+    <span class="sep">/</span>
+    <span class="here">2D Array Algorithms</span>
+</nav>`;
+const body = `<h1>2D Array Algorithms</h1>
+
+<p>
+    CED topic 4.13: implement algorithms over 2D arrays. FRQ 4's whole
+    personality. Nearly every 2D algorithm is a 1D algorithm you already own,
+    wearing a second loop like a jacket. The new ideas are only three: how to
+    walk a grid, how to visit neighbors, and how to handle the edges.
+</p>
+
+<h2>The Standard Walks</h2>
+
+<pre><code>// Row-major: left to right, top to bottom. The default.
+for (int r = 0; r &lt; grid.length; r++)
+    for (int c = 0; c &lt; grid[r].length; c++)
+        visit(grid[r][c]);
+
+// Column-major: top to bottom, column by column.
+for (int c = 0; c &lt; grid[0].length; c++)
+    for (int r = 0; r &lt; grid.length; r++)
+        visit(grid[r][c]);</code></pre>
+
+<p>Two details the exam checks: <code>grid.length</code> is the number of ROWS,
+and <code>grid[r].length</code> is the length of row r. Use the per-row form
+always, and jagged arrays (rows of different lengths, like the maps in 8.6)
+stop being a threat.</p>
+
+<h2>The Catalog: 1D Ideas in 2D</h2>
+
+<table>
+    <tr><th>Algorithm</th><th>1D ancestor</th><th>2D shape</th></tr>
+    <tr><td>Sum / average the grid</td><td>accumulate</td><td>one total, one
+        count, row-major walk</td></tr>
+    <tr><td>Row sums / column sums</td><td>accumulate</td><td>outer loop over
+        rows, inner accumulate; or an int[] of sums</td></tr>
+    <tr><td>Find max and WHERE</td><td>max-and-index</td><td>track bestValue,
+        bestR, bestC. Three variables, one if.</td></tr>
+    <tr><td>Count a value</td><td>count-by-category</td><td>counter, walk,
+        compare</td></tr>
+    <tr><td>Locate a value</td><td>linear search</td><td>return {r, c} or
+        print; walk and compare</td></tr>
+    <tr><td>Search a specific row</td><td>linear search</td><td>loop c over
+        grid[r].length only. A row IS a 1D array.</td></tr>
+    <tr><td>Transpose / mirror</td><td>copy with transform</td><td>write into a
+        new grid at flipped coordinates</td></tr>
+    <tr><td>neighbors-of-a-cell</td><td>(new)</td><td>the 1D world has no
+        neighbors. See below.</td></tr>
+</table>
+
+<h2>Neighbors: The New Idea</h2>
+
+<p>Every cell in a grid has up to four orthogonal neighbors: up, down, left,
+right. The problem is not the neighbors. It is the EDGE: corner and border
+cells have fewer than four, and <code>grid[-1]</code> crashes.</p>
+
+<pre><code>// The guard-per-direction approach (explicit, exam-friendly)
+int up    = (r &gt; 0)              ? grid[r-1][c] : -1;
+int down  = (r &lt; grid.length-1)   ? grid[r+1][c] : -1;
+int left  = (c &gt; 0)              ? grid[r][c-1] : -1;
+int right = (c &lt; grid[r].length-1)? grid[r][c+1] : -1;</code></pre>
+
+<p>Using -1 as "no neighbor" works for maps (no wall has value -1). For counts
+and sums, the other idiom is cleaner: check the bounds first, act second:</p>
+
+<pre><code>// count living neighbors (Conway / fog of war style)
+int count = 0;
+if (r &gt; 0 &amp;&amp; grid[r-1][c] == 1) count++;
+if (r &lt; grid.length-1 &amp;&amp; grid[r+1][c] == 1) count++;
+if (c &gt; 0 &amp;&amp; grid[r][c-1] == 1) count++;
+if (c &lt; grid[r].length-1 &amp;&amp; grid[r][c+1] == 1) count++;</code></pre>
+
+<h2>The Diagonal Extension</h2>
+
+<p>Eight neighbors instead of four doubles the cases. The professional trick is
+a direction loop:</p>
+
+<pre><code>int[] dr = {-1, -1, -1,  0, 0,  1, 1, 1};
+int[] dc = {-1,  0,  1, -1, 1, -1, 0, 1};
+
+int count = 0;
+for (int i = 0; i &lt; 8; i++) {
+    int nr = r + dr[i], nc = c + dc[i];
+    if (nr &gt;= 0 &amp;&amp; nr &lt; grid.length &amp;&amp;
+        nc &gt;= 0 &amp;&amp; nc &lt; grid[nr].length &amp;&amp;
+        grid[nr][nc] == 1) count++;
+}</code></pre>
+
+<p>Same guard, one place, eight directions. When you can, factor repetition
+into data. This pattern generalizes to pathfinding (Season 2's maze solver)
+where "neighbors" becomes "the cells you can move to."</p>
+
+<h2>Partial Traversal: Bands and Boxes</h2>
+
+<pre><code>// One row only: it is just a 1D array
+for (int c = 0; c &lt; grid[r].length; c++) ...
+
+// A box from (r1,c1) to (r2,c2), inclusive: nested loops with custom bounds
+for (int r = r1; r &lt;= r2; r++)
+    for (int c = c1; c &lt;= c2; c++)
+        visit(grid[r][c]);</code></pre>
+
+<p>Box traversal is the AoE spell: "damage everything in a 3x3 area around the
+target." Custom bounds are just bounds; the walk does not care where the
+numbers came from.</p>
+
+<h2>Tinker Challenge: Build the FRQ 4 Repertoire</h2>
+
+<div class="tinker">
+    <h3>Five Methods, One Grid</h3>
+    <p>Load <a href="../../data/dungeon1.txt">dungeon1.txt</a> (8.6 pattern) and
+    write, each from scratch:</p>
+    <ol>
+        <li><code>int countWalls()</code> — count-by-value</li>
+        <li><code>int[] rowFloorCounts()</code> — an array of per-row floor
+        counts (row sums in disguise)</li>
+        <li><code>int[] findPlayer()</code> — locate '@', return {r, c}</li>
+        <li><code>int openNeighbors(int r, int c)</code> — how many of the 4
+        neighbors are floor, with edge guards</li>
+        <li><code>void fireball(int r, int c)</code> — turn every floor cell in
+        the 3x3 box around (r,c) into '*' (burnt). Box traversal plus a write.</li>
+    </ol>
+    <p>Then run fireball on the player's position, print the map, and check by
+    eye that exactly the right cells burned. Visual verification is the best
+    verification.</p>
+</div>
+
+<h2>Bug Hunt</h2>
+
+<div class="bug-hunt">
+    <h3>Three Grid Bugs</h3>
+    <pre><code>// A: swapped bounds — compiles on square grids, crashes on wide ones
+for (int r = 0; r &lt; grid[0].length; r++)
+    for (int c = 0; c &lt; grid.length; c++)
+
+// B: the infinite mirror — writes while reading
+for (r, c over grid) if (grid[r][c] == '.') grid[r][c] = '#';
+// then in the SAME pass: if (grid[r][c] == '#') count++;</code></pre>
+    <p>A: the loop variables are crossed with the bounds. On a square grid it
+    accidentally works, which is the worst kind of bug: it hides until the map
+    is rectangular. Fix by making bounds match variables. B: the count
+    in the same pass counts walls you just created. Order of operations across
+    a traversal is a real semantics question: count in a separate pass.</p>
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why is grid.length the rows?</h3>
+    <p>Because a 2D array is an array OF row-arrays. grid.length asks the outer
+    array "how many do you hold?" and it holds rows. Each grid[r] is itself an
+    array, whose own .length is its column count. The type system is the
+    mnemonic: int[][] is "array of int[]," so the first length is the outer
+    count. Jagged rows follow naturally from this picture, which is why 8.6
+    taught per-row bounds.</p>
+    <h3>Why does FRQ 4 love neighbors so much?</h3>
+    <p>Because neighbors combine every skill at once: traversal, bounds
+    guarding, conditionals, and state mutation. A question about "count
+    adjacent occupied seats" or "spread fire to neighbors" tests whether you
+    can think in two dimensions AND respect edges. It is the hardest thing to
+    fake, which makes it perfect for a 6-point question.</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="2d-array-traversal.html">2D Array Traversal</a> — the walks in detail</li>
+    <li><a href="neighbors-boundaries.html">Neighbors &amp; Boundaries</a> — the edge-case field guide</li>
+    <li><a href="maps-from-files.html">Maps From Files</a> — where these grids come from</li>
+    <li><a href="../unit-06/array-algorithms.html">Array Algorithms (Unit 6)</a> — the 1D ancestors</li>
+</ul>`;
+---
+<Base title="2D Array Algorithms — Unit 8" active="docs" root="../.." docsHome="../index.html" css="../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>
