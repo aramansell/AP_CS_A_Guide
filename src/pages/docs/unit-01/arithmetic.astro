@@ -32,17 +32,20 @@ const body = `<h1>Arithmetic &amp; Operators</h1>
 
 <div class="callout lab">
     <strong>Tinker Challenge: The Division Trap</strong><br>
-    Run the following code in your <code>main</code> method:
+    Run the following code in your <code>main</code> method — predict each line
+    before you run it:
     <pre><code>System.out.println(10 / 3);
 System.out.println(7 / 2);
 System.out.println(1 / 2);</code></pre>
-    Wait, what happened? Why does <code>1 / 2</code> print <code>0</code>? Discuss with your partner what rule Java is following here.
+    Wait, what happened? Did any line disagree with your prediction? Discuss with
+    your partner what rule Java is following here.
 </div>
 
 <div class="callout socratic">
     <strong>Socratic Checkpoint</strong><br>
-    How can you force Java to give you the exact decimal answer for 10 divided by 3? 
-    <em>Hint: Try changing the literal numbers in your code. What happens if you use <code>10.0</code> instead of <code>10</code>? What happens if you cast one to a <code>double</code> using <code>(double) 10 / 3</code>?</em>
+    How can you force Java to give you the exact decimal answer for 10 divided by 3?
+    <em>Hint: Try changing the literal numbers in your code — what you change them
+    <strong>to</strong> matters more than how many you change.</em>
 </div>
 
 <h3>The Rule</h3>
@@ -54,13 +57,13 @@ System.out.println(1 / 2);</code></pre>
 
 <div class="callout lab">
     <strong>Bug Hunt: The Broken Average</strong><br>
-    A student wrote this code to calculate their test average. It compiles and runs, but the answer is wrong.
+    A student wrote this code to calculate their test average. It compiles and runs.
     <pre><code>int test1 = 92;
 int test2 = 87;
 int test3 = 95;
 double average = (test1 + test2 + test3) / 3;
 System.out.println(average);</code></pre>
-    The output is <code>91.0</code> instead of <code>91.33333333333333</code>. Why? How would you fix it? <em>Hint: Look at the data types in the division operation!</em>
+    Run it, then check the answer with a calculator. What do you notice? How would you fix it? <em>Hint: you met this trap in the Division Trap lab above.</em>
 </div>
 
 <h2>Modulus (%) — More Useful Than It Looks</h2>

@@ -68,16 +68,14 @@ const body = `<h1>4.5b &#8212; Pattern Printer (Build Together)</h1>
     System.out.println();
 }</code></pre>
 
-    <p>Run it. You get a 5&#215;5 square of stars. That's not a triangle.</p>
+    <p>Run it. Is the result what you expected? Why or why not?</p>
 
     <div class="bug-hunt">
         <h3>Bug Hunt</h3>
-        <p>The inner loop always prints 5 stars &#8212; every row is the
-        same length. To make a triangle, row 0 should print 1 star,
-        row 1 should print 2 stars, row 2 should print 3 stars...</p>
-        <p><strong>What needs to change in the inner loop's condition?</strong>
-        The condition currently says <code>i < 5</code>. What variable
-        from the outer loop could replace the 5?</p>
+        <p>The condition inside the inner loop currently says <code>i &lt; 5</code> —
+        the same thing for every row.</p>
+        <p><strong>What needs to change in the inner loop's condition to make
+        the rows grow instead of staying the same length?</strong></p>
     </div>
 
     <h3>Iteration 3: The Inverted Triangle Trap</h3>
@@ -96,9 +94,8 @@ const body = `<h1>4.5b &#8212; Pattern Printer (Build Together)</h1>
     <div class="tinker">
         <h3>Tinker Challenge</h3>
         <p>Fix it so row 0 prints 1 star and row 4 prints 5 stars.
-        The fix is one character. (Hint: should the condition be
-        <code>i < row</code> or <code>i <= row</code>? Or should
-        <code>row</code> start at 1 instead of 0?)</p>
+        There's more than one way to do it — find one, and be ready to
+        explain why it works.</p>
     </div>
 
     <h3>Iteration 4: Different Patterns</h3>

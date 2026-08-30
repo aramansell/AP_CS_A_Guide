@@ -39,8 +39,8 @@ const body = `<h1>1.1c — Arithmetic &amp; Operators</h1>
 System.out.println(7 / 2);
 System.out.println(1 / 2);</code></pre>
         <p>
-            Wait — why does <code>1 / 2</code> print <code>0</code> instead of
-            <code>0.5</code>? What pattern do you see across all three lines?
+            Did the results match your predictions? What pattern do you see
+            across all three lines?
         </p>
     </div>
 
@@ -63,14 +63,14 @@ System.out.println(1 / 2);</code></pre>
     <div class="bug-hunt">
         <h3>Bug Hunt: The Broken Average</h3>
         <p>A student wrote this code to calculate their test average. It compiles
-        and runs, but the answer is wrong.</p>
+        and runs.</p>
         <pre><code>int test1 = 92;
 int test2 = 87;
 int test3 = 95;
 double average = (test1 + test2 + test3) / 3;
-System.out.println(average);   // prints 91.0 — but it should be ~91.33</code></pre>
+System.out.println(average);</code></pre>
         <p>
-            The math is right — (92+87+95) ÷ 3 = 91.33. So why does Java give 91.0?
+            Run it, then check the answer with a calculator. What do you notice?
             <em>Hint: look at the types on the division line.</em>
         </p>
         <p><strong>Fix it.</strong> Make the code give the correct decimal answer.</p>

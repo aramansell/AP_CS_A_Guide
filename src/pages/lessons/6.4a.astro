@@ -22,10 +22,10 @@ const body = `<h1>6.4a — Arrays of Objects: Not Just Numbers</h1>
     <div class="tinker">
         <h3>Experiment: Null Is Not Zero</h3>
         <p>Create <code>ObjectArray.java</code>:</p>
-        <pre><code>// Create array — all slots are null
+        <pre><code>// Create array — all slots start the same way...
 Weapon[] armory = new Weapon[3];
 
-// This CRASHES: armory[0].getName();  // NullPointerException!
+// armory[0].getName();  // uncomment this line — what happens?
 
 // You must create objects first
 armory[0] = new Weapon("Sword", 8);

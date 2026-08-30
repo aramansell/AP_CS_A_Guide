@@ -33,10 +33,10 @@ for (int i = 0; i < nums.size(); i++) {
     }
 }
 System.out.println(nums);  // What actually got removed?</code></pre>
-        <p>Trace it on paper. When you remove index 0, what was at index 1 slides to
-        index 0 — but the loop already checked index 0, so it moves to index 1 and
-        SKIPS the element that just slid in. Fix it: decrement i after removal, or
-        traverse backwards.</p>
+        <p>Trace it on paper first: when you remove index 0, what happens to
+        everything after it? Then run it — did the list come out the way your
+        trace predicted? Fix it so every value under 30 gets removed. There are
+        two classic fixes — can you find at least one?</p>
     </div>
 
     <div class="callout trap">

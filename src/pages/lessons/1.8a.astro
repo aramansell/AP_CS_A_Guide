@@ -49,26 +49,25 @@ System.out.println((int) (5.0 / 2));</code></pre>
         <p>Now predict these two lines. They look almost identical. They are not.</p>
         <pre><code>System.out.println((int) (Math.random() * 6) + 1);   // line A
 System.out.println((int) (Math.random() * 6 + 1));   // line B</code></pre>
-        <p>Run each 20 times. One of them can print <code>0</code>. Which one, and why?
-        The parentheses decide whether the cast happens before or after the <code>+ 1</code>.
-        Write the explanation in your own words. This exact trap appears on the AP exam
-        almost every year.</p>
+        <p>Run each 20 times and watch the ranges carefully. Did both lines behave
+        the way you predicted? Write the explanation in your own words — what do the
+        parentheses decide? This exact trap appears on the AP exam almost every year.</p>
     </div>
 
     <div class="tinker">
         <h3>Experiment 3: Widening Goes Free, Narrowing Pays</h3>
         <pre><code>int hp = 8;
-double d = hp;        // int -> double: automatic
+double d = hp;        // int -> double: does this need anything?
 System.out.println(d);
 
 double ratio = 0.75;
 // int copy = ratio;  // uncomment this line. What does the compiler say?
-int copy = (int) ratio;   // double -> int: you must cast
+int copy = (int) ratio;   // double -> int: why is a cast required here?
 System.out.println(copy);</code></pre>
-        <p>Uncomment the middle line and read the compiler error. That error is the whole
-        point: Java converts <code>int</code> to <code>double</code> silently (nothing is
-        lost), but refuses <code>double</code> to <code>int</code> without a cast,
-        because information WILL be lost. Java makes you say "I know" in writing.</p>
+        <p>Uncomment the middle line and read the compiler error — that error is the
+        whole point. One direction of conversion goes free; the other demands a cast
+        until you say "I know" in writing. Which direction is which, and what is
+        Java protecting you from losing?</p>
     </div>
 
     <div class="bug-hunt">
@@ -81,9 +80,8 @@ System.out.println("Average score: " + average);</code></pre>
         <ol>
             <li>What does it print? Run it.</li>
             <li>What SHOULD it print?</li>
-            <li>Fix it so the answer is <code>8.333333333333334</code>. You need exactly
-            one cast. Where does it go? Try placing it in different spots and see how the
-            answer changes.</li>
+            <li>Fix it so it prints the true average. Where does the cast go?
+            Try placing it in different spots and see how the answer changes.</li>
         </ol>
     </div>
 

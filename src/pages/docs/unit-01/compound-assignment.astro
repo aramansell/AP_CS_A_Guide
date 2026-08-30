@@ -93,11 +93,10 @@ while (gold &gt; 0) {
     rooms++;
     System.out.println(rooms + ": " + gold);
 }</code></pre>
-    <p>Run it. The loop exits not when gold gets huge, but when it goes NEGATIVE
-    (overflow wrapped it). Count the rooms. Now compute by hand: 2 to the 30th is
-    1,073,741,824. 2 to the 31st is 2,147,483,648, one past MAX_VALUE. The wall is
-    at room 31. The loop ends at room 32, when the wrap makes gold negative. The
-    program "works" the whole time. That is the horror and the fun.</p>
+    <p>Run it. Count the rooms — and watch what gold does right before the loop
+    exits. Why does it exit there? Check your answer by computing the powers of 2
+    by hand: which room is the first to cross MAX_VALUE? The program "works" the
+    whole time. That is the horror and the fun.</p>
 </div>
 
 <h2>Socratic Checkpoint</h2>
@@ -110,10 +109,10 @@ while (gold &gt; 0) {
     how to program. (Some languages do check. There is a real tradeoff here, and
     it is a great thing to argue about.)</p>
     <h3>Why is 13! the first factorial that overflows?</h3>
-    <p>12! is 479,001,600, comfortably inside 2.1 billion. 13! is 6,227,020,800,
-    past the wall. Compute both with a loop and watch 12! print correctly and 13!
-    print garbage. Then write one sentence: "n! overflows an int at n = 13 because
-    ___."</p>
+    <p>Compute factorials with a loop, starting at 1! and climbing, and watch what
+    happens to the printed values along the way. Where exactly does it go wrong —
+    and can you prove WHY at that exact step? Then write one sentence: "n!
+    overflows an int at n = 13 because ___."</p>
 </div>
 
 <h2>Bug Hunt</h2>
@@ -123,26 +122,25 @@ while (gold &gt; 0) {
     <pre><code>int totalGold = 2_000_000_000;   // campaign total so far
 int bonus = totalGold + 500_000_000;
 System.out.println("Bonus total: " + bonus);</code></pre>
-    <p>Predict, then run. The total crosses 2.1 billion. What prints? What SHOULD
-    print? Fix it with double and note what changes about the output formatting.</p>
+    <p>Predict, then run. What prints? What SHOULD print? Fix it with double and
+    note what changes about the output formatting.</p>
     <h3>Bug 2: The Post-Increment Confusion</h3>
     <pre><code>int level = 3;
 System.out.println("Level up! Now level " + level++);
 System.out.println("Level check: " + level);
 System.out.println("Doubled: " + ++level * 2);</code></pre>
-    <p>Predict all three lines, then run. Line 1 prints 3 (old value used, level
-    becomes 4 after). Line 2 prints 4. Line 3: level becomes 5 first, then times 2,
-    so 10. If any line surprised you, write the rule in your notes.</p>
+    <p>Predict all three lines — write your predictions down — then run. If any
+    line surprised you, write the rule in your notes.</p>
     <h3>Bug 3: The Halving Loop</h3>
     <pre><code>int stack = 100;
 while (stack != 0) {
     stack /= 2;
 }</code></pre>
-    <p>This one is about integer division, not range. Trace it: 100, 50, 25, 12,
-    6, 3, 1, then 1/2 is 0. Loop ends. Fine. Now change the divisor to 3. Trace:
-    100, 33, 11, 3, 1, 1/3 is 0. Also fine. So when does this loop hang? (When
-    stack starts at 0: 0/2 is 0 forever. Off-by-one on the start condition, the
-    oldest bug in computing.)</p>
+    <p>This one is about integer division, not range. Trace it by hand: what
+    happens to 100, and where does the loop end? Now change the divisor to 3 and
+    trace again. Both fine? So when DOES this loop hang? Change one thing about
+    the start and find out. (Off-by-one on the start condition — the oldest bug
+    in computing.)</p>
 </div>
 
 <h2>See Also</h2>

@@ -84,7 +84,8 @@ const body = `<h1>2.2b — String Methods: Apply and Build</h1>
         <h3>Bug Hunt: What If There's No '@'?</h3>
         <p>
             Run your EmailExtractor with <code>"justaname"</code> — a string with no '@'.
-            What happens? Where does indexOf return -1, and why does that break substring?
+            What happens? What does indexOf return when it can't find the character —
+            and why does that break substring?
         </p>
         <p>
             Fix it: if the '@' isn't found, return the original string as the username

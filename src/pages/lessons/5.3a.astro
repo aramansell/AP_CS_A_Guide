@@ -27,14 +27,16 @@ const body = `<h1>5.3a — Accessors &amp; Mutators: Controlled Access</h1>
         <pre><code>Monster goblin = new Monster("Goblin", 10, 12, 3);
 goblin.hp = -999;  // HAHAHA IMMORTAL GOBLIN
 System.out.println(goblin);</code></pre>
-        <p>This compiles. This is a disaster. Change it back to private. Now add:</p>
+        <p>Run it. What did you just do to the poor goblin? Now change
+        <code>hp</code> back to private and add:</p>
         <pre><code>public int getHP() { return hp; }
 public void setHP(int newHP) {
     if (newHP < 0) newHP = 0;
     hp = newHP;
 }</code></pre>
-        <p>Try <code>goblin.hp = -999</code> again — it won't compile. Try
-        <code>goblin.setHP(-999)</code> — the setter clamps it to 0.</p>
+        <p>Try <code>goblin.hp = -999</code> again. What does the compiler say?
+        Then try <code>goblin.setHP(-999)</code> — what is the goblin's HP now?
+        Which line of the setter is responsible?</p>
     </div>
 
     <div class="callout trap">

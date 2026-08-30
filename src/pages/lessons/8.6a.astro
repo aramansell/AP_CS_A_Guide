@@ -88,15 +88,12 @@ in.close();</code></pre>
         <h3>Bug Hunt: The Map That Ate Itself</h3>
         <ol>
             <li>Remove the <code>in.close()</code> between the two passes and reopen
-            without a fresh Scanner. What happens? (The second loop reads nothing:
-            the scanner is at end-of-file. Your map is all nulls and everything
-            crashes.)</li>
+            without a fresh Scanner. What happens? Trace any error back to its
+            cause — how far is the error from the thing that caused it?</li>
             <li>Trailing whitespace: add two spaces after the last wall on some row.
-            Now row lengths differ by 2. Which of your loops, if any, breaks?
-            (Printing survives; anything assuming fixed width does not.)</li>
-            <li>Empty line at the end of the file: some editors add one. Then
-            <code>map[last]</code> is an empty array. Guard it: skip lines of length
-            0 when filling.</li>
+            Now row lengths differ by 2. Which of your loops, if any, breaks?</li>
+            <li>Empty line at the end of the file: some editors add one. Does your
+            code survive it? If not, guard it.</li>
         </ol>
     </div>
 
