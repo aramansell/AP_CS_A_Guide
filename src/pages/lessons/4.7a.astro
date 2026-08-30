@@ -1,0 +1,131 @@
+---
+// Migrated from lessons/4.7a.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>4.7a — How Fast Does It Run? (Informal Run-Time Analysis)</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~40 min</span>
+    </div>
+
+    <p>
+        Every algorithm you have written has a cost. Today you learn to price them.
+        Not with a stopwatch: with structure. The AP exam tests this as "informal
+        run-time analysis" and it is the doorway to the searching and sorting questions
+        that dominate the data-collections unit. You already own every piece of
+        intuition you need. You built them in the dungeon.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment 1: Count the Steps, Watch the Shape</h3>
+        <p>Create <code>SpeedLab.java</code>:</p>
+        <pre><code>// A: sum an array by visiting every element once
+int sum = 0;
+for (int i = 0; i &lt; n; i++) sum += data[i];        // n steps
+
+// B: sum by nested loops (silly, but legal)
+int sum2 = 0;
+for (int i = 0; i &lt; n; i++)
+    for (int j = 0; j &lt; n; j++)
+        sum2 += (i == j) ? data[i] : 0;             // n * n steps</code></pre>
+        <p>Build both with <code>n = 10</code>, print the sums to confirm they match,
+        and count steps with a counter variable (add <code>steps++</code> inside each
+        loop body). Record step counts for n = 10, 100, 1000. Make a table in your
+        notes. The A column: what happens when n grows 10x? The B column: what happens?
+        One of them grows like a straight line. The other does something much worse.</p>
+    </div>
+
+    <div class="callout">
+        <strong>The vocabulary, earned:</strong> Algorithm A does about n steps. We
+        call that <strong>linear</strong> ("grows like a line"). Doubling n doubles
+        the work. Algorithm B does about n-squared steps. We call that
+        <strong>quadratic</strong>. Doubling n QUADRUPLES the work. That is the whole
+        difference, and it is the difference between "runs in a second" and "heat
+        death of the universe before the second dungeon loads."
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 2: Price Your Own Dungeon</h3>
+        <p>Go back to your Unit 4 dungeon crawl. Find and price these:</p>
+        <ol>
+            <li>The room loop that prints 5 rooms (linear in rooms)</li>
+            <li>Your ASCII dungeon map printer from 4.4c: nested loops over rows and
+            columns. If the map is r rows by c columns, how many print operations?
+            (r * c. Linear in area.)</li>
+            <li>The "search every room for the key" pattern: rooms inside a
+            traversal of floors. What shape is that?</li>
+        </ol>
+        <p>Write your prices in your notes. Then the big question: your map printer
+        handles a 9x9 map instantly. What about 1000x1000? Same algorithm, one million
+        prints. Does it finish? (Try it. Time it. Feel the quadratic wall.)</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 3: Linear Search Gets a Price Tag</h3>
+        <p>You wrote linear search in Unit 6 (check each element until found). Price
+        it: n elements, worst case n steps. Best case 1 (the target is first). Average
+        n/2. All are "about n". Now, this is the setup for the punchline you get in
+        Phase 4: binary search on sorted data does about log n steps. You do not need
+        the math yet. You need the feeling: log n means "cut the remaining search in
+        half every step." Watch it happen:</p>
+        <pre><code>int lo = 0, hi = n - 1, steps = 0;
+while (lo &lt;= hi) {
+    steps++;
+    int mid = (lo + hi) / 2;
+    System.out.println("step " + steps + ": checking index " + mid);
+    if (data[mid] == target) break;
+    else if (data[mid] &lt; target) lo = mid + 1;
+    else hi = mid - 1;
+}
+System.out.println("total steps: " + steps);</code></pre>
+        <p>Run it on a sorted array of 1000 elements with target at the end. Count the
+        steps. Now run linear search on the same array with the same target. Put both
+        numbers in your table. THAT gap, 10 steps vs 1000, is why the rest of the
+        course exists.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Algorithm A is linear, algorithm B is quadratic. Both are "correct."
+            When would you actually choose B? (Trick question: almost never, but
+            "when n is tiny and B is much simpler to write" is a real answer.)</li>
+            <li>A loop that runs n times containing another loop that runs n times is
+            quadratic. What about a loop that runs n times containing a loop that runs
+            10 times (a constant)? Linear or quadratic? Why does the constant not
+            matter at scale?</li>
+            <li>Predict: selection sort, which you meet in 7.3, uses nested loops over
+            the list. Linear or quadratic? When you get there, come back and check
+            your prediction.</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Count steps with a counter and tabulate growth as n scales</li>
+            <li>Classify a loop structure as linear or quadratic on sight</li>
+            <li>Explain why constants fade and shapes dominate at scale</li>
+            <li>State the step counts of linear vs binary search and why they differ</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-04/run-time-analysis.html">Run-Time Analysis</a> — linear vs quadratic, the step-counting method, search costs</li>
+        <li><a href="../docs/unit-07/sorting.html">Sorting (Unit 7)</a> — where these ideas return with real algorithms</li>
+        <li><a href="../docs/unit-04/loop-analysis.html">Loop Analysis &amp; Tracing</a> — the tracing skills behind step counting</li>
+    </ul>
+</div>`;
+---
+<Lesson id="4.7a" title="4.7a How Fast Does It Run? — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

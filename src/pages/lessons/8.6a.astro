@@ -1,0 +1,144 @@
+---
+// Migrated from lessons/8.6a.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>8.6a — Dungeon Maps From Files</h1>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~45 min</span>
+    </div>
+
+    <p>
+        Unit 8 gave you the grid. Unit 7.6 gave you files. Today they merge into the
+        most satisfying structure in the whole course: a dungeon map that loads from a
+        text file, where every wall, floor, monster, and the player position is just a
+        character in a text file you can edit. Level design becomes text editing.
+    </p>
+
+    <div class="callout">
+        <strong>Download the maps first.</strong>
+        <a href="../data/dungeon1.txt" download>dungeon1.txt</a> (small tutorial map)
+        and <a href="../data/dungeon2.txt" download>dungeon2.txt</a> (the real
+        dungeon). Legend: <code>#</code> wall, <code>.</code> floor,
+        <code>@</code> player start, <code>G</code> goblin, spaces outside the walls
+        mean nothing. Open both in tabs and read them with your eyes first. Can you
+        find the goblin? Can you see the path from @ to G?
+    </div>
+
+    <div class="tinker">
+        <h3>Part 1: Load the Map</h3>
+        <p>Create <code>DungeonLoader.java</code>. The pattern is a direct upgrade of
+        7.6a: each line of the file is a ROW of the grid.</p>
+        <pre><code>import java.util.Scanner;
+import java.io.File;
+
+Scanner in = new Scanner(new File("dungeon1.txt"));
+
+// Pass 1: count the rows
+int rows = 0;
+while (in.hasNext()) { in.nextLine(); rows++; }
+in.close();
+
+// Reopen and fill
+in = new Scanner(new File("dungeon1.txt"));
+char[][] map = new char[rows][];
+int r = 0;
+while (in.hasNext()) {
+    map[r] = in.nextLine().toCharArray();
+    r++;
+}
+in.close();</code></pre>
+        <p>Run it and print the map with nested loops to prove it loaded. Then answer:
+        how many columns does row 0 have? Does every row have the same length?
+        (Check with code: <code>map[r].length</code>. If they differ, your bounds
+        checking must use <code>map[r].length</code> per row, not one fixed width.
+        This is the jagged-array trap, and the CED tests it.)</p>
+        <p><strong>Why two passes?</strong> You need the row count before you can
+        create the array. The reopen trick (close, new Scanner) is the simple
+        solution. An ArrayList of char[] would skip the counting pass entirely. Build
+        it once each way; feel the difference.</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Part 2: Find the Features</h3>
+        <p>Write <code>find(char target)</code> that scans the grid and returns the
+        row and column of the first match (print them, or return an int[] {row, col}).
+        Find <code>@</code>. Find <code>G</code>. Then write
+        <code>count(char target)</code>: how many walls? How many floor tiles? And a
+        <code>printLegendCounts()</code> that prints a little census of every
+        character in the map. Your 8.2 traversal patterns, now with meaning.</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Part 3: Level Design Is Text Editing</h3>
+        <p>Copy dungeon1.txt to dungeon3.txt in your folder. Redesign it: move the
+        goblin, extend a corridor, add a second goblin (<code>g</code>), add a
+        treasure room with <code>$</code>. Do not touch your Java. Run the loader on
+        dungeon3.txt. It just works. That feeling, of the world changing because you
+        edited text, is the entire point of data-driven design. Now load dungeon2.txt
+        and count the goblins: is one hiding in a pocket you did not notice?</p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Map That Ate Itself</h3>
+        <ol>
+            <li>Remove the <code>in.close()</code> between the two passes and reopen
+            without a fresh Scanner. What happens? (The second loop reads nothing:
+            the scanner is at end-of-file. Your map is all nulls and everything
+            crashes.)</li>
+            <li>Trailing whitespace: add two spaces after the last wall on some row.
+            Now row lengths differ by 2. Which of your loops, if any, breaks?
+            (Printing survives; anything assuming fixed width does not.)</li>
+            <li>Empty line at the end of the file: some editors add one. Then
+            <code>map[last]</code> is an empty array. Guard it: skip lines of length
+            0 when filling.</li>
+        </ol>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why is data-driven level design better than generating maps in code?
+            Give the designer argument and the modder argument, then check your
+            answer against the 7.6a Socratic. Same argument, bigger stakes.</li>
+            <li>Your map loader uses nextLine + toCharArray. The JQR also offers
+            <code>next()</code>. What would the map look like if you read it with
+            next() instead of nextLine()? Try it on dungeon1.txt and see what breaks.
+            (Spaces are delimiters to next(). Maps are made of spaces. Catastrophe.)</li>
+            <li>Exam connection: FRQ 4 gives you a 2D array and asks you to traverse
+            and process it. Your census, find, and count methods ARE FRQ 4 methods.
+            Which one maps to "count occurrences in a grid"? Which to "locate a
+            target"?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Load a text-based map into a char[][] with the two-pass pattern</li>
+            <li>Handle jagged rows with per-row bounds checking</li>
+            <li>Write find/count/census methods over a loaded grid</li>
+            <li>Explain data-driven design and defend it</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-08/maps-from-files.html">Dungeon Maps From Files</a> — the full pattern guide</li>
+        <li><a href="../docs/unit-07/reading-files.html">Reading Files</a> — the Scanner side</li>
+        <li><a href="../docs/unit-08/2d-array-basics.html">2D Array Basics</a> — the grid side</li>
+        <li><a href="../data/dungeon1.txt">dungeon1.txt</a> · <a href="../data/dungeon2.txt">dungeon2.txt</a> — the maps</li>
+    </ul>
+</div>`;
+---
+<Lesson id="8.6a" title="8.6a Dungeon Maps From Files — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

@@ -1,0 +1,130 @@
+---
+// Migrated from lessons/8.5c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>8.5c — Fog of War: Visibility Maps and Flood Fill</h1>
+
+<div class="callout warn">
+    <strong>Season 2: beyond the exam.</strong> This topic is no longer tested
+    (the 2025 CED removed inheritance from the exam). We build it after May 12
+    because it makes the RPG engine dramatically better, and because you are
+    ready for it. Pure craft, zero test anxiety.
+</div>
+
+
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>Part 1: Line of Sight Map</h3>
+
+    <p>Your dungeon map is a 2D array where 0=floor and 1=wall. The player stands
+    at (playerRow, playerCol). Build a visibility map: a boolean 2D array where
+    true means "the player can see this tile."</p>
+
+    <pre><code><span class="output">Map:
+. . . # .
+. . # . .
+. P . . .    ← P at [2][1]
+. . . . #
+. # . . .
+
+Visibility (radius 2, walls block):
+. ✓ ✓ # .
+✓ ✓ # . .
+✓ P ✓ . .
+✓ ✓ ✓ ✓ #
+. # . . .</span></code></pre>
+
+    <p>A tile is visible if:</p>
+    <ol>
+        <li>It's within the player's sight radius (Manhattan distance ≤ radius)</li>
+        <li>There's an unblocked straight line between the player and the tile
+            (Bresenham's line algorithm — check each cell on the line, stop at first wall)</li>
+    </ol>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>Manhattan distance = |r1-r2| + |c1-c2|. For radius 2, how many tiles
+        are within range (not counting walls)? Draw a diamond shape around the
+        player. Now: why is Manhattan distance alone not enough? Consider a tile
+        at [0][3] with a wall at [0][2]. It's within range 2, but can the player
+        see it?</p>
+    </div>
+
+    <h3>Part 2: Flood Fill Reveal</h3>
+
+    <p>Instead of fixed-radius vision, use flood fill: the player can see every
+    tile that's connected by a clear path (no walls) AND within the sight radius.
+    This handles winding corridors correctly — you can't see through walls, but
+    you CAN see around corners.</p>
+
+    <p>Implement a recursive flood fill starting from the player's position:</p>
+    <ol>
+        <li>If tile is out of bounds → stop</li>
+        <li>If tile is a wall → mark visible but stop flooding past it</li>
+        <li>If tile is already visited → stop</li>
+        <li>If tile exceeds sight radius → stop</li>
+        <li>Mark visible, recurse to 4 neighbors with radius-1</li>
+    </ol>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: Infinite Recursion</h3>
+        <p>Without a visited check, flood fill will visit [r][c], then [r+1][c],
+        then [r][c] again, forever. Where do you put the visited check — before
+        or after the recursive calls? Test on a 2×2 empty room. Count how many
+        times your recursive method is called. Can you make it fewer?</p>
+    </div>
+
+    <h3>Part 3: RPG Integration — Fog of War Overlay</h3>
+
+    <p>Modify your dungeon renderer to print hidden tiles as "." (unexplored) and
+    visible tiles as their actual content ("#" for walls, " " for floor, "P" for
+    player). Every time the player moves, recompute visibility and redraw.</p>
+
+    <pre><code><span class="output">Before move:         After move right:
+. . . . .           . . . . .
+. . P . .           . . P . .
+. . # . .           # # # . .
+. . . . .           . . . . .
+
+(radius=1, wall blocks)  (moved one right, wall now visible)</span></code></pre>
+
+    <div class="tinker">
+        <h3>Tinker: Memory Map</h3>
+        <p>Split the map into two layers: <em>explored</em> (tiles the player has
+        ever seen) and <em>visible</em> (tiles the player currently sees).
+        Explored tiles stay revealed permanently but dimmed. Only currently-visible
+        tiles show live updates (monsters moving, items appearing). This is the
+        difference between "fog of war" (you forget what was there) and "memory"
+        (you remember the layout but not the current contents).</p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on to Unit 9, you must be able to:</h3>
+        <ul>
+            <li>Compute a visibility map using flood fill with a sight radius</li>
+            <li>Handle walls correctly — visible but impassable</li>
+            <li>Avoid infinite recursion with visited tracking</li>
+            <li>Integrate fog of war into the dungeon renderer</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-08/dungeon-map.html">Dungeon Map Builder</a></li>
+        <li><a href="../docs/unit-08/2d-array-traversal.html">2D Array Traversal</a></li>
+        <li><a href="../docs/unit-10/recursion-basics.html">Recursion Basics</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="8.5c" title="8.5c Dungeon Fog of War — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

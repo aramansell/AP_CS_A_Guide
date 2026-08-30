@@ -1,0 +1,147 @@
+---
+// Migrated from docs/unit-06/data-ethics.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 6</a>
+    <span class="sep">/</span>
+    <span class="here">Data Ethics &amp; Privacy</span>
+</nav>`;
+const body = `<h1>Data Ethics &amp; Privacy</h1>
+
+<p>
+    CED topic 4.1 is not a programming topic. It is a judgment topic, and the
+    exam tests it in the multiple-choice section through scenarios: a company
+    collects X, what is the responsible use? You cannot answer those with code.
+    You answer them with a vocabulary you build once and carry forever.
+</p>
+
+<h2>The Core Vocabulary</h2>
+
+<table>
+    <tr><th>Term</th><th>Means</th><th>In the telemetry story</th></tr>
+    <tr><td><strong>Data collection</strong></td><td>Gathering info about people
+        as they use a system</td><td>session minutes, deaths, gold, quit flags</td></tr>
+    <tr><td><strong>Anonymization</strong></td><td>Stripping identifiers
+        (names, emails) so records cannot point at a person</td>
+        <td>player_id 101 instead of a name</td></tr>
+    <tr><td><strong>Re-identification</strong></td><td>De-anonymizing by joining
+        "anonymous" data with other data</td><td>publisher links player_id to the
+        purchase database, which has the email</td></tr>
+    <tr><td><strong>Aggregation</strong></td><td>Combining records into group
+        statistics</td><td>"Mages average 68 minutes per session"</td></tr>
+    <tr><td><strong>Informed consent</strong></td><td>People know what is
+        collected and agreed to it</td><td>the install screen nobody reads</td></tr>
+    <tr><td><strong>Dark pattern</strong></td><td>Interface designed to trick
+        people against their interest</td><td>the potion discount timed to the
+        moment of frustration</td></tr>
+    <tr><td><strong>Bias</strong></td><td>Systematic unfairness baked into data
+        or process</td><td>balance patches driven only by the telemetry of
+        players who did not quit</td></tr>
+    <tr><td><strong>Data minimization</strong></td><td>Collect only what you
+        need, keep it only as long as needed</td><td>did the game need deaths
+        AND hp AND max_hp to answer its question?</td></tr>
+</table>
+
+<h2>Anonymization Is Weaker Than It Sounds</h2>
+
+<p>Removing names is not a promise of privacy. Famous result: researchers
+re-identified people in "anonymized" datasets using as few as three data points
+(zip code, birth date, gender). The lesson for your work: anonymous is a
+technical state, not an ethical achievement. Re-identification risk grows with
+every extra column, and with every other dataset that exists in the world.
+player_id 101 is anonymous inside telemetry.csv. It stops being anonymous the
+moment some other file maps 101 to an account.</p>
+
+<h2>The Three Questions (memorize these)</h2>
+
+<ol>
+    <li><strong>Could this hurt someone?</strong> Not "is it legal," not "did
+    they click agree." Could a person be harmed if this data were used to its
+    fullest?</li>
+    <li><strong>Would it survive the front page test?</strong> If tomorrow's
+    headline described exactly what you did with the data, in plain words, would
+    you defend it?</li>
+    <li><strong>Did the people know?</strong> Consent is real when it is
+    informed, specific, and revocable. A 40-page policy nobody reads is legal
+    cover, not consent.</li>
+</ol>
+
+<p>The exam's responsibility questions are usually some arrangement of these
+three, dressed in a scenario about an app or a study or a company dashboard.</p>
+
+<h2>The Nudge / Dark Pattern Line</h2>
+
+<table>
+    <tr><th>Helpful nudge</th><th>Dark pattern</th></tr>
+    <tr><td>Reminder you can turn off</td><td>Notification timed to your
+        frustration, with no obvious off switch</td></tr>
+    <tr><td>Discount offered equally to all</td><td>Discount shown only to
+        players the data says are struggling or impulsive</td></tr>
+    <tr><td>"You have played 3 hours, take a break?"</td><td>"Your streak ends
+        in 20 minutes!" at midnight</td></tr>
+    <tr><td>Easy export of your data</td><td>Data locked in, deletion buried
+        five menus deep</td></tr>
+</table>
+
+<p>Both columns are the same technology. The difference is who the design
+serves. That is the entire ethics of engagement design in one sentence, and it
+is why "the code is the same" is never a defense.</p>
+
+<h2>Exam-Style Scenarios (practice)</h2>
+
+<div class="tinker">
+    <h3>Answer Like the Multiple-Choice Does</h3>
+    <p>For each scenario, pick the MOST responsible answer, then defend it with
+    one of the three questions:</p>
+    <ol>
+        <li>A fitness app wants to sell "anonymized" step counts to an insurer.
+        The insurer also has customers' addresses and ages. Responsible?
+        <em>(Re-identification: zip + age + steps is a fingerprint. The answer
+        is no, and the reason is the join.)</em></li>
+        <li>A study tracks which students use the school's tutoring center and
+        publishes "users of tutoring average 1 letter grade higher." Responsible?
+        <em>(Aggregation is fine; the risk is if the group is small enough that
+        individuals are identifiable, or if usage data flows back to teachers
+        unaggregated. The answer is "it depends," and the dependency is
+        granularity.)</em></li>
+        <li>A game offers a hard-mode badge that only 0.1% of players earn. The
+        team wants to email everyone who did NOT earn it, "you are in the 99.9%."
+        Responsible?
+        <em>(Motivational framing? Public shaming? The front page test answers
+        this one instantly.)</em></li>
+    </ol>
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why is a data ethics unit in a programming course?</h3>
+    <p>Because programmers are the ones who build the collection. The tracking
+    line of code does not look like an ethical decision, it looks like
+    <code>sessionMinutes++</code>. Every privacy disaster in tech was written by
+    someone having a normal day at the keyboard. The CED putting this at 4.1,
+    before arrays even start, is a deliberate placement: the judgment comes
+    before the power.</p>
+    <h3>Does anonymization scale with size?</h3>
+    <p>It gets WEAKER. In 30 rows, "Warrior level 12" might describe one person.
+    In 30 million, it describes thousands. But larger datasets also enable more
+    powerful re-identification joins. Size increases both anonymity and join
+    power, and the join power grows faster. That asymmetry is why "we have so
+    much data, nobody is identifiable" is usually backwards.</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="datasets.html">Working with Data Sets</a> — the technical side of the same file</li>
+    <li><a href="../../data/telemetry.csv">telemetry.csv</a> — the dataset the arguments run on</li>
+    <li><a href="../../lessons/6.6a.html">Lesson 6.6a</a> — the roundtable this page supports</li>
+</ul>`;
+---
+<Base title="Data Ethics &amp; Privacy — Unit 6" active="docs" root="../.." docsHome="../index.html" css="../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>

@@ -1,0 +1,88 @@
+---
+// Migrated from docs/reference/unit-05-quickref.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="../unit-05/index.html">Unit 5</a>
+    <span class="sep">/</span>
+    <span class="here">Quick Reference</span>
+</nav>`;
+const body = `<h1>Writing Classes: Quick Reference</h1>
+
+<p>One page, no story, no lab. The shapes, signatures, and traps of the unit,
+compressed. This is the page to keep open during builds and to re-read the
+night before a test. Print it and mark it up.</p>
+
+<h2>The Skeleton</h2>
+<pre><code>public class Player {
+    private String name;        // fields: always private
+    private int hp;
+
+    public Player(String name, int hp) {   // constructor
+        this.name = name;                   // this. resolves shadowing
+        this.hp = hp;
+    }
+
+    public String getName() { return name; }        // accessor
+    public void setHp(int hp) { this.hp = hp; }     // mutator
+    public String toString() { return name + " (" + hp + " hp)"; }
+}</code></pre>
+
+<h2>Encapsulation Rules</h2>
+<table>
+    <tr><th>Rule</th><th>Why</th></tr>
+    <tr><td>fields private</td><td>outside code cannot corrupt state</td></tr>
+    <tr><td>accessors public as needed</td><td>read access is a choice, not a default</td></tr>
+    <tr><td>mutators validate</td><td>setHp(-5) must be rejected or clamped</td></tr>
+    <tr><td>toString for printing</td><td>println(obj) calls it automatically</td></tr>
+</table>
+
+
+<h2>static vs instance</h2>
+<table>
+    <tr><th>Question</th><th>Answer</th></tr>
+    <tr><td>belongs to class, no object needed</td><td>static (Math.abs, your Dice.roll)</td></tr>
+    <tr><td>needs this object's data</td><td>instance (getName, length)</td></tr>
+    <tr><td>called how</td><td>ClassName.method() vs obj.method()</td></tr>
+</table>
+
+
+<h2>this</h2>
+<pre><code>this.name = name;   // field = parameter, when names collide
+this(...);          // constructor calling another constructor (first line)</code></pre>
+
+<h2>Scope</h2>
+<table>
+    <tr><th>Variable</th><th>Visible</th></tr>
+    <tr><td>parameter</td><td>its method only</td></tr>
+    <tr><td>local</td><td>from declaration to its block's closing brace</td></tr>
+    <tr><td>field</td><td>everywhere in the class, this's lifetime</td></tr>
+</table>
+
+
+
+<h2>The Unit's Traps, One Line Each</h2>
+<ul>
+    <li>Forgetting this. in a shadowed assignment assigns the parameter to itself. The field stays null/0.</li>
+    <li>No-arg constructor vanishes the moment you write any constructor. Provide it if you need it.</li>
+    <li>Mutators without validation let hp go negative. Guard: if (hp &gt;= 0) this.hp = hp;</li>
+    <li>toString must be exactly public String toString(). Any other signature is just a method.</li>
+    <li>static method touching an instance field: does not compile. static knows no this.</li>
+</ul>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="../unit-05/class-anatomy.html">Anatomy of a Class</a></li>
+    <li><a href="../unit-05/constructors.html">Constructors</a></li>
+    <li><a href="../unit-05/accessors-mutators.html">Accessors &amp; Mutators</a></li>
+    <li><a href="../unit-05/scope-and-access.html">Scope &amp; Access</a></li>
+    <li><a href="../unit-05/design-from-spec.html">Design From a Spec</a></li>
+</ul>`;
+---
+<Base title="Writing Classes — Quick Reference — Unit 5" active="docs" root="../.." docsHome="../index.html" css="../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>

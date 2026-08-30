@@ -1,0 +1,127 @@
+---
+// Migrated from exam/frq/data-analysis.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Exam Hub</a>
+    <span class="sep">/</span>
+    <a href="index.html">FRQ Center</a>
+    <span class="sep">/</span>
+    <span class="here">Q3: Data Analysis with ArrayList</span>
+</nav>`;
+const body = `<h1>FRQ 3: Data Analysis with ArrayList</h1>
+
+<p>
+    5 points. New in the 2025 revision: this question is ArrayList-ONLY
+    (arrays were removed from it). You get a class describing records, a
+    populated ArrayList, and a data question. Your 6.6 telemetry work, 7.5
+    pattern drills, and E3 day were all rehearsals for this exact question.
+</p>
+
+<h2>Round A: Bestiary Census (5 points)</h2>
+
+<div class="callout lab">
+<p>A <code>Monster</code> class is given:</p>
+<pre><code>public class Monster {
+    public String getName()       // e.g. "goblin"
+    public String getType()       // "slime", "undead", "brute", "boss"
+    public int getHp()            // current hit points
+    public int getGold()          // gold dropped
+}</code></pre>
+<p>A game maintains <code>ArrayList&lt;Monster&gt; bestiary</code>. Write the
+method:</p>
+<pre><code>/** Returns the total gold dropped by all monsters of the given
+ *  type whose hp is at least minHp.
+ */
+public int goldByType(String type, int minHp)</code></pre>
+<p>Examples: goldByType("boss", 20) with a lich (450 gold, 40 hp) and dragon
+(500 gold, 60 hp) returns 950. goldByType("boss", 50) returns 500 (the lich
+is excluded). A type with no matches returns 0.</p>
+</div>
+
+<h3>Solution</h3>
+<pre><code>public int goldByType(String type, int minHp) {
+    int total = 0;
+    for (Monster m : bestiary) {
+        if (m.getType().equals(type) &amp;&amp; m.getHp() &gt;= minHp) {
+            total += m.getGold();
+        }
+    }
+    return total;
+}</code></pre>
+
+<p>Commentary: it is pattern 4 (conditional aggregate) from the datasets
+page, wearing a costume. Two conditions in the filter, one accumulator, cast
+free because everything is int. The whole question is reading the filter
+correctly: "of the given type" AND "hp at least minHp." equals for the
+String, &gt;= for the hp.</p>
+
+<h3>Rubric (5 points)</h3>
+<table>
+    <tr><th>Point</th><th>Earned by</th></tr>
+    <tr><td>1</td><td>Traverse the ArrayList (any correct loop form)</td></tr>
+    <tr><td>2</td><td>String comparison with .equals (== loses this point
+        and usually the next)</td></tr>
+    <tr><td>3</td><td>Both filter conditions present and correctly combined</td></tr>
+    <tr><td>4</td><td>Accumulation into a total, initialized to 0</td></tr>
+    <tr><td>5</td><td>Return the total (not print), correct on empty
+        matches</td></tr>
+</table>
+
+<h2 id="roundb">Round B: Quit Analysis (mock material)</h2>
+
+<div class="callout lab">
+<p>A <code>PlayerRecord</code> class is given with
+<code>getClassType()</code> ("Warrior", "Mage", "Rogue"),
+<code>getLevel()</code>, <code>getDeaths()</code>, and
+<code>didQuit()</code> (true if the player quit). A dataset
+<code>ArrayList&lt;PlayerRecord&gt; telemetry</code> is populated.</p>
+<pre><code>/** Returns the average level of players who did quit, as a
+ *  double. Returns 0.0 when no players quit.
+ */
+public double averageQuitLevel()
+
+/** Returns the name of the class type with the most deaths across
+ *  all players (quit or not). Ties: first in the order Warrior,
+ *  Mage, Rogue.
+ */
+public String mostDoomedClass()</code></pre>
+<p>Watch: division by zero guard, double cast on the average, and the tie
+    rule. The tie rule is not decoration, it is a rubric row.</p>
+</div>
+
+<h2>The Four Patterns, One Question</h2>
+
+<p>Almost every FRQ 3 ever written is one or two of the four aggregation
+patterns (see the <a href="../../docs/unit-06/datasets.html">datasets
+page</a>): total/mean, count-by-category, max-and-who, conditional aggregate.
+Before writing code, name the pattern out loud. "This is conditional
+aggregate." "This is max-and-who with a tie rule." Naming the pattern tells
+you the loop shape in two seconds.</p>
+
+<table>
+    <tr><th>Pattern</th><th>Loop shape</th><th>Classic trap</th></tr>
+    <tr><td>Total / mean</td><td>accumulator + counter</td><td>int division:
+        cast to double; count-0 guard</td></tr>
+    <tr><td>Count by category</td><td>counter(s) under an if</td><td>overlapping
+        conditions counting one record twice</td></tr>
+    <tr><td>Max and who</td><td>best value + best index/object</td><td>ties:
+        read the tie rule from the spec</td></tr>
+    <tr><td>Conditional aggregate</td><td>acc + counter inside the if</td>
+        <td>denominator counting ALL rows</td></tr>
+</table>
+
+<h2>Drill List</h2>
+<ul>
+    <li>Write goldByType from memory. Then rewrite it with an index loop
+        instead of for-each. Both forms must be automatic.</li>
+    <li>equals vs == on Strings: one line each, know which earns the point.</li>
+    <li>The (double) cast on averages: write averageQuitLevel's division line
+        three different correct ways.</li>
+</ul>`;
+---
+<Base title="FRQ 3: Data Analysis with ArrayList — AP CS A" active="exam" root="../.." docsHome="../../docs/index.html" css="../../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>

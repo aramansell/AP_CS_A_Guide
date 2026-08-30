@@ -1,0 +1,79 @@
+---
+// Migrated from docs/reference/unit-01-quickref.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="../unit-01/index.html">Unit 1</a>
+    <span class="sep">/</span>
+    <span class="here">Quick Reference</span>
+</nav>`;
+const body = `<h1>Primitive Types: Quick Reference</h1>
+
+<p>One page, no story, no lab. The shapes, signatures, and traps of the unit,
+compressed. This is the page to keep open during builds and to re-read the
+night before a test. Print it and mark it up.</p>
+
+<h2>The Types</h2>
+<table>
+    <tr><th>Type</th><th>Holds / example</th></tr>
+    <tr><td>int</td><td>whole numbers, -2.1 to 2.1 billion. <code>int hp = 20;</code></td></tr>
+    <tr><td>double</td><td>decimals, about 15 digits precision. <code>double rate = 0.75;</code></td></tr>
+    <tr><td>boolean</td><td>true or false only. <code>boolean isCrit = false;</code></td></tr>
+</table>
+
+
+<h2>Operators</h2>
+<table>
+    <tr><th>Operator</th><th>Does</th></tr>
+    <tr><td>+ - * /</td><td>arithmetic. int/int TRUNCATES: 5/2 is 2</td></tr>
+    <tr><td>%</td><td>remainder. 7 % 3 is 1. Even test: n % 2 == 0</td></tr>
+    <tr><td>++ --</td><td>add/subtract 1. Pre uses new value, post uses old</td></tr>
+    <tr><td>+= -= *= /= %=</td><td>x op= y means x = x op y. Whole right side first</td></tr>
+    <tr><td>(int) (double)</td><td>cast. (int) 9.99 is 9: truncates, never rounds</td></tr>
+</table>
+
+
+<h2>Math.random() Formulas</h2>
+<table>
+    <tr><th>Need</th><th>Formula</th></tr>
+    <tr><td>0 to n-1</td><td><code>(int)(Math.random() * n)</code></td></tr>
+    <tr><td>1 to n</td><td><code>(int)(Math.random() * n) + 1</code></td></tr>
+    <tr><td>min to max</td><td><code>(int)(Math.random() * (max - min + 1)) + min</code></td></tr>
+</table>
+
+
+<h2>Printing</h2>
+<pre><code>System.out.println(x);   // newline after
+System.out.print(x);    // no newline
+"HP: " + hp            // concatenation, left to right
+"Sum: " + (a + b)      // parens or a+b glues as text</code></pre>
+
+<h2>Compile and Run</h2>
+<pre><code>javac Hello.java    # compiles, .class appears
+java Hello          # runs; no .java, no .class</code></pre>
+
+
+<h2>The Unit's Traps, One Line Each</h2>
+<ul>
+    <li><code>5 / 2</code> is 2, not 2.5. Integer division truncates.</li>
+    <li><code>(int) 9.99</code> is 9. Casts truncate; they do not round.</li>
+    <li><code>(int) Math.random() * 6</code> is always 0. The cast grabs the random before the multiply. Parenthesize.</li>
+    <li>Integer.MAX_VALUE + 1 is negative. Overflow wraps silently.</li>
+    <li>Filename must match class name, case included.</li>
+</ul>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="../unit-01/casting.html">Casting &amp; Integer Division</a></li>
+    <li><a href="../unit-01/compound-assignment.html">Compound Assignment &amp; Range</a></li>
+    <li><a href="../unit-01/arithmetic.html">Arithmetic</a></li>
+    <li><a href="../unit-01/math-random.html">Math.random()</a></li>
+</ul>`;
+---
+<Base title="Primitive Types — Quick Reference — Unit 1" active="docs" root="../.." docsHome="../index.html" css="../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>

@@ -1,0 +1,74 @@
+---
+// Site search — powered by Pagefind, which indexes the built pages as part
+// of `npm run build` (see package.json). Zero client framework: one small
+// input, one small script, works from any static host.
+import Base from '../layouts/BaseLayout.astro';
+---
+<Base title="Search \u2014 AP CS A" active="search" root="" docsHome="docs/index.html" css="style.css">
+<div data-pagefind-ignore>
+<h1>Search</h1>
+
+<p>
+    Search every lesson, doc, quick reference, and exam page on the site.
+    The same content, indexed: code samples, traps, checkpoints, all of it.
+</p>
+
+<input class="search-box" id="site-search" type="search"
+       placeholder="Search lessons, docs, and exam pages\u2026" autocomplete="off" />
+<div class="search-meta" id="search-meta"></div>
+<div id="search-results"></div>
+</div>
+</Base>
+
+<script is:inline src="pagefind/pagefind.js"></script>
+
+<script>
+// Custom Pagefind UI (the stock UI bundle is heavier and assumes site-root
+// hosting; this stays tiny and works under the GitHub Pages base path).
+declare global { interface Window { pagefind?: any } }
+
+const input = document.getElementById('site-search') as HTMLInputElement;
+const meta = document.getElementById('search-meta')!;
+const results = document.getElementById('search-results')!;
+// The site's base path = the directory this page lives under, whatever it is.
+const base = location.pathname.replace(/[^/]*$/, '');
+
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+async function run(query: string) {
+  if (!query.trim()) {
+    results.innerHTML = '';
+    meta.textContent = '';
+    return;
+  }
+  const pf = window.pagefind;
+  if (!pf) {
+    meta.textContent = 'Search index is still loading \u2014 try again in a second.';
+    return;
+  }
+  const search = await pf.search(query);
+  if (!search.results.length) {
+    results.innerHTML = '';
+    meta.textContent = `No results for \u201C${query}\u201D.`;
+    return;
+  }
+  const top = search.results.slice(0, 10);
+  const data = await Promise.all(top.map((r: any) => r.data()));
+  meta.textContent = `${search.results.length} result${search.results.length === 1 ? '' : 's'}${search.results.length > 10 ? ' (showing 10)' : ''}`;
+  results.innerHTML = data.map((d: any) => {
+    const href = base + String(d.url).replace(/^\//, '');
+    return `<div class="search-result">
+  <h3><a href="${href}">${d.meta?.title ? esc(d.meta.title) : d.url}</a></h3>
+  <span class="url">${esc(d.url)}</span>
+  <div class="excerpt">${d.excerpt}</div>
+</div>`;
+  }).join('\n');
+}
+
+let timer: ReturnType<typeof setTimeout> | undefined;
+input.addEventListener('input', () => {
+  clearTimeout(timer);
+  timer = setTimeout(() => run(input.value), 150);
+});
+input.focus();
+</script>

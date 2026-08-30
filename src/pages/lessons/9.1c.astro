@@ -1,0 +1,53 @@
+---
+// Migrated from lessons/9.1c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>9.1c — Polymorphic Party: Mixed Character Types</h1>
+
+<div class="callout warn">
+    <strong>Season 2: beyond the exam.</strong> This topic is no longer tested
+    (the 2025 CED removed inheritance from the exam). We build it after May 12
+    because it makes the RPG engine dramatically better, and because you are
+    ready for it. Pure craft, zero test anxiety.
+</div>
+
+
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Party with Polymorphism</h3>
+        <p>The real power of inheritance is polymorphism: a Character[] array can hold Warriors, Mages, and any future subclass — and each one behaves according to its own overridden methods.</p>
+        <p>Using your Character/Warrior/Mage classes from 9.1b:</p>
+        <ol>
+            <li>Create a <code>Character[] party = new Character[4]</code>.</li>
+            <li>Fill it: Warrior("Aldric", 40, 12, 5), Mage("Mira", 25, 8, 50), Warrior("Grom", 50, 15, 7), Mage("Lyra", 20, 6, 40).</li>
+            <li>Create an Enemy (just use Character): Character("Dragon", 80, 10).</li>
+            <li>Loop through the party: each member attacks the Dragon. Print results.</li>
+            <li>The Dragon attacks back — it picks a random party member each round. Use a loop until either the Dragon or the entire party is dead.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Polymorphism in Action</h3>
+        <p>When you call <code>party[i].attack(dragon)</code>, Java calls the Mage's attack() for Mages and Warrior's attack() for Warriors — even though the array type is Character[]. This is dynamic dispatch. What would you need to change to add a Rogue class?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-09/extends-and-super.html">Inheritance</a></li>
+        <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="9.1c" title="9.1c Polymorphic Party — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

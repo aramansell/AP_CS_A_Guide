@@ -1,0 +1,153 @@
+---
+// Migrated from docs/unit-05/design-from-spec.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 5</a>
+    <span class="sep">/</span>
+    <span class="here">Design From a Spec</span>
+</nav>`;
+const body = `<h1>Design From a Spec</h1>
+
+<p>
+    Free-response Question 2 hands you a scenario, a specification table, and
+    says: implement. No starter code beyond maybe a shell. The spec is the
+    documentation, and you are the implementer. This page is the professional
+    loop for that moment, scaled to classroom size.
+</p>
+
+<h2>The Loop</h2>
+
+<ol>
+    <li><strong>Read the spec twice.</strong> Once for the story, once for the
+    contract. Underline every noun (candidate fields) and every verb (candidate
+    methods).</li>
+    <li><strong>Plan on paper.</strong> Fields with types, constructor, method
+    list with signatures. Do not open the editor yet.</li>
+    <li><strong>Implement bottom-up or top-down, your call.</strong> Bottom-up:
+    fields, constructor, accessors, then the brainy methods. Top-down: stubs
+    first, then fill.</li>
+    <li><strong>Build the acceptance table.</strong> Every spec row becomes a
+    test line with a predictable output.</li>
+    <li><strong>Run, compare, fix.</strong> One row at a time.</li>
+    <li><strong>Review against the spec.</strong> Types, edges, formats,
+    privacy. Another pair of eyes if you can get them.</li>
+</ol>
+
+<h2>Reading a Spec Table Like the Exam Writes Them</h2>
+
+<pre><code>A BankAccount has an owner, a balance, and an interest rate.
+Constructor: BankAccount(String owner, double balance, double rate)
+
+deposit(double amount)      adds amount to balance
+withdraw(double amount)     removes amount if funds suffice; returns
+                            true on success, false otherwise
+getBalance()                returns the current balance
+monthlyInterest()           adds balance * rate / 12 to balance
+toString()                  "Aram: $142.50"</code></pre>
+
+<p>Nouns: owner, balance, rate (three fields, types String, double, double).
+Verbs: deposit, withdraw (boolean!), monthlyInterest (void, it mutates),
+getBalance (double), toString (String). The return type column is where specs
+hide their tests: "returns true on success, false otherwise" is a boolean
+method, and the exam will absolutely test the boundary case, withdrawing
+exactly the balance.</p>
+
+<div class="callout warn">
+    <strong>Spec words that carry hidden tests:</strong>
+    "at most" (means &lt;=, test the equal case), "if funds suffice" (test
+    exactly-equal funds), "otherwise" (there is an else branch, test it),
+    "returns true/false" (boolean, test both), "in order" (the sequence
+    matters), "first occurrence" (index 0 exists and duplicates might not
+    count). When you read these words, write the edge test before the code.
+</div>
+
+<h2>Worked Example: The Spell Contract</h2>
+
+<p>The 5.6a lesson builds Spell from a table. Here is the harder variant that
+the lesson saves for the challenge, worked in full. Spec:</p>
+
+<pre><code>A Potion has a name, a price in gold, and a potency (1-5).
+Constructor: Potion(String name, int price, int potency)
+
+getName()                   the name
+getPrice()                  the price
+getPotency()                the potency
+isLuxury()                  true when price is over 100 gold
+discountedPrice(int pct)    returns price minus pct percent, as a double,
+                            truncated to whole gold
+toString()                  "Elixir of Might (120g, potency 3)"</code></pre>
+
+<p>Planning, on paper, before code:</p>
+
+<pre><code>fields: private String name; private int price; private int potency;
+constructor: assign all three
+isLuxury: return price &gt; 100;                      // "over" = strict &gt;
+discountedPrice: return (int)(price * (100 - pct) / 100.0);   // watch the cast
+toString: name + " (" + price + "g, potency " + potency + ")";</code></pre>
+
+<p>The two traps in the plan: "over 100" is <code>&gt;</code> not
+<code>&gt;=</code>, and discountedPrice is where integer division and casting
+(1.8a) come back. <code>price * (100 - pct) / 100.0</code> with the 100.0
+double keeps the math honest; the outer (int) truncates as specified.</p>
+
+<h2>Writing Specs (the other direction)</h2>
+
+<p>Design is writing the table. Test your table by handing it to someone. If
+they build something different from what you imagined, your spec was ambiguous,
+not their fault. Common ambiguities to hunt in your own specs:</p>
+
+<ul>
+    <li>Unstated types ("price": int or double?)</li>
+    <li>Unstated boundaries ("big": how big exactly?)</li>
+    <li>Unstated returns (does withdraw report failure, or just do nothing?)</li>
+    <li>Unstated format (toString exact punctuation)</li>
+    <li>Unstated mutation (does monthlyInterest change balance or just report?)</li>
+</ul>
+
+<h2>Tinker Challenge: Spec Tennis</h2>
+
+<div class="tinker">
+    <h3>Trade Tables With a Partner</h3>
+    <ol>
+        <li>Both write a spec table for an RPG class with at least 4 methods
+        (your choice: Trap, Mount, Quest, Scroll, Enchantment).</li>
+        <li>Swap. Build each other's class WITHOUT asking questions. If the spec
+        is ambiguous, write your assumption as a comment and keep going.</li>
+        <li>Swap back. Review what they built. Every place their assumption
+        differed from your intent is a bug IN YOUR SPEC.</li>
+        <li>Revise your spec table and archive the diff. The revision is the
+        lesson.</li>
+    </ol>
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why does the exam test spec-reading instead of open design?</h3>
+    <p>Because grading needs a right answer, and because reading a contract
+    faithfully is the larger half of professional programming. Most code is
+    written to someone else's spec. The creative version, spec-writing, is why
+    5.6a makes you do both directions.</p>
+    <h3>Why plan on paper first?</h3>
+    <p>Because the editor rewards typing and punishes thinking. Paper has no
+    autocomplete, no red squiggles, no half-working code luring you forward.
+    90 seconds of planning routinely saves 20 minutes of fixing. Every working
+    programmer has a story about the time they skipped the plan.</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="class-design.html">Class Design</a> — the conventions</li>
+    <li><a href="constructors.html">Constructors</a> — the first line of any spec build</li>
+    <li><a href="../../exam/frq/class-design.html">FRQ 2: Class Design</a> — real exam-format specs</li>
+    <li><a href="../unit-02/method-signatures.html">Method Signatures (Unit 2)</a> — decoding the contract's grammar</li>
+</ul>`;
+---
+<Base title="Design From a Spec — Unit 5" active="docs" root="../.." docsHome="../index.html" css="../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>

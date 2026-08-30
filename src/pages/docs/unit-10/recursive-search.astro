@@ -1,0 +1,191 @@
+---
+// Migrated from docs/unit-10/recursive-search.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../../layouts/BaseLayout.astro';
+
+const crumbs = `<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 10</a>
+    <span class="sep">/</span>
+    <span class="here">Recursive Search &amp; Merge Sort</span>
+</nav>`;
+const body = `<h1>Recursive Search &amp; Merge Sort</h1>
+
+<p>
+    CED topic 4.17, the last required topic of the course: binary search written
+    recursively, and merge sort, which only makes sense recursively. Both share
+    one heartbeat: cut the problem in half, solve the halves, trust the
+    recursion, combine.
+</p>
+
+<h2>Recursive Binary Search</h2>
+
+<pre><code>// PRECONDITION: data is sorted ascending
+public static int bsearch(int[] data, int target, int lo, int hi) {
+    if (lo &gt; hi) return -1;                  // base case 1: empty range
+    int mid = (lo + hi) / 2;
+    if (data[mid] == target) return mid;     // base case 2: found
+    if (data[mid] &lt; target)
+        return bsearch(data, target, mid + 1, hi);   // right half
+    else
+        return bsearch(data, target, lo, mid - 1);  // left half
+}
+
+// call it like this: the whole array, initially
+int index = bsearch(data, target, 0, data.length - 1);</code></pre>
+
+<p>Why it is recursive at all: each call handles one question ("is the target
+in THIS range?") and delegates the smaller question to itself. The loop version
+asks the same question repeatedly with updated lo and hi. Same work, different
+bookkeeping: the loop updates variables, the recursion passes them forward.</p>
+
+<h2>The Trace, On Paper, Once</h2>
+
+<p>data = <code>[3, 7, 11, 15, 19, 25, 31, 39]</code>, target 25:</p>
+
+<table>
+    <tr><th>Call</th><th>lo</th><th>hi</th><th>mid</th><th>data[mid]</th><th>Returns / recurses</th></tr>
+    <tr><td>bsearch(., ., 0, 7)</td><td>0</td><td>7</td><td>3</td><td>15</td><td>15 &lt; 25: recurse right (4, 7)</td></tr>
+    <tr><td>bsearch(., ., 4, 7)</td><td>4</td><td>7</td><td>5</td><td>25</td><td>FOUND: return 5</td></tr>
+</table>
+
+<p>Two calls, and the answer bubbles back up unchanged: each parent returns
+exactly what the child returned. When every level just passes the answer up,
+that is "tail-ish" recursion, and it means the loop version is a mechanical
+rewrite. The exam may ask you to do that rewrite in either direction.</p>
+
+<h2>Merge Sort: Divide, Sort Halves, Merge</h2>
+
+<pre><code>public static void mergeSort(int[] data, int lo, int hi) {
+    if (lo &gt;= hi) return;                    // base case: 0 or 1 elements = sorted
+    int mid = (lo + hi) / 2;
+    mergeSort(data, lo, mid);                // sort left half
+    mergeSort(data, mid + 1, hi);            // sort right half
+    merge(data, lo, mid, hi);                // merge two sorted halves
+}</code></pre>
+
+<p>The merge is the only part with real code, and it is a two-finger walk:</p>
+
+<pre><code>private static void merge(int[] data, int lo, int mid, int hi) {
+    int[] temp = new int[hi - lo + 1];
+    int i = lo, j = mid + 1, k = 0;
+
+    while (i &lt;= mid &amp;&amp; j &lt;= hi) {             // both halves have items
+        if (data[i] &lt;= data[j]) temp[k++] = data[i++];
+        else                    temp[k++] = data[j++];
+    }
+    while (i &lt;= mid) temp[k++] = data[i++];   // drain left leftovers
+    while (j &lt;= hi) temp[k++] = data[j++];    // drain right leftovers
+
+    for (k = 0; k &lt; temp.length; k++)          // copy back
+        data[lo + k] = temp[k];
+}</code></pre>
+
+<h2>Why Merge Sort Is n log n (Informally)</h2>
+
+<p>Two facts: halving n down to 1 takes about log n levels, and each level
+touches every element once during its merges. log n levels times n work per
+level: n log n. Compare with selection sort's n squared: at a million items,
+merge sort does about 20 million moves, selection sort about 500 billion. That
+is the difference between instant and never. This is 4.7a's analysis applied,
+and it is why "merge sort exists" is exam knowledge, not trivia.</p>
+
+<h2>The Three Recursive Sins (all three break search and sort)</h2>
+
+<table>
+    <tr><th>Sin</th><th>In binary search</th><th>In merge sort</th></tr>
+    <tr><td><strong>No base case</strong></td><td>missing lo &gt; hi check:
+        infinite recursion, StackOverflowError</td>
+        <td>missing lo &gt;= hi check: mid+1 bounds walk off the array</td></tr>
+    <tr><td><strong>Not smaller</strong></td><td>recursive call uses mid, not
+        mid+1: range never shrinks, stack overflow</td>
+        <td>merge on wrong indices so halves overlap: merge loops forever</td></tr>
+    <tr><td><strong>Forgetting the combine</strong></td><td>(not applicable;
+        search just returns)</td><td>sorting halves but never merging: array
+        unchanged and you conclude "recursion is broken" (it is not; the merge
+        is)</td></tr>
+</table>
+
+<h2>Bug Hunt: Three Broken Variants</h2>
+
+<div class="bug-hunt">
+    <h3>Find the Symptom Before You Run</h3>
+    <pre><code>// A
+public static int bsA(int[] d, int t, int lo, int hi) {
+    int mid = (lo + hi) / 2;
+    if (d[mid] == t) return mid;
+    if (d[mid] &lt; t) return bsA(d, t, mid + 1, hi);
+    return bsA(d, t, lo, mid);
+}
+
+// B
+public static int bsB(int[] d, int t, int lo, int hi) {
+    if (lo &gt; hi) return -1;
+    int mid = (lo + hi) / 2;
+    if (d[mid] == t) return mid;
+    return bsB(d, t, lo + 1, hi);
+}
+
+// C
+public static int bsC(int[] d, int t, int lo, int hi) {
+    if (lo &gt; hi) return -1;
+    int mid = (lo + hi) / 2 + 1;
+    if (d[mid] == t) return mid;
+    if (d[mid] &lt; t) return bsC(d, t, mid + 1, hi);
+    else return bsC(d, t, lo, mid - 1);
+}</code></pre>
+    <p>A: the else-branch recurses with plain mid, so an absent target in the
+    left half loops forever between two indices. Symptom: stack overflow on
+    missing values, works on found ones. B: it advances lo by 1 regardless of
+    side: a linear search in disguise that also misses the midpoint logic;
+    symptom: returns -1 for values that exist. C: mid is shifted one right;
+    when lo == hi, mid = lo + 1 can read past the range and even out of bounds
+    at the right edge; symptom: ArrayIndexOutOfBounds on single-cell ranges,
+    or skipped odd indices. Predict, run, confirm each. Then fix all three and
+    re-verify against the trace table above.</p>
+</div>
+
+<h2>Tinker Challenge: Feel the Speed Difference</h2>
+
+<div class="tinker">
+    <h3>Time the Sorts</h3>
+    <p>Fill an int[] of 20,000 with random values. Time selection sort
+    (<code>System.currentTimeMillis()</code> before and after). Restore the
+    array (regenerate the same randoms with a fixed seed, or keep a copy), then
+    time merge sort. Record both numbers. Now double to 40,000 and repeat.
+    Selection should take about 4x longer (quadratic: 2 squared). Merge sort
+    about 2.2x (n log n: barely worse than linear). Your table is 4.7a's
+    shapes, now with clocks on them.</p>
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why must merge sort be recursive in this course?</h3>
+    <p>It is not that iterative merge sort is impossible (it is, with a stack
+    and a loop). It is that the recursive description IS the algorithm: sort
+    halves, merge. The recursive code is four lines that read like the English.
+    For once, the recursive solution is the simplest one, and that is why the
+    CED put merge sort in the recursion topic: it is the exhibit that recursion
+    is not just a loop alternative, it is a decomposition strategy.</p>
+    <h3>Why does binary search return from EVERY path?</h3>
+    <p>Because each call must produce an answer to hand its caller. The three
+    returns are the three truths of the range: not here (-1), found here (mid),
+    not in this half (whatever the recursive call returns). Miss a return path
+    and Java refuses to compile, which is the compiler enforcing that you have
+    thought about every case. That enforcement is a gift; accept it.</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="recursion-basics.html">Recursion Basics</a> — base cases and the call stack, from the ground up</li>
+    <li><a href="backtracking.html">Backtracking &amp; Pathfinding</a> — recursion's next adventure (Season 2)</li>
+    <li><a href="../unit-07/searching-sorting.html">Searching &amp; Sorting (Unit 7)</a> — the loop versions and the trade logic</li>
+    <li><a href="../unit-04/run-time-analysis.html">Run-Time Analysis</a> — n log n earned informally</li>
+</ul>`;
+---
+<Base title="Recursive Search &amp; Merge Sort — Unit 10" active="docs" root="../.." docsHome="../index.html" css="../style.css">
+  {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}
+  <Fragment set:html={body} />
+</Base>

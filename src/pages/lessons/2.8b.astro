@@ -1,0 +1,114 @@
+---
+// Migrated from lessons/2.8b.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>2.8b — Documentation with Comments: Write for Your Future Self</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <p>
+        The AP exam's Practice 4, "Document Code and Computing Systems," is worth
+        10-15% of the multiple-choice section. College Board is not grading your
+        comments for beauty. They are testing whether you can read a program's
+        <em>intent</em>, and whether you can leave intent behind for the next person.
+        The next person is usually you, three weeks later, at 11 PM.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment 1: The Three Comment Flavors</h3>
+        <p>Create <code>CommentsLab.java</code> and type all three comment styles:</p>
+        <pre><code>// Line comment: one line, quick notes
+
+/* Block comment: spans
+   multiple lines. Older style. */
+
+/**
+ * Javadoc comment: the special one. Starts with /**
+ * and every line has a star. This is documentation
+ * that TOOLING can read. Hover your mouse over a call
+ * to this method in your editor and see what appears.
+ */
+public class CommentsLab {
+    // the rest of your code
+}</code></pre>
+        <p>Type it, then hover over the class name where you use it. Editors read the
+        javadoc and show it back to you. That is the difference between javadoc and
+        ordinary comments: javadoc is machine-readable documentation.</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 2: Document Your Dice Engine</h3>
+        <p>Open your <code>Dice.java</code> from Unit 1. Add a javadoc block above
+        <code>roll()</code> with exactly this structure:</p>
+        <pre><code>/**
+ * Rolls a single die with the given number of sides.
+ * @param sides the number of sides on the die (must be 2 or more)
+ * @return a random int between 1 and sides, inclusive
+ */
+public static int roll(int sides) { ... }</code></pre>
+        <p>Do the same for <code>rollDice</code> and <code>isCritical</code>. Then call
+        <code>Dice.roll(20)</code> from your tester and hover. Your own words are now
+        official documentation, exactly like <code>Math.abs</code>.</p>
+    </div>
+
+    <div class="callout warn">
+        <strong>@param documents what goes in. @return documents what comes out.</strong>
+        One line each. Present tense. Describe behavior, not implementation ("returns
+        the higher roll" not "calls roll twice and compares"). If a method has no
+        parameters, there is no @param. If it returns void, there is no @return.
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: Lying Comments</h3>
+        <p>Comments that do not match code are worse than no comments. From the
+        <a href="../docs/unit-02/documentation-comments.html">comments docs page</a>,
+        grab the four code-and-comment pairs. In each, the comment says one thing and
+        the code does another. Find the lie, then fix the comment (or the code, if the
+        comment was right all along). The lies are subtle: off-by-one, wrong bounds,
+        "random" where it is deterministic.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Find the worst comment you have written all year (we all have one).
+            What made it bad: it lied, it said nothing, or it repeated the code?</li>
+            <li>Here is a comment: <code>// set x to x plus 1</code> above <code>x++</code>.
+            Delete-worthy or keep-worthy? Defend your answer with a rule.</li>
+            <li>The JQR sheet you used in 2.8a is generated FROM javadoc comments.
+            When you wrote @param and @return today, you were doing the same job
+            Oracle's writers do for the whole Java library. Does that change how you
+            think about the sheet?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Write all three comment types and say when each is appropriate</li>
+            <li>Write a correct javadoc block with @param and @return for any method</li>
+            <li>Spot a comment that contradicts its code</li>
+            <li>Explain why "Document Code" is a scored exam practice</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/documentation-comments.html">Documentation with Comments</a> — the full guide plus the lying-comments bug hunt</li>
+        <li><a href="../docs/unit-02/api-and-libraries.html">APIs &amp; Libraries</a> — where javadoc fits in the bigger picture</li>
+    </ul>
+</div>`;
+---
+<Lesson id="2.8b" title="2.8b Documentation with Comments — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

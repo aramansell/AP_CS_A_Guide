@@ -1,0 +1,57 @@
+---
+// Migrated from lessons/10.2b.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>10.2b — Recursive Traversal: Reverse, Palindrome, and Sum</h1>
+
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Recursive String and Array Tools</h3>
+        <p>Yesterday you saw how recursion traverses strings and arrays. Today you'll write the classic recursive traversal problems — each one builds on the same pattern.</p>
+        <p>Create a class called <code>RecursiveTools</code>:</p>
+        <ol>
+            <li><strong>Reverse a String</strong> <code>String reverse(String s)</code>:
+                <ul>
+                    <li>Base case: if length <= 1, return s</li>
+                    <li>Recursive: last character + reverse(the rest)</li>
+                </ul>
+            </li>
+            <li><strong>Palindrome Check</strong> <code>boolean isPalindrome(String s)</code>:
+                <ul>
+                    <li>Base cases: if length <= 1 → true. If first != last → false.</li>
+                    <li>Recursive: check the substring without first and last characters</li>
+                </ul>
+            </li>
+            <li><strong>Sum Array</strong> <code>int sum(int[] arr, int index)</code>:
+                <ul>
+                    <li>Base case: index >= arr.length → return 0</li>
+                    <li>Recursive: arr[index] + sum(arr, index+1)</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Trace isPalindrome("racecar")</h3>
+        <p>Write out every recursive call. At what call does the base case fire? How many total calls are made?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-10/recursion-basics.html">Recursion</a></li>
+        <li><a href="../docs/unit-02/string.html">String Methods</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="10.2b" title="10.2b Recursive String/Array Problems — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

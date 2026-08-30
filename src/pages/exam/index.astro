@@ -1,0 +1,90 @@
+---
+// Migrated from exam/index.html - the body below is the original page content.
+// The head and top nav now come from src/layouts/BaseLayout.astro.
+import Base from '../../layouts/BaseLayout.astro';
+
+const body = `<h1>Exam Hub</h1>
+
+<p>
+    The AP Computer Science A exam is <strong>Wednesday, May 12, 2027, 12:00 PM
+    (Session 2)</strong>. Three hours. Everything you need to get ready lives
+    here. This page is your base camp from April 28 (the first sprint day) to
+    the finish line.
+</p>
+
+<div class="callout">
+    <strong>The format, in one glance:</strong> 42 multiple-choice questions,
+    90 minutes, 55% of your score. Then 4 free-response questions, 90 minutes,
+    45%. You get the Java Quick Reference sheet in the room. Four answer
+    choices per MC question (down from five in the old days, every wrong
+    answer is now a plausible lie).
+</div>
+
+<h2>Know the Terrain</h2>
+
+<table>
+    <tr><th>Unit</th><th>Name</th><th>Weight</th><th>Where we taught it</th></tr>
+    <tr><td>1</td><td>Using Objects and Methods</td><td>15-25%</td>
+        <td>Phase 1 (Aug 31 - Oct 22)</td></tr>
+    <tr><td>2</td><td>Selection and Iteration</td><td>25-35%</td>
+        <td>Phase 2 (Oct 26 - Dec 22)</td></tr>
+    <tr><td>3</td><td>Class Creation</td><td>10-18%</td>
+        <td>Phase 3 (Jan 5 - Jan 29)</td></tr>
+    <tr><td>4</td><td>Data Collections</td><td>30-40%</td>
+        <td>Phase 4 (Feb 2 - Apr 26)</td></tr>
+</table>
+
+<p>The heaviest unit is Data Collections: arrays, ArrayLists, 2D arrays,
+searching, sorting, recursion, and files. That is why it gets three months of
+your year. The sprint (Apr 28 - May 10) reviews in exactly this order, most
+points first.</p>
+
+<h2>Your Weapons</h2>
+
+<table>
+    <tr><th>Page</th><th>What it is for</th></tr>
+    <tr><td><a href="java-quick-reference.html">The Java Quick Reference</a></td>
+        <td>The exact sheet you get in the exam room. Print it. Live with it.
+        Every drill and practice problem assumes it is on your desk.</td></tr>
+    <tr><td><a href="frq/index.html">FRQ Center</a></td>
+        <td>What each of the 4 free-response questions wants, the rubrics in
+        plain language, and 8 full practice FRQs in RPG style, one per type
+        per sprint round.</td></tr>
+    <tr><td><a href="mc-strategy.html">Multiple-Choice Strategy</a></td>
+        <td>The question archetypes, elimination math, and the timing plan
+        (42 questions, 90 minutes: what to do at minute 45, 70, and 85).</td></tr>
+    <tr><td><a href="mock-exam.html">Mock Exam Protocol</a></td>
+        <td>How the April 28 and 30 mocks run, how to score your own FRQs
+        with the real rubrics, and how the clinics use your error list.</td></tr>
+</table>
+
+<h2>The Countdown</h2>
+
+<table>
+    <tr><th>Date</th><th>Event</th></tr>
+    <tr><td>Apr 28</td><td>Mock MC (42 questions, 90 min, scored same day)</td></tr>
+    <tr><td>Apr 30</td><td>Mock FRQ (4 questions, 90 min)</td></tr>
+    <tr><td>May 4</td><td>Rubric workshop + personal MC error clinic</td></tr>
+    <tr><td>May 6</td><td>JQR speed drills + weak-topic clinic</td></tr>
+    <tr><td>May 10</td><td>Exam eve: logistics, strategy, early night</td></tr>
+    <tr><td><strong>May 12, 12:00 PM</strong></td><td><strong>The exam. Session 2.
+        Arrive 30 minutes early with photo ID and pencils. You are ready.</strong></td></tr>
+</table>
+
+<h2>How to Use This Hub</h2>
+
+<ol>
+    <li><strong>All year:</strong> keep the JQR printed at your workstation.
+    Every "which method?" question in a lab is a JQR lookup question. Train
+    the reflex now, not in May.</li>
+    <li><strong>From January:</strong> after each FRQ day (E1, E2, E3, E4),
+    read the matching FRQ Center page and self-score with the rubric. Rubric
+    eyes catch points that "I think I got it" eyes miss.</li>
+    <li><strong>From April 28:</strong> this hub is home. Mock, score, list
+    your errors by topic, drill your weakest two topics, repeat. The clinics
+    exist to answer your specific error list. Bring it.</li>
+</ol>`;
+---
+<Base title="Exam Hub — AP CS A" active="exam" root=".." docsHome="../docs/index.html" css="../style.css">
+  <Fragment set:html={body} />
+</Base>

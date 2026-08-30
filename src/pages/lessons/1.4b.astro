@@ -1,0 +1,63 @@
+---
+// Migrated from lessons/1.4b.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>1.4b — Slot Machine: Run &amp; Reflect</h1>
+
+<!-- ============================================================ -->
+<div class="activity basic-app">
+    <div class="activity-header">
+        <span class="activity-label">Basic Application</span>
+        <span class="activity-time">~15 min</span>
+    </div>
+
+    <p>Once your Slot Machine compiles and runs correctly:</p>
+
+    <ol>
+        <li><strong>Probability test:</strong> Run it 10 times. How often do you
+            get three matching reels?</li>
+        <li><strong>Do the math:</strong> With 4 symbols per reel, what percentage
+            of spins should be winners (all three match)? Calculate the probability,
+            then run it 50 times. Does reality match the math?</li>
+        <li><strong>Compare outputs:</strong> Look at someone else's output. Does
+            theirs look exactly like yours? Why or why not?</li>
+        <li><strong>Add a fourth reel:</strong> Does the code change much? What
+            does this tell you about the pattern? What if there were 10 reels —
+            what would be tedious about our current approach?</li>
+    </ol>
+
+    <div class="tinker">
+        <h3>Tinker: Winner Percentage</h3>
+        <p>
+            You calculated the probability of three matching symbols. Now run
+            your machine 50 times and count the wins. How close did you get?
+            Why might your result differ from the exact probability?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Trace every line of the Slot Machine and explain what it does</li>
+            <li>Identify the three-step pattern within the code</li>
+            <li>Explain how the casting-bug from Iteration 1 relates to the
+                Math.random() parentheses trap</li>
+            <li>Calculate simple probability for random events</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-01/slot-machine.html">Slot Machine Walkthrough</a></li>
+        <li><a href="../docs/unit-01/math-random.html">Math.random()</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="1.4b" title="1.4b Slot Machine Reflect — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

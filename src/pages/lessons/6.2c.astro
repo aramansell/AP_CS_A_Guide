@@ -1,0 +1,50 @@
+---
+// Migrated from lessons/6.2c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>6.2c — Party Manager: Traverse Your RPG Team</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: Party Roster</h3>
+        <p>RPG parties have multiple members. You need to traverse them to heal everyone, find the strongest, or check if anyone is down. Traversal patterns make this easy.</p>
+        <p>Create a class called <code>PartyManager</code>:</p>
+        <ol>
+            <li>Declare arrays to hold party data for 4 members:
+                <ul>
+                    <li><code>String[] names = {"Aldric", "Mira", "Grom", "Lyra"}</code></li>
+                    <li><code>int[] hp = {35, 28, 42, 0}</code></li>
+                    <li><code>int[] maxHp = {35, 30, 45, 25}</code></li>
+                </ul>
+            </li>
+            <li>Method <code>void healAll(int amount)</code>: traverse hp array, add amount (cap at maxHp).</li>
+            <li>Method <code>int countAlive()</code>: traverse and count members where hp > 0.</li>
+            <li>Method <code>String findStrongest()</code>: return name of member with highest current HP.</li>
+            <li>Method <code>boolean isPartyWiped()</code>: return true if ALL hp == 0.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>Design Question</h3>
+        <p>You're using three parallel arrays (names, hp, maxHp). What are the risks of this approach? What would happen if you sorted one array but not the others? Is there a better way?</p>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-06/array-traversal.html">Array Traversal</a></li>
+        <li><a href="../docs/unit-06/array-basics.html">Array Basics</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="6.2c" title="6.2c Party Manager — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

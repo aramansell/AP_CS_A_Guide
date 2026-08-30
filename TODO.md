@@ -2,6 +2,26 @@
 
 Status: COMPLETE. All verification checks pass (scripts/verify_site.py).
 
+## 2026-08-30: Migrated to Astro (branch `astro`)
+
+The hand-maintained 310-page static HTML site is now an Astro project:
+
+- All 307 content pages migrated 1:1 into `src/pages/**.astro` (bodies kept
+  verbatim, round-trip validated). Head/nav/breadcrumbs now come from two
+  layouts (`src/layouts/`) instead of being duplicated in every file.
+- The 6-script Python generator pipeline retired; `src/data/curriculum.ts`
+  is the single source of truth and the dashboard, pacing calendar, coverage
+  matrix, PACING.md, and lesson prev/next chain all derive from it at build
+  time (`npm run build`). Old toolchain kept in `legacy/`.
+- `npm run verify` (port of verify_site.py) runs on every CI deploy and
+  enforces URL parity with the old site (legacy/site-manifest.json).
+- New: per-student lesson progress tracking (localStorage + dashboard bars),
+  full-text site search (Pagefind, /search.html), a 404 page, and a GitHub
+  Actions deploy workflow (requires the one-time Pages source switch to
+  "GitHub Actions" - see README).
+- URLs are unchanged: build format `preserve` keeps /lessons/1.1a.html and
+  /docs/unit-01/index.html exactly as before.
+
 ## What was built (this session)
 
 ### Structural repairs

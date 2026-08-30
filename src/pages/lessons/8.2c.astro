@@ -1,0 +1,38 @@
+---
+// Migrated from lessons/8.2c.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>8.2c — Battle Grid: Range and Area Attacks</h1>
+
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <div class="section">
+        <h3>Build: BattleGrid Scanner</h3>
+        <p>Tactical RPGs use a grid where every tile has a unit or is empty. Area attacks affect tiles in a pattern — a cross, a square, a diamond. 2D traversal patterns make this possible.</p>
+        <p>Create a class called <code>BattleGrid</code> with <code>char[][] grid = new char[6][6]</code>, initialized to '.' (empty). Place 'P' for player at (2,2) and 'E' enemies at (1,2), (3,2), (2,1), (2,3).</p>
+        <ol>
+            <li><code>void render()</code>: print the grid with coordinate labels.</li>
+            <li><code>boolean isInRange(int row, int col, int range)</code>: return true if the tile is within <code>range</code> steps from the player using <strong>Manhattan distance</strong>: |row - playerRow| + |col - playerCol| <= range.</li>
+            <li><code>ArrayList&lt;String&gt; getTargetsInRange(int range)</code>: return coordinates of all enemies within range.</li>
+            <li><code>void attackCross()</code>: mark all tiles in a cross pattern (same row OR same column as player) with 'X'.</li>
+        </ol>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-08/2d-array-basics.html">2D Arrays</a></li>
+        <li><a href="../docs/unit-07/arraylist-basics.html">ArrayList</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="8.2c" title="8.2c Battle Grid — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

@@ -1,0 +1,110 @@
+---
+// Migrated from lessons/10.4a.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>10.4a — Flood Fill: Reveal the Dungeon</h1>
+
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <p>Your DungeonMap from Unit 8 is a grid, but the player can only see one tile
+    at a time. What if they find a magic item that reveals all connected floor tiles?
+    This is the classic <strong>flood fill</strong> algorithm — explore a tile,
+    then recursively explore all its walkable neighbors. The same algorithm that
+    powers the paint bucket tool in every drawing program.</p>
+
+    <p>Open the <a href="../docs/unit-10/backtracking.html">Recursive Dungeon
+    (Student RPG Guide)</a>. Follow Part 1: Flood Fill.</p>
+
+    <div class="tinker">
+        <h3>Add reveal() to DungeonMap</h3>
+        <pre><code>// Starting from (row, col), mark all connected walkable tiles as visited
+public int reveal(int row, int col, boolean[][] visited) {
+    // Base case: out of bounds — stop
+    if (row < 0 || row >= tiles.length || col < 0 || col >= tiles[0].length)
+        return 0;
+    // Base case: wall or already visited — stop
+    if (tiles[row][col] == '#' || visited[row][col])
+        return 0;
+
+    visited[row][col] = true;  // mark current
+    int count = 1;             // count this tile
+
+    // Recurse in all 4 directions
+    count += reveal(row - 1, col, visited);  // up
+    count += reveal(row + 1, col, visited);  // down
+    count += reveal(row, col - 1, visited);  // left
+    count += reveal(row, col + 1, visited);  // right
+
+    return count;  // total connected tiles found
+}</code></pre>
+
+        <p>Call it from the player's position. It returns how many tiles are
+        reachable from where they stand — useful for checking if the exit is
+        reachable.</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Visualize the Reveal</h3>
+        <p>Add a <code>displayRevealed(boolean[][] visited)</code> method:</p>
+        <ul>
+            <li>Loop through the grid</li>
+            <li>If visited[row][col] is true, print the actual tile</li>
+            <li>If false, print '?' (fog of war)</li>
+            <li>Always print walls as '#' (they're visible but impassable)</li>
+        </ul>
+        <p>Call displayRevealed() after reveal(). The player sees connected
+        rooms but not disconnected areas. That's real fog of war.</p>
+    </div>
+
+    <div class="callout trap">
+        <strong>Forgetting the Visited Check = Infinite Recursion:</strong>
+        Without <code>visited[row][col]</code>, reveal(0,0) calls reveal(1,0) which
+        calls reveal(0,0) which calls reveal(1,0)... forever. The visited array
+        breaks cycles. Also: check boundaries BEFORE indexing tiles[row][col].
+        Read the <a href="../docs/unit-10/backtracking.html">Recursive Dungeon
+        docs</a> for the complete algorithm.
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why does the visited array parameter start as
+            <code>new boolean[rows][cols]</code>? What would happen if you created
+            a new array inside reveal() on every recursive call?</li>
+            <li>Flood fill visits tiles in depth-first order (explores a full path
+            before trying the next direction). What would breadth-first look like?
+            Which is better for revealing a dungeon?</li>
+            <li>The return value counts connected tiles. How would you use this to
+            verify that the exit tile 'E' is reachable from the player?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Acceptance — your flood fill must:</h3>
+        <ul>
+            <li>Stop at walls and out-of-bounds</li>
+            <li>Never visit the same tile twice</li>
+            <li>Return the correct count of connected tiles</li>
+            <li>Not overflow the stack on a 15×15 map</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-10/backtracking.html">Recursive Dungeon (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-10/recursion-basics.html">Recursion Basics</a></li>
+        <li><a href="../docs/unit-10/recursive-search.html">Recursive Traversal</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="10.4a" title="10.4a Flood Fill — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>

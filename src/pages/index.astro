@@ -1,0 +1,118 @@
+---
+// Dashboard — rebuilt at every `npm run build` from src/data/curriculum.ts
+// and src/data/lessons.ts (the port of the old scripts/gen_dashboard.py).
+// Lesson lists can no longer drift out of sync with the pacing calendar:
+// both render from the same SEQUENCE data.
+import Base from '../layouts/BaseLayout.astro';
+import { PHASES, phaseLessons, EXAM_DATE, mediumDate } from '../data/curriculum';
+import { LESSONS } from '../data/lessons';
+
+const TABS = { 1: 'Phase 1', 2: 'Phase 2', 3: 'Phase 3', 4: 'Phase 4', 5: 'Sprint', 6: 'Season 2' } as const;
+const MIDDOT = '\u00B7';
+const totalLessons = Object.keys(LESSONS).length;
+---
+<Base title="Dashboard \u2014 AP CS A" active="dashboard" root="" docsHome="docs/index.html" css="style.css">
+<h1>Dashboard</h1>
+
+<p>
+    Pick your phase below. The course runs September to the AP exam on
+    <strong>{mediumDate(EXAM_DATE)}</strong>, then Season 2 after it. Lessons are
+    numbered <strong>Unit.Lesson</strong> with activities <strong>a, b, c</strong>.
+    The four phases are the four CED units: finish them all and you have
+    covered 100% of the exam's required content.
+</p>
+
+<p>
+    <strong>Plan by day, not by guess:</strong> the
+    <a href="pace.html">Pacing Calendar</a> maps every single A-day of the
+    year to its lesson. Check it when you miss a day, or to see what is coming.
+</p>
+
+<div class="dashboard-total" data-total data-pagefind-ignore>
+    <strong>0</strong> of {totalLessons} lessons complete on this device.
+    <button class="progress-reset" data-reset type="button">reset progress</button>
+</div>
+
+<div class="unit-selector" id="unit-nav" data-pagefind-ignore>
+    {Object.entries(TABS).map(([p, label], idx) => (
+        <a href={`#phase-${p}`} class={idx === 0 ? 'active' : undefined}>{label}</a>
+    ))}
+</div>
+
+{Object.entries(TABS).map(([p, label], idx) => {
+    const d = PHASES[Number(p)];
+    const lids = phaseLessons(Number(p));
+    return (
+    <div id={`phase-${p}`} class="unit-section" style={idx === 0 ? 'display:block;' : 'display:none;'}>
+        <h2>{d.name}</h2>
+        <p>{[d.ced, d.weight].filter(Boolean).join(` ${MIDDOT} `)} {MIDDOT} {d.span} {MIDDOT} {d.old}</p>
+
+        <div class="phase-progress" data-phase-lessons={lids.join(' ')} data-pagefind-ignore>
+            <div class="bar"><div class="fill"></div></div>
+            <span class="count">0/{lids.length}</span>
+        </div>
+
+        <ul class="lesson-list">
+            {lids.map((lid) => {
+                const meta = LESSONS[lid];
+                return (
+                    <li data-lesson={lid}>
+                        <span class="lesson-num">{meta.group}</span>
+                        <span class="lesson-title"><a href={`lessons/${lid}.html`}>{lid} {meta.title}</a></span>
+                        <span class={`badge ${meta.badgeClass}`}>{meta.badgeLabel}</span>
+                    </li>
+                );
+            })}
+        </ul>
+    </div>
+    );
+})}
+</Base>
+
+<script>
+// Phase tab switcher (ported from the original inline script - no framework needed).
+document.querySelectorAll('#unit-nav a').forEach((link) => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('#unit-nav a').forEach((l) => l.classList.remove('active'));
+        document.querySelectorAll('.unit-section').forEach((s) => (s.style.display = 'none'));
+        link.classList.add('active');
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) target.style.display = 'block';
+    });
+});
+if (window.location.hash) {
+    const match = document.querySelector(`#unit-nav a[href="${window.location.hash}"]`);
+    if (match) match.click();
+}
+
+// Progress readout - reads the same localStorage key the lesson pages write.
+const KEY = 'apcsa-progress';
+const read = (): Record<string, boolean> => {
+    try { return JSON.parse(localStorage.getItem(KEY) ?? '{}'); } catch { return {}; }
+};
+
+function renderProgress() {
+    const done = read();
+    let totalDone = 0;
+    let totalAll = 0;
+    document.querySelectorAll<HTMLElement>('.phase-progress').forEach((bar) => {
+        const lids = (bar.dataset.phaseLessons ?? '').split(' ').filter(Boolean);
+        const n = lids.filter((id) => done[id]).length;
+        const fill = bar.querySelector<HTMLElement>('.fill');
+        const count = bar.querySelector('.count');
+        if (fill) fill.style.width = lids.length ? `${Math.round((100 * n) / lids.length)}%` : '0%';
+        if (count) count.textContent = `${n}/${lids.length}`;
+        totalDone += n;
+        totalAll += lids.length;
+        lids.forEach((id) => document.querySelector(`li[data-lesson="${id}"]`)?.classList.toggle('done', !!done[id]));
+    });
+    const strong = document.querySelector('[data-total] strong');
+    if (strong) strong.textContent = String(totalDone);
+}
+renderProgress();
+document.querySelector('[data-reset]')?.addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    renderProgress();
+});
+</script>

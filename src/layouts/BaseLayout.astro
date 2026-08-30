@@ -1,0 +1,53 @@
+---
+/**
+ * Base layout — the shell every page on the site shares.
+ *
+ * Before the Astro migration this markup was duplicated by hand in all 310
+ * HTML files (a nav change meant a 310-file find-and-replace). Now it lives
+ * here exactly once.
+ *
+ * Props:
+ *   title    - page <title>, verbatim (may contain HTML entities)
+ *   active   - which top-nav tab is highlighted
+ *   root     - relative prefix to the site root ('' | '..' | '../..')
+ *   docsHome - relative href to docs/index.html (differs inside docs/)
+ *   css      - relative href of the stylesheet this page always used
+ */
+interface Props {
+  title: string;
+  active?: 'dashboard' | 'docs' | 'projects' | 'exam' | 'search';
+  root: string;
+  docsHome: string;
+  css: string;
+}
+const { title, active, root, docsHome, css } = Astro.props;
+
+const tabs = [
+  { key: 'dashboard', href: `${root ? root + '/' : ''}index.html`, label: 'Dashboard' },
+  { key: 'docs', href: docsHome, label: 'Docs' },
+  { key: 'projects', href: `${root ? root + '/' : ''}projects.html`, label: 'Projects' },
+  { key: 'exam', href: `${root ? root + '/' : ''}exam/index.html`, label: 'Exam' },
+  { key: 'search', href: `${root ? root + '/' : ''}search.html`, label: 'Search' },
+] as const;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title set:html={title}></title>
+<link rel="stylesheet" href={css}>
+</head>
+<body>
+
+<nav class="top-nav" data-pagefind-ignore>
+    {tabs.map((t) => <a href={t.href} class={t.key === active ? 'active' : undefined}>{t.label}</a>)}
+</nav>
+
+<div class="page">
+    {Astro.slots.has('breadcrumb') && <slot name="breadcrumb" />}
+    <slot />
+</div><!-- .page -->
+
+</body>
+</html>

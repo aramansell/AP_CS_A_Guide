@@ -1,0 +1,78 @@
+---
+// Migrated from lessons/5.5a.html - the body below is the original page content.
+// The head, top nav, and the prev/next chain now come from
+// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
+import Lesson from '../../layouts/LessonLayout.astro';
+
+const body = `<h1>5.5a — Player.java: Encapsulate Your Hero</h1>
+
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <p>
+        For three units, your RPG has used scattered variables — <code>int playerHP</code>,
+        <code>String playerName</code>, scattered across DungeonCrawl. Every time you
+        need player stats, you pass four arguments. Every time you update HP, you write
+        the same validation code. It's time to wrap all of that into a single
+        <strong>Player class</strong>.
+    </p>
+
+    <p>
+        Open the <a href="../docs/unit-05/player-builder.html">Player Builder (Student RPG Guide)</a>.
+        Follow the specification exactly. Your completed Player.java must pass the
+        acceptance tests at the bottom of the guide.
+    </p>
+
+    <div class="tinker">
+        <h3>Build: Player.java</h3>
+        <p>Create <code>Player.java</code> with these specifications:</p>
+        <ul>
+            <li>Private instance variables: name (String), hp (int), maxHp (int), ac (int), strength (int), dexterity (int), constitution (int)</li>
+            <li>Constructor takes all seven values. Clamp hp between 0 and maxHp.</li>
+            <li>Getters for all fields. Boolean getter: <code>isAlive()</code></li>
+            <li><code>takeDamage(int amount)</code> — subtract, clamp to 0</li>
+            <li><code>heal(int amount)</code> — add, clamp to maxHp</li>
+            <li><code>toString()</code> — formatted like "Hero [HP: 20/25 AC:14 STR:12]"</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why are the fields <code>private</code>? What would break if they
+                were <code>public</code> and someone set <code>hp = -50</code>?</li>
+            <li>Your <code>takeDamage()</code> clamps to 0. Your <code>heal()</code>
+                clamps to maxHp. Why is clamping important? What's the worst bug
+                that could happen without it?</li>
+            <li>Compare Player.java to Character.java from Unit 2.7. What's the
+                same? What's different? Why did we wait until now to encapsulate?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Acceptance — your Player.java must:</h3>
+        <ul>
+            <li>Compile without errors</li>
+            <li>Pass all acceptance tests in the Student RPG Guide</li>
+            <li>Clamp HP correctly in both directions</li>
+            <li>Return correct values from isAlive() at HP=0, HP=1, HP=maxHp</li>
+        </ul>
+    </div>
+</div>
+
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-05/player-builder.html">Player Builder (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-05/class-anatomy.html">Anatomy of a Class</a></li>
+        <li><a href="../docs/unit-05/constructors.html">Constructors</a></li>
+        <li><a href="../docs/unit-05/accessors-mutators.html">Accessors &amp; Mutators</a></li>
+    </ul>
+</div>`;
+---
+<Lesson id="5.5a" title="5.5a Player Class — AP CS A" root=".." css="../style.css">
+  <Fragment set:html={body} />
+</Lesson>
