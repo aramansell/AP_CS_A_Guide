@@ -33,6 +33,22 @@ const totalLessons = Object.keys(LESSONS).length;
     <button class="progress-reset" data-reset type="button">reset progress</button>
 </div>
 
+<div class="mywork" data-pagefind-ignore>
+    <h2>My work</h2>
+    <p>
+        Your lesson answers and progress are saved on this device as you go.
+        Back them up, or move them to another machine, with one file:
+    </p>
+    <div class="mywork-row">
+        <input id="mywork-name" type="text" placeholder="Student name (first last)" autocomplete="name" />
+        <button id="mywork-download" type="button" class="lab-download">Download all my work</button>
+        <label class="mywork-import">Restore from file
+            <input id="mywork-import" type="file" accept=".json,application/json" />
+        </label>
+    </div>
+    <p class="mywork-note" id="mywork-note"></p>
+</div>
+
 <div class="unit-selector" id="unit-nav" data-pagefind-ignore>
     {Object.entries(TABS).map(([p, label], idx) => (
         <a href={`#phase-${p}`} class={idx === 0 ? 'active' : undefined}>{label}</a>
@@ -115,4 +131,84 @@ document.querySelector('[data-reset]')?.addEventListener('click', () => {
     localStorage.removeItem(KEY);
     renderProgress();
 });
+</script>
+
+<script>
+// My work — backup / restore of progress + all lab answers in one file.
+// Uses the same localStorage keys the lesson pages write.
+(function () {
+    'use strict';
+    var PKEY = 'apcsa-progress';
+    var AKEY = 'apcsa-lab-answers';
+    var NKEY = 'apcsa-lab-student';
+
+    var nameEl = document.getElementById('mywork-name');
+    var dlBtn = document.getElementById('mywork-download');
+    var importEl = document.getElementById('mywork-import');
+    var noteEl = document.getElementById('mywork-note');
+
+    function note(msg, isError) {
+        if (!noteEl) return;
+        noteEl.textContent = msg;
+        noteEl.classList.toggle('error', !!isError);
+    }
+
+    if (nameEl) {
+        nameEl.value = localStorage.getItem(NKEY) || '';
+        nameEl.addEventListener('input', function () {
+            try { localStorage.setItem(NKEY, nameEl.value); } catch (e) {}
+        });
+    }
+
+    if (dlBtn) dlBtn.addEventListener('click', function () {
+        var student = (nameEl && nameEl.value.trim()) || '';
+        if (!student) { note('Add your name first so the backup file is labeled.', true); return; }
+        var payload = {
+            format: 'apcsa-work-backup/1',
+            student: student,
+            exportedAt: new Date().toISOString(),
+            progress: JSON.parse(localStorage.getItem(PKEY) || '{}'),
+            answers: JSON.parse(localStorage.getItem(AKEY) || '{}')
+        };
+        var count = Object.keys(payload.answers).filter(function (k) {
+            return (payload.answers[k] || '').trim();
+        }).length;
+        var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        var a = document.createElement('a');
+        var safe = student.replace(/[^A-Za-z0-9._-]+/g, '_');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'APCSA_backup_' + safe + '.json';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+        note('Downloaded. This file has your progress and ' + count + ' saved answers — keep it somewhere safe.');
+    });
+
+    if (importEl) importEl.addEventListener('change', function () {
+        var file = importEl.files && importEl.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+            try {
+                var data = JSON.parse(String(reader.result));
+                if (data.format !== 'apcsa-work-backup/1') {
+                    note('That file is not a My-work backup from this site.', true);
+                    return;
+                }
+                localStorage.setItem(PKEY, JSON.stringify(data.progress || {}));
+                localStorage.setItem(AKEY, JSON.stringify(data.answers || {}));
+                if (data.student && nameEl) {
+                    nameEl.value = data.student;
+                    localStorage.setItem(NKEY, data.student);
+                }
+                note('Restored ' + Object.keys(data.progress || {}).length + ' lessons and ' +
+                    Object.keys(data.answers || {}).length + ' answers. Reloading…');
+                setTimeout(function () { location.reload(); }, 800);
+            } catch (e) {
+                note('Could not read that file — is it the JSON you downloaded here?', true);
+            }
+        };
+        reader.readAsText(file);
+    });
+})();
 </script>

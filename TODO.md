@@ -2,6 +2,36 @@
 
 Status: COMPLETE. All verification checks pass (scripts/verify_site.py).
 
+## 2026-08-31: Lab forms — student answers, Canvas loop, site polish
+
+Second big branch feature: the discovery activities became fillable forms.
+
+- **Lab forms**: a build-time transform (src/lib/formify.ts, run from
+  LessonLayout) auto-injects an answer box after every reflection question
+  in bug hunts / tinker challenges / socratic checkpoints - 760 boxes
+  across 139 lessons, zero content edits. Deterministic ids
+  (lesson:blockN:qN) travel inside each student's downloaded JSON, so keys
+  and grades stay stable across rebuilds.
+- **Student flow**: answers autosave to localStorage as they type (shared
+  across lessons); each lesson ends with a student-name field + a
+  "Download answers (.json)" button producing one self-describing file
+  (format apcsa-lab-answers/1) for a Canvas file-upload assignment.
+- **Dashboard "My work" panel**: one-file backup of progress + all answers,
+  restorable on another machine (covers lab machines that get wiped).
+- **Teacher loop** (teachers/canvas.html, linked from README, excluded from
+  student search): Canvas assignment -> Download Submissions -> 
+  npm run grade -- folder -> terminal summary + grades.csv (paste/import
+  into the gradebook) + per-student feedback files to return via
+  SpeedGrader. Completeness grading for all questions; exact-match grading
+  against optional keys in src/data/answerKeys.ts (seeded for 1.1c, 1.7c,
+  1.8b, 2.5a); latest attempt kept when a student submits twice.
+  npm run dump-questions lists every id + prompt for authoring keys.
+- **Site polish**: favicon, meta/og tags, skip-to-content link, aria-current
+  nav, focus-visible outlines, print stylesheets for both themes,
+  sitemap.xml (built post-build, 312 pages), robots.txt.
+- Astro upgraded 5.18 -> 7.2.9 first (no config changes needed; verified
+  all 13 checks + dev-server smoke tests).
+
 ## 2026-08-30: Migrated to Astro (branch `astro`)
 
 The hand-maintained 310-page static HTML site is now an Astro project:

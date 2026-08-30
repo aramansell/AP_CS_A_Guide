@@ -1,0 +1,114 @@
+---
+// Teacher guide: the lab-forms -> Canvas loop. Not linked from student
+// navigation; linked from README.md. Excluded from student search.
+import Base from '../../layouts/BaseLayout.astro';
+---
+<Base title="Collecting Lab Answers via Canvas — AP CS A" active={undefined} root=".." docsHome="../docs/index.html" css="../style.css"
+  description="Teacher workflow: students answer lab questions on the lesson pages, download a JSON, and upload it to Canvas; the grader script scores the folder and produces a CSV you can paste into the gradebook.">
+<div class="page" data-pagefind-ignore>
+  <nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <span class="here">Teacher: Lab Forms + Canvas</span>
+  </nav>
+
+  <h1>Lab Forms + Canvas</h1>
+
+  <p>
+    Every reflection question in the lessons (bug hunts, tinker challenges,
+    socratic checkpoints) now has an answer box. Answers save on the
+    student's device as they type, and each lesson has a
+    <strong>Download answers (.json)</strong> button that produces one
+    small, self-describing file — the question text, the student's answer,
+    and a stable question id all travel together. This page is the whole
+    loop for collecting, grading, and returning them through Canvas.
+  </p>
+
+  <h2>1. What students do</h2>
+  <ol>
+    <li>Open the lesson (e.g. <a href="../lessons/1.1c.html">1.1c</a>).</li>
+    <li>Type their name in the bar at the bottom of the lesson once — it is
+      remembered on that device for every other lesson.</li>
+    <li>Answer the boxed questions as they work through the labs. Everything
+      autosaves locally; nothing is lost if they close the tab.</li>
+    <li>Click <strong>Download answers (.json)</strong> and upload that file
+      to the Canvas assignment.</li>
+  </ol>
+  <p>
+    The Dashboard also has a <strong>My work</strong> panel: one file backs
+    up <em>all</em> answers plus progress, and can be restored on another
+    machine (useful when lab machines get reimaged).
+  </p>
+
+  <h2>2. Set up the Canvas assignment (once per lesson)</h2>
+  <ol>
+    <li>In Canvas: <strong>Assignments &rarr; + Assignment</strong>.</li>
+    <li>Submission Type: <strong>Online</strong>, check
+      <strong>File Uploads</strong>. (Leave "Allowed File Types" blank so
+      .json files upload cleanly.)</li>
+    <li>Set points and the due date, then Publish.</li>
+  </ol>
+
+  <h2>3. Grade the whole class in one command</h2>
+  <ol>
+    <li>Open the assignment in Canvas &rarr;
+      <strong>Download Submissions</strong> (top right of the assignment
+      page). Canvas gives you a zip; unzip it.</li>
+    <li>In this repo:
+      <pre><code>npm run grade -- path/to/unzipped-submissions -o grades.csv</code></pre>
+    </li>
+    <li>You get:
+      <ul>
+        <li>a summary table in the terminal,</li>
+        <li><code>grades.csv</code> — per student: answered/total and
+          objective score,</li>
+        <li><code>feedback/Student_Lesson.txt</code> — every question, the
+          student's answer, and the expected answer for anything keyed.</li>
+      </ul>
+    </li>
+    <li>Enter scores: open the Canvas gradebook and type them from the CSV,
+      or paste the CSV into an exported gradebook sheet and re-import
+      (Gradebook &rarr; Actions &rarr; Import).</li>
+    <li>Return work: in SpeedGrader, drag the matching
+      <code>feedback/*.txt</code> onto a student's submission comment, or
+      attach the whole feedback folder if you use Canvas's bulk
+      "Upload Grades" file return.</li>
+  </ol>
+
+  <h2>4. How scoring works</h2>
+  <ul>
+    <li><strong>Every question</strong> is completeness-graded: answered or
+      blank (minimum 2 characters). The default signal is the
+      answered-percentage — a reasonable daily-work grade.</li>
+    <li><strong>Keyed questions</strong> are also graded right/wrong. Keys
+      live in <code>src/data/answerKeys.ts</code>. Listed questions:
+      <pre><code>npm run dump-questions            # all 700+
+npm run dump-questions -- 1.1c     # one lesson</code></pre>
+      Copy an id into the keys file and list accepted answers — plain
+      strings match as substrings ("integer division"), and
+      <code>'re:...'</code> entries are regexes. Rebuild the site after
+      editing keys (the grader reads the file at run time, so no rebuild is
+      needed for grading — only the dump listing changes).</li>
+    <li>Multiple attempts: the latest download per student per lesson is
+      graded; earlier ones are ignored automatically.</li>
+  </ul>
+
+  <h2>Honest limits + future paths</h2>
+  <ul>
+    <li>This is a static site — the download/upload step is the trade for
+      having no student accounts or backend. It also means answers survive
+      anything: they are plain JSON files you can read years later.</li>
+    <li>Real-time push into Canvas (students click "submit" on the lesson
+      page) would need a small server with a Canvas API token or an LTI
+      tool registered with your Canvas instance. The CSV loop above gets
+      you the same autograde-and-return outcome with one command per
+      assignment, so start there.</li>
+    <li>Code the students <em>write</em> in Discovery Labs is still .java
+      files — those stay separate submissions (they are the program, not
+      the reflection). The answer boxes capture the predict/explain work
+      around the code.</li>
+  </ul>
+
+  <p><a href="../index.html">&larr; back to the Dashboard</a></p>
+</div>
+</Base>

@@ -13,6 +13,8 @@
  */
 import Base from './BaseLayout.astro';
 import { LESSON_CHAIN } from '../data/curriculum';
+import { LESSONS } from '../data/lessons';
+import { formify } from '../lib/formify';
 
 interface Props {
   /** lesson id, e.g. "4.2a" — must exist in LESSON_CHAIN */
@@ -32,15 +34,39 @@ if (i === -1) {
 }
 const prev = i > 0 ? LESSON_CHAIN[i - 1] : null;
 const next = i < LESSON_CHAIN.length - 1 ? LESSON_CHAIN[i + 1] : null;
+
+// Form-ify the lesson body: every reflection question in a bug hunt,
+// tinker challenge, or socratic checkpoint becomes a fillable answer box
+// with a stable id. Rendered slot -> string -> transform -> set:html.
+const rawBody = await Astro.slots.render('default');
+const { html: formBody, questionCount } = formify(rawBody, id);
+const lessonTitle = LESSONS[id]?.title ?? id;
 ---
-<Base title={title} active="dashboard" root={root} docsHome={root + '/docs/index.html'} css={css}>
+<Base title={title} active="dashboard" root={root} docsHome={root + '/docs/index.html'} css={css}
+  description={"Lesson " + id + " " + lessonTitle + " — AP CS A. Predict-first labs, bug hunts, and checkpoints with answer boxes you can download and turn in."}>
   <div class="lesson-nav" data-pagefind-ignore>
     {prev ? <a href={prev + '.html'}>&#9664; {prev}</a> : <span></span>}
     <span class="lesson-id">{id}</span>
     {next ? <a href={next + '.html'}>{next} &#9654;</a> : <span></span>}
   </div>
 
-  <slot />
+  <Fragment set:html={formBody} />
+
+  {questionCount > 0 && (
+    <div class="lab-bar" data-lesson={id} data-lesson-title={lessonTitle} data-count={questionCount} data-pagefind-ignore>
+      <div class="lab-bar-row">
+        <label class="lab-name">Student name
+          <input id="lab-student" type="text" autocomplete="name" placeholder="First Last" />
+        </label>
+        <span class="lab-count" id="lab-count">0/{questionCount} answered</span>
+        <button type="button" class="lab-download" id="lab-download">Download answers (.json)</button>
+      </div>
+      <p class="lab-note">
+        Answers save on this device as you type. At the end of class, click
+        Download and upload the file to the Canvas assignment.
+      </p>
+    </div>
+  )}
 
   <label class="progress-toggle" data-lesson={id} data-pagefind-ignore>
     <input type="checkbox" />
@@ -48,6 +74,8 @@ const next = i < LESSON_CHAIN.length - 1 ? LESSON_CHAIN[i + 1] : null;
   </label>
   <p class="progress-note" data-pagefind-ignore>Saved on this device only — the Dashboard tracks your progress.</p>
 </Base>
+
+<script src={root + '/js/lab-forms.js'} is:inline></script>
 
 <script>
   // Lesson progress tracker — plain localStorage, no dependencies.

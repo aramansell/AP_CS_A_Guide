@@ -19,8 +19,19 @@ interface Props {
   root: string;
   docsHome: string;
   css: string;
+  /** page description for <meta> / social previews (optional) */
+  description?: string;
 }
-const { title, active, root, docsHome, css } = Astro.props;
+const { title, active, root, docsHome, css, description } = Astro.props;
+const desc = description ?? 'AP CS A study guide — lessons, reference docs, and exam prep.';
+// title props are verbatim (may contain entities like &amp;) — decode to
+// plain text so attribute interpolation doesn't double-escape them.
+const plainTitle = title
+  .replace(/&amp;/g, '&')
+  .replace(/&lt;/g, '<')
+  .replace(/&gt;/g, '>')
+  .replace(/&quot;/g, '"')
+  .replace(/&#39;/g, "'");
 
 const tabs = [
   { key: 'dashboard', href: `${root ? root + '/' : ''}index.html`, label: 'Dashboard' },
@@ -36,15 +47,23 @@ const tabs = [
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title set:html={title}></title>
+<meta name="description" content={desc}>
+<meta property="og:title" content={plainTitle} />
+<meta property="og:description" content={desc} />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="AP CS A Guide" />
+<link rel="icon" type="image/svg+xml" href={(root ? root + '/' : '') + 'favicon.svg'} />
 <link rel="stylesheet" href={css}>
 </head>
 <body>
 
+<a class="skip-link" href="#main-content">Skip to content</a>
+
 <nav class="top-nav" data-pagefind-ignore>
-    {tabs.map((t) => <a href={t.href} class={t.key === active ? 'active' : undefined}>{t.label}</a>)}
+    {tabs.map((t) => <a href={t.href} class={t.key === active ? 'active' : undefined} aria-current={t.key === active ? 'page' : undefined}>{t.label}</a>)}
 </nav>
 
-<div class="page">
+<div class="page" id="main-content">
     {Astro.slots.has('breadcrumb') && <slot name="breadcrumb" />}
     <slot />
 </div><!-- .page -->

@@ -13,7 +13,9 @@
     "preview": "astro preview",
     "verify": "node scripts/verify-site.mjs",
     "migrate": "node scripts/migrate-to-astro.mjs",
-    "new-lesson": "node scripts/new-lesson.mjs"
+    "new-lesson": "node scripts/new-lesson.mjs",
+    "dump-questions": "node scripts/dump-questions.mjs",
+    "grade": "node scripts/grade-submissions.mjs"
   },
   "dependencies": {
     "astro": "^7.2.9",

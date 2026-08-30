@@ -19,5 +19,5 @@ export default defineConfig({
   // 'ignore' keeps both /AP_CS_A_Guide and /AP_CS_A_Guide/ working in dev
   // (GitHub Pages serves both forms in production anyway).
   trailingSlash: 'ignore',
-  integrations: [writePacingMd()],
+  integrations: [writePacingMd({ site: 'https://aramansell.github.io', base: '/AP_CS_A_Guide' })],
 });
