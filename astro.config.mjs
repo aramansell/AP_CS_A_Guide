@@ -16,7 +16,8 @@ export default defineConfig({
     //   pace.astro                -> /pace.html
     format: 'preserve',
   },
-  // Match the 'preserve' format (no trailing-slash URLs anywhere).
-  trailingSlash: 'never',
+  // 'ignore' keeps both /AP_CS_A_Guide and /AP_CS_A_Guide/ working in dev
+  // (GitHub Pages serves both forms in production anyway).
+  trailingSlash: 'ignore',
   integrations: [writePacingMd()],
 });
