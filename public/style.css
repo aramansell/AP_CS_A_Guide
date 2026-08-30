@@ -633,6 +633,43 @@ th { color: var(--accent); font-weight: 600; }
     color: var(--muted);
 }
 
+/* ---- Lesson footer nav (prev/next at the bottom of every lesson) ---- */
+.lesson-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin-top: 2rem;
+}
+.lesson-foot > a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    flex: 1;
+}
+.lesson-foot .dir {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+}
+.lesson-foot .where {
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 600;
+}
+.lesson-foot > a:hover { border-color: var(--accent); }
+.lesson-foot > a:hover .dir { color: var(--accent); }
+.lesson-foot .foot-next { text-align: right; }
+@media (max-width: 600px) {
+    .lesson-foot { flex-direction: column; }
+}
+
 /* ---- Dashboard: My work panel ---- */
 .mywork {
     margin: 1.25rem 0 2rem;
@@ -687,7 +724,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 @media print {
     .top-nav, .lesson-nav, .progress-toggle, .progress-note,
     .lab-bar, .lab-field, .dashboard-total, .unit-selector,
-    .progress-reset, .mywork, .search-form, .skip-link {
+    .progress-reset, .mywork, .search-form, .skip-link,
+    .lesson-foot {
         display: none !important;
     }
     body { background: #fff; color: #000; }

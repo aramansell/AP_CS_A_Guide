@@ -73,6 +73,26 @@ const lessonTitle = LESSONS[id]?.title ?? id;
     <span>I finished this lesson</span>
   </label>
   <p class="progress-note" data-pagefind-ignore>Saved on this device only — the Dashboard tracks your progress.</p>
+
+  <nav class="lesson-foot" data-pagefind-ignore aria-label="Lesson navigation">
+    {prev ? (
+      <a class="foot-prev" href={prev + '.html'}>
+        <span class="dir">&#9664; Previous</span>
+        <span class="where">{prev} — {LESSONS[prev]?.title}</span>
+      </a>
+    ) : <span></span>}
+    {next ? (
+      <a class="foot-next" href={next + '.html'}>
+        <span class="dir">Next &#9654;</span>
+        <span class="where">{next} — {LESSONS[next]?.title}</span>
+      </a>
+    ) : (
+      <a class="foot-next" href={root + '/index.html'}>
+        <span class="dir">Course complete &#9654;</span>
+        <span class="where">Back to the Dashboard</span>
+      </a>
+    )}
+  </nav>
 </Base>
 
 <script src={root + '/js/lab-forms.js'} is:inline></script>
