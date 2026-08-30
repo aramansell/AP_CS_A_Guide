@@ -1,0 +1,73 @@
+---
+/**
+ * Lesson page layout.
+ *
+ * The prev/next chain is derived at build time from src/data/curriculum.ts
+ * (LESSON_CHAIN) — the same single source of truth that drives the dashboard,
+ * the pacing calendar, and the coverage matrix. Adding a lesson id to the
+ * SEQUENCE automatically wires it into the chain everywhere; the old
+ * scripts/rewire_nav.py regeneration step is gone.
+ *
+ * Also renders the per-student "I finished this lesson" progress toggle
+ * (stored in localStorage, read back on the dashboard).
+ */
+import Base from './BaseLayout.astro';
+import { LESSON_CHAIN } from '../data/curriculum';
+
+interface Props {
+  /** lesson id, e.g. "4.2a" — must exist in LESSON_CHAIN */
+  id: string;
+  /** page <title>, verbatim from the original file */
+  title: string;
+  /** relative prefix to the site root */
+  root: string;
+  /** relative href of the stylesheet */
+  css: string;
+}
+const { id, title, root, css } = Astro.props;
+
+const i = LESSON_CHAIN.indexOf(id);
+if (i === -1) {
+  throw new Error(`Lesson "${id}" is not in LESSON_CHAIN (src/data/curriculum.ts SEQUENCE). Add it to the right day's lessons list so the chain, dashboard, and pacing calendar stay in sync.`);
+}
+const prev = i > 0 ? LESSON_CHAIN[i - 1] : null;
+const next = i < LESSON_CHAIN.length - 1 ? LESSON_CHAIN[i + 1] : null;
+---
+<Base title={title} active="dashboard" root={root} docsHome={root + '/docs/index.html'} css={css}>
+  <div class="lesson-nav" data-pagefind-ignore>
+    {prev ? <a href={prev + '.html'}>&#9664; {prev}</a> : <span></span>}
+    <span class="lesson-id">{id}</span>
+    {next ? <a href={next + '.html'}>{next} &#9654;</a> : <span></span>}
+  </div>
+
+  <slot />
+
+  <label class="progress-toggle" data-lesson={id} data-pagefind-ignore>
+    <input type="checkbox" />
+    <span>I finished this lesson</span>
+  </label>
+  <p class="progress-note" data-pagefind-ignore>Saved on this device only — the Dashboard tracks your progress.</p>
+</Base>
+
+<script>
+  // Lesson progress tracker — plain localStorage, no dependencies.
+  const KEY = 'apcsa-progress';
+  const read = (): Record<string, boolean> => {
+    try { return JSON.parse(localStorage.getItem(KEY) ?? '{}'); } catch { return {}; }
+  };
+
+  const label = document.querySelector('.progress-toggle');
+  const box = label?.querySelector('input');
+  if (label && box) {
+    const id = label.dataset.lesson ?? '';
+    const sync = () => label.classList.toggle('done', box.checked);
+    box.checked = !!read()[id];
+    sync();
+    box.addEventListener('change', () => {
+      const data = read();
+      data[id] = box.checked;
+      localStorage.setItem(KEY, JSON.stringify(data));
+      sync();
+    });
+  }
+</script>
