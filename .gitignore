@@ -1,0 +1,17 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+
+# python (legacy toolchain leftovers)
+__pycache__/
+*.pyc
+
+# npm
+npm-debug.log*

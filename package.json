@@ -1,0 +1,22 @@
+{
+  "name": "ap-cs-a-guide",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "IBW AP Computer Science A course site — Astro static build for GitHub Pages",
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "verify": "node scripts/verify-site.mjs",
+    "migrate": "node scripts/migrate-to-astro.mjs",
+    "new-lesson": "node scripts/new-lesson.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.14.0",
+    "pagefind": "^1.4.0"
+  }
+}
