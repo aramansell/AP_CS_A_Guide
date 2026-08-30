@@ -11,15 +11,24 @@
     <a href="../index.html" class="active">Dashboard</a>
     <a href="../docs/index.html">Docs</a>
     <a href="../projects.html">Projects</a>
-    <a href="../demos.html">Demos</a>
+    <a href="../exam/index.html">Exam</a>
 </nav>
 <div class="page">
 <div class="lesson-nav">
-    <a href="8.4c.html">◀ 8.4c</a>
+    <a href="10.6a.html">&#9664; 10.6a</a>
     <span class="lesson-id">9.1a</span>
-    <a href="9.1b.html">9.2a ▶</a>
+    <a href="9.1b.html">9.1b &#9654;</a>
 </div>
 <h1>9.1a — Inheritance Basics: IS-A Relationships</h1>
+
+<div class="callout warn">
+    <strong>Season 2: beyond the exam.</strong> This topic is no longer tested
+    (the 2025 CED removed inheritance from the exam). We build it after May 12
+    because it makes the RPG engine dramatically better, and because you are
+    ready for it. Pure craft, zero test anxiety.
+</div>
+
+
 <div class="activity discovery">
     <div class="activity-header">
         <span class="activity-label">Discovery Lab</span>
@@ -69,7 +78,7 @@ public class Goblin extends Creature {
         <p>Create a main that makes a Goblin and calls <code>attack()</code>, <code>takeDamage(8)</code>, <code>isAlive()</code>. These methods aren't in Goblin.java — they're inherited. Then call <code>screech()</code>, which IS in Goblin.</p>
     </div>
     <div class="callout trap">
-        <strong>Private Fields Aren't Inherited Directly:</strong> A child class CANNOT access <code>hp</code> directly even though it inherits the field. You must use the parent's public methods (getHp()) or declare the field <code>protected</code>. Read the <a href="../docs/unit-09/inheritance-basics.html">Inheritance Basics docs</a> for the public/private/protected visibility rules.
+        <strong>Private Fields Aren't Inherited Directly:</strong> A child class CANNOT access <code>hp</code> directly even though it inherits the field. You must use the parent's public methods (getHp()) or declare the field <code>protected</code>. Read the <a href="../docs/unit-09/extends-and-super.html">Inheritance Basics docs</a> for the public/private/protected visibility rules.
     </div>
     <div class="tinker">
         <h3>Experiment: Multiple Children</h3>
@@ -89,7 +98,7 @@ for (Creature c : party) {
         <ol>
             <li>Could you have made Monster the parent of Goblin in Unit 5? What would you have needed to change?</li>
             <li>What does <code>super()</code> actually do? When MUST you call it?</li>
-            <li>Look at the <a href="../docs/unit-09/inheritance-basics.html">docs section on the Object superclass</a>. Every class you've ever written extends Object. What methods do you get for free?</li>
+            <li>Look at the <a href="../docs/unit-09/extends-and-super.html">docs section on the Object superclass</a>. Every class you've ever written extends Object. What methods do you get for free?</li>
         </ol>
     </div>
     <div class="checklist">
@@ -105,8 +114,8 @@ for (Creature c : party) {
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-09/inheritance-basics.html">Inheritance Basics</a></li>
-        <li><a href="../docs/unit-09/object-superclass.html">The Object Superclass</a></li>
+        <li><a href="../docs/unit-09/extends-and-super.html">Inheritance Basics</a></li>
+        <li><a href="../docs/unit-09/object-interfaces-casting.html">The Object Superclass</a></li>
     </ul>
 </div>
 </div>

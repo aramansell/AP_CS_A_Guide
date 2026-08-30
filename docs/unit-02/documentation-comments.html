@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentation with Comments — Unit 2</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../index.html" class="active">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../exam/index.html">Exam</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 2</a>
+    <span class="sep">/</span>
+    <span class="here">Documentation with Comments</span>
+</nav>
+
+<h1>Documentation with Comments</h1>
+
+<p>
+    Comments are for humans. The compiler throws them away. That means a comment
+    has exactly one job: change what a human believes about the code. Good
+    comments make beliefs accurate. Bad comments make beliefs wrong, which is
+    worse than no comments at all.
+</p>
+
+<h2>The Three Flavors</h2>
+
+<pre><code>// Line comment — one line. Quick asides, short clarifications.
+
+/* Block comment — spans lines. Explanations that need room.
+   You will rarely need this form. */
+
+/**
+ * Javadoc — machine-readable documentation. Starts /**
+ * Each line begins with a star. Editors read this and
+ * show it on hover. Tools turn it into web pages.
+ */
+public class Example { }</code></pre>
+
+<h2>Javadoc Anatomy</h2>
+
+<pre><code>/**
+ * Rolls a single die with the given number of sides.
+ * @param sides the number of sides on the die (must be 2 or more)
+ * @return a random int between 1 and sides, inclusive
+ */
+public static int roll(int sides) { ... }</code></pre>
+
+<table>
+    <tr><th>Line</th><th>Job</th></tr>
+    <tr><td>First sentence(s)</td><td>What the method does. Behavior, not
+        implementation. "Returns the higher roll" not "calls roll twice."</td></tr>
+    <tr><td><code>@param name description</td><td>One per parameter. What it means,
+        any constraints.</td></tr>
+    <tr><td><code>@return description</code></td><td>What comes back. If the method
+        returns void, no @return.</td></tr>
+</table>
+
+<div class="callout warn">
+    <strong>One bug in the table above.</strong> The @param row is missing its
+    closing <code>&lt;/code&gt;</code> tag. Did you catch it before the note told
+    you? A reader who catches documentation bugs is a reader who is actually
+    reading. Yes, that was planted on purpose.
+</div>
+
+<h2>What Comments Are For</h2>
+
+<table>
+    <tr><th>Good comment</th><th>Bad comment</th></tr>
+    <tr><td><code>// exclusive upper bound; index "to" itself is NOT included</code></td>
+        <td><code>// set x to x plus 1</code> (repeats the code, adds nothing)</td></tr>
+    <tr><td><code>// gold is stored in copper; divide by 100 for display</code> (a
+        fact you could not guess)</td>
+        <td><code>// increment gold</code> (says what, not why)</td></tr>
+    <tr><td><code>// TODO: balance test, dragon gold seems too low</code></td>
+        <td><code>// this method works</code> (a claim, not information)</td></tr>
+    <tr><td><code>// Workaround: Scanner has no hasNextInt in our scope, so we
+        catch instead</code> (records a decision)</td>
+        <td>A comment that contradicts the code (a lie)</td></tr>
+</table>
+
+<p>The pattern: good comments carry WHY and CONSTRAINTS, the things code cannot
+express. Bad comments translate the code into English, which the code already
+does, being code.</p>
+
+<h2>Lying Comments Bug Hunt</h2>
+
+<div class="bug-hunt">
+    <h3>Find the Lie in Each Pair</h3>
+    <p>In each snippet the comment and the code disagree. The comment is the
+    suspect; decide whether to fix the comment or the code:</p>
+    <pre><code>// returns a random number from 1 to sides
+public static int roll(int sides) {
+    return (int)(Math.random() * sides);
+}
+
+// prints the player's name and gold
+System.out.println(name + " has " + gold + " HP");
+
+// halves the stack, rounding up
+stack /= 2;
+
+// true if score beats the high score
+return score &gt;= highScore;</code></pre>
+    <p>Answers: (1) the code returns 0 to sides-1, the comment says 1 to sides.
+    Fix the code: add + 1. The comment described intent. (2) The comment says gold,
+    the code prints HP. One of them is wrong about reality, and only the design
+    doc knows which. That ambiguity, in real code, is how bugs live for years.
+    (3) Integer division truncates, so 5 / 2 is 2, which rounds DOWN. Fix the
+    comment. (4) "&gt;=" means ties count as beating. Is a tie a new record? Arcade
+    tradition says ties do NOT count, so the comment is the intent and the code
+    should be &gt;. But you could argue the other way. The point: precision in
+    words forces precision in code.</p>
+</div>
+
+<h2>Tinker Challenge: Publish Your API</h2>
+
+<div class="tinker">
+    <h3>Document Dice.java Completely</h3>
+    <ol>
+        <li>Javadoc every public method in your Dice.java: first sentence,
+        @param, @return.</li>
+        <li>Hover-test: call each method from a tester and hover the call. Your
+        documentation should pop up, exactly like Math.random does.</li>
+        <li>Trade files with a partner. Their job: find one method whose javadoc
+        is incomplete or wrong. Report it politely, like a coworker, not like a
+        grader.</li>
+        <li>Class-level javadoc on Dice.java itself: what is this class, who uses
+        it, what does it never do (no printing? no Scanner?).</li>
+    </ol>
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why is Practice 4 of the exam about documentation?</h3>
+    <p>Because code is read far more often than it is written, and usually by
+    people who were not there when it was written. Documenting is engineering for
+    the reader. 10-15% of the multiple-choice section tests whether you can
+    describe behavior and conditions precisely. That is the comment-writing skill,
+    tested without comments.</p>
+    <h3>When is a comment a smell?</h3>
+    <p>When you need a comment to explain WHAT code does, the code is usually too
+    clever and should be rewritten to be clearer. Comments should explain WHY and
+    record CONSTRAINTS. If you are writing "what" comments, try renaming variables
+    and methods instead, and see if the comment becomes unnecessary.</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="api-and-libraries.html">APIs &amp; Libraries</a> — what documentation is for</li>
+    <li><a href="method-signatures.html">Method Signatures</a> — the code form of the contract</li>
+    <li><a href="../unit-05/class-design.html">Class Design (Unit 5)</a> — where full-class documentation pays off</li>
+</ul>
+
+</div><!-- .page -->
+</body>
+</html>

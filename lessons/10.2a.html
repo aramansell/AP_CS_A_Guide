@@ -11,13 +11,13 @@
     <a href="../index.html" class="active">Dashboard</a>
     <a href="../docs/index.html">Docs</a>
     <a href="../projects.html">Projects</a>
-    <a href="../demos.html">Demos</a>
+    <a href="../exam/index.html">Exam</a>
 </nav>
 <div class="page">
 <div class="lesson-nav">
-    <a href="10.1c.html">◀ 10.1a</a>
+    <a href="10.1c.html">&#9664; 10.1c</a>
     <span class="lesson-id">10.2a</span>
-    <a href="10.2b.html">10.3a ▶</a>
+    <a href="10.2b.html">10.2b &#9654;</a>
 </div>
 <h1>10.2a — Recursive Traversal: Arrays, Strings, and Trees</h1>
 <div class="activity discovery">
@@ -56,7 +56,7 @@ public static int count(int[] arr, int index, int target) {
     </div>
 
     <div class="callout trap">
-        <strong>Index Must Progress:</strong> Every recursive call MUST move closer to the base case. If you pass the same index, you get infinite recursion. The most common bug: <code>sum(arr, index)</code> instead of <code>sum(arr, index + 1)</code>. Read the <a href="../docs/unit-10/recursive-traversal.html">Recursive Traversal docs</a> for the complete traversal patterns.
+        <strong>Index Must Progress:</strong> Every recursive call MUST move closer to the base case. If you pass the same index, you get infinite recursion. The most common bug: <code>sum(arr, index)</code> instead of <code>sum(arr, index + 1)</code>. Read the <a href="../docs/unit-10/recursive-search.html">Recursive Traversal docs</a> for the complete traversal patterns.
     </div>
 
     <div class="tinker">
@@ -90,7 +90,7 @@ public static boolean isPalindrome(String s) {
         <ol>
             <li>Why does <code>s.substring(1)</code> guarantee progress toward the base case? When would it fail to make progress?</li>
             <li>isPalindrome() creates a new String on every call. How many String objects does isPalindrome("racecar") create?</li>
-            <li>Read the <a href="../docs/unit-10/recursive-traversal.html">docs section on tail recursion</a>. What is it and why do some languages optimize it?</li>
+            <li>Read the <a href="../docs/unit-10/recursive-search.html">docs section on tail recursion</a>. What is it and why do some languages optimize it?</li>
         </ol>
     </div>
 
@@ -107,7 +107,7 @@ public static boolean isPalindrome(String s) {
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-10/recursive-traversal.html">Recursive Traversal</a></li>
+        <li><a href="../docs/unit-10/recursive-search.html">Recursive Traversal</a></li>
         <li><a href="../docs/unit-10/recursion-basics.html">Recursion Basics</a></li>
     </ul>
 </div>

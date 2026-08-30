@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iteration — Quick Reference — Unit 4</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../index.html" class="active">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../exam/index.html">Exam</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="../unit-04/index.html">Unit 4</a>
+    <span class="sep">/</span>
+    <span class="here">Quick Reference</span>
+</nav>
+
+<h1>Iteration: Quick Reference</h1>
+
+<p>One page, no story, no lab. The shapes, signatures, and traps of the unit,
+compressed. This is the page to keep open during builds and to re-read the
+night before a test. Print it and mark it up.</p>
+
+<h2>while</h2>
+<pre><code>while (cond) { body }   // check FIRST; may run 0 times</code></pre>
+
+<h2>for</h2>
+<pre><code>for (init; cond; update) { body }
+for (int i = 0; i &lt; n; i++)   // the standard shape, n times
+for (int i = n - 1; i &gt;= 0; i--)  // backwards: removal-safe</code></pre>
+
+<h2>Nested</h2>
+<pre><code>for (r...) for (c...)   // rows outer. r * c total visits
+// same-n nesting = quadratic work (run-time analysis)</code></pre>
+
+<h2>String Traversal</h2>
+<pre><code>for (int i = 0; i &lt; s.length(); i++) {
+    String ch = s.substring(i, i + 1);   // the exam idiom
+    // or char c = s.charAt(i);
+}</code></pre>
+
+<h2>The Trace Table</h2>
+<table>
+    <tr><th>Column</th><th>Track</th></tr>
+    <tr><td>iteration</td><td>which pass</td></tr>
+    <tr><td>variables</td><td>every variable that changes</td></tr>
+    <tr><td>condition</td><td>its value at the check</td></tr>
+    <tr><td>output</td><td>exactly what prints, char by char</td></tr>
+</table>
+
+
+
+<h2>The Unit's Traps, One Line Each</h2>
+<ul>
+    <li>Off-by-one: i &lt; n runs n times (0..n-1). i &lt;= n runs n+1. Write the first and last iteration.</li>
+    <li>Infinite loops: the update must move the condition toward false. Missing i++ is the classic.</li>
+    <li>Removing while looping forward skips elements. Loop backwards, or build a survivor list.</li>
+    <li>int counter in a division: (double) total / count, or the average truncates.</li>
+</ul>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="../unit-04/while-loops.html">while Loops</a></li>
+    <li><a href="../unit-04/for-loops.html">for Loops</a></li>
+    <li><a href="../unit-04/nested-loops.html">Nested Loops</a></li>
+    <li><a href="../unit-04/loop-analysis.html">Loop Analysis &amp; Tracing</a></li>
+    <li><a href="../unit-04/run-time-analysis.html">Run-Time Analysis</a></li>
+</ul>
+
+</div><!-- .page -->
+</body>
+</html>

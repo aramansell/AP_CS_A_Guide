@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRQ 2: Class Design — AP CS A</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../../docs/index.html">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../exam/index.html" class="active">Exam</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Exam Hub</a>
+    <span class="sep">/</span>
+    <a href="index.html">FRQ Center</a>
+    <span class="sep">/</span>
+    <span class="here">Q2: Class Design</span>
+</nav>
+
+<h1>FRQ 2: Class Design</h1>
+
+<p>
+    7 points, one class, built from a spec table. You did this every Tuesday
+    for a month in Phase 3, and again in 5.6a. The exam's version has one
+    twist you must train: a second small class sometimes appears, and one
+    method must USE an object of it. Composition, not inheritance.
+</p>
+
+<h2>Round A: The Spell Class (7 points)</h2>
+
+<div class="callout lab">
+<p>A game tracks spells. Each <code>Spell</code> has a name, a mana cost, and
+a damage value. A <code>Mage</code> class already exists with
+<code>getMana()</code> returning the mage's current mana.</p>
+
+<p><strong>Write the entire Spell class:</strong></p>
+<pre><code>Constructor: Spell(String name, int manaCost, int damage)
+
+int getManaCost()           returns the mana cost
+int getDamage()             returns the damage
+boolean canCast(Mage m)     true when m's mana is at least the cost
+String toString()           "Fireball [30 mana, 25 dmg]"</code></pre>
+</div>
+
+<h3>Solution</h3>
+<pre><code>public class Spell {
+    private String name;
+    private int manaCost;
+    private int damage;
+
+    public Spell(String name, int manaCost, int damage) {
+        this.name = name;
+        this.manaCost = manaCost;
+        this.damage = damage;
+    }
+
+    public int getManaCost() { return manaCost; }
+    public int getDamage()   { return damage; }
+
+    public boolean canCast(Mage m) {
+        return m.getMana() &gt;= manaCost;
+    }
+
+    public String toString() {
+        return name + " [" + manaCost + " mana, " + damage + " dmg]";
+    }
+}</code></pre>
+
+<h3>Rubric (7 points)</h3>
+<table>
+    <tr><th>Point</th><th>Earned by</th></tr>
+    <tr><td>1</td><td>All private instance variables declared (3)</td></tr>
+    <tr><td>2</td><td>Constructor: correct signature, all fields assigned</td></tr>
+    <tr><td>3</td><td>getManaCost correct</td></tr>
+    <tr><td>4</td><td>getDamage correct</td></tr>
+    <tr><td>5</td><td>canCast: calls m.getMana() (using the object, not
+        re-implementing) and compares with &gt;=</td></tr>
+    <tr><td>6</td><td>toString: correct concatenation and format</td></tr>
+    <tr><td>7</td><td>Class compiles: braces, semicolons, headers exact</td></tr>
+</table>
+
+<p>Commentary: point 5 is the real test. "At least" means &gt;=. Using the
+Mage parameter's method instead of imagining the mana is the composition
+skill. Point 7 is free for careful writers: slow down for 30 seconds at the
+end and collect it.</p>
+
+<h2 id="roundb">Round B: The Mount Class (mock material)</h2>
+
+<div class="callout lab">
+<p>A <code>Mount</code> has a name, a speed (int, 1-10), and a stamina (int,
+0-100). A <code>Rider</code> class exists with
+<code>getWeight()</code>.</p>
+<pre><code>Constructor: Mount(String name, int speed, int stamina)
+
+int getSpeed()                  the speed
+void rest(int hours)            adds hours * 10 stamina, capped at 100
+boolean canCarry(Rider r)       true when stamina is at least 20 and
+                                speed exceeds the rider's weight / 10
+String toString()               "Shadowfax (speed 9, stamina 85)"</code></pre>
+<p>Boundary tests the rubric will use: rest pushing past 100, stamina exactly
+20, weight exactly speed * 10. Bring your boundary checklist.</p>
+</div>
+
+<h2>The Spec-Writing Eye (train both directions)</h2>
+
+<p>5.6a made you write specs for classmates. Do it again with Mount: cover
+the spec, write your own version from memory, then compare. Every difference
+is either your ambiguity or your blind spot. Both are worth finding before
+May.</p>
+
+<h2>Common Point-Leakers</h2>
+<table>
+    <tr><th>Mistake</th><th>Cost</th><th>Fix</th></tr>
+    <tr><td>Fields not private</td><td>1</td><td>private on every field,
+        always</td></tr>
+    <tr><td>Constructor missing this. or wrong param name</td><td>1</td>
+        <td>Copy the signature letter for letter from the spec</td></tr>
+    <tr><td>"at least" written as &gt;</td><td>1</td><td>Underline "at
+        least" in the question. &gt;=.</td></tr>
+    <tr><td>toString missing a space or bracket</td><td>1</td><td>Build the
+        string in pieces, check against the example literally</td></tr>
+    <tr><td>Re-implementing the given class</td><td>1</td><td>The parameter
+        object is a tool. Call its methods.</td></tr>
+    <tr><td>Missing semicolon/brace</td><td>up to all</td><td>The 75-90 min
+        compilation sweep</td></tr>
+</table>
+
+</div><!-- .page -->
+</body>
+</html>

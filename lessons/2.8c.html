@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.8c Method Signatures: The Contract — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../exam/index.html">Exam</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="2.8b.html">&#9664; 2.8b</a>
+    <span class="lesson-id">2.8c</span>
+    <a href="2.9a.html">2.9a &#9654;</a>
+</div>
+
+<h1>2.8c — Method Signatures: The Contract on One Line</h1>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Expand Application</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        A method signature is the single line that defines a method: return type, name,
+        parameter list. It is a contract. The JQR is nothing but signatures plus what
+        they promise. Free-response questions hand you signatures and expect you to
+        implement the contract. Today you read contracts, write contracts, and break
+        contracts on purpose.
+    </p>
+
+    <div class="tinker">
+        <h3>Experiment 1: Decode Six Signatures</h3>
+        <p>No compiler. Decode each signature into plain English, out loud or in notes:
+        what does it take, what does it give back, what words tell you it belongs to the
+        class itself rather than an object?</p>
+        <pre><code>public static int roll(int sides)
+public static double max(double a, double b)
+public int length()
+public String substring(int from, int to)
+public boolean equals(Object other)
+public void close()</code></pre>
+        <p>Check yourself against the
+        <a href="../docs/unit-02/method-signatures.html">signatures docs page</a>.
+        Then find all six on the JQR or in your own Dice.java. Yes, <code>close()</code>
+        is on the exam sheet, Scanner class. You will use it for real in the file unit.</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 2: Contract First, Code Second</h3>
+        <p>Write these signatures into <code>Dice.java</code> FIRST, with empty bodies
+        that just <code>return 0;</code> or <code>return false;</code>. Then implement
+        each contract:</p>
+        <ul>
+            <li><code>public static int damageRoll(int sides, int count)</code> — rolls
+            count dice of the given sides, returns the total. Reuse <code>roll()</code>.</li>
+            <li><code>public static boolean isCrit(int roll, int sides)</code> — true
+            when roll equals sides.</li>
+            <li><code>public static String rarityLabel(int value)</code> — "common"
+            under 50 gold, "uncommon" under 200, "rare" under 1000, "epic" otherwise.</li>
+        </ul>
+        <p>The discipline: the signature is written and committed before the body exists.
+        This is exactly how FRQs present work to you: contract in the problem, body by you.</p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: Break the Contract</h3>
+        <p>In your tester, try each of these and read every error carefully. Each one
+        violates the contract in a different way:</p>
+        <pre><code>int r = Dice.roll("20");               // wrong parameter TYPE
+int r2 = Dice.roll();                  // missing parameter
+Dice.roll(20);                         // legal? what happens to the return value?
+String s = Dice.roll(20);              // wrong return TYPE
+double d = Dice.roll(20);              // legal? why?
+int r3 = Dice.isCrit(20, 20);          // boolean into int</code></pre>
+        <p>Write down which lines compile and which do not, and the exact reason. The
+        line that compiles but ignores the answer is the most instructive: Java allows
+        you to discard a return value. Silent, legal, and usually a bug.</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li><code>public static void main(String[] args)</code>. Decode every word.
+            You have typed this hundreds of times. Now you can read it.</li>
+            <li>Two methods named <code>attack</code> in the same class:
+            <code>attack(String target)</code> and <code>attack(int damage)</code>.
+            Legal or not? What is that called? (You met it in Unit 5 constructors: overloading.)</li>
+            <li>On the exam you will sometimes be asked to WRITE the signature for a
+            described method. Describe-to-signature is a two-way skill with
+            signature-to-English. Write the signature for: "a static method that takes
+            a String name and returns true if the name is a boss monster, false otherwise."</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Decode any signature into plain English: inputs, output, static or instance</li>
+            <li>Write a signature from an English description</li>
+            <li>Predict which contract violations compile and which do not</li>
+            <li>Implement a method from a signature-first spec</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-02/method-signatures.html">Method Signatures</a> — decoding table, overloading, contract violations</li>
+        <li><a href="../exam/java-quick-reference.html">Java Quick Reference</a> — a whole sheet of signatures to practice on</li>
+        <li><a href="../docs/unit-05/methods-and-static.html">Methods &amp; Static (Unit 5)</a> — where you go deep on writing your own</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

@@ -1,0 +1,742 @@
+{
+ "1.1a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "1.1b": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "1.1c": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "1.2a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "1.2b": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "1.2c": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "1.3a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "1.3b": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "1.3c": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "1.4a": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "1.4b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "1.4c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "1.5a": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "1.5b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "1.5c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "1.6a": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "1.6b": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "1.6c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "1.7a": [
+  "rpg",
+  "RPG Build"
+ ],
+ "1.7b": [
+  "rpg",
+  "RPG Build"
+ ],
+ "1.7c": [
+  "rpg",
+  "RPG Build"
+ ],
+ "2.1a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "2.1b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "2.1c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "2.2a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "2.2b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "2.2c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "2.3a": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "2.3b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "2.3c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "2.4a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "2.4b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "2.4c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "2.5a": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "2.5b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "2.5c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "2.6a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "2.6b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "2.6c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "2.7a": [
+  "rpg",
+  "RPG Build"
+ ],
+ "2.7b": [
+  "rpg",
+  "RPG Build"
+ ],
+ "2.7c": [
+  "rpg",
+  "RPG Build"
+ ],
+ "3.1a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "3.1b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "3.1c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "3.2a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "3.2b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "3.2c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "3.3a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "3.3b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "3.3c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "3.4a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "3.4b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "3.4c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "3.5a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "3.5b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "3.5c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "3.6a": [
+  "rpg",
+  "RPG Build"
+ ],
+ "3.6b": [
+  "rpg",
+  "RPG Build"
+ ],
+ "3.6c": [
+  "rpg",
+  "RPG Build"
+ ],
+ "4.1a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "4.1b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "4.1c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "4.2a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "4.2b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "4.2c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "4.3a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "4.3b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "4.3c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "4.4a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "4.4b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "4.4c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "4.5a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "4.5b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "4.5c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "4.6a": [
+  "rpg",
+  "RPG Build"
+ ],
+ "4.6b": [
+  "rpg",
+  "RPG Build"
+ ],
+ "4.6c": [
+  "rpg",
+  "RPG Build"
+ ],
+ "5.1a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "5.1b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "5.1c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "5.2a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "5.2b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "5.2c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "5.3a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "5.3b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "5.3c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "5.4a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "5.4b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "5.4c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "5.5a": [
+  "rpg",
+  "RPG Build"
+ ],
+ "5.5b": [
+  "rpg",
+  "RPG Build"
+ ],
+ "5.5c": [
+  "rpg",
+  "RPG Build"
+ ],
+ "6.1a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "6.1b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "6.1c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "6.2a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "6.2b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "6.2c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "6.3a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "6.3b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "6.3c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "6.4a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "6.4b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "6.4c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "6.5a": [
+  "rpg",
+  "RPG Build"
+ ],
+ "6.5b": [
+  "rpg",
+  "RPG Build"
+ ],
+ "6.5c": [
+  "rpg",
+  "RPG Build"
+ ],
+ "7.1a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "7.1b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "7.1c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "7.2a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "7.2b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "7.2c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "7.3a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "7.3b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "7.3c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "7.4a": [
+  "rpg",
+  "RPG Build"
+ ],
+ "7.4b": [
+  "rpg",
+  "RPG Build"
+ ],
+ "7.4c": [
+  "rpg",
+  "RPG Build"
+ ],
+ "8.1a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "8.1b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "8.1c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "8.2a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "8.2b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "8.2c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "8.3a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "8.3b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "8.3c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "8.4a": [
+  "rpg",
+  "RPG Build"
+ ],
+ "8.4b": [
+  "rpg",
+  "RPG Build"
+ ],
+ "8.4c": [
+  "rpg",
+  "RPG Build"
+ ],
+ "9.1a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "9.1b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "9.1c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "9.2a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "9.2b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "9.2c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "9.3a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "9.3b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "9.3c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "9.4a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "9.4b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "9.4c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "9.5a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "9.5b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "9.5c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "9.6a": [
+  "rpg",
+  "RPG Build"
+ ],
+ "9.6b": [
+  "rpg",
+  "RPG Build"
+ ],
+ "9.6c": [
+  "rpg",
+  "RPG Build"
+ ],
+ "10.1a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "10.1b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "10.1c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "10.2a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "10.2b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "10.2c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "10.3a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "10.3b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "10.3c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "10.4a": [
+  "rpg",
+  "RPG Build"
+ ],
+ "10.4b": [
+  "rpg",
+  "RPG Build"
+ ],
+ "10.4c": [
+  "rpg",
+  "RPG Build"
+ ],
+ "7.5a": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "7.5b": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "7.5c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "8.5a": [
+  "hybrid",
+  "Season 2"
+ ],
+ "8.5b": [
+  "hybrid",
+  "Season 2"
+ ],
+ "8.5c": [
+  "hybrid",
+  "Season 2"
+ ],
+ "10.5a": [
+  "hybrid",
+  "Season 2"
+ ],
+ "10.5b": [
+  "hybrid",
+  "Season 2"
+ ],
+ "10.5c": [
+  "hybrid",
+  "Season 2"
+ ],
+ "1.8a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "1.8b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "2.8a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "2.8b": [
+  "basic-app",
+  "Basic Application"
+ ],
+ "2.8c": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "2.9a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "4.7a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "5.6a": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "6.6a": [
+  "hybrid",
+  "Discovery Lab"
+ ],
+ "6.6b": [
+  "expand-app",
+  "Expand Application"
+ ],
+ "7.6a": [
+  "discovery",
+  "Discovery Lab"
+ ],
+ "7.6b": [
+  "rpg",
+  "RPG Build"
+ ],
+ "8.6a": [
+  "rpg",
+  "RPG Build"
+ ],
+ "10.6a": [
+  "discovery",
+  "Discovery Lab"
+ ]
+}

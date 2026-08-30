@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.8a APIs &amp; Libraries: Reading the Docs Like a Pro — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../exam/index.html">Exam</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="2.7c.html">&#9664; 2.7c</a>
+    <span class="lesson-id">2.8a</span>
+    <a href="2.8b.html">2.8b &#9654;</a>
+</div>
+
+<h1>2.8a — APIs &amp; Libraries: Reading the Docs Like a Pro</h1>
+
+<!-- ============================================================ -->
+<div class="activity discovery">
+    <div class="activity-header">
+        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <p>
+        You have been calling methods for weeks: <code>Math.random()</code>,
+        <code>name.length()</code>, <code>scanner.nextLine()</code>. Every one of those
+        was written by someone else and handed to you through a <strong>library</strong>.
+        The contract that tells you how to use someone else's code is called an
+        <strong>API</strong>, an Application Programming Interface. Today you learn to
+        read that contract yourself, using the exact sheet you will hold in your hands
+        during the AP exam.
+    </p>
+
+    <div class="callout">
+        <strong>What is on your desk during the exam.</strong> The Java Quick Reference
+        (JQR) is a two-sided sheet listing every library method the exam may test: String,
+        Math, Integer, ArrayList, File, Scanner, and Object. You get it in the exam room.
+        Reading it fast is a skill, and today starts the training. Open the
+        <a href="../exam/java-quick-reference.html">JQR page</a> in another tab. Print it
+        if you can. This is your new sidearm.
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 1: Three Rows, Three Answers</h3>
+        <p>Find the String Class table on the JQR. Answer these using ONLY the sheet,
+        no compiler, no notes. Write your answers, then verify each with a program:</p>
+        <ol>
+            <li>What does <code>"dungeon".substring(3)</code> return?</li>
+            <li>What does <code>"dragon".indexOf("drag")</code> return? What about
+            <code>"dragon".indexOf("onx")</code>?</li>
+            <li>According to the sheet, what EXACTLY does <code>substring(from, to)</code>
+            say about the end index? Quote the sentence. Did you remember it correctly
+            from Unit 2, or did you learn something new?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 2: Method You Have Never Used</h3>
+        <p>Scan the Integer Class table. There is a method there you have never called.
+        It turns a String into an int.</p>
+        <ol>
+            <li>What is its full signature, exactly as printed?</li>
+            <li>Write one line that uses it to turn <code>"42"</code> into the number 42.
+            Store the result and print it. Then make it fail: try it on
+            <code>"forty-two"</code> and read the error.</li>
+            <li>Your RPG saves the game by writing stats as text. Why is this method the
+            bridge between saving and loading?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Experiment 3: The Math Table Speed Run</h3>
+        <p>Find the Math Class table. Without notes, answer:</p>
+        <ol>
+            <li>What type does <code>Math.pow(2, 10)</code> return? Not the value. The TYPE.
+            Check the sheet, then prove it with code: what does
+            <code>int x = Math.pow(2, 10);</code> do?</li>
+            <li>What are the two <code>abs</code> methods listed? Why are there two?</li>
+            <li>Write the damage formula for a fire spell: base 6, doubled for every
+            torch the player holds (0 to 3 torches). Use <code>Math.pow</code>. Cast the
+            result to int. Print damage for each torch count.</li>
+        </ol>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>"API" gets used loosely. Based on what you did today, write your own
+            definition in one sentence. Then compare it to the
+            <a href="../docs/unit-02/api-and-libraries.html">API docs page</a>.</li>
+            <li>The JQR lists <code>int compareTo(String other)</code>. Describe, from
+            the sheet alone, the three possible kinds of return value and what each means.</li>
+            <li>Why does the exam give you this sheet at all? What does that tell you
+            about what College Board thinks matters in programming?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Locate any class's method table on the JQR in under 30 seconds</li>
+            <li>Translate a signature like <code>static int parseInt(String s)</code> into
+            plain English: what goes in, what comes out, static or not</li>
+            <li>Use a method you found on the sheet, without ever seeing an example of it</li>
+            <li>Explain what a library is and what an API is, in your own words</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../exam/java-quick-reference.html">The Java Quick Reference</a> — your exam sheet, full text</li>
+        <li><a href="../docs/unit-02/api-and-libraries.html">APIs &amp; Libraries</a> — vocabulary, javadoc, how libraries fit together</li>
+        <li><a href="../docs/unit-02/string.html">The String Class</a> — full method reference with RPG examples</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

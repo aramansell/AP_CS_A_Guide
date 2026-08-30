@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRQ 1: Methods and Control Structures — AP CS A</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../../docs/index.html">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../exam/index.html" class="active">Exam</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Exam Hub</a>
+    <span class="sep">/</span>
+    <a href="index.html">FRQ Center</a>
+    <span class="sep">/</span>
+    <span class="here">Q1: Methods &amp; Control Structures</span>
+</nav>
+
+<h1>FRQ 1: Methods and Control Structures</h1>
+
+<p>
+    7 points, two parts. Part A (4 points): iteration and conditionals. Part
+    B (3 points): String methods. You write two methods of a given class,
+    from specifications and examples. This is the question your whole fall
+    trained for: if you can roll dice, parse commands, and loop rooms, you
+    can do this.
+</p>
+
+<h2>Round A, Part A: Dice Duel (4 points)</h2>
+
+<div class="callout lab">
+<p>A <code>Duel</code> class is given. Two fighters each roll a die.
+<strong>Advantage rules:</strong> if a fighter's roll is exactly 6, they roll
+again and add. This can repeat. A fighter is "victorious" when their total is
+at least 10 and strictly greater than the opponent's total.</p>
+
+<p>Write the method:</p>
+<pre><code>/** Simulates one duel. Rolls for fighter A and fighter B,
+ *  applying the explode-on-6 rule, and returns "A", "B", or "draw".
+ */
+public String duel(int sides)</code></pre>
+
+<p>Example: <code>duel(6)</code> might produce A rolls 6 then 4 = 10, B rolls
+3 then 5 = 8, returns "A". A duel where both tie at 10 returns "draw".</p>
+</div>
+
+<h3>Solution</h3>
+<pre><code>public String duel(int sides) {
+    int totalA = rollExplode(sides);
+    int totalB = rollExplode(sides);
+    if (totalA == totalB) return "draw";
+    if (totalA &gt; totalB &amp;&amp; totalA &gt;= 10) return "A";
+    if (totalB &gt; totalA &amp;&amp; totalB &gt;= 10) return "B";
+    return "draw";               // neither reached 10
+}
+
+private int rollExplode(int sides) {
+    int total = 0;
+    int roll;
+    do {
+        roll = (int)(Math.random() * sides) + 1;
+        total += roll;
+    } while (roll == sides);
+    return total;
+}</code></pre>
+
+<p>Commentary: the helper method is exam-legal and rubric-friendly. The
+"victorious" definition has THREE conditions hiding in it (greater, at least
+10, tie handling). Every rubric row tests one of them.</p>
+
+<h3>Rubric (4 points)</h3>
+<table>
+    <tr><th>Point</th><th>Earned by</th></tr>
+    <tr><td>1</td><td>Loop that rolls and accumulates a total (either
+        fighter)</td></tr>
+    <tr><td>2</td><td>Explode rule: re-roll condition correct (roll == max,
+        not total)</td></tr>
+    <tr><td>3</td><td>Comparison logic: strict greater between fighters</td></tr>
+    <tr><td>4</td><td>Threshold 10 and draw cases both handled</td></tr>
+</table>
+
+<h2>Round A, Part B: The Whisper Filter (3 points)</h2>
+
+<div class="callout lab">
+<p>Write the method:</p>
+<pre><code>/** Returns a "whisper" version of message: lowercase, with all
+ *  vowels removed. If message is empty, returns "...".
+ */
+public String whisper(String message)</code></pre>
+
+<p>Examples: <code>whisper("ATTACK THE GOBLIN")</code> returns
+"ttck th gbln". <code>whisper("")</code> returns "...".</p>
+</div>
+
+<h3>Solution</h3>
+<pre><code>public String whisper(String message) {
+    if (message.length() == 0) return "...";
+    String result = "";
+    String lower = message.toLowerCase();   // wait: not on the JQR!
+    ...
+}</code></pre>
+
+<p>Stop. <code>toLowerCase</code> is NOT on the Java Quick Reference, and the
+real exam will not require it. The exam-safe version handles case the way the
+exam does, by comparing against both cases or by processing only characters
+you are told about. Exam-safe solution:</p>
+
+<pre><code>public String whisper(String message) {
+    if (message.length() == 0) return "...";
+    String result = "";
+    for (int i = 0; i &lt; message.length(); i++) {
+        String ch = message.substring(i, i + 1);
+        if (!ch.equals("a") &amp;&amp; !ch.equals("e") &amp;&amp; !ch.equals("i")
+                &amp;&amp; !ch.equals("o") &amp;&amp; !ch.equals("u")
+                &amp;&amp; !ch.equals("A") &amp;&amp; !ch.equals("E") &amp;&amp; !ch.equals("I")
+                &amp;&amp; !ch.equals("O") &amp;&amp; !ch.equals("U")) {
+            result += ch;
+        }
+    }
+    return result;
+}</code></pre>
+
+<p>Commentary: substring-by-one is the exam's char idiom when charAt is not
+offered. The ten-way comparison is ugly and completely correct. Ugly and
+correct beats elegant and incomplete.</p>
+
+<h3>Rubric (3 points)</h3>
+<table>
+    <tr><th>Point</th><th>Earned by</th></tr>
+    <tr><td>1</td><td>Empty-string check returning "..."</td></tr>
+    <tr><td>2</td><td>Loop over all characters (or substring positions)</td></tr>
+    <tr><td>3</td><td>Correct vowel test and accumulation into a result
+        String</td></tr>
+</table>
+
+<h2 id="roundb">Round B (mock exam material)</h2>
+
+<div class="callout lab">
+<p><strong>B1, Potion Timer (4 points):</strong> A potion is "active" for
+exactly 3 minutes after drinking. Write
+<code>public int dosesNeeded(int minutes)</code> that returns how many potions
+cover <code>minutes</code> of effect (any partial minute counts as a full
+potion). Examples: dosesNeeded(3) is 1, dosesNeeded(4) is 2, dosesNeeded(0)
+is 0. Guard: negative input returns 0.</p>
+
+<p><strong>B2, Shield Bash (3 points):</strong> Write
+<code>public String bashReport(String enemy)</code> that returns the enemy
+name repeated once per letter of <code>enemy.length()</code>... capped at 5
+repeats, joined by "-". Examples: bashReport("orc") returns "orc-orc-orc",
+bashReport("dragon") returns "dragon-dragon-dragon-dragon-dragon-dragon"?
+No: capped at 5, so "dragon" (6 letters) returns 5 repeats joined by "-".
+bashReport("") returns "".</p>
+</div>
+
+<p>Solutions and rubrics for Round B are discussed in the May 4 rubric
+workshop, not posted. That is on purpose: the mock is for measuring, the
+workshop is for learning, and reading solutions before attempting is
+measuring nothing.</p>
+
+<h2>Drill List</h2>
+<ul>
+    <li>Write rollExplode from memory. Three times. Until it is boring.</li>
+    <li>JQR row check: substring(from, to). What is to's role? Say it in
+        words before looking.</li>
+    <li>Empty-string and single-character edge cases: every String method
+        question on the exam hides one.</li>
+</ul>
+
+</div><!-- .page -->
+</body>
+</html>

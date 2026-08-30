@@ -289,6 +289,7 @@ th { color: var(--accent); font-weight: 600; }
 .badge.expand-app  { background: rgba(185, 142, 255, 0.1); color: var(--purple); }
 .badge.rpg         { background: rgba(240, 160, 96, 0.1); color: var(--orange); }
 .badge.assessment  { background: rgba(224, 85, 85, 0.1); color: var(--trap); }
+.badge.hybrid      { background: rgba(232, 184, 75, 0.1); color: var(--warn); }
 
 .lesson-list .current-marker {
     color: var(--accent);

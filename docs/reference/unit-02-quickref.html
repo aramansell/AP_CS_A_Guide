@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Using Objects — Quick Reference — Unit 2</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../index.html" class="active">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../exam/index.html">Exam</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="../unit-02/index.html">Unit 2</a>
+    <span class="sep">/</span>
+    <span class="here">Quick Reference</span>
+</nav>
+
+<h1>Using Objects: Quick Reference</h1>
+
+<p>One page, no story, no lab. The shapes, signatures, and traps of the unit,
+compressed. This is the page to keep open during builds and to re-read the
+night before a test. Print it and mark it up.</p>
+
+<h2>String Methods (JQR set)</h2>
+<table>
+    <tr><th>Call</th><th>Returns</th></tr>
+    <tr><td>s.length()</td><td>count of characters</td></tr>
+    <tr><td>s.substring(a, b)</td><td>chars a up to b-1 (end EXCLUSIVE)</td></tr>
+    <tr><td>s.substring(a)</td><td>chars a to the end</td></tr>
+    <tr><td>s.indexOf(t)</td><td>first index of t, or -1</td></tr>
+    <tr><td>s.equals(t)</td><td>content compare. NEVER == for Strings</td></tr>
+    <tr><td>s.compareTo(t)</td><td>negative / 0 / positive, alphabetical</td></tr>
+    <tr><td>s.split(delim)</td><td>String[] of pieces, delimiter removed</td></tr>
+</table>
+
+
+<h2>Scanner (keyboard)</h2>
+<pre><code>import java.util.Scanner;
+Scanner in = new Scanner(System.in);
+String line = in.nextLine();     // whole line
+String word = in.next();        // one token
+int n    = in.nextInt();
+double d = in.nextDouble();</code></pre>
+
+<h2>Math Class (JQR set)</h2>
+<table>
+    <tr><th>Call</th><th>Returns</th></tr>
+    <tr><td>Math.abs(x)</td><td>absolute value (int and double versions)</td></tr>
+    <tr><td>Math.pow(b, e)</td><td>double, b to the e</td></tr>
+    <tr><td>Math.sqrt(x)</td><td>double square root</td></tr>
+    <tr><td>Math.random()</td><td>double, 0.0 up to but not including 1.0</td></tr>
+</table>
+
+
+<h2>Wrappers and Parsing</h2>
+<table>
+    <tr><th>Expression</th><th>Value / role</th></tr>
+    <tr><td>Integer.MAX_VALUE</td><td>2147483647 (the int ceiling)</td></tr>
+    <tr><td>Integer.parseInt("42")</td><td>the int 42. Crashes on garbage</td></tr>
+    <tr><td>Double.parseDouble("0.5")</td><td>the double 0.5</td></tr>
+    <tr><td>ArrayList&lt;Integer&gt;</td><td>the wrapper is required; primitives cannot be generic</td></tr>
+</table>
+
+
+
+<h2>The Unit's Traps, One Line Each</h2>
+<ul>
+    <li>substring's second index is exclusive: "dungeon".substring(0,3) is "dun".</li>
+    <li>== on Strings compares references. Use .equals, always.</li>
+    <li>indexOf returns -1, not 0, when absent. 0 means FIRST position.</li>
+    <li>nextInt then nextLine: nextLine grabs the leftover newline and returns "". Pick one style per Scanner.</li>
+    <li>split pieces are Strings. parseInt them before arithmetic.</li>
+</ul>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="../unit-02/string.html">The String Class</a></li>
+    <li><a href="../unit-02/string-split.html">split() &amp; Data Lines</a></li>
+    <li><a href="../unit-02/scanner.html">Scanner</a></li>
+    <li><a href="../unit-02/api-and-libraries.html">APIs &amp; Libraries</a></li>
+    <li><a href="../unit-02/method-signatures.html">Method Signatures</a></li>
+</ul>
+
+</div><!-- .page -->
+</body>
+</html>

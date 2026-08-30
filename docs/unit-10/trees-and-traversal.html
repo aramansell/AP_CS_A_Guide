@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trees &amp; Recursive Traversal — Unit 10</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../index.html" class="active">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../exam/index.html">Exam</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 10</a>
+    <span class="sep">/</span>
+    <span class="here">Trees &amp; Recursive Traversal</span>
+</nav>
+
+<h1>Trees &amp; Recursive Traversal</h1>
+
+<p>
+    Beyond the exam, deep in Season 2. A tree is a structure made of nodes
+    where each node points to children. You have been living in one all year
+    without noticing: your call stack during recursion IS a tree being walked.
+    Trees are where recursion stops being a technique and becomes a worldview.
+</p>
+
+<h2>The Binary Tree, In One Class</h2>
+
+<pre><code>public class TreeNode {
+    int value;
+    TreeNode left;
+    TreeNode right;
+
+    TreeNode(int v) { value = v; }
+}</code></pre>
+
+<p>That is the whole structure. A tree is a node with two smaller trees
+hanging off it. The recursive definition is the data structure. Compare with
+your GameCharacter plans: objects referencing objects, all the way down.</p>
+
+<h2>The Three Walks</h2>
+
+<pre><code>public static void inorder(TreeNode node) {
+    if (node == null) return;          // base case: empty subtree
+    inorder(node.left);                // walk left subtree
+    System.out.print(node.value + " ");// visit this node
+    inorder(node.right);               // walk right subtree
+}</code></pre>
+
+<table>
+    <tr><th>Order</th><th>Code shape</th><th>Visits</th><th>Use</th></tr>
+    <tr><td><strong>inorder</strong></td><td>left, self, right</td><td>sorted
+        order (in a BST)</td><td>printing a search tree in order</td></tr>
+    <tr><td><strong>preorder</strong></td><td>self, left, right</td><td>parents
+        before children</td><td>copying a tree, saving structure</td></tr>
+    <tr><td><strong>postorder</strong></td><td>left, right, self</td><td>children
+        before parents</td><td>destroying/freeing, computing from leaves up</td></tr>
+</table>
+
+<p>The only difference is WHERE the visit line sits. Move one line, change the
+entire walk. Trace a 7-node tree by hand with all three and the point lands
+permanently.</p>
+
+<h2>Size and Depth: The Standard Recurrences</h2>
+
+<pre><code>public static int size(TreeNode node) {
+    if (node == null) return 0;
+    return 1 + size(node.left) + size(node.right);
+}
+
+public static int depth(TreeNode node) {
+    if (node == null) return 0;
+    return 1 + Math.max(depth(node.left), depth(node.right));
+}</code></pre>
+
+<p>Every tree method you will ever write has this shape: null base case,
+    combine the children's answers. The recursion does the walking; you write
+    the combining rule. That division of labor is why tree code is so short.</p>
+
+<h2>Your RPG Has Been a Tree All Along</h2>
+
+<table>
+    <tr><th>RPG structure</th><th>Tree shape</th></tr>
+    <tr><td>Dialog: choice branches into more dialog</td><td>general tree,
+        each choice a child</td></tr>
+    <tr><td>Folder of maps, rooms inside maps, entities inside rooms</td>
+        <td>nested containment tree</td></tr>
+    <tr><td>Crafting: item builds from items built from items</td><td>recipe
+        tree, postorder to compute cost from leaves up</td></tr>
+    <tr><td>The recursion call tree of merge sort (10.3)</td><td>the tree you
+        already drew</td></tr>
+    <tr><td>Maze solver's decision points (10.5)</td><td>backtracking walks
+        an implicit tree of choices</td></tr>
+</table>
+
+<h2>Decision Trees: Dialog Engine Mini-Build</h2>
+
+<div class="tinker">
+    <h3>The Talking Goblin</h3>
+    <p>Build a dialog tree for a goblin merchant. Node = one line of dialog
+    plus up to two choices (left/right). Then a recursive
+    <code>converse(node)</code>: print the line, if there are choices ask the
+    player 1 or 2, recurse into the chosen child, else end. Twenty lines of
+    code, and your RPG now has branching conversations that a writer can grow
+    without touching the engine. The tree structure decouples content from
+    code, exactly like maps-from-files decoupled levels from code.</p>
+</div>
+
+<h2>Why Trees Are Beyond the Exam but Not Beyond You</h2>
+
+<p>The CED's recursion topic (4.16-4.17) covers recursive methods on numbers,
+strings, and arrays, plus binary search and merge sort. Trees are not
+required. But notice what you just did: you understood trees in ten minutes,
+because recursive thinking is recursive thinking. The exam teaches the
+thinking; the trees are what the thinking buys in the wider world: databases,
+file systems, compilers, game AI, your own save-file structure. Season 2
+exists for exactly this kind of payoff.</p>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why is inorder of a binary SEARCH tree sorted?</h3>
+    <p>A BST stores smaller values left and larger values right. Inorder
+    visits left (all smaller), then self, then right (all larger). So every
+    value is printed after everything smaller and before everything larger:
+    the definition of sorted. The walk and the invariant cooperate. That is
+    the same cooperation as binary search's "it is always in [lo, hi]."</p>
+    <h3>Why is depth's base case 0 and not -1 or 1?</h3>
+    <p>Convention: an empty tree has depth 0, a single node has depth 1. The
+    choice must make the recurrence true: depth = 1 + max(children), and a
+    leaf's children are null (0), so leaf depth = 1. Check the arithmetic at
+    the boundary you care about, then stay consistent. Base cases are
+    definitions, not guesses.</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="recursion-basics.html">Recursion Basics</a> — where the call stack is explained</li>
+    <li><a href="backtracking.html">Backtracking &amp; Pathfinding</a> — implicit trees on the dungeon grid</li>
+    <li><a href="recursive-search.html">Recursive Search &amp; Merge Sort</a> — the required topics</li>
+</ul>
+
+</div><!-- .page -->
+</body>
+</html>

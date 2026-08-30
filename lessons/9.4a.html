@@ -11,15 +11,24 @@
     <a href="../index.html" class="active">Dashboard</a>
     <a href="../docs/index.html">Docs</a>
     <a href="../projects.html">Projects</a>
-    <a href="../demos.html">Demos</a>
+    <a href="../exam/index.html">Exam</a>
 </nav>
 <div class="page">
 <div class="lesson-nav">
-    <a href="9.3c.html">◀ 9.3c</a>
+    <a href="9.3c.html">&#9664; 9.3c</a>
     <span class="lesson-id">9.4a</span>
-    <a href="9.4b.html">9.5a ▶</a>
+    <a href="9.4b.html">9.4b &#9654;</a>
 </div>
 <h1>9.4a — Interfaces: Contracts, Not Parents</h1>
+
+<div class="callout warn">
+    <strong>Season 2: beyond the exam.</strong> This topic is no longer tested
+    (the 2025 CED removed inheritance from the exam). We build it after May 12
+    because it makes the RPG engine dramatically better, and because you are
+    ready for it. Pure craft, zero test anxiety.
+</div>
+
+
 <div class="activity discovery">
     <div class="activity-header">
         <span class="activity-label">Discovery Lab</span>
@@ -55,7 +64,7 @@ for (Combatant c : fighters) {
     </div>
 
     <div class="callout trap">
-        <strong>Interface ≠ Parent Class:</strong> An interface CANNOT have instance variables, constructors, or method bodies (before Java 8). It's pure method signatures. A class can implement MULTIPLE interfaces. Read the <a href="../docs/unit-09/comparison-interfaces.html">Comparison Interfaces docs</a> for the full interface rules and the Comparable pattern.
+        <strong>Interface ≠ Parent Class:</strong> An interface CANNOT have instance variables, constructors, or method bodies (before Java 8). It's pure method signatures. A class can implement MULTIPLE interfaces. Read the <a href="../docs/unit-09/object-interfaces-casting.html">Comparison Interfaces docs</a> for the full interface rules and the Comparable pattern.
     </div>
 
     <div class="tinker">
@@ -77,7 +86,7 @@ for (Combatant c : fighters) {
         <ol>
             <li>Could you have used an abstract class instead of Combatant? What's the difference?</li>
             <li>Why can you implement multiple interfaces but only extend one class?</li>
-            <li>Read the <a href="../docs/unit-09/comparison-interfaces.html">docs section on Comparator vs Comparable</a>. When would you use one over the other?</li>
+            <li>Read the <a href="../docs/unit-09/object-interfaces-casting.html">docs section on Comparator vs Comparable</a>. When would you use one over the other?</li>
         </ol>
     </div>
 
@@ -94,9 +103,9 @@ for (Combatant c : fighters) {
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-09/comparison-interfaces.html">Comparison Interfaces</a></li>
+        <li><a href="../docs/unit-09/object-interfaces-casting.html">Comparison Interfaces</a></li>
         <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a></li>
-        <li><a href="../docs/unit-09/inheritance-basics.html">Inheritance Basics</a></li>
+        <li><a href="../docs/unit-09/extends-and-super.html">Inheritance Basics</a></li>
     </ul>
 </div>
 </div>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading Files: File + Scanner — Unit 7</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../index.html" class="active">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../exam/index.html">Exam</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 7</a>
+    <span class="sep">/</span>
+    <span class="here">Reading Files</span>
+</nav>
+
+<h1>Reading Files: File + Scanner</h1>
+
+<p>
+    CED topic 4.6, new in the 2025 revision. The idea is small and mighty: the
+    Scanner you already know can wrap a File instead of System.in, and suddenly
+    your programs eat data instead of keyboard taps. The JQR lists exactly what
+    you need: File's constructor, Scanner's File constructor, six next-methods,
+    hasNext, and close.
+</p>
+
+<h2>The Minimal Loop</h2>
+
+<pre><code>import java.util.Scanner;
+import java.io.File;
+
+Scanner in = new Scanner(new File("monsters.txt"));
+while (in.hasNext()) {
+    String line = in.nextLine();
+    // process line
+}
+in.close();</code></pre>
+
+<p>Four lines of ceremony, one loop, and the file is yours. The shape
+"while hasNext, do next" is called the <strong>ask-permission pattern</strong>,
+and it is the only file loop you need for line-based data.</p>
+
+<h2>The JQR Methods, All Nine</h2>
+
+<table>
+    <tr><th>Method</th><th>Returns</th><th>Use it when</th></tr>
+    <tr><td><code>new File("name")</code></td><td>a File handle</td><td>the door. Does not open or read anything by itself</td></tr>
+    <tr><td><code>new Scanner(file)</code></td><td>a Scanner aimed at the file</td><td>attaching the reader</td></tr>
+    <tr><td><code>hasNext()</code></td><td>boolean</td><td>the loop guard. "Is there anything left?"</td></tr>
+    <tr><td><code>nextLine()</code></td><td>String (the whole line)</td><td>line-based data: records, maps, save files. THE default.</td></tr>
+    <tr><td><code>next()</code></td><td>String (one token, no spaces)</td><td>space-free data. Treats spaces as separators. Handle with care.</td></tr>
+    <tr><td><code>nextInt()</code></td><td>int</td><td>whitespace-separated numbers. No parsing needed.</td></tr>
+    <tr><td><code>nextDouble()</code></td><td>double</td><td>same, for decimals</td></tr>
+    <tr><td><code>nextBoolean()</code></td><td>boolean</td><td>reads "true"/"false" tokens</td></tr>
+    <tr><td><code>close()</code></td><td>void</td><td>when done. Always. Two-pass reading (8.6) NEEDS it.</td></tr>
+</table>
+
+<div class="callout trap">
+    <strong>nextLine vs next and the mixed-call trap.</strong> The JQR itself
+    warns: nextLine "can return the empty string if called immediately after
+    another Scanner method." Because next/nextInt stop BEFORE their trailing
+    newline, and nextLine reads up TO the next newline, mixing them leaves an
+    invisible empty line. Rule of thumb: pick one style per Scanner. Line-based
+    files (records, maps, saves): nextLine + split. Pure number streams:
+    nextInt. Do not mix unless you enjoy debugging invisible strings.
+</div>
+
+<h2>The Exception Story</h2>
+
+<pre><code>public static void main(String[] args) throws FileNotFoundException { ... }</code></pre>
+
+<p>The compiler demands <code>throws FileNotFoundException</code> because
+<code>new Scanner(new File(...))</code> can fail: the file might not exist.
+Adding the clause is you signing the release form. If the file is actually
+missing at runtime, the program dies with a stack trace whose first useful line
+names the missing file and the line of your code that asked for it. Reading
+that trace calmly is a skill, and 7.6a trains it by making you cause the error
+on purpose.</p>
+
+<h2>The Standard Loader, Complete</h2>
+
+<pre><code>public static ArrayList&lt;Monster&gt; loadMonsters(String filename)
+        throws FileNotFoundException {
+
+    ArrayList&lt;Monster&gt; bestiary = new ArrayList&lt;Monster&gt;();
+    Scanner in = new Scanner(new File(filename));
+
+    while (in.hasNext()) {
+        String line = in.nextLine().trim();
+        if (line.isEmpty()) continue;              // skip blank lines
+
+        String[] f = line.split(" ");
+        if (f.length != 5) {                        // guard: shape
+            System.out.println("skipping bad line: " + line);
+            continue;
+        }
+        try {
+            Monster m = new Monster(f[0],
+                Integer.parseInt(f[1]),
+                Integer.parseInt(f[2]),
+                Integer.parseInt(f[3]));
+            bestiary.add(m);
+        } catch (NumberFormatException e) {
+            System.out.println("skipping bad numbers: " + line);
+        }
+    }
+    in.close();
+    return bestiary;
+}</code></pre>
+
+<p>Every piece is a lesson you already own: the loop (this page), split and
+parseInt (2.9a), guards (6.6b), objects (Unit 5), ArrayList (7.1). File reading
+is not a new topic. It is the reunion episode.</p>
+
+<h2>Saving: The Other Direction</h2>
+
+<p>The CED only requires READING files. Writing is out of scope, which is why
+this course cheats elegantly with terminal redirection:</p>
+
+<pre><code>$ java Game &gt; save.txt     # everything printed lands in save.txt</code></pre>
+
+<p>Your game already prints beautifully. Redirection makes printing into
+saving. It is a shell feature, not a Java feature, and it is enough to build a
+full save/load cycle in 7.6b.</p>
+
+<h2>Tinker Challenge: Two Loaders</h2>
+
+<div class="tinker">
+    <h3>Same File, Two Ways</h3>
+    <p>Load <a href="../../data/monsters.txt">monsters.txt</a> twice:</p>
+    <ol>
+        <li>With nextLine + split (the standard pattern).</li>
+        <li>With next and nextInt directly, no split, no parsing. Name with
+        next(), stats with nextInt().</li>
+    </ol>
+    <p>The second version is shorter. So why is it the fragile one? Break it:
+        add a monster with a two-word name ("cave troll") and run both loaders.
+        The next-based version reads "cave" as the name and "troll" as the hp
+        and crashes on parseInt... or worse, silently misaligns every field
+        after it. Line-based loading survives surprises; token-based loading
+        assumes perfection. Write the rule in your notes.</p>
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why is file I/O in the curriculum now when it wasn't before?</h3>
+    <p>Because data analysis without data is a chalkboard exercise. The revised
+    CED chains 4.2 (datasets) into 4.6 (files) into 4.8-4.10 (ArrayList
+    algorithms): real records, from real files, into real structures, answered
+    with real algorithms. Each topic justifies the next. Reading a file is the
+    door from "toy programs" to "programs that touch the world."</p>
+    <h3>Why close()?</h3>
+    <p>Two reasons. Practical: the OS tracks open files, and carelessness leaks
+    resources (8.6's two-pass read FAILS without close between passes).
+    Ethical: if the file is on shared storage, an open handle can lock out
+    other programs. Closing is the cleanup chore that professional code always
+    does, like a chef cleaning the station.</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="../unit-02/string-split.html">split() &amp; Data Lines (Unit 2)</a> — the parsing half</li>
+    <li><a href="../unit-06/datasets.html">Working with Data Sets (Unit 6)</a> — what the records are for</li>
+    <li><a href="../unit-08/maps-from-files.html">Maps From Files (Unit 8)</a> — files into 2D grids</li>
+    <li><a href="../../exam/java-quick-reference.html">Java Quick Reference</a> — the File and Scanner tables, verbatim</li>
+</ul>
+
+</div><!-- .page -->
+</body>
+</html>

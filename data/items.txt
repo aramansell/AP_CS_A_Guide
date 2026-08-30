@@ -1,0 +1,16 @@
+rusty dagger,1,5,common
+iron sword,3,50,common
+steel blade,5,150,uncommon
+flame tongue,8,400,rare
+dragonslayer,12,1200,epic
+leather vest,2,30,common
+chain mail,5,180,uncommon
+plate armor,8,500,rare
+health potion,1,25,common
+mana potion,1,40,common
+elixir of might,1,300,rare
+torch,1,5,common
+rope,1,10,common
+lockpick,1,15,common
+ancient scroll,1,250,rare
+crown of the deep king,1,2000,epic

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APIs &amp; Libraries — Unit 2</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../index.html" class="active">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../exam/index.html">Exam</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 2</a>
+    <span class="sep">/</span>
+    <span class="here">APIs &amp; Libraries</span>
+</nav>
+
+<h1>APIs &amp; Libraries</h1>
+
+<p>
+    You have never written a random number generator. You have never written a
+    string searcher. You never will. Java shipped with all of it, and you have been
+    calling that code since your first week. Today we name what you have been
+    doing, because the exam names it too, and because the skill of reading
+    someone else's interface is the skill of a working programmer.
+</p>
+
+<h2>The Vocabulary</h2>
+
+<table>
+    <tr><th>Term</th><th>Means</th><th>Example you already used</th></tr>
+    <tr><td><strong>Library</strong></td><td>A collection of prewritten code,
+        shipped with the language or by a publisher</td>
+        <td><code>java.util.Scanner</code>, <code>java.lang.Math</code></td></tr>
+    <tr><td><strong>API</strong> (Application Programming Interface)</td>
+        <td>The public contract of a library: what you can call, what you pass,
+        what comes back</td><td><code>int length()</code> is API. The code inside
+        length() is not. It is hidden and you do not need it.</td></tr>
+    <tr><td><strong>Package</strong></td><td>A named folder of classes</td>
+        <td><code>java.util</code> holds Scanner, ArrayList, Random</td></tr>
+    <tr><td><strong>Import</strong></td><td>The line that makes a package's classes
+        usable by name</td><td><code>import java.util.Scanner;</code></td></tr>
+    <tr><td><strong>Documentation</strong></td><td>The written form of the API</td>
+        <td>The JQR. Oracle's javadoc pages. Your Dice.java's javadoc comments.</td></tr>
+</table>
+
+<div class="callout">
+    <strong>The mental model:</strong> a library is a vending machine. The API is
+    the button panel. You read the panel, you press, you get. You never open the
+    machine. Abstraction means the panel is all you need.
+</div>
+
+<h2>java.lang: The Free Library</h2>
+
+<p>Classes in <code>java.lang</code> (Math, String, System, Integer) are
+auto-imported. That is why you have never written
+<code>import java.lang.Math;</code>. Everything else needs the import line:</p>
+
+<pre><code>import java.util.Scanner;        // keyboard and file input
+import java.util.ArrayList;      // the resizable list
+import java.io.File;             // the file handle (Unit 7.6)</code></pre>
+
+<h2>Static vs Instance: Two Kinds of Buttons</h2>
+
+<table>
+    <tr><th></th><th>Static (class) method</th><th>Instance method</th></tr>
+    <tr><td>Called on</td><td>The class name</td><td>An object</td></tr>
+    <tr><td>Example</td><td><code>Math.abs(-5)</code></td><td><code>name.length()</code></td></tr>
+    <tr><td>Needs an object first?</td><td>No</td><td>Yes, one must exist</td></tr>
+    <tr><td>Why</td><td>The answer does not depend on any object's state</td>
+      <td>The answer depends on THIS object's data</td></tr>
+</table>
+
+<p><code>Math.abs(-5)</code> is the same no matter what, so it hangs on the class.
+<code>name.length()</code> depends entirely on which String you hold, so it lives
+inside each String object. When you read a signature on the JQR, the word
+<code>static</code> tells you which kind of button you are pressing.</p>
+
+<h2>Reading javadoc Like an Adult</h2>
+
+<p>Oracle publishes the full Java API documentation online. The layout of every
+page is the same, forever:</p>
+
+<ol>
+    <li><strong>Signature line:</strong> modifiers, return type, name, parameters</li>
+    <li><strong>Description:</strong> what it promises, in prose</li>
+    <li><strong>@param entries:</strong> each input, described</li>
+    <li><strong>@return:</strong> the output contract</li>
+    <li><strong>Throws:</strong> what can go wrong</li>
+</ol>
+
+<p>That structure is generated from the <code>/** */</code> comments you write in
+2.8b. Your javadoc comments and Oracle's documentation are the same technology.
+When you document your Dice class, you are publishing an API for your future
+self.</p>
+
+<h2>Tinker Challenge: Hunt in the Real Docs</h2>
+
+<div class="tinker">
+    <h3>Find a Method You Have Never Used</h3>
+    <p>Open the official Java API docs for String (search "Java 17 String javadoc").
+    Rules of the hunt:</p>
+    <ol>
+        <li>Find one method not on the JQR and not used in this course.</li>
+        <li>Read its signature and description until you can explain it in one
+        sentence of plain English.</li>
+        <li>Demo it in a tiny program: a call, an output, a comment saying what it
+        did.</li>
+        <li>Find a second one that would help the RPG. Propose it in two sentences.</li>
+    </ol>
+    <p>The skill being trained: cold-read an unfamiliar API entry and act on it.
+    Every job you will ever have starts with exactly this.</p>
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why is the API the contract and not the code?</h3>
+    <p>Because callers depend on the promise, not the implementation. Oracle can
+    rewrite the inside of Math.random() entirely (they have) and no program breaks,
+    as long as the promise "0.0 up to 1.0" holds. Interfaces that hide
+    implementation are what make software replaceable, upgradeable, and team-
+    buildable.</p>
+    <h3>Why does the exam give you a method sheet at all?</h3>
+    <p>Because memorizing signatures is not programming. Reading a contract and
+    implementing against it is. The sheet's existence is College Board telling you
+    what they think the skill is. Believe them, and train the reading speed.</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="documentation-comments.html">Documentation with Comments</a> — writing the contract yourself</li>
+    <li><a href="method-signatures.html">Method Signatures</a> — decoding the contract's one-line form</li>
+    <li><a href="../../exam/java-quick-reference.html">Java Quick Reference</a> — the exam's own API sheet</li>
+    <li><a href="math-class.html">The Math Class</a> — a full library tour in one class</li>
+</ul>
+
+</div><!-- .page -->
+</body>
+</html>

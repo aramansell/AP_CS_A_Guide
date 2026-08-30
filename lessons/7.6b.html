@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7.6b Save Games &amp; High Score Files — AP CS A</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../index.html" class="active">Dashboard</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../projects.html">Projects</a>
+    <a href="../exam/index.html">Exam</a>
+</nav>
+
+<div class="page">
+
+<div class="lesson-nav">
+    <a href="7.6a.html">&#9664; 7.6a</a>
+    <span class="lesson-id">7.6b</span>
+    <a href="8.1a.html">8.1a &#9654;</a>
+</div>
+
+<h1>7.6b — Save Games &amp; High Score Files</h1>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">RPG Build</span>
+        <span class="activity-time">~40 min</span>
+    </div>
+
+    <p>
+        Yesterday you loaded monsters. Today the file work turns inward: your own
+        game state. A roguelike where death erases everything is honest, but a game
+        that remembers you between runs is a relationship. You will build the
+        persistence layer of your RPG: character save files and a persistent high
+        score table.
+    </p>
+
+    <div class="tinker">
+        <h3>Part 1: The Save File Format (design it yourself)</h3>
+        <p>Decide your save format for a Player: name, class, level, hp, maxHp, gold,
+        and your inventory item names. Write a sample save by hand first, on paper,
+        exactly as your game will print it. Two rules from 2.9a apply: pick ONE
+        delimiter and stick to it, and design so a loader can guard against bad lines.
+        Then make your game print it:</p>
+        <pre><code>$ java Game &gt; save.txt</code></pre>
+        <p>Open save.txt in your editor and check it against your paper design. Then
+        close it and write the loader in your game: read save.txt if it exists, rebuild
+        the Player and the inventory, and drop the player back into the dungeon with
+        their stats intact.</p>
+        <p><strong>The existence check:</strong> your game should not crash when there
+        is no save yet (first run). Structure:</p>
+        <pre><code>File f = new File("save.txt");
+if (f.exists()) {
+    // load
+} else {
+    // fresh start: character creator
+}</code></pre>
+        <p><code>exists()</code> is not on the JQR but it works and it is the right
+        instinct. First-run experience: designed, not crashed into.</p>
+    </div>
+
+    <div class="tinker">
+        <h3>Part 2: The Persistent High Score Table</h3>
+        <p>A high score file that survives restarts. Format, one entry per line:</p>
+        <pre><code>Aram,Warrior,14200
+Kai,Rogue,9800
+Sam,Mage,7300</code></pre>
+        <p>Build <code>HighScores.java</code> with this contract:</p>
+        <ul>
+            <li><code>load()</code> — reads scores.txt into an ArrayList of entries
+            (parallel ArrayLists of name/class/score, or an Entry class if you are
+            feeling strong)</li>
+            <li><code>addScore(String name, String cls, int score)</code> — inserts
+            in sorted position (highest first) using your 7.3 algorithms</li>
+            <li><code>display()</code> — prints the table with rank numbers</li>
+            <li><code>isHighScore(int score)</code> — true if the score would make
+            the top 10</li>
+            <li><code>save()</code> — prints the table back out with
+            <code>$ java Game &gt; scores.txt</code> or by printing top-10 lines to a
+            save file your loader reads next run</li>
+        </ul>
+        <p>Celebrate a run by adding a fake score, saving, restarting, loading, and
+        finding it on the board. Persistence across process death is the moment a
+        program becomes a world.</p>
+    </div>
+
+    <div class="bug-hunt">
+        <h3>Bug Hunt: The Corrupt Save</h3>
+        <p>Corruption is a save-file's natural predator. Test your loader against
+        these, one at a time. It must survive all of them without crashing:</p>
+        <ol>
+            <li>Empty save.txt (zero bytes)</li>
+            <li>A save with one line missing a field ("Aram,Warrior" and nothing
+            else)</li>
+            <li>A save with garbage numbers ("Aram,Warrior,lots,0,0,0")</li>
+            <li>A high score file with 15 entries (your top-10 logic must handle it)</li>
+            <li>The trickiest: a player named "A,ram" (the delimiter inside the data!)
+            </li>
+        </ol>
+        <p>For each: what SHOULD happen? Fresh start with an apology? Skip the line
+        with a warning? Your guard clauses from 6.6b decide. For the delimiter-in-data
+        problem, there is no perfect fix with split; write one sentence in your notes
+        on how you would design the format to avoid it (hint: what character can
+        never appear in a name?).</p>
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Your save format and monsters.txt were both designed by someone. What
+            makes a file format good? Write three rules. (Ideas to consider: one
+            record per line, fields in a fixed order, documented delimiter, no data
+            that contains the delimiter.)</li>
+            <li>The high score file is shared data: every run of the game by every
+            player reads and writes it. What happens if two runs write at the same
+            time? You do not have the tools to solve this yet, so just name the
+            problem correctly in your notes. (Concurrency. It is a whole college
+            course. Naming it is enough today.)</li>
+            <li>AP exam check: your loader loop is "while hasNext, nextLine, split,
+            parseInt, add." Write that loop from memory, right now, no notes. If you
+            hesitated, you know what to drill before the mock.</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Design a save-file format and defend its rules</li>
+            <li>Implement load/add/display/save for a persistent score table</li>
+            <li>Survive all five corruptions with guard clauses and good defaults</li>
+            <li>Write the file-loading loop from memory under time pressure</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="resources">
+    <h3>Reference Docs</h3>
+    <ul>
+        <li><a href="../docs/unit-07/reading-files.html">Reading Files (File + Scanner)</a> — the loop, the methods, the exception</li>
+        <li><a href="../docs/unit-06/high-score.html">High Score Table walkthrough (Unit 6)</a> — the array version you are upgrading</li>
+        <li><a href="../docs/unit-07/sorting.html">Sorting</a> — keeping the table ordered</li>
+    </ul>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

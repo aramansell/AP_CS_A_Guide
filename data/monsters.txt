@@ -1,0 +1,8 @@
+goblin 8 3 25 slime
+skeleton 12 5 50 undead
+orc 20 7 100 brute
+wraith 15 9 150 spirit
+troll 30 10 200 brute
+golem 45 12 300 construct
+dragon 60 18 500 boss
+lich 40 16 450 boss

@@ -12,15 +12,15 @@
     <a href="../index.html" class="active">Dashboard</a>
     <a href="../docs/index.html">Docs</a>
     <a href="../projects.html">Projects</a>
-    <a href="../demos.html">Demos</a>
+    <a href="../exam/index.html">Exam</a>
 </nav>
 
 <div class="page">
 
 <div class="lesson-nav">
-    <a href="10.3c.html">◀ 10.3c</a>
+    <a href="10.3c.html">&#9664; 10.3c</a>
     <span class="lesson-id">10.4a</span>
-    <a href="10.4b.html">10.4b ▶</a>
+    <a href="10.4b.html">10.4b &#9654;</a>
 </div>
 
 <h1>10.4a — Flood Fill: Reveal the Dungeon</h1>
@@ -37,7 +37,7 @@
     then recursively explore all its walkable neighbors. The same algorithm that
     powers the paint bucket tool in every drawing program.</p>
 
-    <p>Open the <a href="../docs/unit-10/recursive-dungeon.html">Recursive Dungeon
+    <p>Open the <a href="../docs/unit-10/backtracking.html">Recursive Dungeon
     (Student RPG Guide)</a>. Follow Part 1: Flood Fill.</p>
 
     <div class="tinker">
@@ -86,7 +86,7 @@ public int reveal(int row, int col, boolean[][] visited) {
         Without <code>visited[row][col]</code>, reveal(0,0) calls reveal(1,0) which
         calls reveal(0,0) which calls reveal(1,0)... forever. The visited array
         breaks cycles. Also: check boundaries BEFORE indexing tiles[row][col].
-        Read the <a href="../docs/unit-10/recursive-dungeon.html">Recursive Dungeon
+        Read the <a href="../docs/unit-10/backtracking.html">Recursive Dungeon
         docs</a> for the complete algorithm.
     </div>
 
@@ -118,9 +118,9 @@ public int reveal(int row, int col, boolean[][] visited) {
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-10/recursive-dungeon.html">Recursive Dungeon (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-10/backtracking.html">Recursive Dungeon (Student RPG Guide)</a></li>
         <li><a href="../docs/unit-10/recursion-basics.html">Recursion Basics</a></li>
-        <li><a href="../docs/unit-10/recursive-traversal.html">Recursive Traversal</a></li>
+        <li><a href="../docs/unit-10/recursive-search.html">Recursive Traversal</a></li>
     </ul>
 </div>
 

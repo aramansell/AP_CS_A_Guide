@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dungeon Maps From Files — Unit 8</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../index.html" class="active">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../exam/index.html">Exam</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 8</a>
+    <span class="sep">/</span>
+    <span class="here">Maps From Files</span>
+</nav>
+
+<h1>Dungeon Maps From Files</h1>
+
+<p>
+    The capstone pattern of the data side of the course: a text file becomes a
+    char[][] becomes a world. File reading (7.6) + 2D arrays (Unit 8) + a
+    toCharArray trick that turns a String into a row of characters. When this
+    works, level design becomes text editing, and your game stops being a
+    program and becomes a platform.
+</p>
+
+<h2>The Map Format</h2>
+
+<pre><code>########
+#......#
+#.####.#
+#.#G.#.#
+#..@...#
+########</code></pre>
+
+<table>
+    <tr><th>Character</th><th>Meaning</th></tr>
+    <tr><td><code>#</code></td><td>wall (impassable)</td></tr>
+    <tr><td><code>.</code></td><td>floor (walkable)</td></tr>
+    <tr><td><code>@</code></td><td>player start</td></tr>
+    <tr><td><code>G</code></td><td>goblin</td></tr>
+    <tr><td><code>$</code></td><td>treasure (8.6's extension)</td></tr>
+</table>
+
+<p>One line per row. Row 0 is the top. Column 0 is the left edge. No commas,
+no spaces inside the map: every character is terrain.</p>
+
+<h2>The Two-Pass Loader</h2>
+
+<pre><code>import java.util.Scanner;
+import java.io.File;
+
+// Pass 1: count rows (you need the number BEFORE you can create the array)
+Scanner in = new Scanner(new File("dungeon1.txt"));
+int rows = 0;
+while (in.hasNext()) { in.nextLine(); rows++; }
+in.close();     // MANDATORY: resets the file position by releasing the handle
+
+// Pass 2: reopen and fill
+in = new Scanner(new File("dungeon1.txt"));
+char[][] map = new char[rows][];
+int r = 0;
+while (in.hasNext()) {
+    String line = in.nextLine();
+    if (line.length() &gt; 0) {          // guard: skip trailing blank lines
+        map[r] = line.toCharArray();
+        r++;
+    }
+}
+in.close();</code></pre>
+
+<p><code>toCharArray()</code> is the magic line: it converts a String into a
+char[], one char per index. It is not on the JQR, but it is standard Java and
+the natural bridge from line to grid.</p>
+
+<div class="callout warn">
+    <strong>Why two passes?</strong> Creating <code>new char[rows][]</code>
+    requires knowing rows, but you only learn rows by reading. Options: count
+    then reopen (above), or skip the count with
+    <code>ArrayList&lt;char[]&gt;</code> and copy out afterward. The ArrayList
+    version is cleaner and is what 7.6b's load() pattern suggests. The two-pass
+    version is what 8.6a trains, because seeing WHY the count is needed teaches
+    you something about arrays that ArrayList hides.
+</div>
+
+<h2>Jagged Rows Are Normal</h2>
+
+<p>Nothing forces every line of the file to have the same length. If a designer
+    types one fewer wall, that row is one shorter. Your code must use
+<code>map[r].length</code> per row, never a single <code>width</code> constant.
+    This is not defensive paranoia; the CED explicitly includes jagged arrays
+    in its 2D array topics, and 8.6a's bug hunt makes you meet the problem in a
+    real file.</p>
+
+<h2>The Census, Find, and Count</h2>
+
+<pre><code>// find: locate a marker
+public static int[] find(char[][] map, char target) {
+    for (int r = 0; r &lt; map.length; r++)
+        for (int c = 0; c &lt; map[r].length; c++)
+            if (map[r][c] == target) return new int[]{r, c};
+    return new int[]{-1, -1};
+}
+
+// count: census of one character
+public static int count(char[][] map, char target) {
+    int n = 0;
+    for (int r = 0; r &lt; map.length; r++)
+        for (int c = 0; c &lt; map[r].length; c++)
+            if (map[r][c] == target) n++;
+    return n;
+}</code></pre>
+
+<p>These two are FRQ 4 in miniature: traverse, compare, act. Everything bigger
+    (fireball boxes, neighbor counts, movement) is these plus the 2d-algorithms
+    patterns.</p>
+
+<h2>Movement On a Loaded Map</h2>
+
+<pre><code>// attempt to move '@' by dr rows and dc columns
+public static void move(char[][] map, int dr, int dc) {
+    int[] pos = find(map, '@');
+    int r = pos[0], c = pos[1];
+    int nr = r + dr, nc = c + dc;
+
+    // three guards, in order: inside the grid, then walkable
+    if (nr &lt; 0 || nr &gt;= map.length) return;
+    if (nc &lt; 0 || nc &gt;= map[nr].length) return;
+    if (map[nr][nc] != '.' &amp;&amp; map[nr][nc] != 'G') return;   // wall check
+
+    map[r][c] = '.';        // erase old position
+    map[nr][nc] = '@';      // stamp new position
+}</code></pre>
+
+<p>Bounds, then terrain, then the swap. That sequence is every grid game ever
+written, and every Season 2 project (fog of war, maze solver, pathfinding)
+reuses it unchanged.</p>
+
+<h2>Tinker Challenge: Ship a Level Pack</h2>
+
+<div class="tinker">
+    <h3>Three Maps, One Engine</h3>
+    <ol>
+        <li>Design dungeon3.txt yourself: at least 12x12, one goblin, one
+        treasure room with '$', and a wall shape that forces a detour.</li>
+        <li>Write <code>loadMap(String filename)</code> that takes any map
+        filename and returns the grid. Same engine, any level.</li>
+        <li>Write a main that loads all maps in sequence and prints, for each:
+        size, wall count, floor count, goblin positions, treasure count, and
+        whether '@' exists (a missing '@' is a level design bug: report it,
+        do not crash).</li>
+        <li>Swap maps with a partner. Playtest theirs by reading the census:
+        can you spot a sealed-off treasure room from the numbers alone?
+        (Sometimes. That is a reachability question, which is what Season 2's
+        flood fill answers definitively.)</li>
+    </ol>
+</div>
+
+<h2>Bug Hunt</h2>
+
+<div class="bug-hunt">
+    <h3>The Missing Close</h3>
+    <p>Remove the <code>in.close()</code> between the two passes and re-run.
+    Pass 2 reads ZERO lines (the scanner sits at end-of-file from pass 1), your
+    map is all nulls, and the first <code>map[r].length</code> throws a
+    NullPointerException. The error is far from the cause. Trace it back. This
+    is why "always close" is a rule rather than a suggestion.</p>
+    <h3>The Invisible Short Row</h3>
+    <p>Open your map file and delete one character from a middle row. Print the
+    map. It renders fine (strings are just shorter), but any fixed-width logic
+    (column sums assuming equal rows, movement checking
+    <code>nc &lt; width</code>) now reads the wrong cell or crashes. Fix by
+    using per-row lengths everywhere, then break it again on purpose to see
+    which of your methods trusted the constant. Now you know which of your
+    methods would fail a code review.</p>
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why is data-driven design the payoff of the whole data sequence?</h3>
+    <p>4.2 (datasets) taught records. 4.6 (files) taught loading. 4.11-4.13
+    taught grids and algorithms. This page is 4.6 + 4.11 combined into the thing
+    they were all for: worlds described by data, engines that process any world
+    matching the format. The moment content moves out of code, your program
+    stops being an artifact and becomes a platform. That is the professional
+    threshold, and you cross it with a text editor.</p>
+    <h3>Why char[][] instead of String[]?</h3>
+    <p>Strings are immutable: you cannot stamp '@' into a new cell without
+    rebuilding the whole row. A mutable grid needs mutable cells, so chars it
+    is. The cost is toCharArray and char comparisons; the payoff is that
+    movement, fireballs, and fog of war are single assignments instead of
+    string surgery.</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="../unit-07/reading-files.html">Reading Files (Unit 7)</a> — the Scanner side</li>
+    <li><a href="2d-array-basics.html">2D Array Basics</a> — the grid side</li>
+    <li><a href="2d-algorithms.html">2D Array Algorithms</a> — what to do with the grid once loaded</li>
+    <li><a href="../../data/dungeon1.txt">dungeon1.txt</a> · <a href="../../data/dungeon2.txt">dungeon2.txt</a> — the maps</li>
+</ul>
+
+</div><!-- .page -->
+</body>
+</html>

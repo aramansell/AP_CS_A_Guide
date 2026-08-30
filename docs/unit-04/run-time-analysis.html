@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Run-Time Analysis — Unit 4</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../index.html" class="active">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../exam/index.html">Exam</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 4</a>
+    <span class="sep">/</span>
+    <span class="here">Run-Time Analysis</span>
+</nav>
+
+<h1>Run-Time Analysis (Informal)</h1>
+
+<p>
+    "How fast is it?" is the wrong question, because the answer depends on the
+    machine, the language, the weather. The right question is: <strong>how does
+    the work GROW when the input grows?</strong> Growth survives every hardware
+    upgrade. This page is the informal version: no big-O algebra, just step
+    counting and shapes.
+</p>
+
+<h2>Step Counting: The Method</h2>
+
+<ol>
+    <li>Pick the operation that dominates (usually the loop body's work).</li>
+    <li>Put a counter on it.</li>
+    <li>Run at n = 10, 100, 1000.</li>
+    <li>Look at the RATIOS, not the times.</li>
+</ol>
+
+<pre><code>long steps = 0;
+for (int i = 0; i &lt; n; i++) {
+    steps++;
+    // the real work
+}</code></pre>
+
+<h2>The Two Shapes You Must Recognize</h2>
+
+<table>
+    <tr><th>Shape</th><th>Structure</th><th>n=10</th><th>n=100</th><th>n=1000</th><th>10x input means</th></tr>
+    <tr><td><strong>Linear</strong></td><td>one loop over n</td><td>10</td><td>100</td><td>1,000</td><td>10x work</td></tr>
+    <tr><td><strong>Quadratic</strong></td><td>loop over n CONTAINING loop over n</td><td>100</td><td>10,000</td><td>1,000,000</td><td>100x work</td></tr>
+</table>
+
+<p>The structure tells you the shape before you run anything. One loop that
+visits each element once: linear. A loop inside a loop, both controlled by n:
+quadratic. This is the exam's informal analysis in one sentence.</p>
+
+<h2>Constants Fade, Shapes Remain</h2>
+
+<pre><code>// A: 3n steps
+for (int i = 0; i &lt; n; i++) { a++; b++; c++; }
+
+// B: n steps
+for (int i = 0; i &lt; n; i++) { a++; }</code></pre>
+
+<p>At small n, A takes 3x longer than B. At scale, both are "linear" and the
+difference stops mattering, because quadratic versions of either would be a
+thousand times worse. When comparing a linear and a quadratic algorithm, the
+constants are noise. When comparing two linears, constants can matter, but the
+exam almost always compares across shapes.</p>
+
+<h2>Price the Classics</h2>
+
+<table>
+    <tr><th>Algorithm</th><th>Shape</th><th>Why</th></tr>
+    <tr><td>Sum / average / max over a list</td><td>linear</td><td>each element visited once</td></tr>
+    <tr><td>Linear search</td><td>linear</td><td>worst case checks every element</td></tr>
+    <tr><td>Binary search (sorted data)</td><td>logarithmic</td><td>each step halves what remains</td></tr>
+    <tr><td>Selection sort / insertion sort</td><td>quadratic</td><td>loop over n, each pass scans the rest</td></tr>
+    <tr><td>Merge sort</td><td>linearithmic (n log n)</td><td>log n levels of halving, linear work per level</td></tr>
+    <tr><td>Print a 2D grid r x c</td><td>linear in the AREA</td><td>r*c visits, each cell once</td></tr>
+    <tr><td>Check all pairs in a list</td><td>quadratic</td><td>n elements times n partners</td></tr>
+</table>
+
+<h2>Logarithmic, the Feeling</h2>
+
+<p>log n counts how many times you can halve n before reaching 1. You do not
+need the math. You need three anchor numbers:</p>
+
+<table>
+    <tr><th>n</th><th>log2 n (halvings)</th></tr>
+    <tr><td>1,000</td><td>about 10</td></tr>
+    <tr><td>1,000,000</td><td>about 20</td></tr>
+    <tr><td>1,000,000,000</td><td>about 30</td></tr>
+</table>
+
+<p>Every thousand-fold increase in data costs ten more steps. That is why binary
+search on a billion sorted items takes about 30 steps, and why anyone who sorts
+data first is playing a different sport. 4.7a had you build the table that
+proves this. The numbers stay anchored if your hands made them.</p>
+
+<h2>Tinker Challenge: Prove a Sort Is Quadratic</h2>
+
+<div class="tinker">
+    <h3>Step-Count Selection Sort</h3>
+    <p>Take your selection sort, add a comparison counter, and run it on random
+    arrays of size 100, 1000, 5000. Ratio check: 1000 vs 100 should be about
+    100x the comparisons. 5000 vs 1000 should be about 25x (5 squared). If your
+    ratios do not match the square law, you are counting the wrong thing.</p>
+    <p>Then time it too (<code>System.currentTimeMillis()</code> before and
+    after). At n=5000 the sort still finishes instantly. Quadratic is not
+    "slow," it is "slow AT SCALE." Push n to 50,000 and 100,000 and find where
+    the wall is on this machine. That wall is why the CED cares.</p>
+</div>
+
+<h2>Bug Hunt: The Accidental Quadratic</h2>
+
+<div class="bug-hunt">
+    <h3>Inside a Linear Algorithm</h3>
+    <pre><code>// remove all items below a threshold
+for (int i = 0; i &lt; list.size(); i++) {
+    if (list.get(i) &lt; threshold) {
+        list.remove(i);    // each remove shifts everything after it
+    }
+}</code></pre>
+    <p>This LOOKS linear (one loop) but each remove shifts up to n elements.
+    Total: potentially quadratic. Worse, it skips elements (after a remove, the
+    next element slides into slot i, and i++ jumps past it). Two bugs, one
+    structure. Fix: iterate backwards, or build a new list of survivors. The
+    backwards fix is the classic; write it and explain why direction fixes the
+    skip AND tames the shifting.</p>
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why informal? Why not just teach big-O?</h3>
+    <p>Because the reasoning matters more than the notation. "Nested loops over
+    the same n means the work squares" is big-O thinking with zero Greek letters.
+    The CED's phrase is "informal run-time analysis": classify, compare, predict
+    ratios. Notation can come later, and it will feel like naming things you
+    already own.</p>
+    <h3>When is quadratic the right choice?</h3>
+    <p>When n is small and known to stay small (sorting a hand of 5 cards), or
+    when the linear alternative is dramatically more complex and the data set
+    cannot grow. Engineering is tradeoffs under constraints. "Quadratic bad" is
+    a heuristic, not a law.</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="loop-analysis.html">Loop Analysis &amp; Tracing</a> — the tracing skills underneath step counting</li>
+    <li><a href="../unit-07/sorting.html">Sorting (Unit 7)</a> — the algorithms you just priced</li>
+    <li><a href="../unit-10/recursive-search.html">Recursive Search (Unit 10)</a> — log n in its recursive habitat</li>
+</ul>
+
+</div><!-- .page -->
+</body>
+</html>

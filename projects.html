@@ -12,7 +12,7 @@
     <a href="index.html">Dashboard</a>
     <a href="docs/index.html">Docs</a>
     <a href="projects.html" class="active">Projects</a>
-    <a href="demos.html">Demos</a>
+    <a href="exam/index.html">Exam</a>
 </nav>
 
 <div class="page">
@@ -20,96 +20,195 @@
 <h1>RPG Project Files</h1>
 
 <p>
-    Throughout the year, you build an RPG piece by piece. Each unit adds one or more
-    files to your project. By the end, everything connects — your Dice engine rolls
-    damage, your Combat system handles fights, your Player class stores stats, and
-    your Dungeon generator creates adventures.
+    Throughout the year, you build an RPG piece by piece. Each phase adds
+    files to your project. By May, everything connects: your Dice engine
+    rolls damage, Combat resolves fights, Player and Monster classes hold
+    state, files load the bestiary and maps, and after the exam, the
+    GameCharacter hierarchy unifies it all into one engine.
 </p>
 
-<h2>Unit 1 — Primitive Types</h2>
+<h2>Phase 1 — Using Objects and Methods (Sep-Oct)</h2>
 
 <div class="project-file">
-    <h3>Dice.java</h3>
+    <h3>Dice.java + DiceTester.java</h3>
     <div class="file-meta">
-        <span>Unit 1.7</span><span>Type: RPG Integration</span>
+        <span>Lesson 1.7</span><span>Type: RPG Integration</span>
     </div>
     <p>
-        Your dice rolling engine. Contains <code>roll()</code>, <code>rollDice()</code>,
-        <code>rollWithAdvantage()</code>, <code>isCritical()</code>, and
-        <code>displayResult()</code>. Used by every combat and random event in the game.
+        Your dice engine: roll(), rollDice(), rollWithAdvantage(),
+        isCritical(), displayResult(). Documented with javadoc as of 2.8b.
+        Used by every combat and random event for the rest of the year.
     </p>
     <p><a href="docs/unit-01/dice-roller.html">View Student Guide →</a></p>
 </div>
 
 <div class="project-file">
-    <h3>DiceTester.java</h3>
+    <h3>Player.java (v1)</h3>
     <div class="file-meta">
-        <span>Unit 1.7</span><span>Type: Test Harness</span>
+        <span>Lesson 2.7</span><span>Type: RPG Integration</span>
     </div>
     <p>
-        A main method that calls every Dice method to verify they work correctly.
-        You run this, not Dice.java itself — Dice has no main method, it's a library.
-    </p>
-</div>
-
-<h2>Unit 2 — Using Objects</h2>
-
-<div class="project-file">
-    <h3>Player.java</h3>
-    <div class="file-meta">
-        <span>Unit 2</span><span>Type: RPG Integration</span>
-    </div>
-    <p>
-        Character creator. Uses Scanner to read the player's name, rolls stats
-        (STR, DEX, CON, INT) with your Dice engine, and prints a formatted
-        character sheet. This player follows you through every unit.
+        Character creator: Scanner reads the name, the Dice engine rolls
+        stats (STR, DEX, CON, INT), a formatted character sheet prints.
+        This player follows you through every unit.
     </p>
     <p><a href="docs/unit-02/character-creator.html">View Student Guide →</a></p>
 </div>
 
-<h2>Unit 3 — Booleans &amp; if</h2>
+<h2>Phase 2 — Selection and Iteration (Oct-Dec)</h2>
 
 <div class="project-file">
     <h3>Combat.java</h3>
     <div class="file-meta">
-        <span>Unit 3</span><span>Type: RPG Integration</span>
+        <span>Lesson 3.6</span><span>Type: RPG Integration</span>
     </div>
     <p>
-        Combat engine. Single-round combat: attack rolls vs AC, damage calculation,
-        critical hits, hit/miss feedback. Uses your Dice engine for all randomness.
+        Single-round combat: attack rolls vs AC, damage, crits, hit/miss
+        feedback, all through the Dice engine.
     </p>
     <p><a href="docs/unit-03/combat-system.html">View Student Guide →</a></p>
 </div>
 
-<h2>Unit 4 — Iteration</h2>
-
 <div class="project-file">
-    <h3>DungeonLoop.java</h3>
+    <h3>DungeonLoop.java + DungeonCrawl.java</h3>
     <div class="file-meta">
-        <span>Unit 4</span><span>Type: RPG Integration</span>
+        <span>Lesson 4.6</span><span>Type: RPG Integration</span>
     </div>
     <p>
-        Multi-round combat (while loop) and room exploration (for loop). Combat
-        continues until someone dies. Five rooms with random encounters.
+        Multi-round combat (while), room exploration (for), multi-floor
+        dungeon (nested loops), end-of-run summary.
     </p>
-    <p><a href="docs/unit-04/dungeon-system.html">View Student Guide →</a></p>
+    <p><a href="docs/unit-04/dungeon-system.html">Dungeon System →</a> ·
+       <a href="docs/unit-04/dungeon-crawl.html">Dungeon Crawl →</a></p>
+</div>
+
+<h2>Phase 3 — Class Creation (Jan)</h2>
+
+<div class="project-file">
+    <h3>Player.java (v2) + Monster.java + Spell.java</h3>
+    <div class="file-meta">
+        <span>Lessons 5.5, 5.6</span><span>Type: RPG Integration</span>
+    </div>
+    <p>
+        The real classes: private fields, constructors, accessors,
+        validating mutators, toString. Spell built from a spec table in
+        5.6a, FRQ 2 style. Boss Fight integration test at 5.5c.
+    </p>
+    <p><a href="docs/unit-05/player-builder.html">Player Builder →</a> ·
+       <a href="docs/unit-05/monster-builder.html">Monster Builder →</a></p>
+</div>
+
+<h2>Phase 4 — Data Collections (Feb-Apr)</h2>
+
+<div class="project-file">
+    <h3>Item.java + Inventory.java</h3>
+    <div class="file-meta">
+        <span>Lessons 6.5, 7.4</span><span>Type: RPG Integration</span>
+    </div>
+    <p>
+        FixedInventory (array, Unit 6) upgraded to DynamicInventory
+        (ArrayList, Unit 7) with sort-by-value and trade/merge operations.
+    </p>
+    <p><a href="docs/unit-06/inventory-builder.html">Inventory Builder →</a> ·
+       <a href="docs/unit-07/dynamic-inventory.html">Dynamic Inventory →</a></p>
 </div>
 
 <div class="project-file">
-    <h3>DungeonCrawl.java</h3>
+    <h3>Telemetry.java</h3>
     <div class="file-meta">
-        <span>Unit 4</span><span>Type: RPG Integration</span>
+        <span>Lesson 6.6</span><span>Type: Data Analysis</span>
     </div>
     <p>
-        Multi-floor dungeon with nested loops. Generate rooms per floor, fight a boss,
-        collect treasure and inventory, print end-of-dungeon summary.
+        Loads telemetry.csv, cleans it with guard clauses, answers design
+        questions with the four aggregation patterns, and argues the ethics
+        roundtable. The FRQ 3 trainer.
     </p>
-    <p><a href="docs/unit-04/dungeon-crawl.html">View Student Guide →</a></p>
+    <p><a href="docs/unit-06/datasets.html">Working with Data Sets →</a></p>
+</div>
+
+<div class="project-file">
+    <h3>Bestiary.java + HighScores.java</h3>
+    <div class="file-meta">
+        <span>Lesson 7.6</span><span>Type: RPG Integration</span>
+    </div>
+    <p>
+        File loading arrives: monsters.txt and items.txt load into
+        ArrayLists of objects; save games and a persistent high score
+        table close the loop.
+    </p>
+    <p><a href="docs/unit-07/reading-files.html">Reading Files →</a></p>
+</div>
+
+<div class="project-file">
+    <h3>DungeonGrid.java + DungeonLoader.java</h3>
+    <div class="file-meta">
+        <span>Lessons 8.4, 8.6</span><span>Type: RPG Integration</span>
+    </div>
+    <p>
+        The world: dungeon maps load from text files into char[][]
+        grids, with movement, neighbors, and fireball boxes on top.
+        Level design becomes text editing.
+    </p>
+    <p><a href="docs/unit-08/dungeon-map.html">Dungeon Map →</a> ·
+       <a href="docs/unit-08/maps-from-files.html">Maps From Files →</a></p>
+</div>
+
+<div class="project-file">
+    <h3>DungeonGenerator.java (recursive)</h3>
+    <div class="file-meta">
+        <span>Lesson 10.4</span><span>Type: RPG Integration</span>
+    </div>
+    <p>
+        Procedural dungeon generation, flood-fill fireballs, recursive
+        loot finding, merge sort on the bestiary, recursive binary search.
+        The engine is complete before spring break.
+    </p>
+    <p><a href="docs/unit-10/backtracking.html">Backtracking &amp; Pathfinding →</a> ·
+       <a href="docs/unit-10/recursive-search.html">Recursive Search →</a></p>
+</div>
+
+<h2>Season 2 — The Engine Room (May-Jun, post-exam)</h2>
+
+<div class="project-file">
+    <h3>GameCharacter.java + the hierarchy</h3>
+    <div class="file-meta">
+        <span>Lessons 9.1-9.6</span><span>Type: Season 2</span>
+    </div>
+    <p>
+        Player and Monster refactor into a GameCharacter superclass;
+        Skeleton, Dragon, Goblin subclasses; polymorphic battle engine;
+        interfaces for combat abilities. Beyond the exam, better software.
+    </p>
+    <p><a href="docs/unit-09/character-hierarchy.html">Character Hierarchy →</a></p>
+</div>
+
+<div class="project-file">
+    <h3>MazeSolver.java + PixelFilter.java</h3>
+    <div class="file-meta">
+        <span>Lessons 10.5, 8.5</span><span>Type: Season 2</span>
+    </div>
+    <p>
+        Backtracking maze solver, subset generation, image filters and
+        fog of war via 2D arrays. The capstone toolkit.
+    </p>
+    <p><a href="docs/unit-10/trees-and-traversal.html">Trees &amp; Traversal →</a></p>
+</div>
+
+<div class="project-file">
+    <h3>The Capstone: Ship the Game</h3>
+    <div class="file-meta">
+        <span>June</span><span>Type: Capstone</span>
+    </div>
+    <p>
+        Integrate everything into the shipping build: file-loaded maps,
+        polymorphic combat, save games, high scores. Demo day with peer
+        code review. Your year, playable.
+    </p>
 </div>
 
 <p style="color:var(--muted); margin-top:2rem;">
-    More project files will be added as we progress through Units 5–10
-    (Player class rewrite, Inventory, Dungeon Map, GameCharacter hierarchy, etc.)
+    Data files live in the <a href="data/">data/</a> folder: monsters.txt,
+    items.txt, dungeon1.txt, dungeon2.txt, telemetry.csv.
 </p>
 
 </div><!-- .page -->

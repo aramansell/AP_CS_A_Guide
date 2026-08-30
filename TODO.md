@@ -1,45 +1,74 @@
-# Curriculum Audit — TODO
+# Curriculum Build Log — 2026-08-29/30
 
-Saved from audit on 2026-05-19. File issues in priority order.
+Status: COMPLETE. All verification checks pass (scripts/verify_site.py).
 
-## HIGH — Broken Quick Reference links (all units)
-Every unit index page links to `reference/PrimitiveTypesQuickRef.md` (or similar).
-The `reference/` directory does not exist. All 10 links are dead.
-**Fix:** Create the files OR remove the links from all unit indexes.
+## What was built (this session)
 
-## HIGH — Unit 9 has no teacher walkthroughs
-All units have a "Teacher Projects" section with standalone demos except Unit 9.
-Students are asked to refactor Player.java + Monster.java into a GameCharacter hierarchy
-without a scaffolded demo first. Unit 5 (the other writing-classes unit) has Card and
-BankAccount as teacher demos.
-**Fix:** Add at least one teacher walkthrough (e.g., Animal → Dog/Cat or Shape → Circle/Rectangle).
+### Structural repairs
+- 447 broken internal links repaired (dead targets repointed via linkfix_map.json)
+- 41 lesson-nav label/href mismatches fixed
+- Dead Demos nav tab replaced with the Exam hub tab on all 310 pages
+- All 10 unit indexes: dead reference/*.md promises replaced with real
+  docs/reference/unit-NN-quickref.html links
+- docs/unit-03/number-pattern.html orphan linked from the Teacher Projects table
+- Tag balance verified across the site (pre/div/table all clean)
 
-## MEDIUM — Unit 3 orphan page
-`docs/unit-03/number-pattern.html` exists but is not listed on the Unit 3 index page
-in the Teacher Projects table. Students browsing the index would never find it.
-**Fix:** Add number-pattern.html to the Unit 3 index Teacher Projects table.
+### New curriculum content (13 new lessons, 15 new docs pages)
+Written for the Fall 2025 CED topics the old site did not cover:
+- 1.8a/1.8b casting, compound assignment, overflow (CED 1.5, 1.6)
+- 2.8a/2.8b/2.8c APIs, comments, method signatures (CED 1.7, 1.8, 1.9)
+- 2.9a split() and data lines (CED 1.15 completion)
+- 4.7a informal run-time analysis (CED 2.12)
+- 5.6a design from a spec (CED 3.1, 3.2, FRQ 2 training)
+- 6.6a/6.6b data ethics + datasets (CED 4.1, 4.2)
+- 7.6a/7.6b reading files, save games (CED 4.6)
+- 8.6a dungeon maps from files (CED 4.6 + 4.11-4.13 integration)
+- 10.6a recursive binary search (CED 4.17 completion)
+- Docs: casting, compound-assignment, api-and-libraries,
+  documentation-comments, method-signatures, string-split, run-time-analysis,
+  design-from-spec, data-ethics, datasets, reading-files, searching-sorting,
+  2d-algorithms, maps-from-files, recursive-search, merge-sort,
+  trees-and-traversal, plus 10 quick-reference pages in docs/reference/
 
-## MEDIUM — Unit 10 double-lists concept pages as teacher projects
-`unit-10/index.html` lists recursion-basics.html, recursive-search.html, and
-recursive-fibonacci.html under BOTH the Concepts table AND the Teacher Projects table.
-No other unit does this.
-**Fix:** Either remove the Teacher Projects table (with a callout like Unit 4's),
-or create separate demo pages.
+### Data files (data/)
+monsters.txt, items.txt, dungeon1.txt, dungeon2.txt, telemetry.csv
 
-## LOW — Walkthrough title inconsistency (Unit 5 vs rest)
-Units 1-4 and 6-8 use "Full Walkthrough" in page titles. Unit 5 uses just "Walkthrough."
-(e.g., "Bank Account — Walkthrough" vs "Slot Machine — Full Walkthrough").
-**Fix:** Normalize to one convention.
+### Exam hub (exam/, 9 pages)
+index, java-quick-reference (verbatim CED appendix), mc-strategy,
+mock-exam, frq/index + 4 FRQ pages (methods-and-control, class-design,
+data-analysis, two-d-array), each with 2 RPG-themed practice questions,
+solutions, and rubrics.
 
-## LOW — Unit 7 RPG guide count
-Unit 7 (ArrayList) has only 1 RPG guide (DynamicInventory.java). Neighboring Unit 6
-has 2, Unit 10 has 3. Not necessarily broken, but noticeably thinner.
-**Consider:** Adding a second guide (party roster, spellbook, etc.).
+### Pacing system
+- scripts/curriculum_data.py: single source of truth (83 A-days,
+  83 sequence entries, 53/53 CED topics covered, exam May 12 2027 12:00 PM)
+- pace.html: every A-day mapped to its work, with notes
+- PACING.md: same data in markdown
+- docs/coverage.html: CED topic coverage matrix + weighting check
+- Dashboard rewritten: 4 phase tabs + Sprint + Season 2, all 185 lessons
 
-## STRENGTHS (for context)
-- Unit index template is rock-solid across all 10 units
-- RPG Thread sections are excellent connective tissue
-- Bug Hunt (41 files) and Tinker Challenge (44 files) are broadly distributed
-- "How This Connects to Your RPG" appears in 16 teacher walkthroughs
-- Student RPG Guides are consistently formatted
-- CSS system (callout, warn, lab, bug-hunt) is used uniformly
+### Season 2 (post-exam)
+Unit 9 (inheritance), 10.5, 8.5 repositioned as post-exam material with
+banners; nav chain rewired (8.4c -> 8.6a -> 10.1, 10.6a -> 9.1a etc.)
+
+## Regeneration
+- python3 scripts/curriculum_data.py   (sanity check)
+- python3 scripts/gen_quickrefs.py     (reference pages)
+- python3 scripts/update_unit_indexes.py
+- python3 scripts/rewire_nav.py        (lesson chain)
+- python3 scripts/gen_dashboard.py     (index.html, pace.html, PACING.md)
+- python3 scripts/gen_coverage.py      (docs/coverage.html)
+- python3 scripts/verify_site.py       (must print ALL CHECKS PASS)
+
+## Known intentional decisions
+- 8.5/10.5 lessons teach after the exam (Season 2); their nav chain order
+  reflects the teaching order, not numeric order.
+- Round B FRQ solutions are not posted (used for the mock, discussed in the
+  May 4 workshop).
+- Snow days are not modeled; pace.html notes say to shift into flex slots.
+- Calendar basis: PPS 2026-27 district calendar (updated 2026-03-31) +
+  IBW A/B schedule; alternation assumed A on Aug 31. If the school publishes
+  a different A/B pattern, update A_DAYS in curriculum_data.py and re-run
+  the generator scripts.
+- linkcheck_stage1.json / linkfix_map.json are build artifacts, safe to
+  delete or keep as the repair record.

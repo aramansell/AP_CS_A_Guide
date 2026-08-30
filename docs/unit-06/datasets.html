@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Working with Data Sets — Unit 6</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../index.html" class="active">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../exam/index.html">Exam</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="index.html">Unit 6</a>
+    <span class="sep">/</span>
+    <span class="here">Working with Data Sets</span>
+</nav>
+
+<h1>Working with Data Sets</h1>
+
+<p>
+    CED topic 4.2 introduces data sets: many records, same shape, one question.
+    The exam's new FRQ 3 (Data Analysis with ArrayList) is this topic at exam
+    scale. The workflow never changes: load, clean, aggregate, answer. You will
+    run it in Unit 6 with arrays, again in Unit 7 with ArrayLists, and a third
+    time on the mock exam.
+</p>
+
+<h2>CSV: The Universal Shape</h2>
+
+<pre><code>player_id,class,level,hp,session_minutes,gold,quit_flag
+101,Warrior,4,120,45,80,0
+102,Mage,7,60,120,240,0
+103,Rogue,1,40,15,5,1</code></pre>
+
+<p>Row 1 is the <strong>header</strong>: column names. Every later row is one
+<strong>record</strong>. Fields are separated by a delimiter (comma for CSV:
+Comma-Separated Values). Same number of fields per row, same order, or the file
+is broken and the loader must say so.</p>
+
+<h2>Loading: The Four Moves</h2>
+
+<pre><code>// 1. Skip the header (detect it, do not hardcode "line 1")
+if (firstLine) { firstLine = false; continue; }
+// or check: does the line start with a column name you expect?
+
+// 2. Split each line
+String[] f = line.split(",");
+
+// 3. Guard the shape
+if (f.length != 7) { badRows++; continue; }
+
+// 4. Parse and store
+int level = Integer.parseInt(f[2].trim());</code></pre>
+
+<p><code>.trim()</code> in move 4 is quiet armor: it strips stray spaces around
+fields so <code>parseInt(" 45")</code> never happens. Free, one word, saves a
+crash.</p>
+
+<h2>Cleaning: Guard Clauses</h2>
+
+<p>A guard clause checks one thing and bails early with a reason. Chain them:</p>
+
+<pre><code>if (f.length != 7)  return "BAD: field count";
+if (f[1].isEmpty()) return "BAD: missing class";
+if (level &lt; 0)      return "BAD: negative level";
+if (minutes &gt; 1440) return "BAD: minutes over a day";
+// all guards passed: CLEAN</code></pre>
+
+<p>Two design decisions hiding in cleaning, and they are judgment calls, not
+code calls: do you REJECT bad rows (count them, skip them) or REPAIR them
+(impute a default, mark it)? Rejection is honest but loses data. Imputation
+keeps volume but fabricates values. The course rule: reject loudly in class
+work, and always report the count of what you rejected. Silent cleaning is how
+datasets start lying.</p>
+
+<h2>The Four Aggregation Patterns</h2>
+
+<p>Almost every data question is one of these four, or a combination:</p>
+
+<table>
+    <tr><th>Pattern</th><th>Shape</th><th>Telemetry question</th></tr>
+    <tr><td><strong>1. Total / mean</strong></td><td>one accumulator, one
+        counter</td><td>average session minutes</td></tr>
+    <tr><td><strong>2. Count by category</strong></td><td>counter per
+        category</td><td>how many of each class</td></tr>
+    <tr><td><strong>3. Max / min and who</strong></td><td>best value PLUS the
+        index that owns it</td><td>highest gold and who holds it</td></tr>
+    <tr><td><strong>4. Conditional aggregate</strong></td><td>accumulator and
+        counter, both inside an if</td><td>average quests for non-quitters</td></tr>
+</table>
+
+<pre><code>// Pattern 4, the one that catches people:
+int total = 0, count = 0;
+for (int i = 0; i &lt; n; i++) {
+    if (quit[i] == 0) {            // the filter
+        total += quests[i];
+        count++;                    // the denominator ONLY counts filtered rows
+    }
+}
+double avg = (double) total / count;   // cast! int/int would truncate</code></pre>
+
+<p>The two classic bugs live in that snippet: counting all rows in the
+denominator (wrong mean) and forgetting the cast (integer mean). Both compile.
+Both run. Both lie.</p>
+
+<h2>From Arrays to ArrayLists</h2>
+
+<p>In Unit 6 you store loaded records in parallel arrays:
+<code>String[] names; int[] levels; int[] minutes;</code>, one array per column.
+It works and it is worth doing once, honestly. In Unit 7 (7.1c) the same loader
+produces <code>ArrayList&lt;Player&gt;</code>, one list of whole objects. The
+upgrade is the story: arrays are the training ground, objects are the home.
+When you make the swap, pattern 3 (max and who) changes shape: you track the
+best Player object itself, not an index into parallel arrays.</p>
+
+<h2>Tinker Challenge: Answer Three Questions</h2>
+
+<div class="tinker">
+    <h3>On the Real File</h3>
+    <p>Load <a href="../../data/telemetry.csv">telemetry.csv</a> and answer,
+    each with one aggregation pattern:</p>
+    <ol>
+        <li>What is the average session length, to one decimal? (Pattern 1)</li>
+        <li>Which class has the most players? (Pattern 2, then a max over the
+        counts, which is Pattern 3 wearing a hat)</li>
+        <li>For players who quit, what is the average level? For players who
+        stayed? (Pattern 4, twice, then a comparison sentence in plain
+        English.)</li>
+    </ol>
+    <p>Then the real question: the design team can change ONE thing about levels
+    1-3 to keep new players. Which column did your analysis point at, and what
+    would you tell them? Data analysis ends in a sentence, not a number.</p>
+</div>
+
+<h2>Socratic Checkpoint</h2>
+
+<div class="socratic">
+    <h3>Why is "average" the most dangerous word in data analysis?</h3>
+    <p>Because it hides distribution. Ten players with 5 minutes and one with
+    500 average to 50 minutes each, describing nobody. Means need company:
+    minimum, maximum, and a look at the spread. When your answer to any data
+    question is a single average, you are reporting a statistic that may
+    describe zero actual people.</p>
+    <h3>Why detect the header instead of skipping line 1?</h3>
+    <p>Because files change. A teammate exports a new file without a header and
+    your hardcoded skip eats the first player. A file that starts with
+    "player_id" is announcing its format: read the announcement, and if it is
+    missing, your loader should notice and say so. Robustness means assuming
+    files will surprise you, because they will.</p>
+</div>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="data-ethics.html">Data Ethics &amp; Privacy</a> — what you owe the people in the rows</li>
+    <li><a href="../unit-02/string-split.html">split() &amp; Data Lines (Unit 2)</a> — the parsing engine</li>
+    <li><a href="array-algorithms.html">Array Algorithms</a> — the loops underneath the patterns</li>
+    <li><a href="../../data/telemetry.csv">telemetry.csv</a> — the dataset</li>
+</ul>
+
+</div><!-- .page -->
+</body>
+</html>

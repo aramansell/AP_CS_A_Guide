@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recursion — Quick Reference — Unit 10</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <a href="../../index.html">Dashboard</a>
+    <a href="../index.html" class="active">Docs</a>
+    <a href="../../projects.html">Projects</a>
+    <a href="../../exam/index.html">Exam</a>
+</nav>
+
+<div class="page">
+
+<nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="../unit-10/index.html">Unit 10</a>
+    <span class="sep">/</span>
+    <span class="here">Quick Reference</span>
+</nav>
+
+<h1>Recursion: Quick Reference</h1>
+
+<p>One page, no story, no lab. The shapes, signatures, and traps of the unit,
+compressed. This is the page to keep open during builds and to re-read the
+night before a test. Print it and mark it up.</p>
+
+<h2>The Shape</h2>
+<pre><code>public static int fact(int n) {
+    if (n &lt;= 1) return 1;            // BASE CASE: no recursion
+    return n * fact(n - 1);          // RECURSIVE CASE: smaller n
+}</code></pre>
+
+<h2>The Questions (ask of every recursion)</h2>
+<table>
+    <tr><th>Question</th><th>Why it matters</th></tr>
+    <tr><td>what is the base case?</td><td>no base case = StackOverflowError</td></tr>
+    <tr><td>how does each call get smaller?</td><td>no shrinking = infinite recursion</td></tr>
+    <tr><td>what does the caller do with the answer?</td><td>return it, combine it, or print it</td></tr>
+</table>
+
+
+<h2>The Classics</h2>
+<table>
+    <tr><th>Method</th><th>Shape</th></tr>
+    <tr><td>factorial</td><td>n * fact(n-1), base 1</td></tr>
+    <tr><td>fibonacci</td><td>fib(n-1) + fib(n-2), base 0 and 1</td></tr>
+    <tr><td>sum of digits</td><td>n % 10 + sum(n / 10), base n &lt; 10</td></tr>
+    <tr><td>reverse string</td><td>reverse(rest) + first, base length &lt;= 1</td></tr>
+    <tr><td>binary search</td><td>search half, base lo &gt; hi</td></tr>
+    <tr><td>merge sort</td><td>sort halves + merge, base lo &gt;= hi</td></tr>
+</table>
+
+
+<h2>Binary Search, Recursive</h2>
+<pre><code>public static int bsearch(int[] d, int t, int lo, int hi) {
+    if (lo &gt; hi) return -1;
+    int mid = (lo + hi) / 2;
+    if (d[mid] == t) return mid;
+    if (d[mid] &lt; t) return bsearch(d, t, mid + 1, hi);
+    return bsearch(d, t, lo, mid - 1);
+}</code></pre>
+
+
+<h2>The Unit's Traps, One Line Each</h2>
+<ul>
+    <li>Recursive call with mid instead of mid+1 / mid-1: the range never shrinks. Stack overflow.</li>
+    <li>Missing the second base case in search (found AND not-found are both needed).</li>
+    <li>Merge sort without the merge: the halves sort, nothing combines, array looks unchanged.</li>
+    <li>Tracing recursion: draw the calls as a tree going down, answers bubbling up. Never trace sideways.</li>
+    <li>log n feeling: 1000 items = 10 halvings, a million = 20, a billion = 30.</li>
+</ul>
+
+<h2>See Also</h2>
+<ul>
+    <li><a href="../unit-10/recursion-basics.html">Recursion Basics</a></li>
+    <li><a href="../unit-10/recursive-search.html">Recursive Search &amp; Merge Sort</a></li>
+    <li><a href="../unit-10/merge-sort.html">Merge Sort</a></li>
+    <li><a href="../unit-10/backtracking.html">Backtracking</a></li>
+</ul>
+
+</div><!-- .page -->
+</body>
+</html>

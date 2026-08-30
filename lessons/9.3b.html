@@ -12,18 +12,27 @@
     <a href="../index.html" class="active">Dashboard</a>
     <a href="../docs/index.html">Docs</a>
     <a href="../projects.html">Projects</a>
-    <a href="../demos.html">Demos</a>
+    <a href="../exam/index.html">Exam</a>
 </nav>
 
 <div class="page">
 
 <div class="lesson-nav">
-    <a href="9.3a.html">◀ 9.3a</a>
+    <a href="9.3a.html">&#9664; 9.3a</a>
     <span class="lesson-id">9.3b</span>
-    <a href="9.3c.html">9.3c ▶</a>
+    <a href="9.3c.html">9.3c &#9654;</a>
 </div>
 
 <h1>9.3b — Polymorphism: Building a Type-Aware System</h1>
+
+<div class="callout warn">
+    <strong>Season 2: beyond the exam.</strong> This topic is no longer tested
+    (the 2025 CED removed inheritance from the exam). We build it after May 12
+    because it makes the RPG engine dramatically better, and because you are
+    ready for it. Pure craft, zero test anxiety.
+</div>
+
+
 
 <!-- ============================================================ -->
 <div class="activity basic-app">
@@ -82,7 +91,7 @@ Creature[] party = {new Goblin("Snag"), new Dragon("Pyrax"), new Skeleton("Bones
             Add a method <code>filterByType(Creature[] creatures, String typeName)</code>
             that returns only creatures whose class name matches. Use
             <code>creature.getClass().getSimpleName()</code> — check the
-            <a href="../docs/unit-09/inheritance.html">Inheritance docs</a> for how
+            <a href="../docs/unit-09/extends-and-super.html">Inheritance docs</a> for how
             getClass() works. This lets you isolate all Goblins from a mixed party.
         </p>
     </div>
@@ -113,8 +122,8 @@ Creature[] party = {new Goblin("Snag"), new Dragon("Pyrax"), new Skeleton("Bones
     <h3>Reference Docs</h3>
     <ul>
         <li><a href="../docs/unit-09/polymorphism.html">Polymorphism</a> — dynamic dispatch, casting</li>
-        <li><a href="../docs/unit-09/inheritance.html">Inheritance</a> — getClass(), instanceof</li>
-        <li><a href="../docs/unit-07/arraylist.html">ArrayList</a> — dynamic collections</li>
+        <li><a href="../docs/unit-09/extends-and-super.html">Inheritance</a> — getClass(), instanceof</li>
+        <li><a href="../docs/unit-07/arraylist-basics.html">ArrayList</a> — dynamic collections</li>
     </ul>
 </div>
 
