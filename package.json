@@ -16,7 +16,7 @@
     "new-lesson": "node scripts/new-lesson.mjs"
   },
   "dependencies": {
-    "astro": "^5.14.0",
+    "astro": "^7.2.9",
     "pagefind": "^1.4.0"
   }
 }
