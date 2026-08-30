@@ -225,7 +225,7 @@ grid[0][3];   // OK — valid row 0, valid col 3
 <h2>Bug Hunt: The Inverted Indices</h2>
 
 <div class="bug-hunt">
-    <p>A game designer is building a rendering system for a rectangular 2D map with 3 rows and 6 columns. They attempt to print the entire terrain heightmap in row-major order, but the code throws a <code>java.lang.ArrayIndexOutOfBoundsException</code> and crashes immediately on the print line.</p>
+    <p>A game designer is building a rendering system for a rectangular 2D map with 3 rows and 6 columns. They attempt to print the entire terrain heightmap in row-major order, but the code throws an exception and crashes immediately on the print line.</p>
     <pre><code>int[][] terrain = new int[3][6]; // 3 rows, 6 columns
 
 for (int row = 0; row &lt; terrain.length; row++) {

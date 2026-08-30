@@ -139,18 +139,17 @@ numbers came from.</p>
 
 <div class="bug-hunt">
     <h3>Three Grid Bugs</h3>
-    <pre><code>// A: swapped bounds — compiles on square grids, crashes on wide ones
+    <pre><code>// A: try it on a square grid, then on a wide one
 for (int r = 0; r &lt; grid[0].length; r++)
     for (int c = 0; c &lt; grid.length; c++)
 
-// B: the infinite mirror — writes while reading
+// B: count walls while writing them
 for (r, c over grid) if (grid[r][c] == '.') grid[r][c] = '#';
 // then in the SAME pass: if (grid[r][c] == '#') count++;</code></pre>
-    <p>A: the loop variables are crossed with the bounds. On a square grid it
-    accidentally works, which is the worst kind of bug: it hides until the map
-    is rectangular. Fix by making bounds match variables. B: the count
-    in the same pass counts walls you just created. Order of operations across
-    a traversal is a real semantics question: count in a separate pass.</p>
+    <p>For each: what exactly goes wrong, and when does it bite? A hides on
+    square grids — why is that the worst kind of bug? B counts something in the
+    same pass where it's also writing — what does the count include, and what
+    order of operations fixes it?</p>
 </div>
 
 <h2>Socratic Checkpoint</h2>

@@ -89,10 +89,10 @@ public static boolean checkWin(char[][] board, int row, int col, char player) {
     <div class="bug-hunt">
         <h3>Bug Hunt</h3>
         <p>The obvious approach is 4 separate loops, one per direction.
-        But there's a smarter way: use direction arrays. Two arrays
-        define 4 directions as (rowDelta, colDelta) pairs: right (0,1),
-        down (1,0), down-right (1,1), down-left (1,-1). One loop nests
-        inside another. Can you figure out the pattern?</p>
+        But there's a smarter way: use direction arrays — two parallel
+        arrays holding the (rowDelta, colDelta) for each of the four
+        directions. Work the eight values out on paper first, then make
+        one loop nest inside another. Can you figure out the pattern?</p>
         <p><em>Hint: check the Connect Four walkthrough if you get
         stuck. But try to sketch it on paper first.</em></p>
     </div>

@@ -28,11 +28,11 @@ const body = `<h1>9.5a — Downcasting: Getting Your Original Type Back</h1>
         <pre><code>Creature[] party = {new Goblin(), new Dragon(), new Skeleton()};
 
 for (Creature c : party) {
-    // This works — attack() is in Creature
+    // attack() is defined in Creature — what happens here?
     System.out.println(c.attack());
 
-    // This FAILS — breatheFire() is only in Dragon
-    // c.breatheFire();  // COMPILE ERROR
+    // breatheFire() is only in Dragon — what happens if you call it on c?
+    // c.breatheFire();  // uncomment and find out
 
     // Fix with downcasting:
     if (c instanceof Dragon) {

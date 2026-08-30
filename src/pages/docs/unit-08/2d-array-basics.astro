@@ -195,8 +195,8 @@ int[][] triangle = {
 <div class="bug-hunt">
     <p>A designer creates a small 2D game board with 3 rows and 5 columns, but when they try to place a treasure chest in the bottom-right corner, the game crashes immediately. Find the bug.</p>
     <pre><code>int[][] board = new int[3][5];
-// Bottom-right corner is at row index 2, column index 4
-board[4][2] = 99; // Game crashes here with ArrayIndexOutOfBoundsException!</code></pre>
+// trying to place the treasure in the bottom-right corner:
+board[4][2] = 99; // Game crashes here!</code></pre>
     <p><strong>Question:</strong> Why did <code>board[4][2]</code> crash the program? What index order must always be used when accessing cells in a 2D array?</p>
 </div>
 

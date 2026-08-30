@@ -131,10 +131,8 @@ full save/load cycle in 7.6b.</p>
     </ol>
     <p>The second version is shorter. So why is it the fragile one? Break it:
         add a monster with a two-word name ("cave troll") and run both loaders.
-        The next-based version reads "cave" as the name and "troll" as the hp
-        and crashes on parseInt... or worse, silently misaligns every field
-        after it. Line-based loading survives surprises; token-based loading
-        assumes perfection. Write the rule in your notes.</p>
+        What does each loader do with the surprise? Which one survives — and why?
+        Write the rule in your notes.</p>
 </div>
 
 <h2>Socratic Checkpoint</h2>

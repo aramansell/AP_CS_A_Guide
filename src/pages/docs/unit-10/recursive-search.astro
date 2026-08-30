@@ -135,15 +135,11 @@ public static int bsC(int[] d, int t, int lo, int hi) {
     if (d[mid] &lt; t) return bsC(d, t, mid + 1, hi);
     else return bsC(d, t, lo, mid - 1);
 }</code></pre>
-    <p>A: the else-branch recurses with plain mid, so an absent target in the
-    left half loops forever between two indices. Symptom: stack overflow on
-    missing values, works on found ones. B: it advances lo by 1 regardless of
-    side: a linear search in disguise that also misses the midpoint logic;
-    symptom: returns -1 for values that exist. C: mid is shifted one right;
-    when lo == hi, mid = lo + 1 can read past the range and even out of bounds
-    at the right edge; symptom: ArrayIndexOutOfBounds on single-cell ranges,
-    or skipped odd indices. Predict, run, confirm each. Then fix all three and
-    re-verify against the trace table above.</p>
+    <p>For each: predict the symptom first — write it down — then run it to
+    confirm. Test with a target that IS in the list and a target that ISN'T.
+    Which search only misbehaves on missing values? Which one quietly turns
+    into something slower than binary search? Which one can go out of bounds?
+    Then fix all three and re-verify against the trace table above.</p>
 </div>
 
 <h2>Tinker Challenge: Feel the Speed Difference</h2>
@@ -153,10 +149,10 @@ public static int bsC(int[] d, int t, int lo, int hi) {
     <p>Fill an int[] of 20,000 with random values. Time selection sort
     (<code>System.currentTimeMillis()</code> before and after). Restore the
     array (regenerate the same randoms with a fixed seed, or keep a copy), then
-    time merge sort. Record both numbers. Now double to 40,000 and repeat.
-    Selection should take about 4x longer (quadratic: 2 squared). Merge sort
-    about 2.2x (n log n: barely worse than linear). Your table is 4.7a's
-    shapes, now with clocks on them.</p>
+    time merge sort. Record both numbers. Now double to 40,000 and repeat, and
+    write down what happened to each time. Before you check anything against
+    theory, predict: if you doubled AGAIN to 80,000, what will each timer read?
+    Your table is 4.7a's shapes, now with clocks on them.</p>
 </div>
 
 <h2>Socratic Checkpoint</h2>

@@ -157,18 +157,15 @@ reuses it unchanged.</p>
 <div class="bug-hunt">
     <h3>The Missing Close</h3>
     <p>Remove the <code>in.close()</code> between the two passes and re-run.
-    Pass 2 reads ZERO lines (the scanner sits at end-of-file from pass 1), your
-    map is all nulls, and the first <code>map[r].length</code> throws a
-    NullPointerException. The error is far from the cause. Trace it back. This
-    is why "always close" is a rule rather than a suggestion.</p>
+    What does pass 2 see? Trace any error back to its cause — how far is the
+    error from the thing that caused it? This is why "always close" is a rule
+    rather than a suggestion.</p>
     <h3>The Invisible Short Row</h3>
     <p>Open your map file and delete one character from a middle row. Print the
-    map. It renders fine (strings are just shorter), but any fixed-width logic
-    (column sums assuming equal rows, movement checking
-    <code>nc &lt; width</code>) now reads the wrong cell or crashes. Fix by
-    using per-row lengths everywhere, then break it again on purpose to see
-    which of your methods trusted the constant. Now you know which of your
-    methods would fail a code review.</p>
+    map. What survives? Now run your column sums and movement checks — which of
+    your methods trusted every row to be the same width? Fix them, then break
+    it again on purpose. Now you know which of your methods would fail a code
+    review.</p>
 </div>
 
 <h2>Socratic Checkpoint</h2>

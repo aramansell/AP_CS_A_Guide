@@ -133,12 +133,10 @@ temp[k++] = data[i++];   // writing into data instead of temp
 
 // C: the off-by-one split
 mergeSort(data, lo, mid - 1);   // right half starts at mid, not mid+1</code></pre>
-    <p>A: the code tramples elements before reading them; symptom: sorted-looking
-    output with wrong values in it, the sneakiest of all three. B: compiles,
-    runs, and silently DROPS every leftover element; an 8-element sort can
-    return 5 elements. C: the element at mid is in both halves; symptom:
-    duplicates appear out of nowhere. For each: predict the symptom first, run
-    second. Predicting merge-sort bugs is a superpower on trace questions.</p>
+    <p>For each: predict the symptom first — write it down — run second. One
+    of them lies to you when you look at the output; one of them quietly loses
+    something; one of them invents something. Which is which? Predicting
+    merge-sort bugs is a superpower on trace questions.</p>
 </div>
 
 <h2>Socratic Checkpoint</h2>

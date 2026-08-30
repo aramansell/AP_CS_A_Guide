@@ -204,7 +204,10 @@ public static void count2(int n) {
     count2(n - 1);
     System.out.print(n + " ");
 }</code></pre>
-    <p>Why does <code>count1(3)</code> print <code>3 2 1</code> while <code>count2(3)</code> prints <code>1 2 3</code>? How does the JVM use stack frames to "remember" the values of <code>n</code> until the recursion starts unwinding?</p>
+    <p>Predict what <code>count1(3)</code> and <code>count2(3)</code> each print —
+    write both down — then run them. Why are they different? How does the JVM use
+    stack frames to "remember" the values of <code>n</code> until the recursion
+    starts unwinding?</p>
 </div>
 
 <h2>Bug Hunt: The Odd Skipping Trap</h2>
@@ -215,7 +218,7 @@ public static void count2(int n) {
     if (n == 0) {
         return 0;
     }
-    return n + sumEvenSkip(n - 2); // Crashes if n is odd!
+    return n + sumEvenSkip(n - 2);
 }</code></pre>
     <p><strong>Question:</strong> Spot the bug! Why does an odd integer input like <code>3</code> bypass the base case entirely? How can you modify the base case condition to make this method safe for all positive integer inputs?</p>
 </div>

@@ -98,15 +98,10 @@ stack /= 2;
 
 // true if score beats the high score
 return score &gt;= highScore;</code></pre>
-    <p>Answers: (1) the code returns 0 to sides-1, the comment says 1 to sides.
-    Fix the code: add + 1. The comment described intent. (2) The comment says gold,
-    the code prints HP. One of them is wrong about reality, and only the design
-    doc knows which. That ambiguity, in real code, is how bugs live for years.
-    (3) Integer division truncates, so 5 / 2 is 2, which rounds DOWN. Fix the
-    comment. (4) "&gt;=" means ties count as beating. Is a tie a new record? Arcade
-    tradition says ties do NOT count, so the comment is the intent and the code
-    should be &gt;. But you could argue the other way. The point: precision in
-    words forces precision in code.</p>
+    <p>For each pair, run the code before you judge — the code is the only
+    witness telling the truth about what it actually does. When you decide,
+    defend your verdict in one sentence: what did the comment promise, and what
+    does the code deliver? The point: precision in words forces precision in code.</p>
 </div>
 
 <h2>Tinker Challenge: Publish Your API</h2>
