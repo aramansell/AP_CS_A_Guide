@@ -38,15 +38,37 @@ Node/JavaScript.
 | `src/data/curriculum.ts` | **Single source of truth**: A-day calendar, day-by-day SEQUENCE, phases, all 53 CED topics. Dashboard, pacing calendar, coverage matrix, PACING.md, and every lesson's prev/next chain render from it at build time. |
 | `src/data/lessons.ts` | Per-lesson metadata (titles + activity badges) for the dashboard. |
 | `src/layouts/BaseLayout.astro` | The shared page shell: `<head>`, top nav, `.page` wrapper. The nav is written **once** here - before the migration it was duplicated in 310 HTML files. |
-| `src/layouts/LessonLayout.astro` | Lesson pages: prev/next chain computed from `LESSON_CHAIN`, plus the per-student "I finished this lesson" progress toggle. |
+| `src/layouts/LessonLayout.astro` | Lesson pages: prev/next chain computed from `LESSON_CHAIN`, the progress toggle, and the lab-forms transform (answer boxes auto-injected into bug hunts / tinkers / socratic checkpoints by `src/lib/formify.ts`). |
 | `src/pages/**` | Every page. Migrated pages are thin: frontmatter + the original body HTML in a `set:html` template literal. The body is plain HTML - edit it directly. |
 | `src/pages/index.astro` | Dashboard - data-driven, plus phase progress bars (localStorage). |
 | `src/pages/pace.astro`, `src/pages/docs/coverage.astro` | Pacing calendar + CED coverage matrix, data-driven. |
 | `src/pages/search.astro` | Site search (Pagefind index, built during `npm run build`). |
-| `src/integrations/pacing-md.ts` | Regenerates `PACING.md` at every build. |
-| `public/` | Static assets served as-is: `style.css`, `docs/style.css`, `data/*.txt` (the lesson datasets). |
-| `scripts/` | `verify-site.mjs` (verification), `migrate-to-astro.mjs` (the one-time migration, kept for provenance), `new-lesson.mjs` (scaffold). |
+| `src/integrations/pacing-md.ts` | Post-build artifacts: regenerates `PACING.md` and writes `dist/sitemap.xml` at every build. |
+| `src/data/answerKeys.ts` | Objective answer keys for auto-graded lab questions (optional per question). |
+| `public/` | Static assets served as-is: `style.css`, `docs/style.css`, `js/lab-forms.js` (answer persistence + download), `favicon.svg`, `robots.txt`, `data/*.txt` (the lesson datasets). |
+| `scripts/` | `verify-site.mjs` (verification), `dump-questions.mjs` (list every lab question + id), `grade-submissions.mjs` (grade a folder of student answer files), `migrate-to-astro.mjs` (the one-time migration, kept for provenance), `new-lesson.mjs` (scaffold). |
 | `legacy/` | The retired Python toolchain and repair artifacts. Nothing in the build reads it. |
+
+## Lab forms (student answers -> Canvas)
+
+Every reflection question in the lessons (bug hunts, tinker challenges,
+socratic checkpoints - ~760 boxes across 139 lessons) is a fillable answer
+box. Students type as they work; answers autosave on the device; each
+lesson ends with a Download answers (.json) button they upload to a Canvas
+file-upload assignment.
+
+The full teacher loop - one Canvas assignment per lesson, bulk download,
+one command to grade everything (completeness for all questions, exact
+matching for anything keyed in `src/data/answerKeys.ts`), CSV for the
+gradebook, per-student feedback files to return - is documented on
+[teachers/canvas.html](https://aramansell.github.io/AP_CS_A_Guide/teachers/canvas.html).
+
+Key commands:
+
+``bash
+npm run dump-questions -- 1.1c   # list question ids + prompts for a lesson
+npm run grade -- submissions/    # grade an unzipped Canvas submissions folder
+``
 
 ## Common tasks
 
