@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Verify a student submission — Revision Banner</title>
+  <link rel="stylesheet" href="verify.css" />
+</head>
+<body>
+  <header class="hd">
+    <span class="logo">🔍</span>
+    <div>
+      <h1>Verify a student submission</h1>
+      <p>Load a Revision Banner summary file: its signature is checked, and its claims are
+         cross-referenced against Google's own version history for that document.</p>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="dropzone" id="drop">
+      <p class="dz-big">Drop the <b>-revision-summary.html</b> file here</p>
+      <p class="muted">or</p>
+      <button class="btn" id="btnPick">Choose file…</button>
+      <input type="file" id="file" accept=".html,.htm,text/html" style="display:none" />
+    </section>
+
+    <p id="status" class="status" hidden></p>
+
+    <section id="report" hidden></section>
+    <section id="crosscheck" hidden></section>
+
+    <section class="notes">
+      <h2>What this check does — and what it doesn't</h2>
+      <p class="muted">
+        ✓ The signature proves the file was produced by Revision Banner and was not casually
+        hand-edited after export (any change to the data breaks it).<br />
+        ✓ The cross-check compares the student's claimed activity days and edit counts with the
+        document's version history on Google's servers — which students cannot edit or delete.<br />
+        ✗ It cannot prove where text originally came from, catch typing simulators, or verify work
+        done in other tools. A mismatch is a reason to ask questions, not a verdict.
+      </p>
+    </section>
+  </main>
+
+  <script src="verify.js"></script>
+</body>
+</html>

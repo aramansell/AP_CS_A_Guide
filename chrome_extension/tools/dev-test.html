@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Dev test — Revision Banner</title>
+  <style>
+    body { font: 15px/1.6 Georgia, serif; margin: 0; background: #fff; color: #111; }
+    .fakechrome {
+      background: #edf2fa; border-bottom: 1px solid #c9d4e8; padding: 10px 16px;
+      font: 13px -apple-system, sans-serif; color: #333;
+    }
+    .doc { max-width: 720px; margin: 30px auto; padding: 0 20px 80px; }
+    h1 { font-size: 26px; }
+    [contenteditable] { outline: none; }
+    .hint { font: 12px -apple-system, sans-serif; color: #888; }
+  </style>
+  <script>
+    /* Minimal chrome.* mock so content/banner.js runs outside the extension. */
+    window.__REVBANNER_DEV__ = true;
+    (function () {
+      const mem = {};
+      window.chrome = {
+        storage: {
+          local: {
+            get: async (keys) => {
+              const out = {};
+              const list = Array.isArray(keys) ? keys : [keys];
+              for (const k of list) if (k in mem) out[k] = mem[k];
+              return out;
+            },
+            set: async (obj) => { Object.assign(mem, obj); },
+            remove: async (keys) => { const l = Array.isArray(keys) ? keys : [keys]; for (const k of l) delete mem[k]; },
+            clear: async () => { for (const k of Object.keys(mem)) delete mem[k]; }
+          }
+        },
+        runtime: {
+          getURL: (p) => p,
+          sendMessage: async () => null,
+          onMessage: { addListener() {} }
+        }
+      };
+    })();
+  </script>
+</head>
+<body>
+  <div class="fakechrome">File&nbsp;&nbsp;Edit&nbsp;&nbsp;View&nbsp;&nbsp;Insert&nbsp;&nbsp;Format&nbsp;&nbsp;Tools&nbsp;&nbsp;Extensions&nbsp;&nbsp;Help</div>
+  <div class="doc">
+    <h1 contenteditable="true">Dev test document</h1>
+    <p class="hint">Type below — the banner should count edits, keys, active time and bulk pastes (paste a ≥200-char block to see a Bulk insert flag).</p>
+    <p contenteditable="true">Start typing here to see the live tracker work…</p>
+    <p contenteditable="true">Try Alt+R (collapse), Alt+D (details), the ⟳ sync button (automation will report it can't open version history here — that's the correct graceful failure on a non-Docs page), and the details export buttons.</p>
+    <p class="hint">This page proves the banner works outside Google Docs: it mounts, tracks, computes stats, renders the sparkline and exports data.</p>
+  </div>
+  <script src="../content/banner.js"></script>
+</body>
+</html>

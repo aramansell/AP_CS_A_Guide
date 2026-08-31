@@ -1,0 +1,60 @@
+/*
+ * Revision Banner — page-offset rules.
+ * All rules are driven by the CSS variable --revbanner-h, which the content
+ * script sets on <html>. The script also toggles data-revbanner-mode /
+ * data-revbanner-fix attributes on <body> to escalate the push strategy,
+ * so this file never needs to know anything about a specific value.
+ */
+
+html {
+  --revbanner-h: 0px;
+}
+
+/* The banner host itself. Kept below Google Docs dialog layers (dialogs
+ * typically live above z-index 1000) but above the app chrome. */
+#revbanner-root {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: var(--revbanner-h);
+  z-index: 700;
+}
+
+/* Primary push: shift the body down and shrink it so nothing is lost off
+ * the bottom edge. Works for in-flow layout and for absolutely-positioned
+ * children whose containing block is the body box. */
+body[data-revbanner-mode="push"] {
+  margin-top: var(--revbanner-h) !important;
+  height: calc(100vh - var(--revbanner-h)) !important;
+  min-height: 0 !important;
+}
+
+/* Escalation level 1: the header/edit containers did not move (they are
+ * anchored to the initial containing block or position:fixed). Transform
+ * them instead — additive, so it never fights Docs' own inline styles. */
+body[data-revbanner-mode="push"][data-revbanner-fix="1"] #docs-chrome,
+body[data-revbanner-mode="push"][data-revbanner-fix="1"] #docs-header,
+body[data-revbanner-mode="push"][data-revbanner-fix="1"] #docs-editor,
+body[data-revbanner-mode="push"][data-revbanner-fix="1"] #docs-editor-container {
+  transform: translateY(var(--revbanner-h));
+}
+
+/* Escalation level 2: last-resort push for unknown layouts — transform the
+ * entire application. Rare; used only if the targeted rules didn't work. */
+body[data-revbanner-mode="push"][data-revbanner-fix="2"] {
+  transform: translateY(var(--revbanner-h));
+}
+
+/* Teachers print Docs. The banner and the push must vanish when printing. */
+@media print {
+  #revbanner-root {
+    display: none !important;
+  }
+  body {
+    margin-top: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    transform: none !important;
+  }
+}

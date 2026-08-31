@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Revision Banner — Settings</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <header class="hd">
+    <span class="logo">📊</span>
+    <div>
+      <h1>Revision Banner</h1>
+      <p>Teacher-view revision history for Google Docs — all data stays on this machine.</p>
+    </div>
+  </header>
+
+  <main class="page">
+    <section>
+      <h2>General</h2>
+      <div class="row">
+        <label for="bannerPct">Banner height <span class="hint">(share of the page top, hard-capped at 15%)</span></label>
+        <div class="inline">
+          <input type="range" id="bannerPct" min="8" max="15" step="1" />
+          <output id="bannerPctOut">13%</output>
+        </div>
+      </div>
+      <div class="row">
+        <label for="bannerDefaultCollapsed">Start collapsed (thin strip)</label>
+        <input type="checkbox" id="bannerDefaultCollapsed" />
+      </div>
+      <div class="row">
+        <label for="darkMode">Theme</label>
+        <select id="darkMode">
+          <option value="auto">Auto (follow page)</option>
+          <option value="light">Always light</option>
+          <option value="dark">Always dark</option>
+        </select>
+      </div>
+      <div class="row">
+        <label for="pushMode">Page layout</label>
+        <select id="pushMode">
+          <option value="auto">Auto-push page content down (recommended)</option>
+          <option value="overlay">Overlay the top edge (never moves the page)</option>
+        </select>
+      </div>
+      <div class="row">
+        <label for="showScore">Show writing-process score</label>
+        <input type="checkbox" id="showScore" />
+      </div>
+      <div class="row">
+        <label for="debug">Show debug info <span class="hint">(adds a debug chip to the banner and a log to Details — handy when reporting an issue)</span></label>
+        <input type="checkbox" id="debug" />
+      </div>
+    </section>
+
+    <section>
+      <h2>Tracking</h2>
+      <div class="row">
+        <label for="idleMinutes">Idle cutoff <span class="hint">(minutes without input before the active clock pauses)</span></label>
+        <input type="number" id="idleMinutes" min="1" max="10" step="1" />
+      </div>
+      <div class="row">
+        <label for="sessionGapMinutes">Session gap <span class="hint">(a pause longer than this starts a new session)</span></label>
+        <input type="number" id="sessionGapMinutes" min="10" max="120" step="5" />
+      </div>
+      <div class="row">
+        <label for="pasteThresholdChars">Bulk-insert threshold <span class="hint">(characters added in one action to flag as a paste)</span></label>
+        <input type="number" id="pasteThresholdChars" min="50" max="2000" step="50" />
+      </div>
+      <div class="row">
+        <label for="keepDays">Keep detailed sessions for <span class="hint">(days; older ones roll up into totals)</span></label>
+        <input type="number" id="keepDays" min="30" max="365" step="10" />
+      </div>
+    </section>
+
+    <section>
+      <h2>History import</h2>
+      <div class="row">
+        <label for="autoSync">Automatic import of Google's version history</label>
+        <select id="autoSync">
+          <option value="smart">Smart — once per document when you're not typing (recommended)</option>
+          <option value="always">Always — on every document open</option>
+          <option value="off">Off — import only when I click ⟳ or open version history</option>
+        </select>
+      </div>
+      <div class="row">
+        <label for="autoSyncEveryMinutes">Minimum minutes between auto-import attempts</label>
+        <input type="number" id="autoSyncEveryMinutes" min="5" max="720" step="5" />
+      </div>
+      <p class="note">Tip: the import also happens automatically whenever the version history pane is open — even manually.</p>
+    </section>
+
+    <section>
+      <h2>Where the banner appears</h2>
+      <div class="apps" id="apps">
+        <label><input type="checkbox" data-app="docs" /> Google Docs</label>
+        <label><input type="checkbox" data-app="sheets" /> Google Sheets</label>
+        <label><input type="checkbox" data-app="slides" /> Google Slides</label>
+        <label><input type="checkbox" data-app="forms" /> Google Forms</label>
+        <label><input type="checkbox" data-app="drawings" /> Google Drawings</label>
+        <label><input type="checkbox" data-app="drive" /> Drive file previews (compact)</label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Data</h2>
+      <div class="row">
+        <label>Stored data</label>
+        <div class="inline">
+          <button class="btn" id="btnExportJson">Export all data (JSON)</button>
+          <label class="btn" for="fileImport">Import data</label>
+          <input type="file" id="fileImport" accept="application/json" style="display:none" />
+          <button class="btn danger" id="btnClearAll">Clear all data</button>
+        </div>
+      </div>
+      <p class="note" id="storageNote"></p>
+    </section>
+
+    <section>
+      <h2>Experimental — Drive API metadata sync</h2>
+      <p class="note">
+        Optional higher-fidelity tier: revision metadata (who saved, when, sizes) straight from the Google Drive API
+        using your own OAuth client. Requires a Google Cloud project; see README for the 5-minute setup.
+        Everything else in the banner works without this.
+      </p>
+      <div class="row">
+        <label for="driveClientId">OAuth Client ID</label>
+        <input type="text" id="driveClientId" placeholder="xxxxxxxx.apps.googleusercontent.com" class="txt" />
+      </div>
+      <div class="row">
+        <label for="driveClientSecret">Client Secret <span class="hint">(desktop-type client: paste the secret; leave blank for clients that use no secret)</span></label>
+        <input type="password" id="driveClientSecret" class="txt" autocomplete="off" />
+      </div>
+      <div class="row">
+        <label for="driveApiAuto">Auto-sync once a day when configured</label>
+        <input type="checkbox" id="driveApiAuto" />
+      </div>
+      <div class="row">
+        <label>&nbsp;</label>
+        <div class="inline">
+          <button class="btn" id="btnDriveConnect">Connect Google account</button>
+          <button class="btn" id="btnDriveRevoke">Disconnect</button>
+        </div>
+      </div>
+      <p class="note" id="driveStatus"></p>
+    </section>
+
+    <section>
+      <h2>About</h2>
+      <p class="note">
+        Revision Banner mirrors what teachers love about revisionhistory.com-style tools: edit counts, active time,
+        work sessions, contributors and paste flags — without sending anything anywhere. Metrics combine up to four
+        independent sources (live tracking, the document's own version history, network op captures, optional Drive API),
+        and every number on the banner shows where it came from. The writing-process score is a heuristic conversation
+        starter — not proof of misconduct or AI use.
+      </p>
+      <p class="note">Keyboard: <b>Alt+R</b> collapse/expand banner · <b>Alt+D</b> details · <b>Alt+Shift+R</b> hide/show banner.</p>
+      <p class="note">Changes apply to documents opened from now on (reload open docs).</p>
+      <p class="note" id="saveStatus"></p>
+    </section>
+  </main>
+
+  <script src="options.js"></script>
+</body>
+</html>
