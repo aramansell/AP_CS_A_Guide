@@ -17,10 +17,12 @@ const DEFAULTS = {
   keepDays: 120,
   autoSync: 'smart',
   autoSyncEveryMinutes: 20,
+  autoCloseHistoryPane: true,
   driveApiAuto: false,
   showScore: true,
   debug: false,
-  apps: { docs: true, sheets: true, slides: true, forms: true, drawings: true, drive: true }
+  apps: { docs: true, sheets: true, slides: true, forms: true, drawings: true, drive: true },
+  ai: { enabled: false, url: 'https://ollama.com/v1', key: '', model: 'glm-5.3-flash:cloud' }
 };
 
 let settings = { ...DEFAULTS, apps: { ...DEFAULTS.apps } };
@@ -39,10 +41,11 @@ async function loadSettings() {
     const s = (o && o.settings) || {};
     settings = {
       ...DEFAULTS, ...s,
-      apps: { ...DEFAULTS.apps, ...((s && s.apps) || {}) }
+      apps: { ...DEFAULTS.apps, ...((s && s.apps) || {}) },
+      ai: { ...DEFAULTS.ai, ...((s && s.ai) || {}) }
     };
   } catch (e) {
-    settings = { ...DEFAULTS, apps: { ...DEFAULTS.apps } };
+    settings = { ...DEFAULTS, apps: { ...DEFAULTS.apps }, ai: { ...DEFAULTS.ai } };
   }
   bindUI();
 }
@@ -76,12 +79,18 @@ function bindUI() {
   g('keepDays').value = settings.keepDays;
   g('autoSync').value = settings.autoSync;
   g('autoSyncEveryMinutes').value = settings.autoSyncEveryMinutes;
+  g('autoCloseHistoryPane').checked = !!settings.autoCloseHistoryPane;
   g('driveApiAuto').checked = !!settings.driveApiAuto;
+  g('aiEnabled').checked = !!settings.ai.enabled;
+  g('aiUrl').value = settings.ai.url || DEFAULTS.ai.url;
+  g('aiModel').value = settings.ai.model || DEFAULTS.ai.model;
+  g('aiKey').value = settings.ai.key || '';
   for (const cb of document.querySelectorAll('#apps input[data-app]')) {
     cb.checked = settings.apps[cb.getAttribute('data-app')] !== false;
   }
   updateStorageNote();
   updateDriveUI();
+  updateAiStatus();
 }
 
 function wire() {
@@ -109,6 +118,7 @@ function wire() {
   bindCheck('showScore', 'showScore');
   bindCheck('debug', 'debug');
   bindCheck('driveApiAuto', 'driveApiAuto');
+  bindCheck('autoCloseHistoryPane', 'autoCloseHistoryPane');
   bindSelect('darkMode', 'darkMode');
   bindSelect('pushMode', 'pushMode');
   bindSelect('autoSync', 'autoSync');
@@ -131,6 +141,89 @@ function wire() {
   g('btnClearAll').addEventListener('click', clearAll);
   g('btnDriveConnect').addEventListener('click', driveConnect);
   g('btnDriveRevoke').addEventListener('click', driveRevoke);
+
+  // AI tier (opt-in, user's own endpoint + key)
+  g('aiEnabled').addEventListener('change', async (e) => {
+    settings.ai.enabled = e.target.checked;
+    scheduleSave();
+    await ensureAiPermission();
+    updateAiStatus();
+  });
+  g('aiUrl').addEventListener('change', async (e) => {
+    let v = e.target.value.trim();
+    if (!v) v = DEFAULTS.ai.url;
+    if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
+    settings.ai.url = v;
+    e.target.value = v;
+    scheduleSave();
+    await ensureAiPermission();
+    updateAiStatus();
+  });
+  g('aiModel').addEventListener('change', (e) => {
+    settings.ai.model = e.target.value.trim() || DEFAULTS.ai.model;
+    e.target.value = settings.ai.model;
+    scheduleSave();
+  });
+  g('aiKey').addEventListener('change', () => {
+    settings.ai.key = g('aiKey').value.trim();
+    scheduleSave();
+    updateAiStatus();
+  });
+}
+
+// The AI call goes to a user-chosen host, so MV3 needs a host permission for
+// it — requested on demand (user gesture) only when the tier is enabled.
+async function ensureAiPermission() {
+  try {
+    const statusEl = document.getElementById('aiStatus');
+    if (!settings.ai.enabled || !settings.ai.url) return false;
+    let origin;
+    try { origin = new URL(settings.ai.url).origin + '/*'; }
+    catch (e) { statusEl.textContent = 'That endpoint URL is not valid — fix it before enabling.'; return false; }
+    if (await chrome.permissions.contains({ origins: [origin] })) return true;
+    const granted = await chrome.permissions.request({ origins: [origin] });
+    if (!granted) {
+      statusEl.textContent = 'Network permission denied — the extension needs access to ' + origin +
+        ' to call your AI endpoint. Toggle the enable switch again to retry.';
+    }
+    return granted;
+  } catch (e) {
+    try { document.getElementById('aiStatus').textContent = 'Could not request permission: ' + e; } catch (err) { /* ignore */ }
+    return false;
+  }
+}
+
+// Same normalization as the service worker: base URL → full chat endpoint.
+function aiEndpoint(url) {
+  let u = String(url || '').trim();
+  if (!u) return '';
+  u = u.replace(/\/+$/, '');
+  if (/\/chat\/completions$/i.test(u)) return u;
+  if (/\/completions$/i.test(u)) return u;
+  return u + '/chat/completions';
+}
+
+async function updateAiStatus() {
+  try {
+    const el = document.getElementById('aiStatus');
+    if (!settings.ai.enabled) {
+      el.textContent = 'Disabled — nothing is ever sent to any AI endpoint.';
+      return;
+    }
+    if (!settings.ai.key) {
+      el.textContent = 'Enabled, but no API key yet — add one to use “Explain with AI”.';
+      return;
+    }
+    let origin = '';
+    try { origin = new URL(settings.ai.url).origin; } catch (e) { origin = ''; }
+    let perm = false;
+    if (origin) {
+      try { perm = await chrome.permissions.contains({ origins: [origin + '/*'] }); } catch (e) { perm = false; }
+    }
+    el.textContent = (perm ? 'Ready ✓ ' : '⚠ Missing network permission for ' + origin + ' — re-save the endpoint URL to grant it. ') +
+      'Calls go only to ' + aiEndpoint(settings.ai.url) + ' (model: ' + (settings.ai.model || 'default') +
+      '), only when you click “Explain with AI”, and carry metadata only — never document text.';
+  } catch (e) { /* ignore */ }
 }
 
 async function updateStorageNote() {
@@ -155,6 +248,11 @@ async function exportAll() {
     if (clean.driveAuth) {
       delete clean.driveAuth.access_token;
       delete clean.driveAuth.refresh_token;
+    }
+    // Never export the AI API key (or drive secret, belt and braces).
+    if (clean.driveAuth) delete clean.driveAuth.client_secret;
+    if (clean.settings && clean.settings.ai) {
+      clean.settings = { ...clean.settings, ai: { ...clean.settings.ai, key: '' } };
     }
     const url = URL.createObjectURL(new Blob([JSON.stringify(clean, null, 2)], { type: 'application/json' }));
     const a = document.createElement('a');

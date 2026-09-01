@@ -87,7 +87,11 @@
         <label for="autoSyncEveryMinutes">Minimum minutes between auto-import attempts</label>
         <input type="number" id="autoSyncEveryMinutes" min="5" max="720" step="5" />
       </div>
-      <p class="note">Tip: the import also happens automatically whenever the version history pane is open — even manually.</p>
+      <div class="row">
+        <label for="autoCloseHistoryPane">Close the version history pane after it imports (leave just the banner)</label>
+        <input type="checkbox" id="autoCloseHistoryPane" />
+      </div>
+      <p class="note">Tip: the import also happens automatically whenever the version history pane is open — even manually. With the option above, the pane closes itself a few seconds after the import settles; reopen it any time (Ctrl/Cmd+Alt+Shift+H) to browse.</p>
     </section>
 
     <section>
@@ -114,6 +118,33 @@
         </div>
       </div>
       <p class="note" id="storageNote"></p>
+    </section>
+
+    <section>
+      <h2>AI analysis — optional, bring your own key</h2>
+      <p class="note">
+        Adds an <b>“Explain with AI”</b> button to the score breakdown (click the score in the banner → Details).
+        When you click it, the extension sends <b>only writing-process metadata</b> — timings, sizes, counts and the
+        locally-computed signals — to an OpenAI-compatible endpoint of your choice, with your key.
+        <b>Document text is never sent.</b> Nothing leaves this machine unless you click that button.
+      </p>
+      <div class="row">
+        <label for="aiEnabled">Enable AI analysis</label>
+        <input type="checkbox" id="aiEnabled" />
+      </div>
+      <div class="row">
+        <label for="aiUrl">API endpoint <span class="hint">(any OpenAI-compatible base or /chat/completions URL — default: https://ollama.com/v1; also works with api.openai.com, OpenRouter, a local model, …)</span></label>
+        <input type="text" id="aiUrl" placeholder="https://ollama.com/v1" class="txt" />
+      </div>
+      <div class="row">
+        <label for="aiModel">Model name <span class="hint">(as the endpoint expects it; default: glm-5.3-flash:cloud)</span></label>
+        <input type="text" id="aiModel" placeholder="glm-5.3-flash:cloud" class="txt" />
+      </div>
+      <div class="row">
+        <label for="aiKey">API key <span class="hint">(stored locally in this browser only, never synced)</span></label>
+        <input type="password" id="aiKey" class="txt" autocomplete="off" />
+      </div>
+      <p class="note" id="aiStatus"></p>
     </section>
 
     <section>
