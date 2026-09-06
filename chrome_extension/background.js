@@ -22,10 +22,12 @@ const DEFAULTS = {
   keepDays: 120,                  // live session retention (older go to rollup)
   autoSync: 'smart',              // smart | off | always (auto history import)
   autoSyncEveryMinutes: 20,       // min gap between auto import attempts
+  autoCloseHistoryPane: true,    // close the history pane after a watch-mode import
   driveApiAuto: false,            // experimental Drive API tier
   showScore: true,
   debug: false,
-  apps: { docs: true, sheets: true, slides: true, forms: true, drawings: true, drive: true }
+  apps: { docs: true, sheets: true, slides: true, forms: true, drawings: true, drive: true },
+  ai: { enabled: false, url: 'https://ollama.com/v1', key: '', model: 'glm-5.3-flash:cloud' }
 };
 const KEY_SETTINGS = 'settings';
 const KEY_META = 'meta';
@@ -33,9 +35,11 @@ const KEY_META = 'meta';
 async function getSettings() {
   try {
     const o = await chrome.storage.local.get(KEY_SETTINGS);
-    return { ...DEFAULTS, ...((o && o[KEY_SETTINGS]) || {}) };
+    const s = { ...DEFAULTS, ...((o && o[KEY_SETTINGS]) || {}) };
+    s.ai = { ...DEFAULTS.ai, ...(((o && o[KEY_SETTINGS]) && o[KEY_SETTINGS].ai) || {}) };
+    return s;
   } catch (e) {
-    return { ...DEFAULTS };
+    return { ...DEFAULTS, ai: { ...DEFAULTS.ai } };
   }
 }
 
@@ -103,6 +107,7 @@ chrome.runtime.onMessage.addListener((msgRaw, sender, sendResponse) => {
         }
         case 'drive-status': sendResponse(await driveStatus()); break;
         case 'drive-sync': sendResponse(await driveSync(msg.fileId)); break;
+        case 'ai-analyze': sendResponse(await aiAnalyze(msg.payload)); break;
         default: sendResponse({ ok: false, error: 'unknown message type' });
       }
     } catch (e) {
@@ -211,5 +216,89 @@ async function driveSync(fileId) {
     return { ok: true, versions };
   } catch (e) {
     return { ok: false, error: String(e && e.message || e) };
+  }
+}
+
+// ---- optional AI tier (user-configured endpoint + key) ---------------------
+//
+// The user brings their own OpenAI-compatible endpoint (Options → AI analysis).
+// The payload is writing-process METADATA only — timestamps, sizes, counts and
+// locally-computed signals. Document text is never included. This runs in the
+// service worker so the endpoint host permission is honored (granted on demand
+// when the user enables the feature in Options).
+
+const AI_SYSTEM_PROMPT = [
+  'You analyze writing-process metadata for educators using the Revision Banner browser extension.',
+  'You will receive JSON describing timing, sessions, paste sizes and locally-computed signals for ONE document. The document\'s text is never included.',
+  'Rules:',
+  '1. Ground every statement in the specific numbers given and quote them.',
+  '2. Never conclude that a student cheated or that text is AI-generated. Describe the patterns and say what would confirm or rule out each concern.',
+  '3. Offer at least one innocent explanation for every concern (offline drafting, dictation, pasting their own earlier work, teacher-provided template, tight deadline).',
+  '4. Answer in under 200 words with these sections, exactly one per line:',
+  '"Overall read:", "Notable patterns:", "Worth asking about:", "Innocent explanations:".',
+  '5. Plain text only — no markdown, no bullet characters.'
+].join(' ');
+
+// Normalize the user's endpoint setting to a full chat-completions URL.
+// Accepts either a base (…/v1 — the default is Ollama's https://ollama.com/v1)
+// or a full …/chat/completions path, with or without trailing slashes.
+function aiEndpointFromUrl(url) {
+  let u = String(url || '').trim();
+  if (!u) return '';
+  u = u.replace(/\/+$/, '');
+  if (/\/chat\/completions$/i.test(u)) return u;
+  if (/\/completions$/i.test(u)) return u;
+  return u + '/chat/completions';
+}
+
+async function aiAnalyze(payload) {
+  try {
+    const s = await getSettings();
+    const ai = s.ai || {};
+    if (!ai.enabled || !ai.url || !ai.key) {
+      return { ok: false, error: 'AI analysis is not configured — enable it in Options with your API key.' };
+    }
+    const endpoint = aiEndpointFromUrl(ai.url);
+    if (!endpoint) {
+      return { ok: false, error: 'The AI endpoint URL is empty — set it in Options.' };
+    }
+    const body = {
+      model: ai.model || 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: AI_SYSTEM_PROMPT },
+        { role: 'user', content: typeof payload === 'string' ? payload : JSON.stringify(payload || {}) }
+      ],
+      temperature: 0.3,
+      max_tokens: 600
+    };
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 30000);
+    let res;
+    try {
+      res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + ai.key },
+        body: JSON.stringify(body),
+        signal: ctrl.signal
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+    if (!res.ok) {
+      const t = await res.text().catch(() => '');
+      let hint = '';
+      try {
+        const j = JSON.parse(t);
+        hint = (j && j.error && (j.error.message || j.error.code)) ? ' — ' + (j.error.message || j.error.code) : '';
+      } catch (e) { hint = t ? ' — ' + t.slice(0, 160) : ''; }
+      return { ok: false, error: 'API error ' + res.status + hint };
+    }
+    const j = await res.json();
+    const text = j && j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
+    if (!text) return { ok: false, error: 'Unexpected response shape from the endpoint (missing choices[0].message.content).' };
+    return { ok: true, text: String(text).trim(), model: (j && j.model) || ai.model || '' };
+  } catch (e) {
+    const m = String(e && e.message || e);
+    return { ok: false, error: /abort/i.test(m) ? 'Timed out after 30 s — try a smaller model or check the endpoint URL.' : m };
   }
 }

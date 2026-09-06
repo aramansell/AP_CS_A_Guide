@@ -3,10 +3,14 @@
   "minimum_chrome_version": "111",
   "name": "Revision Banner for Google Docs — Teacher View",
   "short_name": "RevisionBanner",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Shows Google Docs/Sheets/Slides revision history at a glance in a slim top banner: edits, active time, sessions, contributors, paste alerts and a writing-process score. All data stays on this machine.",
   "author": "AP CS A Guide",
   "permissions": ["storage", "unlimitedStorage", "identity", "tabs"],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
   "host_permissions": [
     "https://www.googleapis.com/*",
     "https://oauth2.googleapis.com/*"

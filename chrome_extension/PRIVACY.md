@@ -28,6 +28,13 @@ you view is transmitted anywhere by this extension.
 - The **only** network requests the extension itself makes are to Google's APIs, and
   only if you personally configure the optional Drive API tier in Settings. If you do
   not configure it, the extension makes zero network requests.
+- **Optional AI tier (off by default):** if you enable *AI analysis* in Settings with your own
+  endpoint and key, clicking "Explain with AI" sends **writing-process metadata only** —
+  timestamps, sizes, counts and locally computed signals — to the endpoint you configured.
+  **Document text is never sent.** The endpoint host permission is requested only when you
+  enable the feature, nothing is sent until you click the button, and the analysis is stored
+  locally with the document record. Your API key stays in local browser storage and is never
+  included in data exports.
 - Data never leaves the machine: exports (CSV/JSON) are generated in-memory and saved by
   you, to a file you choose, on your computer.
 

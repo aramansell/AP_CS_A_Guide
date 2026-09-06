@@ -190,16 +190,19 @@
     keepDays: 120,
     autoSync: 'smart',
     autoSyncEveryMinutes: 20,
+    autoCloseHistoryPane: true,
     driveApiAuto: false,
     showScore: true,
     debug: false,
-    apps: { docs: true, sheets: true, slides: true, forms: true, drawings: true, drive: true }
+    apps: { docs: true, sheets: true, slides: true, forms: true, drawings: true, drive: true },
+    ai: { enabled: false, url: 'https://ollama.com/v1', key: '', model: 'glm-5.3-flash:cloud' }
   };
 
   async function loadSettings() {
     const o = await store.get('settings', {});
     const s = Object.assign({}, DEFAULTS, o || {});
     s.apps = Object.assign({}, DEFAULTS.apps, (o && o.apps) || {});
+    s.ai = Object.assign({}, DEFAULTS.ai, (o && o.ai) || {});
     return s;
   }
 
@@ -485,6 +488,25 @@
     return isNaN(t) ? null : t;
   }
 
+  /* Rich, local-only measurements of a pasted block. The text itself is
+   * NEVER stored — only these counts, which power the "structured paste"
+   * signal (final-quality text arriving in one block) and the AI payload. */
+  function pasteStatsFromText(text) {
+    try {
+      const s = String(text || '');
+      if (!s) return null;
+      const words = (s.match(/[\p{L}\p{N}][\p{L}\p{N}'’\-]*/gu) || []).length;
+      const paras = Math.max(0, s.split(/\n\s*\n/).filter((p) => p.trim()).length);
+      const bullets = (s.match(/(?:^|\n)\s*(?:[-*•·]|\d+[.)])\s+\S/g) || []).length;
+      const links = (s.match(/https?:\/\/\S+/gi) || []).length;
+      const sentences = (s.match(/[^\n.!?…]+[.!?…]+/g) || []).length;
+      const avgSentLen = sentences ? Math.round(words / sentences) : 0;
+      const smartQuotes = (s.match(/[“”‘’]/g) || []).length;
+      const emDashes = (s.match(/[—–]/g) || []).length;
+      return { words, paras, bullets, links, sentences, avgSentLen, smartQuotes, emDashes };
+    } catch (e) { return null; }
+  }
+
   /* =====================================================================
    * 7. Live tracking (keystrokes, pastes, active time, DOM text deltas)
    * ===================================================================== */
@@ -621,16 +643,18 @@
         this.activity();
         this.lastLocalInput = nowMs();
         if (this.paused) return;
-        let chars = 0;
+        let chars = 0, txt = '';
         try {
           const d = e && e.clipboardData;
-          const txt = d && d.getData ? d.getData('text/plain') : '';
+          txt = d && d.getData ? d.getData('text/plain') : '';
           if (txt) chars = txt.length;
-        } catch (err) { chars = 0; }
+        } catch (err) { chars = 0; txt = ''; }
         if (chars >= 40) {
           if (!Array.isArray(this.session.pastes)) this.session.pastes = [];
           if (this.session.pastes.length < 300) {
-            this.session.pastes.push({ t: nowMs(), chars, via: 'paste' });
+            // Rich LOCAL stats about the pasted block (words, paragraphs,
+            // sentence length…). The text itself is never stored.
+            this.session.pastes.push({ t: nowMs(), chars, via: 'paste', stats: pasteStatsFromText(txt) });
             this.onDirty();
           }
         }
@@ -718,6 +742,18 @@
     }
   }
 
+  // Save-chip / version-history-button detector. Pure so the typo that broke
+  // it once (a `/s+/g` regex that stripped the letter "s" out of "All changes
+  // saved in Drive" — the automation's main entry point could never match)
+  // is unit-tested forever.
+  const SAVE_CHIP_RE = /all changes saved|saved in drive|saved to drive|see version history|version history/i;
+
+  function isSaveChipText(v) {
+    const s = String(v || '').replace(/\s+/g, ' ').trim();
+    if (!s || s.length > 80) return false;
+    return SAVE_CHIP_RE.test(s);
+  }
+
   /* =====================================================================
    * 8. Version-history pane: discovery, scraping, automation
    * ===================================================================== */
@@ -788,76 +824,214 @@
     return { ts, editor, edits, raw: s.slice(0, 80) };
   }
 
-  // Walk up from a date/time text node to the enclosing tile: largest ancestor
-  // whose text is still short (tiles are short; the list container is not).
-  function tileRootFrom(node, panel) {
+  // Pure date header (never a bare clock time and never "N … ago" — those are
+  // real entry timestamps, not headers).
+  const DATE_HEADER_RE = /\b(today|yesterday|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s+\d{4})?)\b/i;
+
+  // Candidate editor names must not be dates, clock times or UI chrome.
+  function looksLikeDateText(s) {
+    return /\d/.test(s) || /\d{1,2}:\d{2}/.test(s) ||
+      /^(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*$/i.test(s) ||
+      /^(?:today|yesterday)$/i.test(s);
+  }
+
+  // Walk up from a date/time text node to the enclosing version-entry tile.
+  // v2: the old "largest ancestor with ≤320 chars of text" heuristic merged
+  // an entire date group into ONE tile whenever its combined text was short,
+  // collapsing every contributor in the group into the first avatar and
+  // emitting a single version for many distinct entries (the "shows only 1
+  // contributor" bug). A tile must now stay pure: it may never contain a
+  // second timestamped entry. We prefer the smallest ancestor that holds the
+  // entry's avatar image, respect semantic roles, and stop at the first
+  // ancestor that contains another timestamp.
+  function tileForMatch(node, panel, countMap) {
     try {
       let p = node.parentElement, tile = p;
       for (let d = 0; d < 14 && p && p !== panel; d++) {
         const role = p.getAttribute ? (p.getAttribute('role') || '') : '';
-        if (role === 'listitem' || role === 'option' || role === 'row') return p;
-        if (textOf(p, 360).length > 320) break;
-        tile = p;
+        const cnt = countMap.get(p) || 0;
+        if ((role === 'listitem' || role === 'option' || role === 'row') && cnt <= 3) return p;
+        if (cnt > 3) break;                      // would swallow several entries
+        let hasImg = false;
+        try { hasImg = !!p.querySelector('img'); } catch (e) { hasImg = false; }
+        if (hasImg && cnt === 1) return p;       // avatar lives here → the entry
+        if (cnt > 1) break;                      // purity: never merge siblings
+        if (textOf(p, 360).length > 340) break;  // huge container → stay low
+        tile = p;                                // pure and short → extend
         p = p.parentElement;
       }
-      return (tile && tile !== panel) ? tile : node.parentElement;
+      if (tile === panel) tile = node.parentElement;
+      return (tile && tile !== panel) ? tile : (node.parentElement || null);
     } catch (e) { return node.parentElement || null; }
   }
 
-  function scrapeVersionPanel(panel) {
+  // Avatar alt text → editor name. Google decorates avatars in several formats
+  // ("Alice Smith", "Profile picture of Alice Smith", "Avatar image for …");
+  // strip the decoration and reject chrome-y values.
+  function avatarNameIn(tile) {
+    try {
+      for (const img of tile.querySelectorAll('img[alt]')) {
+        let a = (img.getAttribute('alt') || '').trim();
+        if (!a || a.length > 80) continue;
+        const m = a.match(/^(?:profile\s+(?:picture|photo|image)|avatar(?:\s+image)?|image|photo|picture)\s+(?:of|for)\s+(.+)$/i);
+        if (m) a = m[1].trim();
+        if (!a) continue;
+        if (/^(?:image|photo|avatar|icon|profile|picture|alt|logo)$/i.test(a)) continue;
+        if (/\.(?:png|jpe?g|gif|svg|webp)\b/i.test(a)) continue;
+        if (looksLikeDateText(a)) continue;
+        if (a.length > 60) continue;
+        if (/^(you|yourself)$/i.test(a)) a = 'You';
+        return a;
+      }
+    } catch (e) { /* ignore */ }
+    return null;
+  }
+
+  // aria-labels on the tile or its children → editor name.
+  function ariaNameIn(tile) {
+    try {
+      const cands = [];
+      if (tile.getAttribute && tile.getAttribute('aria-label')) cands.push(tile);
+      for (const el of tile.querySelectorAll('[aria-label]')) cands.push(el);
+      for (const el of cands) {
+        const a = el.getAttribute('aria-label') || '';
+        const am = a.match(/(?:edited\s+by|avatar(?:\s+image)?(?:\s+of|\s+for)?|profile\s+(?:picture|photo|image)\s+of|image\s+of|picture\s+of)\s+(.+)/i);
+        if (!am || !am[1]) continue;
+        let n = am[1].trim().replace(/\s*\d{1,2}:\d{2}.*$/, '').trim();
+        if (!n || n.length > 60) continue;
+        if (looksLikeDateText(n)) continue;
+        if (/^(you|yourself)$/i.test(n)) n = 'You';
+        return n;
+      }
+    } catch (e) { /* ignore */ }
+    return null;
+  }
+
+  // Last resort: the tile's own text with times/dates/UI phrases stripped —
+  // whatever short name-like span remains is the editor shown in panes that
+  // render "Name" + "time" without usable avatar alt text.
+  const TILE_NAME_STOP = new Set(('today yesterday version versions unnamed edited made restore revert ' +
+    'name show see open close delete image photo picture avatar profile icon document file ' +
+    'slide sheet form drive docs all this that the and anonymous guest user').split(' '));
+
+  function bareNameFromText(text) {
+    try {
+      let s = String(text || '')
+        .replace(/\d{1,2}:\d{2}\s*(?:a\.?m\.?|p\.?m\.?)?/gi, ' ')
+        .replace(/\d+\s*(?:minutes?|hours?|days?|weeks?|months?)\s+ago/gi, ' ')
+        .replace(/\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s+\d{4})?/gi, ' ')
+        .replace(/\b(?:today|yesterday)\b/gi, ' ')
+        .replace(/\b(?:restore\s+this\s+version|name\s+this\s+version|see\s+(?:all\s+)?(?:newer\s+)?changes?|show\s+(?:newer\s+)?changes?|made\s+\d+\s+edits?|\d+\s+edits?|unnamed\s+version|more\s+edits?)\b/gi, ' ')
+        .replace(/[^\p{L}\p{N}\s'\u2019.\-]/gu, ' ')
+        .replace(/\s+/g, ' ').trim();
+      if (!s || s.length > 60 || /\d/.test(s)) return null;
+      const words = s.split(' ');
+      if (!words.length || words.length > 5) return null;
+      const first = words[0].replace(/[.'\u2019-]+$/, '').toLowerCase();
+      const last = words[words.length - 1].replace(/[.'\u2019-]+$/, '').toLowerCase();
+      if (TILE_NAME_STOP.has(first) || TILE_NAME_STOP.has(last)) return null;
+      if (/^(you|yourself)$/i.test(s)) return 'You';
+      return s;
+    } catch (e) { return null; }
+  }
+
+  // Pure aggregation step (no DOM — unit-tested in tools/logic-test.mjs):
+  // turn scraped per-entry groups into one version entry per timestamp.
+  // Date-only fragments are headers, never versions. A part without its own
+  // date inherits the date header that was in effect when its group was
+  // first seen (not the last header in the pane). The "made N edits" count
+  // attaches to the group's first timestamp only, so a multi-timestamp entry
+  // is not double counted.
+  function assemblePanelVersions(groups) {
     const out = [];
+    for (const g of groups) {
+      try {
+        if (!g || !Array.isArray(g.parts) || !g.parts.length) continue;
+        const editor = g.editor || null;
+        let first = true;
+        for (const part of g.parts) {
+          const s = String(part || '').trim();
+          if (!s) continue;
+          const isTimed = /\d{1,2}:\d{2}/.test(s) ||
+            /\d+\s*(?:minutes?|hours?|days?|weeks?|months?)\s+ago/i.test(s);
+          if (!isTimed) continue; // date header (or label row) — not a version
+          let ts = null;
+          if (DATE_CTX_RE.test(s)) ts = parseWhen(s);
+          if (ts == null && g.date) ts = parseWhen(g.date + ', ' + s);
+          if (ts == null || isNaN(ts)) continue;
+          out.push({
+            ts: ts,
+            editor: editor,
+            edits: first ? (g.edits != null ? g.edits : null) : null,
+            src: 'panel',
+            raw: s.slice(0, 80)
+          });
+          first = false;
+        }
+      } catch (e) { /* per-group guard */ }
+    }
+    out.sort((a, b) => a.ts - b.ts);
+    return out;
+  }
+
+  function scrapeVersionPanel(panel) {
     try {
       const t0 = nowMs();
       const whenRe = /\b(today|yesterday|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{1,2}|\d{1,2}:\d{2}\s*(?:a\.?m\.?|p\.?m\.?)|\d+\s*(?:minutes?|hours?|days?|weeks?|months?)\s+ago)\b/i;
-      // Single document-order walk: date headers establish the current date
-      // context; time-only tiles inherit it instead of being stamped "today".
+      // Pass 1 — every timestamp-ish text node, in document order.
       const walker = document.createTreeWalker(panel, NodeFilter.SHOW_TEXT, null);
-      const tiles = new Map();
-      let node, budget = 4000, found = 0, curDateText = '';
-      while ((node = walker.nextNode()) && budget-- > 0 && found < 600) {
-        if ((found & 31) === 0 && nowMs() - t0 > 250) break;
+      const matches = [];
+      let node, budget = 4000;
+      while ((node = walker.nextNode()) && budget-- > 0) {
+        if (matches.length >= 600) break;
+        if ((matches.length & 31) === 0 && nowMs() - t0 > 250) break;
         const own = (node.nodeValue || '').replace(/\s+/g, ' ').trim();
         if (!own || own.length > 40 || !whenRe.test(own)) continue;
-        if (DATE_CTX_RE.test(own)) curDateText = own;
-        const tile = tileRootFrom(node, panel);
-        if (!tile || tile === panel) continue;
-        let t = tiles.get(tile);
-        if (!t) { t = { parts: [] }; tiles.set(tile, t); found++; }
-        t.parts.push(own);
+        matches.push({ node: node, own: own });
       }
-      for (const [tile, t] of tiles) {
-        if (out.length >= 400) break;
+      // Pass 2 — how many matches live under each ancestor (purity counts).
+      const countMap = new Map();
+      for (const m of matches) {
+        let p = m.node.parentElement;
+        for (let d = 0; d < 16 && p && p !== panel; d++) {
+          countMap.set(p, (countMap.get(p) || 0) + 1);
+          p = p.parentElement;
+        }
+      }
+      // Pass 3 — one group per entry tile, remembering the date header that
+      // was in effect at first sight.
+      const groups = [];
+      const byEl = new Map();
+      let curDate = '';
+      for (const m of matches) {
+        if (DATE_HEADER_RE.test(m.own) && !/\d{1,2}:\d{2}/.test(m.own)) curDate = m.own;
+        const el = tileForMatch(m.node, panel, countMap);
+        if (!el || el === panel) continue;
+        let g = byEl.get(el);
+        if (!g) { g = { el: el, parts: [], date: curDate }; byEl.set(el, g); groups.push(g); }
+        g.parts.push(m.own);
+      }
+      // Pass 4 — resolve each tile's editor from its own full text, avatar
+      // and aria-labels. (The old code only ever parsed the time fragments,
+      // so the "X made N edits" name patterns could never fire on the real
+      // pane — names depended entirely on img[alt] luck.)
+      for (const g of groups) {
         if (nowMs() - t0 > 600) break;
-        let joined = t.parts.join(', ');
-        if (!DATE_CTX_RE.test(joined)) {
-          // No date in this tile: combine with the current group's date header.
-          if (!curDateText) continue;
-          joined = curDateText + ', ' + joined;
-        }
-        const parsed = parseTileText(joined);
-        if (!parsed || parsed.ts == null) continue;
-        let editor = parsed.editor;
-        try {
-          const img = tile.querySelector('img[alt]');
-          const alt = img ? (img.getAttribute('alt') || '').trim() : '';
-          if (alt && alt.length < 80 && !/^image$/i.test(alt)) editor = alt;
-        } catch (e) { /* per-tile guard */ }
-        if (!editor) {
-          try {
-            for (const el of tile.querySelectorAll('[aria-label]')) {
-              const a = el.getAttribute('aria-label') || '';
-              const am = a.match(/(?:edited by|avatar(?: image)?(?: of| for)?)\s+(.+)/i);
-              if (am && am[1] && am[1].length < 60) { editor = am[1].trim(); break; }
-            }
-          } catch (e) { /* per-tile guard */ }
-        }
-        out.push({ ts: parsed.ts, editor, edits: parsed.edits, src: 'panel', raw: parsed.raw });
+        const full = textOf(g.el, 400);
+        const parsed = parseTileText(full.slice(0, 340));
+        g.edits = parsed ? parsed.edits : null;
+        g.editor = parsed ? parsed.editor : null;
+        if (!g.editor) g.editor = avatarNameIn(g.el);
+        if (!g.editor) g.editor = ariaNameIn(g.el);
+        if (!g.editor) g.editor = bareNameFromText(full);
       }
-      out.sort((a, b) => a.ts - b.ts);
+      const out = assemblePanelVersions(groups);
+      // Keep the most recent 400 if a huge pane overflowed.
+      return out.length > 400 ? out.slice(out.length - 400) : out;
     } catch (e) {
       log('scrape error: ' + e);
+      return [];
     }
-    return out;
   }
 
   class HistoryManager {
@@ -915,7 +1089,7 @@
               this.ui.toast('Importing version history…', 2500);
             }
             this.watchPanel(panel);
-            setTimeout(() => this.scrapePanel(), 1000);
+            setTimeout(async () => { this.maybeAutoClosePane(await this.scrapePanel()); }, 1000);
           } else if (!panel && this.lastPanel) {
             this.lastPanel = null;
             this.tracker.setPaused(false);
@@ -935,10 +1109,12 @@
       try {
         this.stopWatchPanel();
         this.panelScrapes = 0;
+        this._paneSeenN = 0;
+        clearTimeout(this._paneCloseTimer);
         const rescrape = debounce(() => {
           if (this.panelScrapes > 45) return;   // hard cap: never thrash the renderer
           this.panelScrapes++;
-          this.scrapePanel();
+          (async () => { this.maybeAutoClosePane(await this.scrapePanel()); })();
         }, 2200);
         this.panelObserver = new MutationObserver(() => rescrape());
         this.panelObserver.observe(panel, { childList: true, subtree: true, characterData: true });
@@ -1059,12 +1235,26 @@
         if (viaMenu) return await this.finishAutoImport(viaMenu, auto);
         const viaKey = await this.tryKeyboardShortcut();
         if (viaKey) return await this.finishAutoImport(viaKey, auto);
+        // No pane entry point worked. If the Drive API tier is configured,
+        // fall back to it automatically — no user action needed at all.
+        if (this.driveConfigured && await this.driveSync(true)) return true;
+        // Dismiss anything our attempts may have opened (stray File menu,
+        // hover popups, half-opened dialogs).
+        try {
+          const esc = { key: 'Escape', keyCode: 27, which: 27, bubbles: true, cancelable: true };
+          document.dispatchEvent(new KeyboardEvent('keydown', esc));
+          document.dispatchEvent(new KeyboardEvent('keyup', esc));
+        } catch (e) { /* ignore */ }
         this.rec.hist.importStatus = {
           at: nowMs(), ok: false,
-          reason: 'no entry point found — view-only doc or a changed Google UI'
+          reason: this.driveConfigured
+            ? 'no pane entry point found and the Drive API sync failed (see Options → Drive API for the last error)'
+            : 'no entry point found — view-only doc or a changed Google UI'
         };
         if (!auto) {
-          this.ui.toast('Could not open version history automatically. Open File → Version history once (or click “All changes saved in Drive”, top-left) — I will import it automatically. View-only docs may not offer it.', 10000);
+          this.ui.toast(this.driveConfigured
+            ? 'Could not open version history, and the Drive API sync failed too — check Options → Drive API (the last error is shown there), or open File → Version history once and I will import it automatically.'
+            : 'Could not open version history automatically. Open File → Version history once (or click “All changes saved in Drive”, top-left) — I will import it automatically. View-only docs may not offer it.', 10000);
         } else {
           this.ui.toast('Tip: open File → Version history once and I will import the full timeline.', 6000);
         }
@@ -1077,26 +1267,48 @@
       }
     }
 
+    clickLikeUser(el) {
+      // Synthetic events are untrusted, but Google menus and title-bar chips
+      // respond to a realistic pointer sequence far more reliably than a
+      // bare .click().
+      try {
+        const r = { bubbles: true, cancelable: true, view: window };
+        if (typeof PointerEvent === 'function') el.dispatchEvent(new PointerEvent('pointerdown', r));
+        el.dispatchEvent(new MouseEvent('mousedown', r));
+        if (typeof PointerEvent === 'function') el.dispatchEvent(new PointerEvent('pointerup', r));
+        el.dispatchEvent(new MouseEvent('mouseup', r));
+      } catch (e) { /* ignore */ }
+      try { el.click(); } catch (e) { /* ignore */ }
+    }
+
     async trySaveChip() {
-      // Edit mode only: Docs shows “All changes saved in Drive” in the title
-      // bar, which opens the version history pane directly.
+      // Edit mode: Docs shows “All changes saved in Drive” in the title bar,
+      // which opens the version-history pane directly, and the top chrome
+      // carries a “Version history” control with the same effect. Try both.
       try {
         const root = $('#docs-chrome') || $('#docs-header') || document.body;
         if (!root) return null;
+        const cands = [];
+        const seen = new Set();
+        const add = (el) => { if (el && !seen.has(el)) { seen.add(el); cands.push(el); } };
         const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
-        let n, chipNode = null, steps = 0;
+        let n, steps = 0;
         while ((n = walk.nextNode()) && steps++ < 6000) {
-          const v = (n.nodeValue || '').replace(/s+/g, ' ').trim();
-          if (/all changes saved|saved in drive|saved to drive/i.test(v)) { chipNode = n; break; }
+          if (isSaveChipText(n.nodeValue)) add(n.parentElement);
         }
-        if (!chipNode) return null;
-        let target = chipNode.parentElement;
-        for (let i = 0; i < 5 && target; i++) {
-          target.click();
-          await new Promise((r) => setTimeout(r, 1300));
-          const p = this.findPanel();
-          if (p) return p;
-          target = target.parentElement;
+        for (const el of $$('[aria-label]', root)) {
+          if (isSaveChipText(el.getAttribute('aria-label'))) add(el);
+        }
+        if (!cands.length) return null;
+        for (const cand of cands.slice(0, 2)) {
+          let target = cand;
+          for (let i = 0; i < 4 && target; i++) {
+            this.clickLikeUser(target);
+            await new Promise((r) => setTimeout(r, 1100));
+            const p = this.findPanel();
+            if (p) return p;
+            target = target.parentElement;
+          }
         }
         return null;
       } catch (e) {
@@ -1157,27 +1369,33 @@
                 return r.width > 0 && r.height > 0 && r.top < 400;
               });
             if (!fileMenu) return resolve(null);
-            fileMenu.click();
-            await new Promise((r) => setTimeout(r, 450));
-            let item = $$('[role="menuitem"], [class*="menuitem"]').find((el) =>
-              /version history|revision history/i.test(el.getAttribute('aria-label') || el.textContent || ''));
+            this.clickLikeUser(fileMenu);
+            await new Promise((r) => setTimeout(r, 500));
+            const items = () => $$('[role="menuitem"], [class*="menuitem"]');
+            const itemText = (el) => ((el.getAttribute && el.getAttribute('aria-label')) || el.textContent || '');
+            // Some layouts expose the pane item directly in the File menu.
+            let item = items().find((el) => /see version history|see revision history/i.test(itemText(el)));
             if (item) {
-              item.click();
+              this.clickLikeUser(item);
+              await new Promise((r) => setTimeout(r, 1800));
+              return resolve(this.findPanel());
+            }
+            // Standard layout: File → Version history → See version history.
+            item = items().find((el) => /version history|revision history/i.test(itemText(el)));
+            if (item) {
+              this.clickLikeUser(item);
               try {
                 item.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
                 item.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
               } catch (e) { /* ignore */ }
-              await new Promise((r) => setTimeout(r, 450));
-              item = $$('[role="menuitem"], [class*="menuitem"]').find((el) =>
-                /see version history|see revision history/i.test(el.getAttribute('aria-label') || el.textContent || ''));
-              if (item) {
-                item.click();
+              await new Promise((r) => setTimeout(r, 500));
+              const sub = items().find((el) => /see version history|see revision history/i.test(itemText(el)));
+              if (sub) {
+                this.clickLikeUser(sub);
                 await new Promise((r) => setTimeout(r, 1800));
-                const p = this.findPanel();
-                return resolve(p);
+                return resolve(this.findPanel());
               }
             }
-            // menus may have closed; try to dismiss anything stray
             resolve(null);
           } catch (e) {
             log('menu automation error: ' + e);
@@ -1211,9 +1429,36 @@
       }
     }
 
+    /* Auto-close the history pane once the import has settled, so the screen
+     * returns to just the banner (setting: autoCloseHistoryPane). The timer
+     * restarts on every scrape that finds NEW entries — lazy-loading older
+     * versions keeps the pane open until it quiets down — and never races the
+     * automation flow, which closes the pane itself. */
+    maybeAutoClosePane(n) {
+      try {
+        if (!this.cfg.autoCloseHistoryPane) return;
+        if (!(n > 0) || !(n > (this._paneSeenN || 0))) return;
+        // automation opened this pane (recent attempt) — it closes it itself
+        if (nowMs() - (this.rec.hist.lastAutoTry || 0) < 20000) return;
+        this._paneSeenN = n;
+        clearTimeout(this._paneCloseTimer);
+        this._paneCloseTimer = setTimeout(async () => {
+          try {
+            if (!this.findPanel()) return;
+            const closed = await this.closePanel();
+            if (closed) {
+              const isMac = /Mac/i.test(navigator.platform || navigator.userAgent || '');
+              this.ui.toast('History pane closed after import ✓ — reopen any time with ' +
+                (isMac ? '⌘' : 'Ctrl') + '+Alt+Shift+H to browse.', 4200);
+            }
+          } catch (e) { /* ignore */ }
+        }, 5000);
+      } catch (e) { log('auto-close pane error: ' + e); }
+    }
+
     /* ---- Drive API (optional tier) ------------------------------------ */
 
-    async driveSync() {
+    async driveSync(silent) {
       const r = await bgMsg({ type: 'drive-sync', fileId: this.rec.id });
       if (r && r.ok && Array.isArray(r.versions)) {
         this.mergeVersions(r.versions.map((v) => Object.assign({}, v, { src: 'drive' })), 'drive');
@@ -1223,7 +1468,9 @@
         this.ui.toast('Drive API: merged ' + r.versions.length + ' revisions ✓', 4000);
         return true;
       }
-      this.ui.toast('Drive API sync failed: ' + ((r && r.error) || 'not configured'), 5000);
+      // silent: called as the autoImport fallback — the import toast
+      // covers the failure; no need for two toasts.
+      if (!silent) this.ui.toast('Drive API sync failed: ' + ((r && r.error) || 'not configured'), 5000);
       return false;
     }
 
@@ -1355,6 +1602,13 @@
       stats.bulk = pastes.filter((p) => (p.chars || 0) >= thresh).slice(-200);
       stats.bulkChars = stats.bulk.reduce((n, p) => n + (p.chars || 0), 0) + (roll.bulkChars || 0);
 
+      // Typed vs pasted: a paste keeps lastLocalInput fresh, so its DOM delta
+      // is already counted inside addChars — the pasted share is therefore
+      // bulkChars / addChars, clamped (never (addChars+bulkChars), which
+      // double-counts and understates pasting).
+      stats.pastedShare = addChars > 0 ? clamp(stats.bulkChars / Math.max(1, addChars), 0, 1) : null;
+      stats.words = rec.words || null;
+
       const versionEdits = versions.reduce((n, v) => n + (v.edits || 0), 0);
       const netOps = ops.length + (rec.hist && rec.hist.opsRollup || 0);
 
@@ -1434,7 +1688,11 @@
         contrib.set(v.editor, c);
       }
       const me = rec.account || 'You';
-      if (liveEdits > 0 || rec.account) {
+      // Only count the local viewer when this machine actually recorded their
+      // edits. Counting `rec.account` unconditionally made anyone who merely
+      // OPENED the doc (teacher view) a "contributor", which masked the
+      // missing version-history names behind a constant "1".
+      if (liveEdits > 0) {
         const c = contrib.get(me) || { name: me, versions: 0, edits: 0 };
         c.edits += liveEdits;
         contrib.set(me, c);
@@ -1503,7 +1761,7 @@
         parts.push({ label, q: clamp(q, 0, 1), weight, detail });
       };
       if (addChars + stats.bulkChars > 0) {
-        const r = stats.bulkChars / Math.max(1, addChars + stats.bulkChars);
+        const r = clamp(stats.bulkChars / Math.max(1, addChars), 0, 1);
         const q = r <= 0.05 ? 1 : (r >= 0.6 ? 0 : 1 - (r - 0.05) / 0.55);
         addPart('Paste ratio', q, 0.35, Math.round(r * 100) + '% of added text came from bulk inserts');
       }
@@ -1528,6 +1786,272 @@
     } catch (e) {
       log('computeStats error: ' + e);
       return stats;
+    }
+  }
+
+  /* =====================================================================
+   * 9b. Insight engine — evidence-backed "suspicious edit" signals.
+   * Pure (no DOM): every signal carries concrete numbers a teacher can verify
+   * against the raw tables in the same details panel. Works from live
+   * sessions when present, from imported-history sessions otherwise, so
+   * teacher-view of a student doc still gets session-based signals.
+   * ===================================================================== */
+
+  const SEV_ORDER = { high: 0, warn: 1, note: 2, good: 3, info: 4 };
+
+  function computeInsights(stats, rec, cfg) {
+    const out = [];
+    try {
+      if (!stats || !rec) return out;
+      const live = (rec.live && Array.isArray(rec.live.sessions)) ? rec.live.sessions.filter(Boolean) : [];
+      const roll = (rec.live && rec.live.rollup) || {};
+      const bulk = (stats.bulk || []).slice();
+      const addChars = live.reduce((n, s) => n + (s.addChars || 0), 0) + (roll.addChars || 0);
+      const liveEdits = live.reduce((n, s) => n + (s.edits || 0), 0) + (roll.edits || 0);
+      const thresh = (cfg && cfg.pasteThresholdChars) || DEFAULTS.pasteThresholdChars;
+      const hasLive = live.length > 0 && (addChars > 0 || liveEdits > 0);
+      const hist = stats.histSessions || [];
+      const sess = hasLive
+        ? live
+        : hist.map((c) => ({ start: c.start, end: c.end, activeMs: Math.max(c.end - c.start, 300000), edits: c.n || 0, addChars: 0, delChars: 0, pastes: [] }));
+      const totalActive = sess.reduce((n, s) => n + (s.activeMs || 0), 0);
+      const totalAdd = sess.reduce((n, s) => n + (s.addChars || 0), 0);
+      const totalN = sess.reduce((n, s) => n + (s.edits || 0), 0);
+
+      // 1) Pasted share of everything typed into this document (this browser).
+      if (stats.pastedShare != null && addChars > 400) {
+        const pct = Math.round(stats.pastedShare * 100);
+        if (pct >= 10) {
+          const top = bulk.slice().sort((a, b) => (b.chars || 0) - (a.chars || 0)).slice(0, 3);
+          out.push({
+            id: 'pasted-share',
+            title: pct >= 60 ? 'Most of the text arrived by paste' : pct >= 25 ? 'A large share of the text arrived by paste' : 'Some pasted content',
+            severity: pct >= 60 ? 'high' : (pct >= 25 ? 'warn' : 'note'),
+            summary: pct + '% of the ' + fmtNum(addChars) + ' characters added in this browser came from ' +
+              bulk.length + ' bulk insertion' + (bulk.length === 1 ? '' : 's') + ' of ' + thresh + '+ characters.',
+            evidence: top.map((p) => fmtDate(p.t) + ' — ' + fmtNum(p.chars) + ' chars' +
+              (p.stats ? ' · ' + fmtNum(p.stats.words) + ' words · ' + p.stats.paras + ' paragraph' + (p.stats.paras === 1 ? '' : 's') : ''))
+          });
+        }
+      }
+
+      // 2) Structured paste: final-quality formatting arrived in one block.
+      for (const p of bulk) {
+        const st = p && p.stats;
+        if (!st || !st.words || st.words < 80) continue;
+        if ((st.paras >= 3 || st.bullets >= 4) &&
+            (st.avgSentLen >= 18 || st.bullets >= 4 || st.links >= 2 || st.smartQuotes >= 3)) {
+          out.push({
+            id: 'structured-paste',
+            title: 'Fully-formed text landed in one block',
+            severity: 'warn',
+            summary: 'One insertion brought ' + fmtNum(st.words) + ' words across ' + st.paras + ' paragraph' + (st.paras === 1 ? '' : 's') +
+              (st.bullets ? ', ' + st.bullets + ' list item' + (st.bullets === 1 ? '' : 's') : '') +
+              ' (average sentence: ' + st.avgSentLen + ' words). Multi-paragraph, polished structure usually emerges from typing across many edits — not from one insertion.',
+            evidence: [fmtDate(p.t) + ' — ' + fmtNum(p.chars) + ' chars' +
+              (st.links ? ' · ' + st.links + ' link' + (st.links === 1 ? '' : 's') : '') +
+              (st.smartQuotes ? ' · ' + st.smartQuotes + ' typographic quote marks' : '') +
+              (st.emDashes ? ' · ' + st.emDashes + ' em/en dashes' : '')]
+          });
+          break;
+        }
+      }
+
+      // 3) Single-session dominance.
+      const domVal = hasLive ? totalAdd : totalN;
+      if (domVal > 0 && sess.length >= 2 && (hasLive ? totalAdd >= 800 : totalN >= 10)) {
+        let topS = null, topV = 0;
+        for (const s of sess) {
+          const v = hasLive ? (s.addChars || 0) : (s.edits || 0);
+          if (v > topV) { topV = v; topS = s; }
+        }
+        const share = topV / domVal;
+        if (share >= 0.6) {
+          out.push({
+            id: 'session-dominance',
+            title: Math.round(share * 100) + '% of the document came from one session',
+            severity: share >= 0.8 ? 'warn' : 'note',
+            summary: 'One working session (' + fmtDate(topS.start) + ', ' + fmtDur(topS.activeMs) + ' active) produced ' +
+              (hasLive ? fmtNum(topV) + ' of ' + fmtNum(domVal) + ' characters' : topV + ' of ' + domVal + ' checkpoints') +
+              '. The other ' + (sess.length - 1) + ' session' + (sess.length === 2 ? '' : 's') + ' contributed the rest.',
+            evidence: []
+          });
+        }
+      }
+
+      // 4) Compressed timeline: everything in one or two short sittings.
+      if (sess.length >= 1 && sess.length <= 2 && totalActive >= 10 * 60000 && totalActive <= 4 * 3600000 &&
+          (hasLive ? totalAdd >= 1000 : totalN >= 8)) {
+        out.push({
+          id: 'compressed-timeline',
+          title: 'The whole document was made in ' + (sess.length === 1 ? 'one sitting' : 'two sittings'),
+          severity: totalActive < 90 * 60000 ? 'warn' : 'note',
+          summary: 'Only ' + sess.length + ' session' + (sess.length === 1 ? '' : 's') + ' (' + fmtDur(totalActive) +
+            ' active total, ' + (stats.activeDays || 1) + ' active day' + (stats.activeDays === 1 ? '' : 's') +
+            ') produced the entire document. Original essays usually accumulate across more sessions.',
+          evidence: sess.map((s) => fmtDate(s.start) + ' — ' + fmtDur(s.activeMs) + ' active')
+        });
+      }
+
+      // 5) Overnight editing.
+      const night = sess.filter((s) => { const h = new Date(s.start).getHours(); return h < 5 && (s.activeMs || 0) > 5 * 60000; });
+      if (night.length) {
+        out.push({
+          id: 'overnight',
+          title: 'Editing in the small hours',
+          severity: 'note',
+          summary: night.length + ' session' + (night.length === 1 ? '' : 's') + ' started between midnight and 5 a.m. — unusual hours for classwork, sometimes fully legitimate.',
+          evidence: night.map((s) => fmtDate(s.start) + ' — ' + fmtDur(s.activeMs) + ' active')
+        });
+      }
+
+      // 6) Silence, then a dump (live data only — needs insertion sizes).
+      if (hasLive && sess.length >= 2) {
+        const sorted = sess.slice().sort((a, b) => (a.start || 0) - (b.start || 0));
+        for (let i = 1; i < sorted.length; i++) {
+          const gap = (sorted[i].start || 0) - (sorted[i - 1].end || sorted[i - 1].start || 0);
+          const added = sorted[i].addChars || 0;
+          if (gap >= 48 * 3600000 && added >= thresh) {
+            out.push({
+              id: 'silence-then-dump',
+              title: 'Long silence, then a single large insertion',
+              severity: 'warn',
+              summary: 'After a ' + Math.round(gap / 86400000) + '-day gap with no recorded work, ' + fmtNum(added) +
+                ' characters appeared in one session (' + fmtDate(sorted[i].start) + '). Text that shows up all at once after silence often came from another source.',
+              evidence: ['Gap: ' + fmtDate(sorted[i - 1].end || sorted[i - 1].start) + ' → ' + fmtDate(sorted[i].start) +
+                ' · insertion: ' + fmtNum(added) + ' chars']
+            });
+            break;
+          }
+        }
+      }
+
+      // 7) Rewrite by replacement.
+      const replaceSess = live.filter((s) => (s.delChars || 0) >= 300 &&
+        (s.pastes || []).some((p) => (p.chars || 0) >= thresh));
+      if (replaceSess.length) {
+        out.push({
+          id: 'rewrite-replacement',
+          title: 'Large deletions paired with large pastes',
+          severity: replaceSess.length >= 2 ? 'warn' : 'note',
+          summary: replaceSess.length + ' session' + (replaceSess.length === 1 ? '' : 's') +
+            ' deleted hundreds of characters and then inserted a large block — a pattern that looks more like replacing text with an external draft than revising it.',
+          evidence: replaceSess.slice(-3).map((s) => fmtDate(s.start) + ' — −' + fmtNum(s.delChars) + ' chars deleted, ' +
+            fmtNum(Math.max.apply(null, (s.pastes || []).map((p) => p.chars || 0))) + ' chars pasted')
+        });
+      }
+
+      // 8) Low revision density: text arrived with almost no micro-edits.
+      if (hasLive && addChars >= 1500 && liveEdits > 0 && liveEdits < addChars / 400) {
+        out.push({
+          id: 'low-revision-density',
+          title: 'Very few edits for the amount of text',
+          severity: 'warn',
+          summary: fmtNum(addChars) + ' characters were added with only ' + liveEdits + ' edit burst' + (liveEdits === 1 ? '' : 's') +
+            ' (≈1 edit per ' + fmtNum(Math.round(addChars / Math.max(1, liveEdits))) +
+            ' chars). Typed text normally generates many small edits; fully-formed text does not.',
+          evidence: []
+        });
+      }
+
+      // 9) Deadline rush: nearly everything landed at the very end.
+      if (sess.length >= 2) {
+        const sorted = sess.slice().sort((a, b) => ((a.end || a.start || 0) - (b.end || b.start || 0)));
+        const last = sorted[sorted.length - 1];
+        const prev = sorted[sorted.length - 2];
+        const now = nowMs();
+        const lastV = hasLive ? (last.addChars || 0) : (last.edits || 0);
+        const totalV = hasLive ? totalAdd : totalN;
+        const gap = (last.start || 0) - (prev.end || prev.start || 0);
+        if (now - (last.end || last.start || 0) < 24 * 3600000 && gap >= 3 * 86400000 &&
+            totalV > 0 && lastV >= Math.max(500, 0.25 * totalV)) {
+          out.push({
+            id: 'deadline-rush',
+            title: 'Most of the document landed at the last minute',
+            severity: 'warn',
+            summary: 'After a ' + Math.round(gap / 86400000) + '-day silence, ' +
+              (hasLive ? fmtNum(lastV) + ' of ' + fmtNum(totalV) + ' characters' : lastV + ' of ' + totalV + ' checkpoints') +
+              ' (' + Math.round(100 * lastV / totalV) + '%) arrived in the final session — ' + fmtDate(last.start) +
+              ' — less than a day before the document was last opened.',
+            evidence: []
+          });
+        }
+      }
+
+      // 10) Improbable sustained typing speed (live data only).
+      for (const s of live) {
+        const mins = (s.activeMs || 0) / 60000;
+        const cpm = mins >= 3 ? (s.addChars || 0) / mins : 0;
+        if (cpm >= 300 && (s.addChars || 0) >= 800) {
+          const explained = (s.pastes || []).some((p) => (p.chars || 0) >= thresh);
+          out.push({
+            id: 'speed-burst',
+            title: 'Text appeared faster than plausible typing',
+            severity: explained ? 'note' : 'warn',
+            summary: 'The session on ' + fmtDate(s.start) + ' averaged ≈' + Math.round(cpm) +
+              ' characters per active minute over ' + fmtDur(s.activeMs) + '. Sustained human typing is roughly 40–120 chars/min; ≈' +
+              Math.round(cpm) + ' suggests the text was pasted or inserted pre-composed' +
+              (explained ? ' — and a paste in this session accounts for it.' : ' — with no paste recorded in this browser for it.'),
+            evidence: []
+          });
+          break;
+        }
+      }
+
+      // 11) Good spread — the honest-process signal deserves showing too.
+      if ((stats.activeDays || 0) >= 5 && bulk.length === 0 && (hasLive ? liveEdits >= 30 : totalN >= 30)) {
+        out.push({
+          id: 'good-spread',
+          title: 'Consistent, sustained drafting',
+          severity: 'good',
+          summary: (stats.activeDays) + ' active days, ' + sess.length + ' sessions, ' + fmtNum(liveEdits || totalN) +
+            ' edits and no bulk insertions of ' + thresh + '+ chars — the pattern typical of original writing over time.',
+          evidence: []
+        });
+      }
+
+      out.sort((a, b) => (SEV_ORDER[a.severity] || 9) - (SEV_ORDER[b.severity] || 9));
+    } catch (e) {
+      log('computeInsights error: ' + e);
+    }
+    return out;
+  }
+
+  // Compact, text-free payload for the optional AI tier. Built from the
+  // merged stats and the local signals; nothing here contains document text.
+  function buildAiPayload(stats, insights, rec) {
+    try {
+      const bulk = (stats.bulk || []).slice(-8).map((p) => ({
+        when: new Date(p.t).toISOString(),
+        chars: p.chars || 0,
+        words: p.stats ? p.stats.words : null,
+        paragraphs: p.stats ? p.stats.paras : null,
+        listItems: p.stats ? p.stats.bullets : null,
+        avgSentenceWords: p.stats ? p.stats.avgSentLen : null
+      }));
+      return {
+        kind: 'revbanner-process-metadata',
+        note: 'Metadata only — document text is never included.',
+        doc: { app: rec.app || null, title: rec.title || null },
+        score: stats.score.value != null ? stats.score.value : null,
+        scoreFactors: (stats.score.parts || []).map((p) => ({
+          label: p.label, qualityPct: Math.round(p.q * 100), weight: p.weight, evidence: p.detail
+        })),
+        edits: { value: stats.edits ? stats.edits.value : 0, source: stats.edits ? stats.edits.label : null },
+        activeMs: stats.activeMs || 0,
+        activeSource: stats.activeLabel || null,
+        sessions: stats.sessions || 0,
+        activeDays: stats.activeDays || 0,
+        contributors: stats.contributorsCount || 0,
+        approxWords: stats.words || null,
+        pastedSharePct: stats.pastedShare != null ? Math.round(stats.pastedShare * 100) : null,
+        bulkInsertions: bulk,
+        dailyEdits: Array.from(stats.daily && stats.daily.entries ? stats.daily.entries() : []).slice(-30),
+        signals: (insights || []).map((s) => ({ id: s.id, severity: s.severity, summary: s.summary }))
+      };
+    } catch (e) {
+      log('buildAiPayload error: ' + e);
+      return { kind: 'revbanner-process-metadata', error: 'payload build failed' };
     }
   }
 
@@ -1618,6 +2142,249 @@
   }
 
   /* =====================================================================
+   * 10b. Fixed Google chrome — keep the banner's controls clickable.
+   * Google pins some header controls to the viewport (the control strip
+   * with last-edit / comments / Meet / Share / avatar). Because those are
+   * position:fixed they stay at the very top of the screen — on top of the
+   * banner, covering the score and buttons. We tag such elements with a
+   * class; a page-level style sheet translates them below the banner via
+   * the --revbanner-h variable. Detection is structural (fixed, pinned to
+   * the top edge, right-anchored, pill-sized) so it survives Google
+   * renaming their internal ids.
+   * ===================================================================== */
+
+  function installFixedShift() {
+    try {
+      const style = document.createElement('style');
+      style.id = 'revbanner-fixed-shift';
+      // The separate `translate` property composes with Google's own
+      // `transform` instead of fighting it.
+      style.textContent = '.rb-fshift { translate: 0 var(--revbanner-h, 0px) !important; }';
+      (document.head || document.documentElement).appendChild(style);
+
+      const tagged = new Set();
+
+      const bannerH = () => {
+        const v = parseFloat(document.documentElement.style.getPropertyValue('--revbanner-h'));
+        return v > 0 ? v : 0;
+      };
+
+      const isOurs = (el) => {
+        try {
+          return !el || el.id === 'revbanner-root' ||
+            !!(el.closest && el.closest('#revbanner-root'));
+        } catch (e) { return true; }
+      };
+
+      const hostRect = () => {
+        try {
+          const host = document.getElementById('revbanner-root');
+          return host ? host.getBoundingClientRect() : null;
+        } catch (e) { return null; }
+      };
+
+      // Outermost FIXED-position ancestor of `el` that occupies the banner
+      // band — that is the strip to translate. Fixed-only keeps content-
+      // anchored things (comment bubbles, absolute overlays) untouched.
+      const fixedTarget = (el, h) => {
+        try {
+          let cur = el, target = null;
+          let guard = 0;
+          while (cur && cur !== document.body && cur !== document.documentElement && guard++ < 40) {
+            const cs = getComputedStyle(cur);
+            const r = cur.getBoundingClientRect();
+            if (cs.position === 'fixed' && r.height > 0 && r.height <= 220 &&
+                r.top < h - 4 && r.width <= (window.innerWidth || 0) + 40) {
+              target = cur;   // keep the outermost one found
+            }
+            cur = cur.parentElement || (cur.parentNode && cur.parentNode.host) || null;
+          }
+          return target;
+        } catch (e) { return null; }
+      };
+
+      // What actually paints over the banner right now? elementFromPoint
+      // returns the topmost element at each point — this finds the pill even
+      // when it hides inside Google's shadow DOM or inside a fixed parent bar
+      // (both of which a plain selector sweep can miss).
+      const hitScan = (h) => {
+        const found = [];
+        try {
+          const br = hostRect();
+          if (!br || br.width < 40 || br.height < 12) return found;
+          const xs = [10, 46, 90, 150, 230, 330].map((d) => br.right - d).filter((x) => x > 0);
+          const ys = [6, br.height / 2, br.height - 6];
+          const seen = new Set();
+          for (const x of xs) {
+            for (const y of ys) {
+              let el = null;
+              try { el = document.elementFromPoint(x, y); } catch (e) { el = null; }
+              let guard = 0;
+              while (el && el.shadowRoot && guard++ < 5) {
+                try { el = el.shadowRoot.elementFromPoint(x, y); } catch (e) { break; }
+              }
+              if (!el || isOurs(el)) continue;
+              const t = fixedTarget(el, h);
+              if (!t || isOurs(t) || seen.has(t)) continue;
+              seen.add(t);
+              found.push(t);
+            }
+          }
+        } catch (e) { log('fixed-shift hit scan error: ' + e); }
+        return found;
+      };
+
+      // Structural sweep: fixed pills that are directly document-visible.
+      const qualifies = (el, h) => {
+        try {
+          if (!el || !el.classList || isOurs(el)) return false;
+          const r = el.getBoundingClientRect();
+          if (r.top < -40 || r.top > 40) return false;             // pinned to the top edge
+          if (r.width < 120 || r.width > 960 || r.height < 24 || r.height > 170) return false;
+          if (r.right < (window.innerWidth || 0) * 0.45) return false; // right-anchored cluster
+          if (r.top >= h - 4) return false;                        // already below the banner
+          const cs = getComputedStyle(el);
+          if (cs.position !== 'fixed' || cs.display === 'none' || cs.visibility === 'hidden') return false;
+          if (el.closest('[role="dialog"],[role="menu"],[role="tooltip"],[role="listbox"]')) return false;
+          return true;
+        } catch (e) { return false; }
+      };
+
+      const scan = () => {
+        try {
+          const h = bannerH();
+          const candidates = new Set();
+          if (h > 24) {
+            for (const el of hitScan(h)) candidates.add(el);
+            for (const el of $$('div, span, button')) {
+              if (!tagged.has(el) && !candidates.has(el) && qualifies(el, h)) candidates.add(el);
+            }
+          }
+          // translate only the outermost candidate — nested ones move along
+          const outer = [];
+          for (const el of candidates) {
+            let inside = false;
+            for (const other of candidates) {
+              if (other !== el && other.contains && other.contains(el)) { inside = true; break; }
+            }
+            if (!inside) outer.push(el);
+          }
+          // apply after measuring — class writes between reads force reflows
+          for (const el of Array.from(tagged)) {
+            if (outer.indexOf(el) < 0) { el.classList.remove('rb-fshift'); tagged.delete(el); }
+          }
+          for (const el of outer) {
+            if (!tagged.has(el)) { el.classList.add('rb-fshift'); tagged.add(el); }
+          }
+        } catch (e) { log('fixed-shift scan error: ' + e); }
+      };
+
+      const kick = debounce(scan, 350);
+      try {
+        window.addEventListener('resize', kick, { passive: true });
+        // scroll does not bubble, but capture sees every scroller in the page
+        document.addEventListener('scroll', kick, { capture: true, passive: true });
+        setInterval(() => { if (!document.hidden) scan(); }, 4000);
+      } catch (e) { /* ignore */ }
+      scan();
+      return { scan, kick };
+    } catch (e) {
+      log('fixed-shift install error: ' + e);
+      return { scan: () => {}, kick: () => {} };
+    }
+  }
+
+  /* Layout diagnostics — a readable report of everything that visually
+   * occupies the banner's area. Used by the "Copy layout diagnostics"
+   * button when a Google control still covers the banner: the report tells
+   * us exactly which element it is (id/class chain, position, z-index), so
+   * the shift logic can be targeted without guessing. */
+  function collectOverlapDiagnostics() {
+    const lines = [];
+    try {
+      const host = document.getElementById('revbanner-root');
+      const br = host ? host.getBoundingClientRect() : null;
+      if (!br) return 'No banner element found on this page.';
+      const ident = (el) => {
+        try {
+          const parts = [];
+          let n = el, hops = 0;
+          while (n && n.nodeType === 1 && hops++ < 6) {
+            let s = (n.tagName || '?').toLowerCase();
+            if (n.id) s += '#' + n.id;
+            else if (typeof n.className === 'string' && n.className) {
+              s += '.' + n.className.trim().split(/\s+/).slice(0, 3).join('.');
+            }
+            parts.push(s);
+            n = n.parentElement || (n.parentNode && n.parentNode.host) || null;
+          }
+          return parts.join(' < ');
+        } catch (e) { return '?'; }
+      };
+      const desc = (el) => {
+        try {
+          const cs = getComputedStyle(el);
+          const r = el.getBoundingClientRect();
+          return ident(el) + ' | pos=' + cs.position + ' top=' + cs.top + ' right=' + cs.right +
+            ' z=' + cs.zIndex + ' transform=' + cs.transform + ' translate=' + cs.translate +
+            ' | rect=' + Math.round(r.left) + ',' + Math.round(r.top) + ' ' +
+            Math.round(r.width) + 'x' + Math.round(r.height);
+        } catch (e) { return ident(el) + ' | (styles unavailable)'; }
+      };
+
+      lines.push('revbanner layout diagnostics — ' + new Date().toISOString());
+      lines.push('viewport ' + Math.round(window.innerWidth) + 'x' + Math.round(window.innerHeight) +
+        ' · banner rect x=' + Math.round(br.left) + ' y=' + Math.round(br.top) +
+        ' w=' + Math.round(br.width) + ' h=' + Math.round(br.height));
+
+      // 1) document-tree elements that intersect the banner (right 45%)
+      let count = 0;
+      lines.push('--- elements intersecting the banner band ---');
+      for (const el of document.querySelectorAll('div,span,button,g,svg')) {
+        if (count >= 25) break;
+        try {
+          if (isOurEl(el)) continue;
+          const r = el.getBoundingClientRect();
+          if (r.width < 8 || r.height < 8) continue;
+          if (r.bottom <= br.top + 2 || r.top >= br.bottom - 2) continue;
+          if (r.right <= br.left + br.width * 0.55) continue;
+          if (r.width * r.height > 500000) continue;   // page-size containers
+          const cs = getComputedStyle(el);
+          if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+          count++;
+          lines.push('[' + count + '] ' + desc(el));
+        } catch (e) { /* ignore */ }
+      }
+      if (!count) lines.push('(none found in the document tree)');
+
+      // 2) topmost element at sample points (pierces open shadow roots)
+      lines.push('--- hit tests: topmost element at each point ---');
+      const y = br.top + Math.min(24, br.height / 2);
+      for (const d of [12, 60, 120, 200, 300, 380]) {
+        const x = br.right - d;
+        try {
+          let el = document.elementFromPoint(x, y);
+          let guard = 0;
+          while (el && el.shadowRoot && guard++ < 5) el = el.shadowRoot.elementFromPoint(x, y);
+          lines.push('(' + Math.round(x) + ',' + Math.round(y) + ') → ' + (el ? desc(el) : 'null'));
+        } catch (e) {
+          lines.push('(' + Math.round(x) + ',' + Math.round(y) + ') → error ' + e);
+        }
+      }
+      lines.push('--- end of report (paste the whole thing) ---');
+      return lines.join('\n');
+    } catch (e) {
+      return lines.join('\n') + '\nerror: ' + e;
+    }
+  }
+
+  function isOurEl(el) {
+    try {
+      return !el || el.id === 'revbanner-root' || !!(el.closest && el.closest('#revbanner-root'));
+    } catch (e) { return true; }
+  }
+
+  /* =====================================================================
    * 11. Banner UI (shadow DOM)
    * ===================================================================== */
 
@@ -1700,6 +2467,10 @@
 .rb-d-sub { color: var(--muted); font-size: 0.7rem; }
 .rb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin: 10px 0; }
 .rb-grid .rb-card { min-height: 56px; cursor: default; }
+/* Overview card labels wrap inside their card (sub-texts are long); the
+ * banner strip cards keep nowrap for tidy short labels. */
+.rb-grid .rb-card .rb-lab { white-space: normal; line-height: 1.4; text-align: center; word-break: break-word; }
+.rb-grid .rb-card .rb-lab-sub { text-transform: none; letter-spacing: 0; }
 .rb-grid .rb-card:hover { box-shadow: none; }
 .rb-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
 .rb-table th { text-align: left; color: var(--muted); font-weight: 700; padding: 4px 6px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--card); }
@@ -1719,6 +2490,21 @@
 .rb-prov-row b { color: var(--accent); min-width: 105px; display: inline-block; }
 .rb-muted { color: var(--muted); }
 .rb-canvas { width: 100%; height: 90px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); }
+/* Suspicious-edit signals */
+.rb-signal { display: flex; gap: 8px; margin: 9px 0; align-items: flex-start; font-size: 0.7rem; }
+.rb-signal-dot { width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; flex: 0 0 auto; background: var(--muted); }
+.rb-signal-dot[data-sev="high"] { background: var(--bad); box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); }
+.rb-signal-dot[data-sev="warn"] { background: var(--warn); box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15); }
+.rb-signal-dot[data-sev="note"] { background: var(--accent); }
+.rb-signal-dot[data-sev="good"] { background: var(--good); }
+.rb-signal-body { flex: 1; min-width: 0; }
+.rb-signal-title { font-weight: 700; }
+.rb-ev { margin: 3px 0 0; padding-left: 18px; }
+.rb-ev li { color: var(--muted); font-size: 0.64rem; margin: 1px 0; }
+.rb-table td.rb-td-wrap { white-space: normal; }
+/* AI analysis block */
+.rb-ai { border: 1px solid var(--border); border-left: 3px solid var(--accent); background: var(--chipbg); border-radius: 8px; padding: 9px 11px; margin: 10px 0; font-size: 0.7rem; line-height: 1.5; white-space: pre-wrap; }
+.rb-ai b { color: var(--accent); }
 /* Toast */
 .rb-toast { position: fixed; top: calc(var(--revbanner-h, 0px) + 8px); right: 14px; max-width: 420px; background: #0f172a; color: #f8fafc; font-size: 0.7rem; padding: 8px 12px; border-radius: 10px; box-shadow: 0 8px 22px rgba(2, 6, 23, 0.4); z-index: 703; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; opacity: 0.97; }
 /* Responsive */
@@ -1744,7 +2530,7 @@
     <span data-f="app-mini"></span>
     <span class="rb-strip-title" data-f="s-title">…</span>
     <span class="rb-strip-stats"><b data-f="s-edits">—</b> edits · <b data-f="s-active">—</b> active · <b data-f="s-sessions">—</b> sessions · <b data-f="s-people">—</b> people</span>
-    <span class="rb-score rb-score-sm" data-f="s-score">—</span>
+    <span class="rb-score rb-score-sm" data-f="s-score" data-go="score" title="Writing-process score — click for the full breakdown">—</span>
     <span class="rb-flex"></span>
     <span class="rb-btns">
       <button class="rb-btn" data-act="expand" title="Expand banner (Alt+R)">${ICONS.expand}</button>
@@ -1767,7 +2553,7 @@
     </div>
     <div class="rb-right">
       <canvas class="rb-spark" data-f="spark" title="Edits per day (merged sources)"></canvas>
-      <div class="rb-score" data-f="score" title="Writing-process score (heuristic)">—</div>
+      <div class="rb-score" data-f="score" data-go="score" title="Writing-process score — click for the full breakdown">—</div>
       <div class="rb-btns">
         <button class="rb-btn" data-act="sync" title="Import version history now">${ICONS.sync}</button>
         <button class="rb-btn" data-act="details" title="Full details (Alt+D)">${ICONS.details}</button>
@@ -1972,6 +2758,12 @@
         } else if (!stats.liveOnly) {
           chips.push('<span class="rb-chip" data-tone="attention" data-chip-act="sync">Import full history ⟳</span>');
         }
+        // Suspicious-edit flag at a glance: significant pasted share.
+        if (stats.pastedShare != null && stats.pastedShare >= 0.25) {
+          chips.push('<span class="rb-chip" data-tone="' + (stats.pastedShare >= 0.6 ? 'bad' : 'warn') +
+            '" data-go="signals" title="Click for the suspicious-edit signals">⚠ ' +
+            Math.round(stats.pastedShare * 100) + '% of added text pasted</span>');
+        }
         if (tracker && tracker.session) {
           const s = tracker.session;
           const live = tracker.lastActivity && (nowMs() - tracker.lastActivity) < tracker.idleMs &&
@@ -2084,17 +2876,22 @@
           card('Sessions', fmtNum(stats.sessions), 'gap > ' + this.cfg.sessionGapMinutes + ' min splits') +
           card('Contributors', String(stats.contributorsCount || '—')) +
           card('Bulk inserts', String(stats.bulk.length), '≥ ' + this.cfg.pasteThresholdChars + ' chars at once') +
+          card('Typed vs pasted', stats.pastedShare != null
+            ? Math.round((1 - stats.pastedShare) * 100) + '% / ' + Math.round(stats.pastedShare * 100) + '%'
+            : '—', 'typed / pasted share') +
+          card('Words (now)', stats.words ? fmtNum(stats.words) : '—', stats.words && stats.sessions
+            ? '≈ ' + fmtNum(Math.round(stats.words / Math.max(1, stats.sessions))) + ' per session' : 'document total') +
           card('First activity', stats.earliest ? fmtDate(stats.earliest) : '—') +
           card('Latest activity', stats.latest ? fmtDate(stats.latest) : '—') +
           card('Active days', String(stats.activeDays)) +
           '</div>';
 
         function card(lab, val, sub) {
-          return '<div class="rb-card"><span class="rb-num">' + esc(val) + '</span><span class="rb-lab">' + esc(lab) +
-            (sub ? ' · <i style="font-style:normal;color:var(--muted)">' + esc(sub) + '</i>' : '') + '</span></div>';
+          return '<div class="rb-card"><span class="rb-num">' + esc(val) + '</span><span class="rb-lab">' + esc(lab) + '</span>' +
+            (sub ? '<span class="rb-lab rb-lab-sub">' + esc(sub) + '</span>' : '') + '</div>';
         }
 
-        // Score
+        // Score — full breakdown of what contributed to it
         html += '<section id="rb-sec-score"><h3>Writing-process score</h3>';
         if (stats.score.value == null) {
           html += '<p class="rb-prov rb-muted">Not enough data yet. The score appears once there is history (imported or tracked).</p>';
@@ -2103,12 +2900,61 @@
             (stats.score.value >= 80 ? 'consistent with sustained original writing' :
               stats.score.value >= 55 ? 'mixed signals — worth a conversation' : 'low process: little writing over time, big insertions, or both') +
             '</span></div>';
+          const wsum = stats.score.parts.reduce((n, x) => n + x.weight, 0) || 1;
+          html += '<p class="rb-prov rb-muted">How the score adds up — each factor contributes its quality × weight as points:</p>';
+          html += '<div class="rb-table-wrap"><table class="rb-table">' +
+            '<tr><th>Factor</th><th>Weight</th><th>Quality</th><th>Gives</th><th>Evidence</th></tr>';
           for (const part of stats.score.parts) {
-            html += '<div class="rb-bar-row"><span>' + esc(part.label) + '</span>' +
-              '<span class="rb-bar"><span style="width:' + Math.round(part.q * 100) + '%"></span></span>' +
-              '<span class="rb-bar-detail">' + Math.round(part.q * 100) + '% · ' + esc(part.detail) + '</span></div>';
+            html += '<tr><td><b>' + esc(part.label) + '</b></td><td>' + Math.round(part.weight * 100) + '%</td><td>' +
+              Math.round(part.q * 100) + '%</td><td><b>+' + Math.round(part.q * part.weight / wsum * 100) +
+              '</b></td><td class="rb-td-wrap">' + esc(part.detail) + '</td></tr>';
+          }
+          html += '</table></div>';
+          html += '<div class="rb-prov-row"><b>Typed vs pasted</b> <span>' +
+            (stats.pastedShare == null ? 'no typed-text data recorded in this browser'
+              : Math.round((1 - stats.pastedShare) * 100) + '% typed · ' + Math.round(stats.pastedShare * 100) +
+                '% arrived in bulk insertions (of ' + fmtNum(stats.bulkChars) + ' pasted chars)') +
+            '</span></div>';
+          if (stats.words) {
+            html += '<div class="rb-prov-row"><b>Document size</b> <span>≈' + fmtNum(stats.words) + ' words now · ' +
+              fmtNum(stats.bulkChars) + ' chars known to have arrived by paste</span></div>';
+          }
+          html += '<p class="rb-prov rb-muted">Scores weight paste ratio 35%, sessions 25%, spread over days 20%, burst pattern 20%. Higher = more editing over time with fewer bulk insertions.</p>';
+        }
+        html += '</section>';
+
+        // Suspicious-edit signals — the insight engine, evidence included
+        const insights = computeInsights(stats, rec, this.cfg);
+        html += '<section id="rb-sec-signals"><h3>Suspicious-edit signals</h3>';
+        if (!insights.length) {
+          html += '<p class="rb-prov rb-muted">' + (stats.empty
+            ? 'No data yet — signals appear once there is history or live tracking.'
+            : 'Nothing unusual flagged by the local heuristics — timing, sessions and paste patterns all look ordinary.') + '</p>';
+        } else {
+          html += '<p class="rb-prov rb-muted">Computed locally from timing, sizes and paste patterns. Paste-related signals only see this browser\'s live tracking; session signals merge live and imported history.</p>';
+          for (const s of insights) {
+            html += '<div class="rb-signal"><span class="rb-signal-dot" data-sev="' + esc(s.severity) + '"></span>' +
+              '<span class="rb-signal-body"><span class="rb-signal-title">' + esc(s.title) + '</span> — ' +
+              esc(s.summary) +
+              (s.evidence && s.evidence.length
+                ? '<ul class="rb-ev">' + s.evidence.map((e) => '<li>' + esc(e) + '</li>').join('') + '</ul>'
+                : '') +
+              '</span></div>';
           }
         }
+        // Optional AI analysis (user-configured endpoint; metadata only)
+        if (rec.ai && rec.ai.text) {
+          html += '<div class="rb-ai"><b>AI read of this process</b> <span class="rb-muted">· ' +
+            esc(rec.ai.model || 'model') + ' · ' + esc(fmtRel(rec.ai.at)) + '</span>' + esc(rec.ai.text) + '</div>';
+        }
+        if (this.cfg.ai && this.cfg.ai.enabled && this.cfg.ai.key) {
+          html += '<div class="rb-actions" style="margin-top:8px">' +
+            '<button class="rb-btn2" data-act="ai-analyze" title="Sends the numbers and signals above (never document text) to your configured AI endpoint">' +
+            (rec.ai ? 'Re-run AI analysis' : 'Explain with AI') + '</button>' +
+            (rec.ai ? '' : '<span class="rb-muted" style="font-size:0.64rem">optional — uses your own API key from Settings</span>') +
+            '</div>';
+        }
+        html += '<p class="rb-legal">Signals describe patterns, not intent. A student can paste their own earlier draft, write offline, use dictation, or paste a teacher-provided template. Use these as conversation starters — never as proof of misconduct.</p>';
         html += '</section>';
 
         // Sessions
@@ -2212,6 +3058,7 @@
           '<button class="rb-btn2" data-act="export-json">Export JSON</button>' +
           '<button class="rb-btn2" data-act="sync">Import history now</button>' +
           (history && history.driveConfigured ? '<button class="rb-btn2" data-act="drive-sync">Sync Drive API</button>' : '') +
+          '<button class="rb-btn2" data-act="diag-overlap" title="Copies a report of everything that visually overlaps the banner — useful when a Google control covers it">Copy layout diagnostics</button>' +
           '<button class="rb-btn2" data-tone="danger" data-act="forget">Forget this file</button>' +
           '</div>';
 
@@ -2375,6 +3222,25 @@
       Math.round(p.q * 100) + '%"></span></span><span class="bdet">' + Math.round(p.q * 100) + '% — ' + esc(p.detail) + '</span></div>'
     ).join('') : '<p class="muted">Not enough data for a score.</p>';
 
+    const signals = Array.isArray(st.signals) ? st.signals : [];
+    const sevLabel = { high: '⚠ High', warn: '⚠ Notable', note: '· Noted', good: '✓ Good', info: '· Info' };
+    const signalsHtml = signals.length
+      ? signals.map((s) => '<div class="sig"><span class="sigsev" data-s="' + esc(s.severity) + '">' +
+          esc(sevLabel[s.severity] || s.severity) + '</span><span><b>' + esc(s.title) + '</b> — ' + esc(s.summary) +
+          (Array.isArray(s.evidence) && s.evidence.length
+            ? '<div class="muted" style="margin-top:2px">' + s.evidence.map((e) => esc(e)).join(' · ') + '</div>' : '') +
+          '</span></div>').join('') +
+        '<p class="muted">Signals describe patterns, not intent — use them as conversation starters, never as proof of misconduct.</p>'
+      : '<p class="muted">No unusual patterns were flagged by the local heuristics.</p>';
+
+    const aiRun = rec.ai && rec.ai.text ? rec.ai : null;
+    const aiHtml = aiRun
+      ? '<section><h2>AI read of this process</h2>' +
+        '<p class="muted">' + esc(aiRun.model || 'model') + ' · analyzed ' + esc(new Date(aiRun.at).toISOString()) +
+        ' — an interpretation of the metadata below the fold, not new evidence.</p>' +
+        '<p style="white-space:pre-wrap">' + esc(aiRun.text) + '</p></section>'
+      : '';
+
     const card = (lab, val) => '<div class="card"><div class="num">' + esc(val) + '</div><div class="lab">' + esc(lab) + '</div></div>';
 
     return '<!DOCTYPE html>\n<html lang="en"><head><meta charset="utf-8" />' +
@@ -2396,6 +3262,10 @@
       '.brow{display:grid;grid-template-columns:130px 1fr 220px;gap:10px;align-items:center;font-size:12px;margin:6px 0}' +
       '.bar2{height:8px;border-radius:4px;background:var(--card);border:1px solid var(--border);overflow:hidden}.bar2 span{display:block;height:100%;background:var(--accent)}' +
       '.bdet{color:var(--muted);font-size:10.5px;text-align:right}.muted{color:var(--muted);font-size:12px}' +
+      '.sig{display:flex;gap:8px;margin:8px 0;font-size:12.5px;align-items:flex-start}' +
+      '.sigsev{flex:0 0 auto;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-radius:999px;padding:2px 8px;margin-top:1px;background:var(--card);border:1px solid var(--border);color:var(--muted)}' +
+      '.sigsev[data-s="high"]{color:var(--bad);border-color:var(--bad)}.sigsev[data-s="warn"]{color:var(--warn);border-color:var(--warn)}' +
+      '.sigsev[data-s="good"]{color:var(--good);border-color:var(--good)}.sigsev[data-s="note"]{color:var(--accent);border-color:var(--accent)}' +
       'dl{display:grid;grid-template-columns:150px 1fr;gap:4px 12px;font-size:13px;margin:0}dt{color:var(--muted)}dd{margin:0;word-break:break-all}' +
       'footer{margin-top:34px;border-top:1px solid var(--border);padding-top:12px;font-size:11.5px;color:var(--muted)}' +
       '</style></head><body><main class="wrap">' +
@@ -2421,6 +3291,7 @@
       '</div><p class="muted">Edits source: ' + esc(st.edits ? st.edits.label : '—') + ' (live tracking covers this machine only; version history comes from Google). Active source: ' + esc(st.activeLabel || 'live tracking (since install)') + '.</p></section>' +
       '<section><h2>Writing-process score breakdown</h2>' + partsHtml +
       '<p class="muted">Heuristic based on paste ratio, sessions and spread — a conversation starter, not proof of anything.</p></section>' +
+      '<section><h2>Suspicious-edit signals</h2>' + signalsHtml + '</section>' + aiHtml +
       '<section><h2>Work sessions</h2>' +
       (sessHtml ? '<div class="tw"><table><tr><th>Started</th><th>Active</th><th>Edits</th><th>Keys</th><th>Chars +/−</th><th>Bulk</th></tr>' + sessHtml + '</table></div>'
         : '<p class="muted">No live sessions recorded on this machine (extension may have been installed after the work was done).</p>') +
@@ -2466,12 +3337,48 @@
 
     const history = new HistoryManager(cfg, rec, tracker, ui, markDirty, saveNow);
 
+    // Approximate current word count (Docs) — powers the words-per-session
+    // context and the AI payload. One cheap pass every 30s.
+    if (ctx.app === 'docs') {
+      setInterval(() => {
+        try {
+          if (document.hidden) return;
+          const ed = $('#docs-editor');
+          if (!ed) return;
+          const txt = ed.textContent || '';
+          if (!txt) return;
+          const n = (txt.match(/[\p{L}\p{N}][\p{L}\p{N}'’\-]*/gu) || []).length;
+          if (n && Math.abs(n - (rec.words || 0)) >= 5) { rec.words = n; markDirty(); }
+        } catch (e) { /* ignore */ }
+      }, 30000);
+    }
+
     // UI actions
     ui.onAct = async (act) => {
       try {
         switch (act) {
           case 'sync': await history.autoImport(false); break;
           case 'drive-sync': await history.driveSync(); break;
+          case 'ai-analyze': await aiAnalyze(); break;
+          case 'diag-overlap': {
+            const text = collectOverlapDiagnostics();
+            (navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(text) : Promise.reject())
+              .then(() => ui.toast('Layout diagnostics copied — paste it into the chat with support ✓', 4000))
+              .catch(() => {
+                try {
+                  const ta = document.createElement('textarea');
+                  ta.value = text;
+                  ta.style.position = 'fixed';
+                  ta.style.opacity = '0';
+                  document.body.appendChild(ta);
+                  ta.select();
+                  document.execCommand('copy');
+                  ta.remove();
+                  ui.toast('Layout diagnostics copied ✓', 3000);
+                } catch (e) { ui.toast('Copy failed — open Details and select the report manually.', 4000); }
+              });
+            break;
+          }
           case 'details': if (ui.detailsOpen) ui.closeDetails(); else ui.openDetails(); state.dirty = true; break;
           case 'close-details': ui.closeDetails(); break;
           case 'collapse': ui.setCollapsed(true); break;
@@ -2491,6 +3398,33 @@
       const s = computeStats(rec, cfg);
       ui.setLastStats(s);
       return s;
+    }
+
+    // Optional AI tier: sends ONLY process metadata (times, sizes, counts,
+    // signals — never document text) to the user-configured endpoint.
+    async function aiAnalyze() {
+      try {
+        if (!cfg.ai || !cfg.ai.enabled || !cfg.ai.key) {
+          ui.toast('AI analysis is off — enable it in Settings (⚙) with your own API key.', 4500);
+          return;
+        }
+        ui.toast('Asking the AI to read this writing process…', 4500);
+        const s = currentStats();
+        const insights = computeInsights(s, rec, cfg);
+        const payload = buildAiPayload(s, insights, rec);
+        const r = await bgMsg({ type: 'ai-analyze', payload });
+        if (r && r.ok && r.text) {
+          rec.ai = { at: nowMs(), model: r.model || cfg.ai.model || '', text: r.text };
+          markDirty();
+          saveNow();
+          ui.toast('AI analysis ready — see "Suspicious-edit signals" ✓', 3500);
+        } else {
+          ui.toast('AI analysis failed: ' + ((r && r.error) || 'unknown error'), 6500);
+        }
+      } catch (e) {
+        log('ai analyze error: ' + e);
+        ui.toast('AI analysis failed: ' + e, 5000);
+      }
     }
 
     function copySummary() {
@@ -2551,17 +3485,19 @@
           v: 1,
           kind: 'revbanner-submission',
           exportedAt: nowMs(),
-          extVersion: '1.0.0',
+          extVersion: '1.1.0',
           doc: { id: rec.id, app: rec.app, title: rec.title, url: rec.url, account: rec.account || null },
           record: JSON.parse(JSON.stringify(rec)),
           stats: {
             edits: { value: s.edits.value, source: s.edits.source, label: s.edits.label },
             activeMs: s.activeMs, activeLabel: s.activeLabel || '', histActiveMs: s.histActiveMs || 0, sessions: s.sessions,
             contributors: s.contributors, contributorsCount: s.contributorsCount,
-            bulk: s.bulk, bulkChars: s.bulkChars,
+            bulk: s.bulk, bulkChars: s.bulkChars, pastedShare: s.pastedShare != null ? Math.round(s.pastedShare * 100) / 100 : null,
+            words: s.words || null,
             earliest: s.earliest, latest: s.latest, activeDays: s.activeDays,
             daily: Array.from(s.daily.entries ? s.daily.entries() : []),
-            score: s.score.value, scoreParts: s.score.parts
+            score: s.score.value, scoreParts: s.score.parts,
+            signals: computeInsights(s, rec, cfg)
           }
         };
         const payloadStr = JSON.stringify(payload);
@@ -2590,9 +3526,11 @@
       return String(t || 'document').replace(/[^a-z0-9-_]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'document';
     }
 
-    // Wire height changes to offset engine
+    // Wire height changes to offset engine + fixed-chrome shift
+    const fixedShift = installFixedShift();
     ui.onHeightChange = (h) => {
       engine.setHeight(h);
+      fixedShift.kick();
       rec.ui = rec.ui || {};
       rec.ui.collapsed = ui.collapsed;
       rec.ui.hidden = ui.hidden;

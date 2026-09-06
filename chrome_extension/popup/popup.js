@@ -100,8 +100,9 @@ function computeFileStats(rec, cfg) {
 
     const contrib = new Set();
     for (const v of versions) if (v.editor) contrib.add(v.editor);
-    if (rec.account) contrib.add(rec.account);
-    if (!contrib.size && liveEdits > 0) contrib.add('You');
+    // Only count the local account when this browser recorded their work —
+    // merely opening a doc (teacher view) is not a contribution.
+    if (liveEdits > 0) contrib.add(rec.account || 'You');
 
     let bulk = 0, bulkChars = 0, addChars = 0;
     for (const s of live) {

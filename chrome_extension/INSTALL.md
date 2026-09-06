@@ -7,7 +7,7 @@ to any server, and there is no account to create.
 
 ## Install (one time, ~1 minute)
 
-1. Get the folder: download and **unzip** `revision-banner-v1.0.0.zip`.
+1. Get the folder: download and **unzip** `revision-banner-v1.1.0.zip`.
    ⚠️ Keep the unzipped folder somewhere permanent (Documents — **not** Downloads, and
    don't delete it later: Chrome runs the extension from that folder).
 2. Open Chrome and go to `chrome://extensions`
@@ -27,8 +27,22 @@ keep the extension. You can also dismiss the warning each time; it doesn't disab
    click the ⟳ button once (or open File → Version history yourself for a few seconds).
 3. Read the banner. Click any stat (or press **Alt+D**) for the full report:
    sessions, contributors, daily chart, paste flags, data sources, and CSV export.
+   **Click the writing-process score** for the deep breakdown: factor-by-factor points,
+   typed-vs-pasted share, and suspicious-edit signals (evidence included).
+   The version history pane closes by itself once an import settles — the screen returns
+   to just the banner (reopen it any time with Ctrl/Cmd+Alt+Shift+H; disable the
+   auto-close in Settings if you prefer it to stay open).
 4. Click the **toolbar icon** for your class dashboard — every doc you've opened is
    listed there, with a CSV export for the whole set.
+
+### Optional: AI read of the writing process
+
+Want a second opinion on the signals? Settings (⚙) → **AI analysis**: the defaults are already
+filled in — `https://ollama.com/v1` with model `glm-5.3-flash:cloud` — so all you add is your API
+key and flip the switch. Any other OpenAI-compatible endpoint works too (api.openai.com, OpenRouter,
+or a local model; paste a base or a full `/chat/completions` URL). An "Explain with AI" button then
+appears in the score breakdown. It sends only timing/size metadata and the local signals — never
+document text — and only when you click it.
 
 ## Shortcuts
 
@@ -47,14 +61,21 @@ keep the extension. You can also dismiss the warning each time; it doesn't disab
   sources** → the **Last import** row shows how many tiles were read, how many had
   editor names, and — if it failed — the exact reason (e.g. "no entry point found —
   view-only doc or a changed Google UI").
-- **Only one contributor shown?** That usually means the import didn't find editor
-  names. Check the Last import row: if "with editor names" is 0, open the doc's
-  version history manually for a few seconds (it imports while open) and reopen Details.
+- **Only one contributor shown?** v1.0.1 fixed the main cause: version-history
+  imports used to merge whole date groups into one entry, keeping only the first
+  avatar. After updating, open the doc and press ⟳ once (or open File → Version
+  history for a few seconds) so it re-imports with each editor counted. If the
+  Last import row still says "with editor names: 0", open the doc's version
+  history manually for a few seconds and reopen Details.
 - **View-only docs:** Google does not always offer version history to viewers. Docs
   shared by students via Google Classroom give you edit rights and work fully; for
   mere viewer access, history may be unavailable — ask for edit rights or use the
   Drive API tier.
 - **Banner overlaps the toolbar?** Go to Settings (⚙ in the banner) → Page layout → Overlay.
+- **A Google control (the last-edit / comments / Meet / Share / avatar pill) covers the
+  banner?** The extension should push it below the banner automatically. If it still
+  overlaps, open Details (click the score) → **Copy layout diagnostics** → paste the report
+  when reporting the issue — it identifies the exact element so the fix can be targeted.
 - **A tab ever shows Chrome's "Try reloading" crash page?** Fixed in recent builds
   (imports are now time-budgeted and gentler on huge histories). Reload the tab and
   reopen version history; imports run a few tiles at a time now.

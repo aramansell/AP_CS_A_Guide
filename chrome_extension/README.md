@@ -47,14 +47,28 @@ that talks to the Google Drive API with your own credentials — see below.)
 | **Edits** | Number of editing events. Best available source is used and labeled: detailed ops > version entries > live bursts. | all tiers |
 | **Active** | Live-tracked interaction time **on this machine** (idles after the cutoff) — starts at install, exact. When no live data exists — e.g. viewing a student's doc — the value shown is an **estimate** from version-history timestamps: work sessions cluster from Google's save checkpoints, and each session contributes its span (5-minute floor). Labeled either way in the details panel. | live / history |
 | **Sessions** | Clusters of activity; a pause longer than the session gap (default 30 min) starts a new session. | all tiers |
-| **Contributors** | Distinct editor names seen in the document's version history (plus the local account). | panel / drive |
+| **Contributors** | Distinct editor names seen in the document's version history — one entry per version-tile timestamp, each editor kept separately (plus the local account only when this machine recorded its edits; merely opening a doc does not count). | panel / drive |
 | **Bulk inserts** | Single additions ≥ threshold chars (default 200) — the classic copy/paste (or AI-dump) signature. | live + ops |
 | **First activity** | Earliest edit in the merged history — approximates when work really began. | all tiers |
-| **Process score** | 0–100 heuristic: paste ratio (35%), work sessions (25%), spread over days (20%), burst pattern (20%). Missing components are excluded, not guessed. | all tiers |
+| **Process score** | 0–100 heuristic: paste ratio (35%), work sessions (25%), spread over days (20%), burst pattern (20%). Missing components are excluded, not guessed. **Click the score** (banner or details) for the full breakdown: each factor's points and evidence, typed-vs-pasted share, word count, and the suspicious-edit signals. | all tiers |
+| **Suspicious-edit signals** | Local, evidence-backed flags computed from timing and paste patterns: pasted share, fully-formed multi-paragraph insertions, single-session dominance, one/two-sitting completion, overnight editing, silence-then-dump, delete-then-paste replacement, low revision density, last-minute rush, implausible typing speed — and the positive "consistent drafting" signal. Each flag carries concrete numbers and times. See the score breakdown (click the score). | live / history |
 
 > **Fairness note:** the process score is a conversation starter, not proof. A student who pastes
 > their own long-prepared essay scores low on process; a student drafting in another tool scores
 > low too. Read the score breakdown (click it) before drawing conclusions.
+
+## Optional AI tier — bring your own key
+
+The score breakdown can include an **"Explain with AI"** button (Settings → *AI analysis*): configure
+any OpenAI-compatible endpoint — base or full URL — plus your API key. **Defaults:** `https://ollama.com/v1`
+(Ollama's cloud API; the extension appends `/chat/completions` automatically) with model
+`glm-5.3-flash:cloud`; api.openai.com, OpenRouter and local models work the same way. When you click
+the button, the extension sends **only writing-process metadata**
+(timings, sizes, counts, and the locally computed signals) to *your* endpoint. **Document text is
+never sent**, nothing is sent until you click, and the host permission for the endpoint is requested
+only when you enable the feature. The AI is instructed to ground its read in the numbers, raise
+innocent explanations, and never to declare that a student cheated. Its reply is stored with the
+document (locally) and appears in the breakdown and in exported submissions.
 
 ## How the data is gathered (four independent tiers)
 
@@ -86,6 +100,10 @@ shows its provenance:
   Forms and Drawings default to overlay. Print always hides the banner and restores layout.
 - **Watchdog** re-mounts the banner if the host app removes it, re-checks offsets, and refreshes
   theme (auto light/dark follows the page's own background).
+- **Layout safety net for Google's own floating controls:** Docs pins some header controls
+  (last-edit · comments · Meet · Share · avatar) to the top of the viewport; the extension
+  detects such fixed strips and translates them just below the banner so the banner's score
+  and buttons stay clickable. Detection is structural, not tied to Google's internal ids.
 - **Defensive everything:** every DOM query, listener, scraper and parser is guarded; failures
   log to a debug buffer (visible in Details when *debug* is on) instead of breaking the banner.
 - **Two-tab safety:** per-file records merge on write (sessions union by id, versions union by
@@ -93,11 +111,34 @@ shows its provenance:
 - **Honest provenance:** the banner never presents a guess as a fact — each headline number carries
   a chip naming its source, and the Details panel shows all tiers side by side.
 
+## Parity with revisionhistory.com-style tools
+
+Revision History (revisionhistory.com) popularized the teacher-side writing-process view. Here is
+where this extension stands against its headline features:
+
+| Their feature | Here |
+|---|---|
+| Summary bar (editing time, sessions, word/char counts) | ✓ banner cards + details overview, incl. approximate word count |
+| % typed vs pasted | ✓ banner card + score breakdown (honest share math; pastes count once) |
+| Detect copy/paste (when, how big) | ✓ paste list with timestamps, sizes, words/paragraphs per block |
+| Unusual writing patterns (large sudden additions, speeds, minimal revision) | ✓ local signals engine: 10 suspicious-edit flags + 1 positive signal, each with evidence |
+| Editing history (edits over time) | ✓ edits, sessions, daily chart, history-derived sessions |
+| Replay document creation | ✗ not built — no document snapshots are stored (privacy trade-off); the daily chart + session tables cover the timeline |
+| Multi-contributor per document | ✓ contributors with per-person version/edit counts |
+| Cloud account / per-doc quota | ✗ not applicable — everything stays local, no accounts, no limits |
+| Process score | ✓ with full click-through breakdown, factor points and AI (optional) |
+
+The extension's stance matches theirs: **not an AI detector** — patterns for conversations, never
+presented as proof.
+
 ## Settings (rightmost ⚙ on the banner)
 
 - **General:** banner height (8–15%), start collapsed, theme, push vs overlay layout, show score.
 - **Tracking:** idle cutoff, session gap, bulk-insert threshold, retention days.
-- **History import:** automatic import mode (smart / always / off) and attempt spacing.
+- **History import:** automatic import mode (smart / always / off), attempt spacing, and
+  *close the history pane after it imports* (on by default — the pane closes itself once the
+  import settles, so the screen returns to just the banner; reopen it any time to browse).
+- **AI analysis (optional):** your own OpenAI-compatible endpoint, model and key — see the section above.
 - **Where the banner appears:** toggle Docs / Sheets / Slides / Forms / Drawings / Drive.
 - **Data:** export everything (JSON), import a previous export, clear all data, storage usage.
 - **Experimental:** Drive API connection (below).
