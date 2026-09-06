@@ -2,6 +2,26 @@
 
 Status: COMPLETE. All verification checks pass (scripts/verify_site.py).
 
+## 2026-09-04: Pacing calendar rebuilt from the real IBW Trivory calendar
+
+The assumed A/B alternation was substantially wrong (it had Sept 8/10/14/16/18
+as A days - they are B days, and it missed Sept 4). A_DAYS and every SEQUENCE
+date now come from the school's Trivory calendar (Sept 2026 through June 2027):
+
+- 83 real A days, Aug 31 - Jun 2, matching the 83-day course plan 1:1.
+- Calibration honored: Sept 2 = group 1.2, Sept 4 = group 1.3 (as taught).
+- January finals days (Jan 20-22) are normal working days - alternation runs
+  through them, so Jan 20 + 22 are A days and Phase 3 fits January exactly.
+- Four buffer work-days added where the real calendar has room:
+  W1 Dungeon Crawl Studio + W2 Loop Clinic (Dec 14/16), W3 Spring Re-Boot
+  (Mar 29, first day back), W4 Recursion Studio (Apr 22, before the sprint).
+- Season 2 compressed from 11 planned days to the 7 real post-exam A days by
+  pairing groups (9.1+9.2, 9.5+9.6, 10.5+8.5, CAP2+CAP3) - nothing cut.
+- Tests re-anchored: T1 Oct 21 (closes Q1), T2 Nov 17 (right after the Combat
+  Engine build), T3 Jan 27, E-days follow their units. Sprint + exam dates
+  were already real A days and are unchanged (mock exams Apr 28/30, exam
+  May 12).
+
 ## 2026-08-31: Lab forms — student answers, Canvas loop, site polish
 
 Second big branch feature: the discovery activities became fillable forms.
