@@ -76,6 +76,11 @@ document text — and only when you click it.
   banner?** The extension should push it below the banner automatically. If it still
   overlaps, open Details (click the score) → **Copy layout diagnostics** → paste the report
   when reporting the issue — it identifies the exact element so the fix can be targeted.
+- **No "Explain with AI" button in Details?** It only appears once AI analysis is enabled
+  **and** an API key is saved (Settings → AI analysis). Open Details (click the score) → the
+  "Suspicious-edit signals" section always states the current AI state, so you can tell at a
+  glance whether it's off, missing its key, or ready. Settings changes apply to open document
+  tabs immediately — no reload needed.
 - **A tab ever shows Chrome's "Try reloading" crash page?** Fixed in recent builds
   (imports are now time-budgeted and gentler on huge histories). Reload the tab and
   reopen version history; imports run a few tiles at a time now.

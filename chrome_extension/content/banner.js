@@ -73,8 +73,27 @@
     if (dt < 3600000) return Math.floor(dt / 60000) + 'm ago';
     if (dt < 86400000) return Math.floor(dt / 3600000) + 'h ago';
     if (dt < 7 * 86400000) return Math.floor(dt / 86400000) + 'd ago';
+    return fmtDay(ts);
+  }
+
+  // Short day label for tight spots (banner cards): drops the year when it
+  // matches the current year. Full precision lives in tooltips/details.
+  function fmtDay(ts, base) {
+    if (!ts) return '—';
     try {
-      return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+      const d = new Date(ts);
+      const now = new Date(base || nowMs());
+      const sameYear = d.getFullYear() === now.getFullYear();
+      return d.toLocaleDateString(undefined, sameYear
+        ? { month: 'short', day: 'numeric' }
+        : { month: 'short', day: 'numeric', year: 'numeric' });
+    } catch (e) { return '—'; }
+  }
+
+  function fmtTime(ts) {
+    if (!ts) return '—';
+    try {
+      return new Date(ts).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
     } catch (e) { return '—'; }
   }
 
@@ -2153,16 +2172,19 @@
    * renaming their internal ids.
    * ===================================================================== */
 
-  function installFixedShift() {
+  function installFixedShift(getDetailsRect) {
     try {
       const style = document.createElement('style');
       style.id = 'revbanner-fixed-shift';
       // The separate `translate` property composes with Google's own
       // `transform` instead of fighting it.
-      style.textContent = '.rb-fshift { translate: 0 var(--revbanner-h, 0px) !important; }';
+      style.textContent = '.rb-fshift { translate: 0 calc(var(--revbanner-h, 0px) + var(--revbanner-panel, 0px)) !important; }';
       (document.head || document.documentElement).appendChild(style);
 
       const tagged = new Set();
+      // Strips pushed out of the OPEN details panel (inline translate — the
+      // offset depends on where the panel ends, so a class can't do it).
+      const panelTagged = new Map();   // el → original inline translate
 
       const bannerH = () => {
         const v = parseFloat(document.documentElement.style.getPropertyValue('--revbanner-h'));
@@ -2171,8 +2193,9 @@
 
       const isOurs = (el) => {
         try {
-          return !el || el.id === 'revbanner-root' ||
-            !!(el.closest && el.closest('#revbanner-root'));
+          return !el || el.id === 'revbanner-root' || el.id === 'revbanner-panel-root' ||
+            !!(el.closest && (el.closest('#revbanner-root') || el.closest('#revbanner-panel-root'))) ||
+            (() => { try { const rn = el.getRootNode(); return !!(rn && rn.host && (rn.host.id === 'revbanner-root' || rn.host.id === 'revbanner-panel-root')); } catch (e) { return false; } })();
         } catch (e) { return true; }
       };
 
@@ -2183,20 +2206,36 @@
         } catch (e) { return null; }
       };
 
-      // Outermost FIXED-position ancestor of `el` that occupies the banner
-      // band — that is the strip to translate. Fixed-only keeps content-
-      // anchored things (comment bubbles, absolute overlays) untouched.
+      // Does `cur` fit the "control strip" profile — pinned in the banner
+      // band and not page-sized? Fixed OR absolute: the hit test has
+      // already proven this element paints over the banner, and in overlay
+      // mode Google's strip is often absolutely positioned inside the page
+      // chrome rather than a viewport-fixed floater.
+      const targetProfile = (cur, h) => {
+        try {
+          const cs = getComputedStyle(cur);
+          if (cs.position !== 'fixed' && cs.position !== 'absolute') return false;
+          if (cs.display === 'none' || cs.visibility === 'hidden') return false;
+          const r = cur.getBoundingClientRect();
+          if (r.height <= 0 || r.height > 220) return false;
+          if (r.width <= 0 || r.width > (window.innerWidth || 0) + 40) return false;
+          if (r.top >= h - 4) return false;      // not in the banner band
+          if (r.top < -60) return false;         // oddly offscreen
+          return true;
+        } catch (e) { return false; }
+      };
+
+      // Outermost positioned ancestor of the hit element that fits the
+      // control-strip profile — that's the unit to translate. Fixed-only
+      // would keep content-anchored things safe, but the hit test already
+      // restricted us to elements that cover the banner, and role filters
+      // (dialog/menu/tooltip) exclude the dangerous absolutes.
       const fixedTarget = (el, h) => {
         try {
           let cur = el, target = null;
           let guard = 0;
           while (cur && cur !== document.body && cur !== document.documentElement && guard++ < 40) {
-            const cs = getComputedStyle(cur);
-            const r = cur.getBoundingClientRect();
-            if (cs.position === 'fixed' && r.height > 0 && r.height <= 220 &&
-                r.top < h - 4 && r.width <= (window.innerWidth || 0) + 40) {
-              target = cur;   // keep the outermost one found
-            }
+            if (targetProfile(cur, h)) target = cur;
             cur = cur.parentElement || (cur.parentNode && cur.parentNode.host) || null;
           }
           return target;
@@ -2250,12 +2289,37 @@
         } catch (e) { return false; }
       };
 
+      // Tagged strips are already translated down by the banner height, so
+      // their rendered rect no longer intersects the banner band — the hit
+      // test can't see them anymore. Re-qualify them against their NATURAL
+      // position (rendered rect minus our own shift) so a shifted pill stays
+      // shifted. Without this, every scan would untag it and it would flap
+      // between covering the banner and sitting below it.
+      const stillQualifies = (el, h) => {
+        try {
+          if (!el || !el.isConnected) return false;
+          if (isOurs(el)) return false;
+          if (el.closest && el.closest('[role="dialog"],[role="menu"],[role="tooltip"],[role="listbox"]')) return false;
+          const cs = getComputedStyle(el);
+          if ((cs.position !== 'fixed' && cs.position !== 'absolute') ||
+              cs.display === 'none' || cs.visibility === 'hidden') return false;
+          const r = el.getBoundingClientRect();
+          if (r.height <= 0 || r.height > 220 || r.width > (window.innerWidth || 0) + 40) return false;
+          const naturalTop = r.top - h;      // undo the shift we applied
+          return naturalTop < h - 4;         // would still cover the banner band
+        } catch (e) { return false; }
+      };
+
       const scan = () => {
         try {
           const h = bannerH();
           const candidates = new Set();
           if (h > 24) {
             for (const el of hitScan(h)) candidates.add(el);
+            // already-shifted strips keep their tag while they still need it
+            for (const el of Array.from(tagged)) {
+              if (stillQualifies(el, h)) candidates.add(el);
+            }
             for (const el of $$('div, span, button')) {
               if (!tagged.has(el) && !candidates.has(el) && qualifies(el, h)) candidates.add(el);
             }
@@ -2276,8 +2340,87 @@
           for (const el of outer) {
             if (!tagged.has(el)) { el.classList.add('rb-fshift'); tagged.add(el); }
           }
+          guardDetailsPanel(panelRectNow());
         } catch (e) { log('fixed-shift scan error: ' + e); }
       };
+
+      // While the details panel is open, a Google strip with a higher
+      // z-index can paint over the report the teacher is reading. Push such
+      // strips below the panel (restoring their position when it closes).
+      // Returns the panel rect to reuse in the same scan tick.
+      function panelRectNow() {
+        try {
+          if (!getDetailsRect) return null;
+          return getDetailsRect();
+        } catch (e) { return null; }
+      }
+
+      function overlayTargetFor(el, p) {
+        try {
+          let cur = el, target = null;
+          let guard = 0;
+          while (cur && cur !== document.body && cur !== document.documentElement && guard++ < 40) {
+            const cs = getComputedStyle(cur);
+            if ((cs.position === 'fixed' || cs.position === 'absolute') &&
+                cs.display !== 'none' && cs.visibility !== 'hidden') {
+              const r = cur.getBoundingClientRect();
+              if (r.height > 0 && r.height <= 220 && r.top < p.bottom - 4 && r.bottom > p.top + 4) {
+                target = cur;
+              }
+            }
+            cur = cur.parentElement || (cur.parentNode && cur.parentNode.host) || null;
+          }
+          return target;
+        } catch (e) { return null; }
+      }
+
+      function guardDetailsPanel(panelInfo) {
+        try {
+          const p = panelInfo || panelRectNow();
+          if (!p || p.height < 40) {
+            for (const [el, prev] of Array.from(panelTagged)) {
+              try { el.style.translate = prev || ''; } catch (e) { /* ignore */ }
+              panelTagged.delete(el);
+            }
+            return;
+          }
+          const found = new Set();
+          const xs = [16, 120, 260].map((d) => p.right - d).filter((x) => x > 0);
+          const ys = [20, Math.min(80, p.height / 2), Math.min(140, p.height - 12)];
+          for (const x of xs) {
+            for (const y of ys) {
+              let el = null;
+              try { el = document.elementFromPoint(x, y); } catch (e) { el = null; }
+              let guard = 0;
+              while (el && el.shadowRoot && guard++ < 5) {
+                try { el = el.shadowRoot.elementFromPoint(x, y); } catch (e) { break; }
+              }
+              if (!el || isOurs(el)) continue;
+              const t = overlayTargetFor(el, p);
+              if (!t || isOurs(t) || found.has(t)) continue;
+              if (t.closest && t.closest('[role="dialog"],[role="menu"],[role="tooltip"],[role="listbox"]')) continue;
+              found.add(t);
+            }
+          }
+          // release strips that no longer overlap the panel
+          for (const [el, prev] of Array.from(panelTagged)) {
+            if (!found.has(el)) {
+              try { el.style.setProperty('translate', prev || ''); } catch (e) { /* ignore */ }
+              panelTagged.delete(el);
+            }
+          }
+          // (re)place the overlapping ones below the panel bottom. Inline with
+          // !important — a band-shift class tag on the same element must not
+          // win over this.
+          for (const el of found) {
+            if (!panelTagged.has(el)) panelTagged.set(el, el.style.translate || '');
+            const r = el.getBoundingClientRect();
+            const cur = (parseFloat(String(getComputedStyle(el).translate).split(/\s+/)[1]) || 0);
+            const dy = Math.max(0, Math.round(p.bottom - (r.top - cur) + 10));
+            try { el.style.setProperty('translate', '0 ' + dy + 'px', 'important'); } catch (e) { /* ignore */ }
+          }
+        } catch (e) { log('panel guard error: ' + e); }
+      }
 
       const kick = debounce(scan, 350);
       try {
@@ -2327,8 +2470,10 @@
           const r = el.getBoundingClientRect();
           return ident(el) + ' | pos=' + cs.position + ' top=' + cs.top + ' right=' + cs.right +
             ' z=' + cs.zIndex + ' transform=' + cs.transform + ' translate=' + cs.translate +
+            ' pointer-events=' + cs.pointerEvents +
             ' | rect=' + Math.round(r.left) + ',' + Math.round(r.top) + ' ' +
-            Math.round(r.width) + 'x' + Math.round(r.height);
+            Math.round(r.width) + 'x' + Math.round(r.height) +
+            ' | rb-fshift=' + (el.classList ? el.classList.contains('rb-fshift') : false);
         } catch (e) { return ident(el) + ' | (styles unavailable)'; }
       };
 
@@ -2336,17 +2481,22 @@
       lines.push('viewport ' + Math.round(window.innerWidth) + 'x' + Math.round(window.innerHeight) +
         ' · banner rect x=' + Math.round(br.left) + ' y=' + Math.round(br.top) +
         ' w=' + Math.round(br.width) + ' h=' + Math.round(br.height));
+      const mode = (document.body && document.body.getAttribute('data-revbanner-mode')) || 'unknown';
+      const fix = (document.body && document.body.getAttribute('data-revbanner-fix')) || 'none';
+      lines.push('offset mode=' + mode + ' · push escalation=' + fix +
+        ' · banner host is position:fixed top:0 z:700 (per page-offset.css)');
 
-      // 1) document-tree elements that intersect the banner (right 45%)
+      // 1) document-tree elements that intersect the banner band and the
+      //    strip just below it (where the pushed chrome begins)
       let count = 0;
-      lines.push('--- elements intersecting the banner band ---');
-      for (const el of document.querySelectorAll('div,span,button,g,svg')) {
-        if (count >= 25) break;
+      lines.push('--- elements intersecting banner band + 170px below ---');
+      for (const el of document.querySelectorAll('div,span,button,g,svg,iframe')) {
+        if (count >= 30) break;
         try {
           if (isOurEl(el)) continue;
           const r = el.getBoundingClientRect();
           if (r.width < 8 || r.height < 8) continue;
-          if (r.bottom <= br.top + 2 || r.top >= br.bottom - 2) continue;
+          if (r.bottom <= br.top + 2 || r.top >= br.bottom + 170) continue;
           if (r.right <= br.left + br.width * 0.55) continue;
           if (r.width * r.height > 500000) continue;   // page-size containers
           const cs = getComputedStyle(el);
@@ -2357,18 +2507,46 @@
       }
       if (!count) lines.push('(none found in the document tree)');
 
-      // 2) topmost element at sample points (pierces open shadow roots)
+      // 1b) pills hiding inside OPEN shadow roots are invisible to both the
+      //     sweep above and plain hit tests — enumerate them explicitly.
+      let shCount = 0;
+      try {
+        for (const host of document.querySelectorAll('*')) {
+          if (shCount >= 8) break;
+          if (!host.shadowRoot) continue;
+          const hr = host.getBoundingClientRect();
+          if (hr.bottom <= br.top || hr.top >= br.bottom + 170 || hr.width < 40) continue;
+          for (const el of host.shadowRoot.querySelectorAll('div,span,button')) {
+            if (shCount >= 8) break;
+            try {
+              const r = el.getBoundingClientRect();
+              if (r.width < 20 || r.height < 16) continue;
+              if (r.bottom <= br.top || r.top >= br.bottom + 170) continue;
+              if (r.right <= br.left + br.width * 0.4) continue;
+              shCount++;
+              lines.push('[shadow ' + shCount + '] ' + desc(el));
+            } catch (e) { /* ignore */ }
+          }
+        }
+      } catch (e) { /* ignore */ }
+      if (!shCount) lines.push('(no open shadow-root content in the region)');
+
+      // 2) topmost element at sample points — banner band AND rows below it
       lines.push('--- hit tests: topmost element at each point ---');
-      const y = br.top + Math.min(24, br.height / 2);
-      for (const d of [12, 60, 120, 200, 300, 380]) {
-        const x = br.right - d;
-        try {
-          let el = document.elementFromPoint(x, y);
-          let guard = 0;
-          while (el && el.shadowRoot && guard++ < 5) el = el.shadowRoot.elementFromPoint(x, y);
-          lines.push('(' + Math.round(x) + ',' + Math.round(y) + ') → ' + (el ? desc(el) : 'null'));
-        } catch (e) {
-          lines.push('(' + Math.round(x) + ',' + Math.round(y) + ') → error ' + e);
+      const rows = [Math.min(24, br.height / 2)];
+      for (const dy of [10, 40, 70, 100, 140]) rows.push(br.height + dy);
+      for (const y of rows) {
+        if (y <= 0 || y >= (window.innerHeight || 0)) continue;
+        for (const d of [12, 120, 250]) {
+          const x = br.right - d;
+          try {
+            let el = document.elementFromPoint(x, y);
+            let guard = 0;
+            while (el && el.shadowRoot && guard++ < 5) el = el.shadowRoot.elementFromPoint(x, y);
+            lines.push('(' + Math.round(x) + ',' + Math.round(y) + ') → ' + (el ? desc(el) : 'null'));
+          } catch (e) {
+            lines.push('(' + Math.round(x) + ',' + Math.round(y) + ') → error ' + e);
+          }
         }
       }
       lines.push('--- end of report (paste the whole thing) ---');
@@ -2380,7 +2558,9 @@
 
   function isOurEl(el) {
     try {
-      return !el || el.id === 'revbanner-root' || !!(el.closest && el.closest('#revbanner-root'));
+      return !el || el.id === 'revbanner-root' || el.id === 'revbanner-panel-root' ||
+        !!(el.closest && (el.closest('#revbanner-root') || el.closest('#revbanner-panel-root'))) ||
+        (() => { try { const rn = el.getRootNode(); return !!(rn && rn.host && (rn.host.id === 'revbanner-root' || rn.host.id === 'revbanner-panel-root')); } catch (e) { return false; } })();
     } catch (e) { return true; }
   }
 
@@ -2460,6 +2640,11 @@
 .rb[data-mode="overlay"] .rb-spark { display: none; }
 /* Details panel */
 .rb-details { position: fixed; top: var(--revbanner-h, 0px); left: 0; right: 0; max-height: 64vh; overflow: auto; background: var(--card); border: 1px solid var(--border); border-top: none; box-shadow: 0 14px 34px rgba(2, 6, 23, 0.28); padding: 14px 18px 18px; z-index: 702; color: var(--fg); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 12.5px; user-select: text; -webkit-user-select: text; }
+/* Flow mode: the open report is part of the page's scroll flow (in-flow
+ * host at the top of the body) — full natural height, page scrolls past it
+ * into the document. The fixed-position rules above remain the fallback for
+ * overlay/escalated layouts. */
+.rb-details.rb-flow { position: static; top: auto; left: auto; right: auto; max-height: none; overflow: visible; box-shadow: none; }
 .rb-details h3 { margin: 18px 0 6px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .rb-details h3:first-of-type { margin-top: 6px; }
 .rb-d-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
@@ -2471,6 +2656,10 @@
  * banner strip cards keep nowrap for tidy short labels. */
 .rb-grid .rb-card .rb-lab { white-space: normal; line-height: 1.4; text-align: center; word-break: break-word; }
 .rb-grid .rb-card .rb-lab-sub { text-transform: none; letter-spacing: 0; }
+/* Date-valued cards: smaller, wrap-capable numbers — big nowrap dates
+ * otherwise spill over neighboring cards. */
+.rb-grid .rb-card .rb-num.rb-num-sm { font-size: 0.8rem; font-weight: 700; white-space: normal; line-height: 1.3; }
+.rb-card[data-i="earliest"] .rb-num { font-size: 0.82rem; white-space: normal; line-height: 1.25; }
 .rb-grid .rb-card:hover { box-shadow: none; }
 .rb-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
 .rb-table th { text-align: left; color: var(--muted); font-weight: 700; padding: 4px 6px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--card); }
@@ -2506,7 +2695,7 @@
 .rb-ai { border: 1px solid var(--border); border-left: 3px solid var(--accent); background: var(--chipbg); border-radius: 8px; padding: 9px 11px; margin: 10px 0; font-size: 0.7rem; line-height: 1.5; white-space: pre-wrap; }
 .rb-ai b { color: var(--accent); }
 /* Toast */
-.rb-toast { position: fixed; top: calc(var(--revbanner-h, 0px) + 8px); right: 14px; max-width: 420px; background: #0f172a; color: #f8fafc; font-size: 0.7rem; padding: 8px 12px; border-radius: 10px; box-shadow: 0 8px 22px rgba(2, 6, 23, 0.4); z-index: 703; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; opacity: 0.97; }
+.rb-toast { position: fixed; top: calc(var(--revbanner-h, 0px) + var(--revbanner-panel, 0px) + 8px); right: 14px; max-width: 420px; background: #0f172a; color: #f8fafc; font-size: 0.7rem; padding: 8px 12px; border-radius: 10px; box-shadow: 0 8px 22px rgba(2, 6, 23, 0.4); z-index: 703; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; opacity: 0.97; }
 /* Responsive */
 @media (max-width: 1450px) { .rb-card[data-i="earliest"] { display: none; } }
 @media (max-width: 1280px) { .rb-card[data-i="bulk"] { display: none; } }
@@ -2583,16 +2772,28 @@
       this.root = this.host.attachShadow({ mode: 'open' });
       this.build();
       this.wire();
+      // Content height changes when cards/chips wrap on resize — re-measure
+      // so the page push always matches what the banner actually paints.
+      try {
+        window.addEventListener('resize', debounce(() => {
+          try {
+            this.emitHeight();
+            if (this.detailsOpen && !this.flow) this.positionPanel();
+            this.syncPanelShift();
+          } catch (e) { /* ignore */ }
+        }, 250), { passive: true });
+      } catch (e) { /* ignore */ }
     }
 
     build() {
       let styled = false;
+      let sheet = null;
       try {
-        const sheet = new CSSStyleSheet();
+        sheet = new CSSStyleSheet();
         sheet.replaceSync(BANNER_CSS);
         this.root.adoptedStyleSheets = [sheet];
         styled = true;
-      } catch (e) { styled = false; }
+      } catch (e) { styled = false; sheet = null; }
       if (!styled) {
         const st = document.createElement('style');
         st.textContent = BANNER_CSS;
@@ -2609,10 +2810,31 @@
       this.wrap = wrap;
       this.el = wrap.querySelector('.rb');
       this.strip = wrap.querySelector('.rb-strip');
+      // The details panel lives in its own IN-FLOW host at the top of the
+      // body: when open it becomes part of the page's scroll flow (banner →
+      // panel → Google header/pill → document), so scrolling the page moves
+      // the report and the document together — scroll past the report and
+      // the document is right there, full size.
+      this.panelHost = document.createElement('div');
+      this.panelHost.id = 'revbanner-panel-root';
+      try { document.body.insertBefore(this.panelHost, document.body.firstChild); }
+      catch (e) { document.body.appendChild(this.panelHost); }
+      this.panelRoot = this.panelHost.attachShadow({ mode: 'open' });
+      if (sheet) {
+        try { this.panelRoot.adoptedStyleSheets = [sheet]; }
+        catch (e2) { sheet = null; }
+      }
+      if (!sheet) {
+        try {
+          const st2 = document.createElement('style');
+          st2.textContent = BANNER_CSS;
+          this.panelRoot.appendChild(st2);
+        } catch (e3) { /* unstyled panel — still functional */ }
+      }
       this.details = document.createElement('div');
       this.details.className = 'rb-details';
       this.details.setAttribute('hidden', '');
-      this.root.appendChild(this.details);
+      this.panelRoot.appendChild(this.details);
       this.toastEl = document.createElement('div');
       this.toastEl.className = 'rb-toast';
       this.toastEl.setAttribute('hidden', '');
@@ -2622,26 +2844,30 @@
     }
 
     wire() {
-      this.root.addEventListener('click', (e) => {
-        let t = e.target;
-        while (t && t !== this.root) {
-          if (t.matches && t.matches('[data-act]')) {
-            const act = t.getAttribute('data-act');
-            if (this.onAct) this.onAct(act, e);
-            return;
+      const onRoot = (root) => {
+        root.addEventListener('click', (e) => {
+          let t = e.target;
+          while (t && t !== root) {
+            if (t.matches && t.matches('[data-act]')) {
+              const act = t.getAttribute('data-act');
+              if (this.onAct) this.onAct(act, e);
+              return;
+            }
+            if (t.matches && t.matches('[data-go]')) {
+              const go = t.getAttribute('data-go');
+              this.openDetails(go);
+              return;
+            }
+            if (t.matches && t.matches('[data-chip-act]')) {
+              if (this.onAct) this.onAct(t.getAttribute('data-chip-act'), e);
+              return;
+            }
+            t = t.parentElement;
           }
-          if (t.matches && t.matches('[data-go]')) {
-            const go = t.getAttribute('data-go');
-            this.openDetails(go);
-            return;
-          }
-          if (t.matches && t.matches('[data-chip-act]')) {
-            if (this.onAct) this.onAct(t.getAttribute('data-chip-act'), e);
-            return;
-          }
-          t = t.parentElement;
-        }
-      });
+        });
+      };
+      onRoot(this.root);
+      if (this.panelRoot) onRoot(this.panelRoot);
     }
 
     setTheme(dark) {
@@ -2680,6 +2906,19 @@
       const pct = clamp(this.cfg.bannerPct || 13, 8, 15);
       const vh = window.innerHeight || 900;
       let h = Math.round(vh * pct / 100);
+      // The banner's content can be taller than the percentage (cards wrap
+      // on narrow windows). Measure the real need and push the page by what
+      // the banner actually paints — otherwise the banner's overflow spills
+      // over the pushed chrome and Google's controls paint over it.
+      try {
+        if (this.el && this.el.style) {
+          const prev = this.el.style.height;
+          this.el.style.height = 'auto';        // natural content height
+          const need = this.el.scrollHeight + 1;
+          this.el.style.height = prev;           // restore before any paint
+          if (need > h) h = need;
+        }
+      } catch (e) { /* measurement failed — keep the pct-based height */ }
       h = clamp(h, 56, 160);
       if (this.hidden) h = 0;
       else if (this.collapsed) h = 34;
@@ -2781,6 +3020,9 @@
         this.refs['chips'].innerHTML = chips.join('');
 
         this.drawSpark(stats);
+        // chips/cards may have wrapped — keep the page push matched to the
+        // height the banner actually paints
+        this.emitHeight();
       } catch (e) {
         log('render error: ' + e);
       }
@@ -2841,9 +3083,71 @@
       } catch (e) { /* ignore */ }
     }
 
+    // Place the details panel directly below the banner at FULL size: the
+    // panel may occupy the entire remaining viewport (scrolling internally
+    // if its content is taller). The page push (page-offset.css) moves
+    // Google's header and the document below it — displaced, never
+    // compressed — so vertical order is banner → panel → pill → document,
+    // with the document reachable by scrolling once the panel closes.
+    positionPanel() {
+      try {
+        this.details.style.top = '';      // CSS default: below the banner
+        this.toastEl.style.top = '';       // CSS default: below banner + panel
+        const h = this.host.getBoundingClientRect().height;
+        const vh = window.innerHeight || 0;
+        this.details.style.maxHeight = Math.max(160, vh - h - 8) + 'px';
+      } catch (e) { /* ignore */ }
+    }
+
+    // Feed the panel's measured height into --revbanner-panel so the page
+    // push moves Google's header below the open panel. Zero when closed, and
+    // zero in flow mode (the in-flow panel host pushes the page itself —
+    // using the variable too would double-push).
+    syncPanelShift() {
+      try {
+        let px = 0;
+        if (this.detailsOpen && !this.flow) {
+          const hb = this.host.getBoundingClientRect();
+          const pb = this.details.getBoundingClientRect().bottom;
+          const vh = window.innerHeight || 0;
+          px = Math.max(0, Math.round(Math.min(pb, vh) - hb.bottom));
+        }
+        document.documentElement.style.setProperty('--revbanner-panel', px + 'px');
+      } catch (e) { /* ignore */ }
+    }
+
+    // Flow mode works when the page is being pushed normally (margin push,
+    // no escalation, no overlay): the panel host is in the body's flow, so
+    // opening the panel pushes Google's header + document down naturally
+    // and the page itself scrolls through report → document.
+    canFlow() {
+      try {
+        const b = document.body;
+        if (!b || !this.panelHost || !this.panelHost.isConnected) return false;
+        if (b.getAttribute('data-revbanner-mode') !== 'push') return false;
+        if (b.hasAttribute('data-revbanner-fix')) return false;
+        return true;
+      } catch (e) { return false; }
+    }
+
     openDetails(go) {
       this.detailsOpen = true;
+      this.flow = this.canFlow();
+      try {
+        if (this.flow) {
+          this.details.classList.add('rb-flow');
+          document.body.setAttribute('data-revbanner-flow', '1');
+        } else {
+          this.positionPanel();   // fixed-position fallback (overlay/escalated)
+        }
+      } catch (e) { /* ignore */ }
       this.details.removeAttribute('hidden');
+      this.syncPanelShift();
+      // content/fonts settle asynchronously — re-sync after layout settles
+      try {
+        requestAnimationFrame(() => this.syncPanelShift());
+        setTimeout(() => this.syncPanelShift(), 250);
+      } catch (e) { /* ignore */ }
       if (go && this.onDetailsGo) {
         // scroll after render
         setTimeout(() => {
@@ -2857,7 +3161,13 @@
 
     closeDetails() {
       this.detailsOpen = false;
+      this.flow = false;
+      try {
+        this.details.classList.remove('rb-flow');
+        document.body.removeAttribute('data-revbanner-flow');
+      } catch (e) { /* ignore */ }
       this.details.setAttribute('hidden', '');
+      this.syncPanelShift();
     }
 
     renderDetails(stats, rec, tracker, history) {
@@ -2881,13 +3191,15 @@
             : '—', 'typed / pasted share') +
           card('Words (now)', stats.words ? fmtNum(stats.words) : '—', stats.words && stats.sessions
             ? '≈ ' + fmtNum(Math.round(stats.words / Math.max(1, stats.sessions))) + ' per session' : 'document total') +
-          card('First activity', stats.earliest ? fmtDate(stats.earliest) : '—') +
-          card('Latest activity', stats.latest ? fmtDate(stats.latest) : '—') +
+          card('First activity', stats.earliest ? fmtDay(stats.earliest) : '—',
+            stats.earliest ? fmtTime(stats.earliest) : null, true) +
+          card('Latest activity', stats.latest ? fmtDay(stats.latest) : '—',
+            stats.latest ? fmtTime(stats.latest) : null, true) +
           card('Active days', String(stats.activeDays)) +
           '</div>';
 
-        function card(lab, val, sub) {
-          return '<div class="rb-card"><span class="rb-num">' + esc(val) + '</span><span class="rb-lab">' + esc(lab) + '</span>' +
+        function card(lab, val, sub, small) {
+          return '<div class="rb-card"><span class="rb-num' + (small ? ' rb-num-sm' : '') + '">' + esc(val) + '</span><span class="rb-lab">' + esc(lab) + '</span>' +
             (sub ? '<span class="rb-lab rb-lab-sub">' + esc(sub) + '</span>' : '') + '</div>';
         }
 
@@ -2953,6 +3265,10 @@
             (rec.ai ? 'Re-run AI analysis' : 'Explain with AI') + '</button>' +
             (rec.ai ? '' : '<span class="rb-muted" style="font-size:0.64rem">optional — uses your own API key from Settings</span>') +
             '</div>';
+        } else if (!(this.cfg.ai && this.cfg.ai.enabled)) {
+          html += '<p class="rb-prov rb-muted">AI analysis is off — enable it in Settings (⚙ → AI analysis) with your own API key to add an "Explain with AI" button here.</p>';
+        } else {
+          html += '<p class="rb-prov rb-muted">AI analysis is enabled, but no API key is saved yet — add it in Settings (⚙ → AI analysis).</p>';
         }
         html += '<p class="rb-legal">Signals describe patterns, not intent. A student can paste their own earlier draft, write offline, use dictation, or paste a teacher-provided template. Use these as conversation starters — never as proof of misconduct.</p>';
         html += '</section>';
@@ -3075,6 +3391,8 @@
       } catch (e) {
         log('renderDetails error: ' + e);
       }
+      // panel content height changed — keep the page push matched
+      try { this.syncPanelShift(); } catch (e) { /* ignore */ }
     }
 
     drawDailyChart() {
@@ -3527,7 +3845,13 @@
     }
 
     // Wire height changes to offset engine + fixed-chrome shift
-    const fixedShift = installFixedShift();
+    const fixedShift = installFixedShift(() => {
+      try {
+        if (!ui.detailsOpen) return null;
+        const r = ui.details.getBoundingClientRect();
+        return (r && r.height > 40) ? r : null;
+      } catch (e) { return null; }
+    });
     ui.onHeightChange = (h) => {
       engine.setHeight(h);
       fixedShift.kick();
@@ -3536,6 +3860,24 @@
       rec.ui.hidden = ui.hidden;
       markDirty();
     };
+
+    // Live settings: edits made in Options (e.g. enabling AI analysis)
+    // apply to already-open tabs immediately — no page reload needed.
+    try {
+      if (chrome && chrome.storage && chrome.storage.onChanged) {
+        chrome.storage.onChanged.addListener((changes, area) => {
+          try {
+            if (area !== 'local' || !changes || !changes.settings) return;
+            const s = changes.settings.newValue || {};
+            Object.assign(cfg, DEFAULTS, s, {
+              apps: Object.assign({}, DEFAULTS.apps, s.apps || {}),
+              ai: Object.assign({}, DEFAULTS.ai, s.ai || {})
+            });
+            state.dirty = true;   // re-render so the AI button appears/disappears
+          } catch (e) { log('settings change error: ' + e); }
+        });
+      }
+    } catch (e) { /* no chrome.storage in this context — fine */ }
     ui.onDetailsGo = () => {};
 
     // Initial UI state from record / settings
@@ -3593,6 +3935,11 @@
     setInterval(() => {
       try {
         if (!ui.host.isConnected) document.body.appendChild(ui.host);
+        // keep the in-flow report host first in the body if Docs moved it
+        if (ui.panelHost && !ui.panelHost.isConnected) {
+          try { document.body.insertBefore(ui.panelHost, document.body.firstChild); }
+          catch (e2) { document.body.appendChild(ui.panelHost); }
+        }
         if (!state.forgotten) engine.scheduleCheck(0);
       } catch (e) { /* ignore */ }
     }, 5000);

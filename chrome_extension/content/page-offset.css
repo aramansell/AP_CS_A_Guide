@@ -8,24 +8,41 @@
 
 html {
   --revbanner-h: 0px;
+  /* Extra push while the details panel is open: banner → panel → Google
+   * header (pill) → document. The script sets this to the panel's measured
+   * height and back to 0 when the panel closes. */
+  --revbanner-panel: 0px;
 }
 
 /* The banner host itself. Kept below Google Docs dialog layers (dialogs
- * typically live above z-index 1000) but above the app chrome. */
+ * typically live above z-index 1000) but above the app chrome — including
+ * the floating control strips (last-edit / Meet / Share), which rank above
+ * the old value of 700. Everything inside the shadow root (banner, details
+ * panel, toast) inherits this stacking ceiling, so it must outrank whatever
+ * the panel needs to cover. */
 #revbanner-root {
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   height: var(--revbanner-h);
-  z-index: 700;
+  z-index: 2000;
+  /* The banner must never paint outside the space the page was pushed by —
+   * overflow would spill onto Google's chrome and look like Google's
+   * controls are covering the banner. */
+  overflow: hidden !important;
 }
 
-/* Primary push: shift the body down and shrink it so nothing is lost off
- * the bottom edge. Works for in-flow layout and for absolutely-positioned
- * children whose containing block is the body box. */
+/* Primary push: shift the body down so nothing is lost off the bottom
+ * edge for the banner's own height. Works for in-flow layout and for
+ * absolutely-positioned children whose containing block is the body box.
+ * While the details panel is open, the panel's height joins the push so
+ * Google's header (and the control-pill strip) lands below the panel. The
+ * body height is NOT shrunk by the panel — the document keeps its full
+ * natural size below the panel (reachable by scrolling), it is just
+ * displaced, not compressed. */
 body[data-revbanner-mode="push"] {
-  margin-top: var(--revbanner-h) !important;
+  margin-top: calc(var(--revbanner-h) + var(--revbanner-panel, 0px)) !important;
   height: calc(100vh - var(--revbanner-h)) !important;
   min-height: 0 !important;
 }
@@ -37,18 +54,44 @@ body[data-revbanner-mode="push"][data-revbanner-fix="1"] #docs-chrome,
 body[data-revbanner-mode="push"][data-revbanner-fix="1"] #docs-header,
 body[data-revbanner-mode="push"][data-revbanner-fix="1"] #docs-editor,
 body[data-revbanner-mode="push"][data-revbanner-fix="1"] #docs-editor-container {
-  transform: translateY(var(--revbanner-h));
+  transform: translateY(calc(var(--revbanner-h) + var(--revbanner-panel, 0px)));
 }
 
 /* Escalation level 2: last-resort push for unknown layouts — transform the
  * entire application. Rare; used only if the targeted rules didn't work. */
 body[data-revbanner-mode="push"][data-revbanner-fix="2"] {
-  transform: translateY(var(--revbanner-h));
+  transform: translateY(calc(var(--revbanner-h) + var(--revbanner-panel, 0px)));
 }
 
-/* Teachers print Docs. The banner and the push must vanish when printing. */
+/* Overlay mode has no body push (the page can't be moved safely), but the
+ * vertical order must still hold: banner → details panel → Google header
+ * (pill) → document. While the panel is open, translate the known header
+ * containers below it — additive with Google's own inline styles. */
+body[data-revbanner-mode="overlay"] #docs-chrome,
+body[data-revbanner-mode="overlay"] #docs-header,
+body[data-revbanner-mode="overlay"] #docs-bars,
+body[data-revbanner-mode="overlay"] .docs-titlebar {
+  transform: translateY(calc(var(--revbanner-h) + var(--revbanner-panel, 0px)));
+}
+
+/* Flow mode (margin push, no escalation): the open report panel is IN the
+ * page's flow, so the document sits below it naturally and the PAGE scrolls
+ * through the report into the document. While the report is open the body
+ * must grow to its natural content height and the page must be scrollable
+ * — Docs normally locks the page scroll because nothing ever extends past
+ * the viewport. */
+body[data-revbanner-flow="1"] {
+  height: auto !important;
+  min-height: 0 !important;
+}
+html:has(body[data-revbanner-flow="1"]) {
+  overflow-y: auto !important;
+}
+
+/* Teachers print Docs. The banner, the open report panel, and the push must
+ * all vanish when printing. */
 @media print {
-  #revbanner-root {
+  #revbanner-root, #revbanner-panel-root {
     display: none !important;
   }
   body {

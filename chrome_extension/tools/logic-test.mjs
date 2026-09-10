@@ -23,7 +23,7 @@ if (!src.includes(ANCHOR)) throw new Error('injection anchor not found in banner
 const hooked = src.replace(
   ANCHOR,
   'globalThis.__RB_TEST__ && globalThis.__RB_TEST__({ parseWhen, computeStats, pruneAndRollup, ' +
-  'mergeSession, parseNetworkHistory, fmtDur, fmtNum, fmtRel, ymdKey, clamp, DEFAULTS, MONTHS, ' +
+  'mergeSession, parseNetworkHistory, fmtDur, fmtNum, fmtRel, fmtDay, fmtTime, ymdKey, clamp, DEFAULTS, MONTHS, ' +
   'hmacSign, buildSubmissionHtml, parseTileText, assemblePanelVersions, bareNameFromText, ' +
   'looksLikeDateText, isSaveChipText, pasteStatsFromText, computeInsights, buildAiPayload }); main().catch('
 );
@@ -572,11 +572,88 @@ eq('AI endpoint: permission origin matches fetch host', aiOrigin, 'https://ollam
 // pane auto-close + fixed-chrome shift (defaults + source-level wiring)
 ok('DEFAULTS autoCloseHistoryPane on (banner)', F.DEFAULTS.autoCloseHistoryPane === true, JSON.stringify(F.DEFAULTS.autoCloseHistoryPane));
 ok('DEFAULTS autoCloseHistoryPane on (background)', vm.runInContext('DEFAULTS.autoCloseHistoryPane', bgSandbox) === true, '');
-ok('fixed-shift CSS + installer in source', src.includes('.rb-fshift') && src.includes('installFixedShift()'), '');
-ok('fixed-shift uses translate property', src.includes('translate: 0 var(--revbanner-h, 0px)'), '');
+ok('fixed-shift CSS + installer in source', src.includes('.rb-fshift') && src.includes('installFixedShift'), '');
+ok('fixed-shift uses translate property', src.includes('translate: 0 calc(var(--revbanner-h, 0px) + var(--revbanner-panel, 0px))'), '');
 ok('fixed-shift hit-tests what paints over the banner', src.includes('elementFromPoint') && src.includes('hitScan'), '');
 ok('fixed-shift walks to outermost fixed ancestor', src.includes('fixedTarget'), '');
+ok('shifted strips persist (no flap cycle)', src.includes('stillQualifies') && src.includes('naturalTop < h - 4'), '');
+ok('target walk accepts absolute strips too (overlay mode)', src.includes('targetProfile') &&
+  src.includes("cs.position !== 'fixed' && cs.position !== 'absolute'"), '');
+ok('diagnostics reports offset mode + escalation', src.includes('offset mode=') && src.includes('push escalation='), '');
+
+// banner height honesty: the push must match what the banner actually paints.
+// (If content wraps taller than the configured %, the old code let the banner
+// spill past the pushed area and Google's chrome painted over the spill.)
+const offsetCss = readFileSync(join(here, '..', 'content', 'page-offset.css'), 'utf8');
+ok('banner host clips overflow (no spill ever)', /#revbanner-root[^}]*overflow: hidden/.test(offsetCss), '');
+ok('emitHeight measures real content need', src.includes("style.height = 'auto'") && src.includes('scrollHeight + 1'), '');
+ok('height re-measured on render and resize', src.includes('this.emitHeight();') &&
+  src.includes("addEventListener('resize'"), '');
+
+// details-panel defense: the host z ceiling must outrank Google's floating
+// strips (they beat the old 700), and anything that still paints over the
+// open panel gets pushed below it.
+ok('host z-index outranks Google control strips', /z-index:\s*2000/.test(offsetCss), '');
+ok('details panel guard shifts overlappers below it', src.includes('guardDetailsPanel') &&
+  src.includes("installFixedShift(getDetailsRect)") || (src.includes('guardDetailsPanel') && src.includes('installFixedShift(()')), '');
+ok('panel guard uses inline !important translate', src.includes("setProperty('translate', '0 ' + dy + 'px', 'important')"), '');
+ok('diagnostics scans below the band + shadow roots', src.includes('+ 170') &&
+  src.includes('host.shadowRoot.querySelectorAll') && src.includes('pointer-events='), '');
+
+// vertical order while the report panel is open: banner → panel → Google
+// header (pill) → document. The panel's measured height joins the page push
+// (--revbanner-panel) so Google's header lands below the panel.
+ok('panel push variable drives body margin', offsetCss.includes('--revbanner-panel') &&
+  /margin-top:\s*calc\(var\(--revbanner-h\) \+ var\(--revbanner-panel, 0px\)\)/.test(offsetCss), '');
+ok('panel height synced into the push', src.includes('syncPanelShift') &&
+  src.includes("'--revbanner-panel'") && src.includes('this.syncPanelShift();'), '');
+ok('panel full size: viewport minus banner, no reserve', src.includes("this.details.style.top = ''") &&
+  src.includes('style.maxHeight') && src.includes('vh - h - 8'), '');
+ok('document displaced, not compressed, while panel open',
+  /margin-top:\s*calc\(var\(--revbanner-h\) \+ var\(--revbanner-panel, 0px\)\)/.test(offsetCss) &&
+  /height:\s*calc\(100vh - var\(--revbanner-h\)\)/.test(offsetCss) &&
+  !/height:\s*calc\(100vh - var\(--revbanner-h\) - var\(--revbanner-panel/.test(offsetCss), '');
+ok('toast rides below banner + panel via CSS', /--revbanner-panel, 0px\) \+ 8px/.test(src) &&
+  src.includes("this.toastEl.style.top = ''"), '');
+ok('fixed-strip shift also clears the open panel', src.includes('calc(var(--revbanner-h, 0px) + var(--revbanner-panel, 0px))'), '');
+ok('overlay mode keeps the same banner→panel→header order',
+  /body\[data-revbanner-mode="overlay"\] #docs-chrome/.test(offsetCss) &&
+  offsetCss.includes('transform: translateY(calc(var(--revbanner-h) + var(--revbanner-panel, 0px)))'), '');
+
+// flow mode: the open report is part of the page's scroll flow, so scrolling
+// past the report reveals the document (full size) below it
+ok('flow panel: page scrollable while report open', offsetCss.includes('data-revbanner-flow="1"') &&
+  offsetCss.includes('html:has(body[data-revbanner-flow="1"])') && offsetCss.includes('overflow-y: auto !important'), '');
+ok('flow body grows to natural content height', /body\[data-revbanner-flow="1"\][^}]*height:\s*auto/.test(offsetCss), '');
+ok('panel lives in its own in-flow host, first in body', src.includes("id = 'revbanner-panel-root'") &&
+  src.includes('insertBefore(this.panelHost, document.body.firstChild)') &&
+  src.includes('this.panelRoot.appendChild(this.details)'), '');
+ok('flow gated to margin push; no double push with the variable', src.includes('canFlow()') &&
+  src.includes("b.hasAttribute('data-revbanner-fix')") && src.includes('this.detailsOpen && !this.flow'), '');
+ok('our-shadow elements recognized across both hosts', src.includes("rn.host.id === 'revbanner-root'") &&
+  src.includes("rn.host.id === 'revbanner-panel-root'"), '');
+ok('click delegation spans both shadow roots', src.includes('const onRoot = (root)') && src.includes('onRoot(this.panelRoot)'), '');
+ok('flow panel CSS: static position, natural height', src.includes('.rb-details.rb-flow') && src.includes('max-height: none'), '');
+ok('print hides the flow panel too', /#revbanner-root, #revbanner-panel-root/.test(offsetCss), '');
 ok('diagnostics button + collector wired', src.includes('data-act="diag-overlap"') && src.includes('collectOverlapDiagnostics()'), '');
+ok('AI state visible in details when off', src.includes('AI analysis is off — enable it in Settings') &&
+  src.includes('no API key is saved yet'), '');
+ok('settings apply live to open tabs', src.includes('changes.settings') && src.includes('chrome.storage.onChanged'), '');
+
+// short date formats — date cards must fit their card (no overlapping text)
+const relSameYear = F.fmtRel(Date.UTC(2026, 8, 20), Date.UTC(2026, 9, 1));   // 11 days, same year
+ok('fmtRel same-year old date is short (no year)', /^[A-Za-z]{3} \d{1,2}$/.test(relSameYear), JSON.stringify(relSameYear));
+const relOldYear = F.fmtRel(Date.UTC(2024, 8, 20), Date.UTC(2026, 9, 1));    // different year
+ok('fmtRel different-year keeps the year', relOldYear.includes('2024'), JSON.stringify(relOldYear));
+const relRecent = F.fmtRel(Date.UTC(2026, 9, 1) - 3 * 3600000, Date.UTC(2026, 9, 1));
+eq('fmtRel hours unchanged', relRecent, '3h ago');
+const daySame = F.fmtDay(Date.UTC(2026, 8, 20), Date.UTC(2026, 9, 1));
+ok('fmtDay same-year is day only', /^[A-Za-z]{3} \d{1,2}$/.test(daySame), JSON.stringify(daySame));
+const dayOld = F.fmtDay(Date.UTC(2024, 8, 20), Date.UTC(2026, 9, 1));
+ok('fmtDay other-year includes year', dayOld.includes('2024'), JSON.stringify(dayOld));
+ok('date cards use short format + wrap class', src.includes('rb-num-sm') &&
+  src.includes("fmtDay(stats.earliest)") && src.includes("fmtDay(stats.latest)"), '');
+ok('banner first-activity card wraps', src.includes('.rb-card[data-i="earliest"] .rb-num'), '');
 ok('pane auto-close wired into watcher scrapes', src.includes('maybeAutoClosePane(await this.scrapePanel())'), '');
 ok('pane auto-close respects the automation gate', src.includes('lastAutoTry || 0) < 20000'), '');
 
