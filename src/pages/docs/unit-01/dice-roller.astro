@@ -21,106 +21,272 @@ const body = `<h1>Student RPG Guide: Dice Roller</h1>
 
 <h2>The Setup</h2>
 
-<p>
-    Create two files in your project:
-    <ol>
-        <li><code>Dice.java</code> — This will contain all your dice logic.</li>
-        <li><code>DiceTester.java</code> — This will contain a <code>main</code> method to run your tests.</li>
-    </ol>
-</p>
+<p>Create two files in your project:</p>
+<ol>
+    <li><code>Dice.java</code> — This will contain all your dice logic.</li>
+    <li><code>DiceTester.java</code> — This will contain a <code>main</code> method to run your own tests.</li>
+</ol>
 
 <p>In <code>Dice.java</code>, start with a basic class outline. You will add methods to this class.</p>
 <pre><code>public class Dice {
     // Your methods will go here
 }</code></pre>
 
+<p>
+    There is a <strong>third</strong> file, and you do not write it:
+    <a href="../../data/DiceCheck.java" download>DiceCheck.java</a>. It is an
+    acceptance test. Download it and put it in the same folder as your
+    <code>Dice.java</code> — the next section shows how to run it.
+</p>
+
 <hr>
 
-<h2>Part 1: roll() — Roll a Single Die</h2>
+<h2>How to Run the Acceptance Test</h2>
+
+<p>
+    <code>DiceCheck.java</code> calls every method in this guide and prints
+    <code>PASS</code> or <code>FAIL</code> for each one. It does not read your code —
+    it <em>runs</em> it, so the only way to pass is to actually be correct.
+</p>
+
+<ol>
+    <li>
+        Download <a href="../../data/DiceCheck.java" download>DiceCheck.java</a> and
+        put it in the same folder as your <code>Dice.java</code>.
+    </li>
+    <li>Open a terminal in that folder.</li>
+    <li>
+        Compile both files together:
+        <pre><code>javac Dice.java DiceCheck.java</code></pre>
+        Both must compile before anything runs. If the error message names one of
+        your methods, that method's signature does not match the spec below — fix
+        the signature and compile again.
+    </li>
+    <li>
+        Run the tests:
+        <pre><code>java DiceCheck</code></pre>
+    </li>
+    <li>
+        Read the output. Every check is a <code>PASS</code> or a <code>FAIL</code>,
+        and the last two lines count them:
+        <pre><code>32 passed, 0 failed
+Your Dice engine meets the spec.</code></pre>
+    </li>
+</ol>
+
+<div class="callout">
+    <strong>If the compile step fails on everything at once</strong>, check the file
+    names before you check the logic. <code>javac</code> is case-sensitive, and the
+    class inside <code>Dice.java</code> must be named <code>Dice</code> — not
+    <code>dice</code>, not <code>DiceRoller</code>.
+</div>
+
+<p>
+    <strong>Why ranges, and never exact numbers?</strong> Dice are random, so a correct
+    <code>roll(20)</code> is allowed to return anything from 1 to 20. No test can demand
+    a particular value. Instead the test rolls each method thousands of times and checks
+    the <em>range</em> of what comes back. A d6 that can return 0 fails, and a
+    <code>roll(3, 6)</code> that can return 19 fails, no matter how the individual rolls
+    happened to land.
+</p>
+
+<hr>
+
+<h2>Part 1: roll() — Roll a d6</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static int roll()</code></li>
+    <li>Behavior: Rolls one standard six-sided die. Returns an integer from 1 to 6, inclusive.</li>
+    <li>This is a <em>convenience overload</em> — it should call <code>roll(6)</code>, not repeat the random formula.</li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>Why call <code>roll(6)</code> instead of writing the <code>Math.random()</code> formula a second time? If you later discover a bug in that formula, how many places would you have to fix?</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>System.out.println("Rolling a d6: " + Dice.roll());</code></pre>
+<p>Run it several times. Do you ever see a 0? A 7? A negative number?</p>
+
+<hr>
+
+<h2>Part 2: roll(int sides) — Roll Any Die</h2>
 
 <h3>Requirements:</h3>
 <ul>
     <li>Method signature: <code>public static int roll(int sides)</code></li>
-    <li>Behavior: Generates a random integer between 1 and the number of <code>sides</code> (inclusive).</li>
+    <li>Behavior: Rolls one die with the given number of <code>sides</code>. Returns an integer from 1 to <code>sides</code>, inclusive.</li>
+    <li>This is the one method that actually contains the <code>Math.random()</code> formula. Every other method in this class calls it.</li>
 </ul>
 
 <h3>Socratic Checkpoint:</h3>
-<p>Look back at your <code>Math.random()</code> lab notebook. How do you construct the formula for a specific range? What is the "range" based on the <code>sides</code> parameter? What is the "min"?</p>
+<p>Look back at your <code>Math.random()</code> lab notebook. What is the "range" here, based on the <code>sides</code> parameter? What is the "min"? And what does <code>(int) Math.random() * sides</code> return instead — where do the parentheses belong?</p>
 
 <h3>Acceptance Test:</h3>
-<p>Add this to <code>DiceTester.java</code>'s main method:</p>
 <pre><code>System.out.println("Rolling d20: " + Dice.roll(20));
-System.out.println("Rolling d6: " + Dice.roll(6));</code></pre>
-<p>Run it multiple times. Do you ever see a 0? Do you ever see a number higher than the sides?</p>
+System.out.println("Rolling d6:  " + Dice.roll(6));
+System.out.println("Rolling d2:  " + Dice.roll(2));</code></pre>
+<p>Run it many times. Can <code>roll(2)</code> ever return a 3? Can <code>roll(20)</code> ever return 0?</p>
 
 <hr>
 
-<h2>Part 2: rollDice() — Roll Multiple Dice and Sum</h2>
+<h2>Part 3: roll(int num, int sides) — Roll Several Dice and Add Them Up</h2>
 
 <h3>Requirements:</h3>
 <ul>
-    <li>Method signature: <code>public static int rollDice(int count, int sides)</code></li>
-    <li>Behavior: Rolls the specified <code>count</code> of dice, each with <code>sides</code>, and returns the total sum.</li>
+    <li>Method signature: <code>public static int roll(int num, int sides)</code></li>
+    <li>Behavior: Rolls <code>num</code> dice, each with <code>sides</code>, and returns the total. <code>roll(2, 6)</code> is 2d6, so it returns 2 through 12.</li>
+    <li>Call your own <code>roll(sides)</code> once per die. Do not write the random formula again.</li>
 </ul>
 
 <h3>Tinker Challenge:</h3>
-<p>For now, since we haven't learned loops, you can hardcode this method to just roll 3 dice. Call your own <code>roll(sides)</code> method three times and add the results together. How do you store a "running total" across multiple lines of code?</p>
+<p>
+    You need to add up a new roll <code>num</code> times. A <em>loop</em> is the tool
+    for "do this a fixed number of times", and you will meet it properly later this
+    year. Here is the shape — read it before you use it:
+</p>
+<pre><code>int total = 0;
+for (int i = 0; i &lt; num; i++) {
+    total = total + roll(sides);
+}
+return total;</code></pre>
+<p>What is <code>i</code> for? Why does the loop start at 0 and stop <em>before</em> <code>num</code>? What would <code>i &lt;= num</code> do to a 2d6 roll?</p>
 
 <h3>Acceptance Test:</h3>
-<pre><code>System.out.println("Rolling 3d6: " + Dice.rollDice(3, 6));</code></pre>
-<p>Run it. Can you roll below a 3? Can you roll above an 18?</p>
+<pre><code>System.out.println("Rolling 3d6: " + Dice.roll(3, 6));
+System.out.println("Rolling 2d6: " + Dice.roll(2, 6));</code></pre>
+<p>
+    Run it. Can <code>roll(3, 6)</code> return below 3? Above 18? And can
+    <code>roll(2, 6)</code> return 7 — an odd number? It should be able to, because
+    3 + 4 is a perfectly legal pair of dice. If every 2d6 result you ever see is
+    even, you are multiplying by <code>num</code> instead of adding <code>num</code>
+    dice together.
+</p>
 
 <hr>
 
-<h2>Part 3: rollWithAdvantage() — Roll Twice, Take Higher</h2>
+<h2>Part 4: roll(int num, int sides, int stat) — Add an Ability Modifier</h2>
 
 <h3>Requirements:</h3>
 <ul>
-    <li>Method signature: <code>public static int rollWithAdvantage(int sides)</code></li>
-    <li>Behavior: Rolls two dice of the specified <code>sides</code>. Prints both rolls so the player can see them. Returns the higher of the two rolls.</li>
+    <li>Method signature: <code>public static int roll(int num, int sides, int stat)</code></li>
+    <li>Behavior: Rolls <code>num</code> dice of <code>sides</code> as in Part 3, then adds the modifier for the ability score <code>stat</code>.</li>
+    <li>The modifier is <code>(stat - 10) / 2</code>. A strength of 14 gives a +2 bonus, a strength of 10 gives no change, and a strength of 8 gives a -1 penalty.</li>
+    <li>Call <code>roll(num, sides)</code>. Do not repeat the loop.</li>
 </ul>
 
 <h3>Socratic Checkpoint:</h3>
-<p>If you have two integers, <code>roll1</code> and <code>roll2</code>, how can you ask Java which one is larger? Refer to the documentation on <code>if</code> statements.</p>
+<p><code>stat</code> arrives as an ability score like 14, but the roll needs a small bonus like +2. Where does the <code>- 10</code> come from, and why divide by 2? Work out the modifier for a strength of 10, then for 20, before you write any code.</p>
 
 <h3>Acceptance Test:</h3>
-<pre><code>System.out.println("Rolling d20 with advantage. Final result: " + Dice.rollWithAdvantage(20));</code></pre>
-<p>Run it. Ensure the printed output shows both rolls, and the final returned result matches the higher of the two.</p>
+<pre><code>System.out.println("2d6 + STR(14): " + Dice.roll(2, 6, 14));  // 4 to 14
+System.out.println("2d6 + STR(10): " + Dice.roll(2, 6, 10));  // 2 to 12
+System.out.println("2d6 + STR(8):  " + Dice.roll(2, 6, 8));   // 1 to 11</code></pre>
+<p>Run each one many times and check the results against the range in the comment. If <code>STR(14)</code> ever prints a 2, your dice are not being rolled. If <code>STR(8)</code> ever prints a 12, your modifier is not being applied.</p>
+
+<h3>Tinker Challenge: the odd-score trap</h3>
+<p>
+    Try a strength of 9: <code>Dice.roll(2, 6, 9)</code>. By the D&amp;D rulebook a 9
+    should give a -1 penalty, because the true midpoint between 0 and -1 rounds down.
+    What does your formula actually give? Java's integer division drops the remainder
+    by moving toward zero, so <code>-1 / 2</code> is <code>0</code>, not
+    <code>-1</code>. Odd scores below 10 are the only ones affected: 3, 5, 7, and 9.
+</p>
+<p>
+    Two ways out. Leave it, and a 9 behaves like a 10. Or reach for
+    <code>Math.floorDiv(stat - 10, 2)</code>, which always rounds down and matches the
+    rulebook exactly. Either is acceptable here — but decide deliberately, and write
+    down which you chose and why.
+</p>
 
 <hr>
 
-<h2>Part 4: isCritical() — Detect a Maximum Roll</h2>
+<h2>Part 5: skillCheck(int pass) — Roll a d20 Against a Difficulty</h2>
 
 <h3>Requirements:</h3>
 <ul>
-    <li>Method signature: <code>public static boolean isCritical(int roll, int sides)</code></li>
-    <li>Behavior: Returns <code>true</code> if the <code>roll</code> is equal to the <code>sides</code> (the maximum possible value). Returns <code>false</code> otherwise.</li>
+    <li>Method signature: <code>public static int skillCheck(int pass)</code></li>
+    <li>Behavior: Rolls a d20 and compares it to <code>pass</code>, the difficulty to beat. Returns an <code>int</code> code, not a boolean, so the caller can tell a lucky win from a brilliant one.</li>
+</ul>
+
+<table>
+    <tr><th>Outcome</th><th>Code</th><th>When</th></tr>
+    <tr><td>Crit fail</td><td>-1</td><td>The die shows a natural 1</td></tr>
+    <tr><td>Fail</td><td>0</td><td>The roll is below <code>pass</code></td></tr>
+    <tr><td>Success</td><td>1</td><td>The roll is at least <code>pass</code></td></tr>
+    <tr><td>Crit success</td><td>2</td><td>The die shows a natural 20</td></tr>
+</table>
+
+<p>
+    Check the natural 1 and the natural 20 <strong>first</strong>, before you compare
+    anything to <code>pass</code>. A natural 1 is a crit fail even when the difficulty
+    was only 2, and a natural 20 is a crit success even when the difficulty was
+    impossible.
+</p>
+
+<h3>Socratic Checkpoint:</h3>
+<p>Does the table above need an <code>if</code>, an <code>if/else</code>, or an <code>if/else if/else</code> chain? Count how many distinct outcomes there are before you answer.</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>System.out.println("DC 15: " + Dice.skillCheck(15));
+System.out.println("DC  1: " + Dice.skillCheck(1));   // only a natural 1 fails
+System.out.println("DC 21: " + Dice.skillCheck(21));  // only a natural 20 passes</code></pre>
+<p>
+    Run it a few times and watch the edge cases, not the middle. With DC 1 you should
+    never see a 0 — every die is at least 1, so only the natural 1 stops you, and that
+    is coded -1. With DC 21 you should never see a 1 — no die can reach 21, so the best
+    you can do is the natural 20.
+</p>
+
+<hr>
+
+<h2>Part 6: skillCheck(int pass, int skill) — Add an Ability Modifier</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static int skillCheck(int pass, int skill)</code></li>
+    <li>Behavior: Rolls a d20, adds the modifier for the ability score <code>skill</code>, and compares the total to <code>pass</code>. Same four codes as Part 5.</li>
+    <li>You call it like <code>Dice.skillCheck(14, str)</code> — 14 is the difficulty of the check, and <code>str</code> is your strength score.</li>
+    <li>The natural 1 and natural 20 are still read off the <em>die</em>, before the modifier. A +5 strength does not rescue a natural 1.</li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p><code>skillCheck(14, str)</code> needs the modifier for <code>str</code>. You already worked out that arithmetic in Part 4 — will you be calling something that does it, or typing <code>(str - 10) / 2</code> a second time?</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>System.out.println("DC 14, STR 14 (+2): " + Dice.skillCheck(14, 14));
+System.out.println("DC 14, STR 10 (+0): " + Dice.skillCheck(14, 10));
+System.out.println("DC 14, STR 18 (+4): " + Dice.skillCheck(14, 18));</code></pre>
+<p>Run each line twenty times. The <code>STR 18</code> line should succeed noticeably more often than the <code>STR 10</code> line. If all three look about the same, your modifier is not reaching the roll — and a test with a difficulty of 24 will catch it.</p>
+
+<hr>
+
+<h2>Part 7: statRoll(int stats) — Generate a Whole Set of Ability Scores</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public static int[] statRoll(int stats)</code></li>
+    <li>Behavior: Returns a <strong>new array</strong> of length <code>stats</code>. Each element is a 3d6 roll, so each one is between 3 and 18.</li>
+    <li><code>statRoll(6)</code> fills six stats — STR, DEX, CON, INT, WIS, CHA. <code>statRoll(4)</code> fills four.</li>
+    <li>Call <code>roll(3, 6)</code> for each element. Do not repeat the loop or the formula.</li>
 </ul>
 
 <h3>Tinker Challenge:</h3>
-<p>Can you write this method in a single line of code inside the method body? Hint: Relational operators (like <code>==</code>) evaluate to a boolean value on their own.</p>
+<p>A new <code>int</code> array starts full of zeros. You need to replace each zero with a fresh 3d6 roll — one roll per index:</p>
+<pre><code>int[] scores = new int[stats];
+for (int i = 0; i &lt; stats; i++) {
+    scores[i] = roll(3, 6);
+}
+return scores;</code></pre>
+<p>What is the length of the array when <code>stats</code> is 6? What is the index of its last element? Why is <code>i &lt; stats</code> correct where <code>i &lt;= stats</code> would crash?</p>
 
 <h3>Acceptance Test:</h3>
-<pre><code>System.out.println("Is 20 on a d20 a crit? " + Dice.isCritical(20, 20)); // Should be true
-System.out.println("Is 19 on a d20 a crit? " + Dice.isCritical(19, 20)); // Should be false</code></pre>
-
-<hr>
-
-<h2>Part 5: displayResult() — Formatted Output</h2>
-
-<h3>Requirements:</h3>
-<ul>
-    <li>Method signature: <code>public static void displayResult(String label, int sides, int result)</code></li>
-    <li>Behavior: Prints a formatted string in the pattern: <code>[label] (d[sides]): [result]</code>. If the result is a critical hit, append <code> -- CRITICAL!</code> to the string.</li>
-    <li>Does not return anything.</li>
-</ul>
-
-<h3>Acceptance Test:</h3>
-<pre><code>Dice.displayResult("Attack roll", 20, 15);
-Dice.displayResult("Sneak attack", 20, 20);</code></pre>
-<p>Expected Output:</p>
-<pre><code>Attack roll (d20): 15
-Sneak attack (d20): 20 -- CRITICAL!</code></pre>`;
+<pre><code>int[] stats = Dice.statRoll(6);
+String[] names = {"STR", "DEX", "CON", "INT", "WIS", "CHA"};
+for (int i = 0; i &lt; stats.length; i++) {
+    System.out.println(names[i] + ": " + stats[i]);
+}</code></pre>
+<p>Expected: six labeled numbers, each between 3 and 18. Run it several times — do the numbers move around? If every stat is the same number, you are filling the array with one roll instead of rolling per index.</p>`;
 ---
 <Base title="Student RPG Guide: Dice Roller — Unit 1" active="docs" root="../.." docsHome="../index.html" css="../style.css">
   {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}

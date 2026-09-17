@@ -15,25 +15,49 @@ const body = `<h1>1.7c — Dice Roller: Testing &amp; Integration</h1>
 
     <h3>Testing Protocol</h3>
 
-    <p>For each method in <code>Dice.java</code>, prove it works:</p>
+    <p>
+        <code>DiceCheck.java</code> is an acceptance test that calls every method in
+        your <code>Dice.java</code> and prints <code>PASS</code> or <code>FAIL</code>
+        for each check. It does not read your code — it runs it, so a
+        <code>PASS</code> means the method genuinely behaves. Download
+        <a href="../data/DiceCheck.java" download>DiceCheck.java</a>, put it beside
+        your <code>Dice.java</code>, and run it:
+    </p>
+    <pre><code>javac Dice.java DiceCheck.java
+java DiceCheck</code></pre>
+    <p>Both files must compile before anything runs. The last two lines count the results:</p>
+    <pre><code>32 passed, 0 failed
+Your Dice engine meets the spec.</code></pre>
+
+    <p>
+        A passing suite is the goal, but it is not the whole job — you still need to be
+        able to explain <em>why</em> each range is what it is. For each method, prove it
+        works on paper too:
+    </p>
 
     <ol>
-        <li><strong>roll(sides):</strong> Call it 20 times for a d6. Record min
-            and max. Did you ever get 0? Did you ever get 7?</li>
-        <li><strong>rollDice(count, sides):</strong> Call rollDice(3, 6) 20 times.
-            Verify: min >= 3, max <= 18, never outside range.</li>
-        <li><strong>statRoll():</strong> Generate 6 stats (STR, DEX, CON, INT, WIS, CHA).
-            Print them labeled. Verify each is in the 3–18 range.</li>
+        <li><strong>roll(sides):</strong> Call it 20 times for a d20. Record min and
+            max. Did you ever get 0? Did you ever get 21?</li>
+        <li><strong>roll(num, sides):</strong> Call roll(3, 6) 20 times. Verify min
+            &gt;= 3, max &lt;= 18, never outside the range.</li>
+        <li><strong>skillCheck(pass):</strong> Call skillCheck(15) 20 times. Every
+            result should be -1, 0, 1, or 2. Now try skillCheck(21) — why does a 1
+            never appear?</li>
+        <li><strong>statRoll(stats):</strong> Generate 6 stats (STR, DEX, CON, INT,
+            WIS, CHA). Print them labeled. Verify each is in the 3–18 range.</li>
     </ol>
 
     <p><strong>Write your test results:</strong></p>
-    <pre><code><span class="output">roll(6) test — 20 rolls:
-Min: 1  Max: 6  (range correct? ✓/✗)
+    <pre><code><span class="output">roll(20) test — 20 rolls:
+Min: 1  Max: 20  (range correct? ✓/✗)
 
-rollDice(3, 6) test — 20 rolls:
+roll(3, 6) test — 20 rolls:
 Min: ___  Max: ___  (range 3-18? ✓/✗)
 
-statRoll() — 6 stats:
+skillCheck(15) test — 20 rolls:
+Codes seen: ___  (all within -1 to 2? ✓/✗)
+
+statRoll(6) — 6 stats:
 STR: 12  DEX: 8  CON: 15  INT: 11  WIS: 14  CHA: 9
 All in range 3-18? ✓/✗</span></code></pre>
 
@@ -55,6 +79,8 @@ All in range 3-18? ✓/✗</span></code></pre>
         <ul>
             <li>Systematically test every method you write — min, max, edge cases</li>
             <li>Explain why the parentheses bug in the random formula causes 0</li>
+            <li>Explain why a natural 1 beats a low difficulty and a natural 20 beats
+                an impossible one</li>
             <li>Generate a full set of RPG stats (3d6 for each of 6 attributes)</li>
             <li>Use a Dice.java utility class from another file (DiceTester.java)</li>
         </ul>
