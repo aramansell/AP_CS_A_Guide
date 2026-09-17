@@ -44,13 +44,22 @@ public void close()</code></pre>
         that just <code>return 0;</code> or <code>return false;</code>. Then implement
         each contract:</p>
         <ul>
-            <li><code>public static int damageRoll(int sides, int count)</code> — rolls
-            count dice of the given sides, returns the total. Reuse <code>roll()</code>.</li>
-            <li><code>public static boolean isCrit(int roll, int sides)</code> — true
-            when roll equals sides.</li>
+            <li><code>public static int roll(int sides, boolean advantage)</code> —
+            rolls two dice of <code>sides</code> and returns the higher of the two.</li>
+            <li><code>public static int roll(int num, int sides, boolean advantage)</code>
+            — the same idea for a whole set: roll <code>num</code> dice twice, return
+            the higher total.</li>
             <li><code>public static String rarityLabel(int value)</code> — "common"
             under 50 gold, "uncommon" under 200, "rare" under 1000, "epic" otherwise.</li>
         </ul>
+        <p>
+            Look at the first two. Same name as the four methods you already wrote,
+            different parameter list — you are <strong>creating overloads on
+            purpose</strong>. <code>roll(20, 6)</code> means 20d6, while
+            <code>roll(20, true)</code> means one d20 rolled twice. Java tells them
+            apart because one second argument is an <code>int</code> and the other is
+            a <code>boolean</code>.
+        </p>
         <p>The discipline: the signature is written and committed before the body exists.
         This is exactly how FRQs present work to you: contract in the problem, body by you.</p>
     </div>
@@ -60,14 +69,22 @@ public void close()</code></pre>
         <p>In your tester, try each of these and read every error carefully. Each one
         violates the contract in a different way:</p>
         <pre><code>int r = Dice.roll("20");               // wrong parameter TYPE
-int r2 = Dice.roll();                  // missing parameter
+int r2 = Dice.roll();                  // no arguments - legal or not?
+int r3 = Dice.roll(20, 6, 14, 3);      // four ints - is there such an overload?
 Dice.roll(20);                         // legal? what happens to the return value?
 String s = Dice.roll(20);              // wrong return TYPE
 double d = Dice.roll(20);              // legal? why?
-int r3 = Dice.isCrit(20, 20);          // boolean into int</code></pre>
-        <p>Write down which lines compile and which do not, and the exact reason. The
-        line that compiles but ignores the answer is the most instructive: Java allows
-        you to discard a return value. Silent, legal, and usually a bug.</p>
+String t = Dice.skillCheck(15);        // int return into a String variable</code></pre>
+        <p>
+            Write down which lines compile and which do not, and the exact reason. Two
+            of these are traps. <code>Dice.roll()</code> compiles, because Dice defines
+            a no-argument overload — an argument-count error only counts as an error
+            when <em>no</em> overload fits. And the four-int call fails not because
+            four arguments is too many in general, but because Dice has no overload
+            that takes four.
+        </p>
+        <p>The line that compiles but ignores the answer is the most instructive: Java
+        allows you to discard a return value. Silent, legal, and usually a bug.</p>
     </div>
 
     <div class="socratic">

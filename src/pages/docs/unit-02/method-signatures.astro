@@ -51,24 +51,64 @@ const body = `<h1>Method Signatures</h1>
 
 <h2>Contract Violations: Which Compile?</h2>
 
-<p>Given <code>public static int roll(int sides)</code>:</p>
+<p>
+    Your <code>Dice</code> class from Unit 1 defines the name <code>roll</code>
+    four separate times, and <code>skillCheck</code> twice:
+</p>
+
+<pre><code>public static int roll()
+public static int roll(int sides)
+public static int roll(int num, int sides)
+public static int roll(int num, int sides, int stat)
+
+public static int skillCheck(int pass)
+public static int skillCheck(int pass, int skill)</code></pre>
+
+<p>
+    When you call <code>roll(...)</code>, the compiler counts and matches your
+    arguments against that list to decide which method you meant. Which of these
+    compile?
+</p>
 
 <table>
     <tr><th>Call</th><th>Compiles?</th><th>Why</th></tr>
-    <tr><td><code>roll(20)</code></td><td>yes</td><td>int into int parameter</td></tr>
-    <tr><td><code>roll("20")</code></td><td>NO</td><td>String is not int. No automatic conversion for parameters.</td></tr>
-    <tr><td><code>roll()</code></td><td>NO</td><td>missing parameter, exactly one required</td></tr>
-    <tr><td><code>roll(20, 6)</code></td><td>NO</td><td>too many parameters</td></tr>
+    <tr><td><code>roll()</code></td><td>yes</td><td>matches the no-argument overload: a d6</td></tr>
+    <tr><td><code>roll(20)</code></td><td>yes</td><td>one int matches <code>roll(int sides)</code></td></tr>
+    <tr><td><code>roll(20, 6)</code></td><td>yes</td><td>two ints match <code>roll(int num, int sides)</code> — 20d6</td></tr>
+    <tr><td><code>roll(20, 6, 14)</code></td><td>yes</td><td>three ints match the stat overload</td></tr>
+    <tr><td><code>roll(20, 6, 14, 3)</code></td><td>NO</td><td>four ints. No overload takes four arguments, so the name <code>roll</code> has nothing to offer.</td></tr>
+    <tr><td><code>roll("20")</code></td><td>NO</td><td>String is not int. Java will not convert a parameter for you.</td></tr>
     <tr><td><code>int r = roll(20);</code></td><td>yes</td><td>int return into int variable</td></tr>
     <tr><td><code>double d = roll(20);</code></td><td>yes</td><td>int widens to double automatically</td></tr>
     <tr><td><code>roll(20);</code></td><td>yes</td><td>return value discarded. Legal. Often a bug.</td></tr>
     <tr><td><code>String s = roll(20);</code></td><td>NO</td><td>int does not become String</td></tr>
 </table>
 
+<p>
+    Every "NO" above fails for one of two reasons: the argument list does not fit
+    any overload, or the return type does not fit where you put it. Notice what is
+    <em>not</em> on that list — <code>roll()</code> and <code>roll(20, 6)</code> are
+    perfectly legal, because <code>Dice</code> defines those overloads. The one
+    genuine arity failure is the four-argument call, which has no method behind it.
+</p>
+
 <h2>Overloading: Same Name, Different Contract</h2>
 
-<p>Two methods can share a name if their parameter lists differ. Java picks by
-matching your argument types:</p>
+<p>
+    Two methods can share a name if their parameter lists differ. Java picks which
+    one you meant at the call site, by matching your arguments. Dice is the example
+    you already own:
+</p>
+
+<pre><code>roll();             // no arguments  -> the d6 overload
+roll(20);           // one int       -> one d20
+roll(2, 6);         // two ints      -> 2d6
+roll(2, 6, 14);     // three ints    -> 2d6 plus a strength modifier</code></pre>
+
+<p>
+    One name, four contracts. Overloads can differ by <em>how many</em> parameters
+    they take, or by the <em>types</em> of those parameters:
+</p>
 
 <pre><code>public static int attack(String target) { ... }
 public static int attack(int damage)   { ... }

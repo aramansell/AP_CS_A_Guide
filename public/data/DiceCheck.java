@@ -179,17 +179,14 @@ public class DiceCheck {
     }
 
     /* ------------------------------------------------------------------ */
-    /* statRoll(int stats) - a whole set of ability scores                */
+    /* statRoll() - a whole set of six ability scores                     */
     /* ------------------------------------------------------------------ */
 
     private static void testStatRoll() {
-        section("statRoll(int stats) - a whole set of ability scores");
+        section("statRoll() - a whole set of six ability scores");
 
-        check("statRoll(6) hands back 6 stats, each from 3d6", everySetIsValid(6));
-        check("statRoll(4) hands back 4 stats, each from 3d6", everySetIsValid(4));
-        check("statRoll(1) hands back 1 stat", everySetIsValid(1));
-        check("statRoll(6) does not hand back six identical numbers",
-                notAllIdentical(6));
+        check("statRoll() hands back 6 stats, each from 3d6", everySetIsValid());
+        check("statRoll() does not hand back six identical numbers", notAllIdentical());
     }
 
     /* ------------------------------------------------------------------ */
@@ -362,11 +359,11 @@ public class DiceCheck {
         return false;
     }
 
-    /** True if every statRoll(stats) hands back the right count, each 3 to 18. */
-    private static boolean everySetIsValid(int stats) {
+    /** True if every statRoll() hands back six stats, each 3 to 18. */
+    private static boolean everySetIsValid() {
         for (int set = 0; set < STAT_SETS; set++) {
-            int[] rolls = Dice.statRoll(stats);
-            if (rolls == null || rolls.length != stats) {
+            int[] rolls = Dice.statRoll();
+            if (rolls == null || rolls.length != 6) {
                 return false;
             }
             for (int i = 0; i < rolls.length; i++) {
@@ -378,10 +375,10 @@ public class DiceCheck {
         return true;
     }
 
-    /** True if statRoll(stats) does not just fill the array with one number. */
-    private static boolean notAllIdentical(int stats) {
+    /** True if statRoll() does not just fill the array with one number. */
+    private static boolean notAllIdentical() {
         for (int set = 0; set < STAT_SETS; set++) {
-            int[] rolls = Dice.statRoll(stats);
+            int[] rolls = Dice.statRoll();
             boolean identical = true;
             for (int i = 1; i < rolls.length; i++) {
                 if (rolls[i] != rolls[0]) {

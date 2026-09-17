@@ -26,7 +26,7 @@ const body = `<h1>1.7c — Dice Roller: Testing &amp; Integration</h1>
     <pre><code>javac Dice.java DiceCheck.java
 java DiceCheck</code></pre>
     <p>Both files must compile before anything runs. The last two lines count the results:</p>
-    <pre><code>32 passed, 0 failed
+    <pre><code>30 passed, 0 failed
 Your Dice engine meets the spec.</code></pre>
 
     <p>
@@ -43,7 +43,7 @@ Your Dice engine meets the spec.</code></pre>
         <li><strong>skillCheck(pass):</strong> Call skillCheck(15) 20 times. Every
             result should be -1, 0, 1, or 2. Now try skillCheck(21) — why does a 1
             never appear?</li>
-        <li><strong>statRoll(stats):</strong> Generate 6 stats (STR, DEX, CON, INT,
+        <li><strong>statRoll():</strong> Generate a set of 6 stats (STR, DEX, CON, INT,
             WIS, CHA). Print them labeled. Verify each is in the 3–18 range.</li>
     </ol>
 
@@ -57,7 +57,7 @@ Min: ___  Max: ___  (range 3-18? ✓/✗)
 skillCheck(15) test — 20 rolls:
 Codes seen: ___  (all within -1 to 2? ✓/✗)
 
-statRoll(6) — 6 stats:
+statRoll() — 6 stats:
 STR: 12  DEX: 8  CON: 15  INT: 11  WIS: 14  CHA: 9
 All in range 3-18? ✓/✗</span></code></pre>
 
