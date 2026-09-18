@@ -83,19 +83,23 @@ const body = `<h1>Unit 2: Using Objects</h1>
 
 <p>
     <strong><a href="character-creator.html">Character Creator (Student RPG Guide)</a></strong> —
-    Read the player's name with Scanner. Roll stats (strength, dexterity, constitution,
-    intelligence) using your Dice engine. Print a formatted character sheet. This Player.java
-    object follows you through every unit for the rest of the year.
+    Roll six D&amp;D 5e ability scores with your Dice engine, derive hit points, armor class,
+    and initiative from them, and print a formatted character sheet. The guide ships a
+    downloadable acceptance test, <code>CharacterCheck.java</code>, that runs your class and
+    reports a <code>PASS</code> or <code>FAIL</code> for every method. This
+    <code>Character</code> object follows you through every unit for the rest of the year.
 </p>
 
 <h2>RPG Thread</h2>
 
 <p>
-    The stats you roll here (STR, DEX, INT, CON) determine everything later.
-    In Unit 3, STR becomes your attack bonus in combat. In Unit 4, CON determines
-    starting HP. In Unit 9, these stats become instance variables on the Player class.
-    The name you read here? Printed on the character sheet in Unit 3, displayed on
-    the dungeon map in Unit 8.
+    The six stats you roll here (STR, DEX, CON, INT, WIS, CHA) drive everything
+    downstream. CON already set <code>maxHp</code>, DEX set AC and initiative, and
+    WIS set passive perception — that happened inside <code>generateStats()</code>,
+    using the same 5e formulas the tabletop game uses. In Unit 3, STR becomes your
+    attack bonus in combat. In Unit 5, these stats and this HP field become
+    <code>Player.java</code>, the class that fights for the rest of the year. The name
+    you roll here is the one printed on every sheet and, in Unit 8, on the dungeon map.
 </p>
 
 <h2>Prerequisites</h2>

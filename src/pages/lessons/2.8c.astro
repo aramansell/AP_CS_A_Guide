@@ -40,9 +40,9 @@ public void close()</code></pre>
 
     <div class="tinker">
         <h3>Experiment 2: Contract First, Code Second</h3>
-        <p>Write these signatures into <code>Dice.java</code> FIRST, with empty bodies
-        that just <code>return 0;</code> or <code>return false;</code>. Then implement
-        each contract:</p>
+        <p>Create <code>SignatureLab.java</code>. Write these signatures into it FIRST,
+        with empty bodies that just <code>return 0;</code> or <code>return "";</code>.
+        Then implement each contract:</p>
         <ul>
             <li><code>public static int roll(int sides, boolean advantage)</code> —
             rolls two dice of <code>sides</code> and returns the higher of the two.</li>
@@ -53,9 +53,22 @@ public void close()</code></pre>
             under 50 gold, "uncommon" under 200, "rare" under 1000, "epic" otherwise.</li>
         </ul>
         <p>
-            Look at the first two. Same name as the four methods you already wrote,
-            different parameter list — you are <strong>creating overloads on
-            purpose</strong>. <code>roll(20, 6)</code> means 20d6, while
+            The first two are <strong>5e advantage</strong>: roll twice, keep the
+            higher. That is why the third parameter is a <code>boolean</code> and not
+            a second <code>int</code>.
+        </p>
+        <p>
+            Build these in <code>SignatureLab</code>, not in <code>Dice.java</code>.
+            Your <code>Dice</code> contract is already frozen — <code>DiceCheck</code>
+            graded it and every later unit calls it. Overloads are how you extend a
+            class <em>without</em> breaking the callers, and the way you prove that is
+            to grow a new class first and port the winner over once it works.
+        </p>
+        <p>
+            Look at the first two. Same name, different parameter list — you are
+            <strong>creating overloads on purpose</strong>, exactly as <code>Dice</code>
+            already carries four <code>roll</code> overloads. Inside
+            <code>SignatureLab</code>, <code>roll(20, 6)</code> means 20d6, while
             <code>roll(20, true)</code> means one d20 rolled twice. Java tells them
             apart because one second argument is an <code>int</code> and the other is
             a <code>boolean</code>.
@@ -85,6 +98,9 @@ String t = Dice.skillCheck(15);        // int return into a String variable</cod
         </p>
         <p>The line that compiles but ignores the answer is the most instructive: Java
         allows you to discard a return value. Silent, legal, and usually a bug.</p>
+        <p>Which lines compile, and which do not? For the ones that fail, is the reason
+        the argument list or the return type — and for the line that compiles but is
+        still wrong, why is the compiler unable to help you?</p>
     </div>
 
     <div class="socratic">

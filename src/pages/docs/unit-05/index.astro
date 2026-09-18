@@ -93,11 +93,14 @@ const body = `<h1>Unit 5: Writing Classes</h1>
 <h2>RPG Thread</h2>
 
 <p>
-    This is the rewrite unit. Your Player.java goes from a static utility class
-    (from Units 1-2) to a real object with instance variables and methods. Monster.java
-    joins it. From now on, you instantiate: <code>Player hero = new Player(...)</code>.
-    In Unit 9, both become subclasses of GameCharacter. The constructor patterns you
-    learn here become the super() calls in inheritance.
+    This is the encapsulation unit. Your <code>Character</code> from 2.7 had public
+    fields and no getters, so nothing stopped the outside world from corrupting it — and
+    a derived value could not be updated without rerolling the whole character. Here you
+    write <code>Player.java</code> properly: private fields, getters, validating setters,
+    and clamping where clamping belongs. Monster.java joins it. From now on, you
+    instantiate: <code>Player hero = new Player(...)</code>. In Unit 9, both become
+    subclasses of GameCharacter. The constructor patterns you learn here become the
+    super() calls in inheritance.
 </p>
 
 <h2>Prerequisites</h2>

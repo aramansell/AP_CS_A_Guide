@@ -7,9 +7,15 @@ import Lesson from '../../layouts/LessonLayout.astro';
 const body = `<h1>2.7a — Character Creator: StatBlock</h1>
 
 <p>
-    <strong>Type:</strong> RPG Integration. You've built a Dice utility class.
-    Now build a Character class. This is where the RPG project comes alive.
-    This is the largest build so far — a full 3-day assignment.
+    <strong>Type:</strong> RPG Integration. You built a Dice utility class in Unit 1.
+    Now you build a <code>Character</code> class on top of it. This is the largest build
+    so far — a full 3-day assignment — and every later unit adds to it.
+</p>
+
+<p>
+    The rules are <strong>Dungeons &amp; Dragons 5th edition</strong>, trimmed where full
+    5e would need tools you have not met yet. The ability modifier, hit points, armor
+    class, initiative, and the proficiency table are all the real 5e formulas.
 </p>
 
 <!-- ============================================================ -->
@@ -21,68 +27,271 @@ const body = `<h1>2.7a — Character Creator: StatBlock</h1>
 
     <h3>The Goal</h3>
 
-    <p>Create a <code>Character.java</code> class that represents an RPG character
-    with stats, name, HP, and a formatted display. The dice rolling is powered by
-    the <code>Dice.java</code> utility you finished in 1.7.</p>
+    <p>
+        Create a <code>Character.java</code> class that represents an RPG character:
+        a name, a level, six ability scores, hit points, armor class, and a formatted
+        character sheet. The dice are rolled by the <code>Dice.java</code> engine you
+        finished in 1.7.
+    </p>
 
-    <h3>Part 1: The Fields (What a Character IS)</h3>
+    <h3>The Setup</h3>
 
-    <p>Every character has these properties. But what data types do you use?
-    What should HP be capped by? What stats does an RPG character have?
-    Check the <a href="../docs/unit-02/character-creator.html">Character Creator guide</a>
-    for the full spec — it lists every field and the recommended types.</p>
+    <p>Three files. You write the first one:</p>
+    <ol>
+        <li><code>Character.java</code> — the character. This is today's build.</li>
+        <li><code>Dice.java</code> — your engine from 1.7, in the same folder.</li>
+        <li>
+            <a href="../data/CharacterCheck.java" download>CharacterCheck.java</a> —
+            the acceptance test. Download it; you do not write it.
+        </li>
+    </ol>
+    <p>
+        You will also want a <code>CharacterTester.java</code> with a <code>main</code>
+        method for your own experiments. That file is yours — nothing tests it.
+    </p>
 
-    <div class="socratic">
-        <h3>Socratic Checkpoint</h3>
-        <ol>
-            <li>Why are these <em>instance</em> variables (not static)? What happens
-                if you make them static?</li>
-            <li>Why does HP need two variables? What's the difference between
-                current HP and maximum HP?</li>
-            <li>What data type did you choose for the stats? Why not <code>double</code>?</li>
-        </ol>
-    </div>
-
-    <h3>Part 2: generateStats() — Summon the Dice God</h3>
+    <h3>How to Run the Acceptance Test</h3>
 
     <p>
-        Add a method that fills in all six stats automatically. The formula for
-        each stat is in your <code>Dice.java</code> from Unit 1.7. The HP formula
-        is in the <a href="../docs/unit-02/character-creator.html">Character Creator guide</a>.
+        Download <a href="../data/CharacterCheck.java" download>CharacterCheck.java</a>,
+        put it beside your <code>Character.java</code> and <code>Dice.java</code>, and
+        from a terminal in that folder run:
+    </p>
+    <pre><code>javac Dice.java Character.java CharacterCheck.java
+java CharacterCheck</code></pre>
+    <p>
+        The first command compiles all three files together. The second runs the tests
+        and prints a <code>PASS</code> or <code>FAIL</code> for every check. The last
+        line counts them:
+    </p>
+    <pre><code>44 passed, 0 failed
+Your Character class meets the spec.</code></pre>
+    <p>
+        You cannot pass all of these until you have built every method in 2.7a, 2.7b,
+        and 2.7c — so expect <code>FAIL</code> lines at the start, and expect the test
+        not to compile until every method exists. Run it again after each method you
+        finish and watch the failures shrink. The
+        <a href="../docs/unit-02/character-creator.html">full Character Creator guide</a>
+        walks through the setup in more detail.
+    </p>
+
+    <div class="callout">
+        <strong>If the test will not compile</strong>, read the error. It names the
+        method or the field it could not find — which means your <code>Character.java</code>
+        does not match this lesson yet. Fix your file, not the test file.
+    </div>
+
+    <h3>Part 1: modifier(int score) — Score to Modifier</h3>
+
+    <p>
+        This is the 5e rule underneath everything else in this build. An ability score of
+        14 is not a +14 to anything; it is a +2. Learn this method and every derived value
+        below becomes a single line.
     </p>
 
     <p><strong>Requirements:</strong></p>
     <ul>
-        <li>Method should be <code>public void generateStats()</code></li>
-        <li>Use <code>Dice.statRoll()</code> — one call returns all six stats</li>
-        <li>HP scales with constitution — check the docs for the exact formula</li>
-        <li>Character starts at full health</li>
+        <li>Method signature: <code>public int modifier(int score)</code></li>
+        <li>Returns <code>(score - 10) / 2</code></li>
+        <li>Works above and below 10 — a score of 8 gives −1, a score of 6 gives −2</li>
+        <li>Do not round up: a score of 11 is a +0 in 5e, not a +1</li>
     </ul>
 
-    <div class="tinker">
-        <h3>Tinker Challenge</h3>
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
         <p>
-            Instead of 3d6 for every stat, give warriors a boost: roll
-            <strong>4d6</strong> for strength and constitution, but only
-            <strong>2d6</strong> for intelligence. Use Dice's methods
-            to build this out.
+            Why subtract 10? Because 10 is the score of an average person, so 10 has to
+            come out to +0 — no bonus, no penalty. Why divide by 2? Because 5e makes each
+            +1 cost two points of score. Work out the modifier for 10, 12, and 20 before
+            you write any code.
         </p>
     </div>
 
     <p><strong>Acceptance Test:</strong></p>
+    <pre><code>System.out.println("14 -> " + c.modifier(14));  // +2
+System.out.println("10 -> " + c.modifier(10));  // +0
+System.out.println(" 8 -> " + c.modifier(8));   // -1</code></pre>
+    <p>
+        Run it. Is 18 a +4? Is 4 a −3? If 14 comes back as 14 you skipped the arithmetic;
+        if 18 comes back as 8 you skipped the division.
+    </p>
+
+    <h3>Part 2: The Fields — What a Character IS</h3>
+
+    <p><strong>Requirements:</strong></p>
+    <ul>
+        <li>Two identity fields: <code>String name</code> and <code>int level</code></li>
+        <li>
+            Six ability scores, all <code>int</code>:
+            <code>strength, dexterity, constitution, intelligence, wisdom, charisma</code>
+        </li>
+        <li>
+            Six derived values, all <code>int</code>:
+            <code>hp, maxHp, ac, initiative, proficiencyBonus, passivePerception</code>
+        </li>
+        <li>
+            All of them <code>public</code> in this unit, for reasons the callout below
+            explains
+        </li>
+    </ul>
+
+    <pre><code>public class Character {
+
+    public String name = "Unnamed";
+    public int level = 1;
+
+    public int strength, dexterity, constitution;
+    public int intelligence, wisdom, charisma;
+
+    public int hp, maxHp, ac, initiative;
+    public int proficiencyBonus, passivePerception;
+}</code></pre>
+
+    <p>
+        The <code>= "Unnamed"</code> and <code>= 1</code> are <strong>field
+        initializers</strong>: the value a field holds before anything is assigned to it.
+        Without them a new <code>String</code> field would be <code>null</code>, and your
+        character sheet would print <code>null</code> for a name.
+    </p>
+
+    <div class="callout warn">
+        <strong>These fields are <code>public</code> on purpose, and it is a shortcut
+        we will pay for later.</strong> In a finished class the fields are
+        <code>private</code> and the outside world reads them through getters. You will
+        do exactly that in Unit 5, to this exact file. For now public fields keep the
+        ceremony out of your way while you learn what an object <em>is</em>.
+        <br><br>
+        One consequence you meet today: the acceptance test reads
+        <code>hero.strength</code> and <code>hero.maxHp</code> directly. Your field
+        <em>names</em> are part of the contract. Rename <code>hp</code> to
+        <code>hitPoints</code> and the test stops compiling.
+    </div>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Why are these <em>instance</em> variables rather than static? What would
+                break if two characters shared one static <code>strength</code>?</li>
+            <li>Why does HP need two variables? What is the difference between
+                <code>hp</code> and <code>maxHp</code>?</li>
+            <li>Six of these fields are <em>derived</em> — computed from other fields,
+                never rolled or set by hand. Which six? Name each one's inputs.</li>
+        </ol>
+    </div>
+
+    <h3>Part 3: generateStats() — Summon the Dice God</h3>
+
+    <p><strong>Requirements:</strong></p>
+    <ul>
+        <li>Method signature: <code>public void generateStats()</code></li>
+        <li>Rolls six ability scores with <code>Dice.statRoll()</code> from Unit 1 — one call gives you all six</li>
+        <li>
+            Stores them in the order the array arrives:
+            <code>strength, dexterity, constitution, intelligence, wisdom, charisma</code>
+        </li>
+        <li>Each stat is a 3d6 roll, so each lands between 3 and 18</li>
+        <li>Then fills in all six derived values, and sets <code>hp</code> to <code>maxHp</code></li>
+        <li>Must not touch <code>name</code> or <code>level</code> — those are not rolled</li>
+    </ul>
+
+    <p>The derived values, in 5e terms:</p>
+    <table>
+        <tr><th>Value</th><th>Formula</th></tr>
+        <tr><td>maxHp</td><td><code>10 + modifier(constitution)</code> — a d10 hit die at level 1</td></tr>
+        <tr><td>hp</td><td><code>maxHp</code> — the character starts at full health</td></tr>
+        <tr><td>ac</td><td><code>10 + modifier(dexterity)</code> — unarmored</td></tr>
+        <tr><td>initiative</td><td><code>modifier(dexterity)</code></td></tr>
+        <tr><td>passivePerception</td><td><code>10 + modifier(wisdom)</code></td></tr>
+        <tr><td>proficiencyBonus</td><td><code>2 + (level - 1) / 4</code></td></tr>
+    </table>
+
+    <p><strong>Acceptance Test:</strong></p>
     <pre><code>Character c = new Character();
-c.name = "Grog";
 c.generateStats();
-System.out.println(c.strength); // should be 3-18
-System.out.println(c.maxHp);    // should use the formula from the docs</code></pre>
+System.out.println("STR " + c.strength + "  CON " + c.constitution);
+System.out.println("HP  " + c.maxHp + "  AC " + c.ac);</code></pre>
+    <p>
+        Run it several times. Every stat should move around between 3 and 18. If all six
+        are always identical, you filled them from one roll instead of six. Check your
+        <code>maxHp</code> by hand: a constitution of 14 should give
+        <code>10 + 2 = 12</code>.
+    </p>
+
+    <div class="tinker">
+        <h3>Tinker: The Number You Cannot Change</h3>
+        <p>
+            Your sheet will report <code>Proficiency: +2</code>. That is correct for a
+            level 1 character, and boring — a level 9 character should show
+            <code>+4</code>. So level one up:
+        </p>
+        <pre><code>c.level = 9;
+c.printCharacterSheet();</code></pre>
+        <p>
+            <strong>Read the sheet carefully.</strong> It says <code>Level 9</code> and
+            <code>Proficiency: +2</code>. The sheet is now <em>lying</em>, and nothing
+            stopped you. You wrote one field and silently broke another.
+        </p>
+        <p>Now fix it the only way you currently can:</p>
+        <pre><code>c.level = 9;
+c.generateStats();
+c.printCharacterSheet();   // now +4 - but your stats were rerolled</code></pre>
+        <p>
+            It works, and it cost you every ability score. A level 9 character is not a
+            newly born one; it earned those stats. You have just found two problems at
+            once — write down both:
+        </p>
+        <ol>
+            <li>You can set <code>level</code> freely. What keeps
+                <code>proficiencyBonus</code> in agreement with it?</li>
+            <li>The only method that recomputes the bonus also recomputes
+                <em>everything else</em>. How would you change one value and repair only
+                its consequences?</li>
+            <li>One more oddity: <code>proficiencyBonus</code> is set inside
+                <code>generateStats()</code>, a method whose job is rolling ability
+                scores. What does how proficient you are have to do with what the dice
+                said? That mismatch is a smell, and it is the reason Unit 5 exists — you
+                will fix all of this on this file, in Unit 5.</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker: Roll a Better Warrior</h3>
+        <p>
+            Instead of 3d6 for every stat, give warriors a boost: roll
+            <strong>4d6</strong> for strength and constitution, but only
+            <strong>2d6</strong> for intelligence. Dice's methods can do this — but
+            <code>Dice.statRoll()</code> rolls all six for you, so you would have to
+            build the array yourself. Careful: this breaks the acceptance test's
+            3-to-18 range check on purpose. Try it in
+            <code>CharacterTester.java</code>, not in <code>Character.java</code>.
+        </p>
+        <p>
+            Before you run it: with 4d6 for strength, what is the <em>lowest</em> a
+            warrior's strength can still be? What is the highest? Predict both, then
+            check. Did your intuition match the arithmetic?
+        </p>
+    </div>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Turn a 5e ability score into a modifier with <code>(score - 10) / 2</code></li>
+            <li>Explain the difference between a stored field and a derived value</li>
+            <li>Write a field initializer, and say what a String field holds without one</li>
+            <li>Call your own <code>modifier()</code> from another method instead of
+                repeating the arithmetic</li>
+            <li>Explain why setting <code>level</code> alone leaves the sheet wrong</li>
+        </ul>
+    </div>
 </div>
 
 <!-- ============================================================ -->
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
+        <li><a href="../docs/unit-02/character-creator.html">Student RPG Guide: Character Creator</a> — full spec</li>
         <li><a href="../docs/unit-02/objects-and-classes.html">Objects &amp; Classes</a> — reference</li>
-        <li><a href="../docs/unit-02/character-creator.html">Student RPG Guide: Character Creator</a></li>
+        <li><a href="../docs/unit-01/dice-roller.html">Dice Roller</a> — the engine underneath</li>
     </ul>
 </div>`;
 ---

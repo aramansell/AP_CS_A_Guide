@@ -6,6 +6,11 @@ import Lesson from '../../layouts/LessonLayout.astro';
 
 const body = `<h1>2.7b — Character Creator: Display</h1>
 
+<p>
+    Your character has stats but no way to show them off. Today you build the sheet —
+    including an HP bar, which is a formula wearing a costume.
+</p>
+
 <!-- ============================================================ -->
 <div class="activity rpg">
     <div class="activity-header">
@@ -13,17 +18,22 @@ const body = `<h1>2.7b — Character Creator: Display</h1>
         <span class="activity-time">~20 min</span>
     </div>
 
-    <h3>Part 3: printCharacterSheet() — Show Your Creation</h3>
-
     <p>
-        Your character has stats but no way to display them. Build a method that
-        prints a formatted character sheet to the console.
+        Keep running <a href="../data/CharacterCheck.java" download>CharacterCheck.java</a>
+        as you go — after this method, recompile and watch the <code>FAIL</code> lines shrink.
     </p>
+
+    <h3>Part 4: printCharacterSheet() — Show Your Creation</h3>
 
     <p><strong>Requirements:</strong></p>
     <ul>
         <li>Method signature: <code>public void printCharacterSheet()</code></li>
-        <li>Print the character's name, HP bar, and six stats</li>
+        <li>Prints the character's name, an HP bar, and all six ability scores</li>
+        <li>
+            The HP bar is <strong>exactly 10 characters</strong> wide, sitting between
+            <code>[</code> and <code>]</code>: filled blocks first, then empty blocks
+        </li>
+        <li>An HP line shows current and maximum hit points as <code>hp/maxHp</code></li>
         <li>Use <code>System.out.println()</code> to format each line</li>
         <li>The output must be clean and readable — think about spacing and alignment</li>
     </ul>
@@ -32,50 +42,128 @@ const body = `<h1>2.7b — Character Creator: Display</h1>
     <pre><code><span class="output">====================
 == GROG THE MIGHTY ==
 ====================
-HP: [████████░░] 20/20
+Level 1   HP: [##########] 12/12
 
 STR: 15
 DEX: 10
-CON: 12
+CON: 14
 INT:  8
 WIS: 11
 CHA:  9
+
+AC: 10
+Initiative: 0
+Passive Perception: 11
+Proficiency: +2
 ====================</span></code></pre>
+
+    <p>
+        The exact spacing is up to you — the test checks that the pieces are present and
+        that the bar is the right width, not that your sheet is byte-for-byte identical
+        to this one.
+    </p>
 
     <div class="socratic">
         <h3>Socratic Checkpoint</h3>
         <ol>
-            <li>Where does <code>printCharacterSheet()</code> fit in the
-                three-step pattern?</li>
-            <li>The HP bar shows <code>hp</code> out of <code>maxHp</code>.
-                What would happen if these two values get out of sync?</li>
-            <li>You're printing six stats. What's repetitive about it?
-                Can you imagine a way to clean this up? (We'll explore
-                this with arrays in Unit 6.)</li>
+            <li>Where does <code>printCharacterSheet()</code> fit in the three-step
+                pattern you have used all unit — build the object, configure it, then
+                use it?</li>
+            <li>The HP bar shows <code>hp</code> out of <code>maxHp</code>. What would
+                happen if those two values got out of sync?</li>
+            <li>You are printing six stats, one line each. What is repetitive about it?
+                Can you imagine a way to clean this up? (We will explore this with arrays
+                in Unit 6.)</li>
         </ol>
     </div>
 
+    <h3>The HP Bar Is a Formula</h3>
+
+    <p>
+        A bar that shows what fraction of your hit points remain is a calculation, not a
+        decoration. Ten blocks means you are computing <code>hp</code> as a percentage of
+        <code>maxHp</code> and scaling it to 10:
+    </p>
+
+    <pre><code>int filled = hp * 10 / maxHp;     // correct
+int filled = hp / maxHp * 10;     // always 0</code></pre>
+
+    <p>
+        That second line is the integer-division trap you met in Unit 1, hiding inside a
+        progress bar. At 50 of 100 hit points, <code>50 / 100</code> is <code>0</code>,
+        so the second line empties the bar at half health. The first line multiplies
+        before dividing and gives the 5 blocks you expect.
+    </p>
+
+    <p>Once you have <code>filled</code>, build the bar with <code>substring</code>:</p>
+
+    <pre><code>String full  = "##########";
+String empty = "..........";
+String bar = full.substring(0, filled) + empty.substring(0, 10 - filled);</code></pre>
+
+    <p>
+        <code>substring(0, filled)</code> takes the first <code>filled</code> characters
+        of the ten-block string. Two substrings added together always make exactly 10
+        characters, however the HP moves.
+    </p>
+
     <div class="tinker">
         <h3>Tinker: The HP Bar</h3>
-        <p>
-            An HP bar shows filled and empty blocks. You need to figure out:
-        </p>
         <ol>
-            <li>How to calculate the number of filled blocks from <code>hp</code>
-                and <code>maxHp</code>. (Think: what percent of HP is remaining?)</li>
-            <li>How to build a String with that many filled characters (■) followed
-                by empty characters (□) to make 10 total.</li>
+            <li>
+                Work out <code>filled</code> for a character at 50 of 100 hit points. How
+                many blocks? Now do it for 12 of 12. Should the bar be completely full at
+                full health?
+            </li>
+            <li>
+                Predict first, then test: what does <code>hp / maxHp * 10</code> give at
+                50 of 100? Why? Run it and see whether your prediction was right.
+            </li>
+            <li>
+                Your character starts at full health, which makes the bar boring — it is
+                always completely full. In <code>CharacterTester.java</code>, write
+                <code>c.hp = c.maxHp / 2;</code> and print again. Is the bar about half
+                full? If it did not move, your <code>filled</code> is not using
+                <code>hp</code>.
+            </li>
+            <li>
+                Your fields are public, so nothing stops you writing
+                <code>c.hp = 999;</code> — go on, try it in your tester and see what the
+                HP bar does. Now that you have seen the answer: should a class allow
+                that? Hold the thought. Unit 5.
+            </li>
         </ol>
-        <p>
-            Be careful: you're dividing two integers — you met this trap in Unit 1.
-            What order of operations do you need, and why? Predict first: with
-            <code>hp = 50</code> and <code>maxHp = 100</code>, how many filled
-            blocks should the bar show?
-        </p>
-        <p>
-            The <a href="../docs/unit-02/character-creator.html">Character Creator guide</a>
-            has the formula if you get stuck — but try to derive it yourself first.
-        </p>
+    </div>
+
+    <div class="callout">
+        <strong>Use plain ASCII for the bar.</strong> Blocks (<code>█</code> and
+        <code>░</code>) look better, but they are not ASCII, and on some machines
+        <code>javac</code> misreads them and turns your 10-character bar into something
+        longer — which fails the width check with a confusing message. If you want blocks
+        anyway, compile with <code>javac -encoding UTF-8 ...</code>. The test checks the
+        bar's <em>width</em>, not which character you chose, so either can pass.
+    </div>
+
+    <p><strong>Acceptance Test:</strong></p>
+    <pre><code>Character c = new Character();
+c.name = "Grog the Mighty";
+c.generateStats();
+c.printCharacterSheet();</code></pre>
+    <p>
+        Expected: the name, a completely full bar at full health, and six labeled scores
+        between 3 and 18. Then set the HP to half and print again — the bar should be
+        about half filled.
+    </p>
+
+    <div class="checklist">
+        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <ul>
+            <li>Build a String of a fixed width from two <code>substring</code> calls</li>
+            <li>Scale a value into a range with <code>value * width / maximum</code>, and
+                explain why multiplying first matters</li>
+            <li>Explain why <code>hp / maxHp * 10</code> always gives 0</li>
+            <li>Print a formatted multi-line report from instance fields</li>
+        </ul>
     </div>
 </div>
 
@@ -83,8 +171,9 @@ CHA:  9
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-02/character-creator.html">Student RPG Guide: Character Creator</a></li>
-        <li><a href="../docs/unit-02/string.html">String Methods</a> — formatting helpers</li>
+        <li><a href="../docs/unit-02/character-creator.html">Student RPG Guide: Character Creator</a> — full spec</li>
+        <li><a href="../docs/unit-02/string.html">String Methods</a> — <code>substring</code> and friends</li>
+        <li><a href="../docs/unit-01/casting.html">Casting &amp; Integer Division</a> — the trap in the bar</li>
     </ul>
 </div>`;
 ---

@@ -63,8 +63,8 @@ for (int room = 1; room <= 10; room++) { ... }</code></pre>
 <pre><code>for (int room = 1; room <= 5; room++) {
     System.out.println("=== Room " + room + " ===");
 
-    // Generate a random enemy
-    int enemyHP = Dice.rollRange(5, 20);
+    // Generate a random enemy: 3d6 + 2, so 5 to 20 HP
+    int enemyHP = Dice.roll(3, 6) + 2;
     String enemyName;
     if (Dice.roll(20) >= 15) {
         enemyName = "Goblin";

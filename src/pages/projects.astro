@@ -21,22 +21,25 @@ const body = `<h1>RPG Project Files</h1>
         <span>Lesson 1.7</span><span>Type: RPG Integration</span>
     </div>
     <p>
-        Your dice engine: roll(), rollDice(), rollWithAdvantage(),
-        isCritical(), displayResult(). Documented with javadoc as of 2.8b.
-        Used by every combat and random event for the rest of the year.
+        Your dice engine: roll(), roll(int sides), roll(int num, int sides),
+        roll(int num, int sides, int stat), skillCheck(int pass),
+        skillCheck(int pass, int skill), and statRoll(). Verified by the
+        downloadable DiceCheck.java. Used by every combat and random event for
+        the rest of the year.
     </p>
     <p><a href="docs/unit-01/dice-roller.html">View Student Guide →</a></p>
 </div>
 
 <div class="project-file">
-    <h3>Player.java (v1)</h3>
+    <h3>Character.java + CharacterTester.java</h3>
     <div class="file-meta">
         <span>Lesson 2.7</span><span>Type: RPG Integration</span>
     </div>
     <p>
-        Character creator: Scanner reads the name, the Dice engine rolls
-        stats (STR, DEX, CON, INT), a formatted character sheet prints.
-        This player follows you through every unit.
+        Character creator: six 5e ability scores rolled by the Dice engine, plus
+        hit points, armor class, initiative, and proficiency. Verified by the
+        downloadable CharacterCheck.java. This character follows you through
+        every unit.
     </p>
     <p><a href="docs/unit-02/character-creator.html">View Student Guide →</a></p>
 </div>

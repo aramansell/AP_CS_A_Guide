@@ -6,6 +6,12 @@ import Lesson from '../../layouts/LessonLayout.astro';
 
 const body = `<h1>2.7c — Character Creator: Build a Party</h1>
 
+<p>
+    One more method, then you put the whole thing together and generate a party of four.
+    When you are finished, <a href="../data/CharacterCheck.java" download>CharacterCheck.java</a>
+    should report <code>44 passed, 0 failed</code>.
+</p>
+
 <!-- ============================================================ -->
 <div class="activity rpg">
     <div class="activity-header">
@@ -13,44 +19,165 @@ const body = `<h1>2.7c — Character Creator: Build a Party</h1>
         <span class="activity-time">~20 min</span>
     </div>
 
-    <h3>Part 4: Make It Real — Generate a Full Party</h3>
+    <h3>Part 5: The 5e Proficiency Table</h3>
 
     <p>
-        One character is fine. A party of four is a game. Create a
-        <code>CharacterTester.java</code> with a main method that generates
+        This one needs no new method — you already wrote it as the last line of
+        <code>generateStats()</code>. But it deserves a closer look, because it is the
+        best small example of integer division in the whole course.
+    </p>
+
+    <p>
+        In 5e your proficiency bonus is not something you choose; it is a function of your
+        level. It starts at +2 and rises by one every four levels, topping out at +6 for a
+        level 17 character.
+    </p>
+
+    <table>
+        <tr><th>Level</th><td>1–4</td><td>5–8</td><td>9–12</td><td>13–16</td><td>17–20</td></tr>
+        <tr><th>Bonus</th><td>+2</td><td>+3</td><td>+4</td><td>+5</td><td>+6</td></tr>
+    </table>
+
+    <p><strong>Requirement:</strong></p>
+    <ul>
+        <li>
+            <code>generateStats()</code> sets <code>proficiencyBonus</code> to
+            <code>2 + (level - 1) / 4</code>
+        </li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <ol>
+            <li>Check the formula against the table. At level 4 you get
+                <code>2 + 3 / 4</code> = <code>2 + 0</code>. At level 5 you get
+                <code>2 + 4 / 4</code> = <code>2 + 1</code>. Why does integer division
+                make this formula work?</li>
+            <li>Where would the formula break if Java rounded to nearest instead of
+                truncating?</li>
+            <li>Look back at the tinker in 2.7a — the sheet that said
+                <code>Level 9</code> and <code>Proficiency: +2</code>. Which single line of
+                code would have kept those two in agreement, and why is that line not
+                something you can call on its own yet?</li>
+        </ol>
+    </div>
+
+    <p><strong>Acceptance Test:</strong></p>
+    <pre><code>Character c = new Character();
+c.level = 9;
+c.generateStats();
+System.out.println("Level " + c.level + " -> +" + c.proficiencyBonus);  // +4</code></pre>
+    <p>
+        Try levels 1, 5, 9, and 17. You should see +2, +3, +4, and +6. Notice you had to
+        reroll the character to change one number — <code>CharacterCheck</code> has to do
+        the same thing, and it complains if <code>generateStats()</code> resets your level
+        behind your back.
+    </p>
+
+    <h3>Part 6: abilityCheck(int dc, int score) — Skill Checks</h3>
+
+    <p>
+        This is the payoff for Unit 1. A skill check is a d20 roll plus the relevant
+        ability modifier, against a difficulty class — and you already wrote that method.
+        It is <code>Dice.skillCheck(pass, skill)</code>.
+    </p>
+
+    <p><strong>Requirements:</strong></p>
+    <ul>
+        <li>Method signature: <code>public int abilityCheck(int dc, int score)</code></li>
+        <li><code>dc</code> is the difficulty to beat; <code>score</code> is the ability
+            score being tested</li>
+        <li>Delegates to <code>Dice.skillCheck(dc, score)</code> — do not rewrite the d20 logic</li>
+        <li>Returns the same four codes as Unit 1: −1 crit fail, 0 fail, 1 success, 2 crit success</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint</h3>
+        <p>
+            You are calling a method you wrote in Unit 1 rather than copying its body.
+            If you later find a bug in <code>skillCheck</code>, how many places must you
+            fix — and how many if <code>Character</code> kept its own copy of the d20
+            logic?
+        </p>
+    </div>
+
+    <p><strong>Acceptance Test:</strong></p>
+    <pre><code>Character c = new Character();
+c.generateStats();
+System.out.println("STR check, DC 14: " + c.abilityCheck(14, c.strength));
+System.out.println("INT check, DC 14: " + c.abilityCheck(14, c.intelligence));</code></pre>
+    <p>
+        Run each line twenty times. A high-strength character should pass a strength check
+        more often than an intelligence check. If the two look the same, check that you
+        are actually passing <code>score</code> through to <code>Dice.skillCheck</code>.
+    </p>
+
+    <h3>Part 7: Make It Real — Generate a Full Party</h3>
+
+    <p>
+        One character is fine. A party of four is a game. Create
+        <code>CharacterTester.java</code> with a <code>main</code> method that generates
         and displays a full adventuring party.
     </p>
 
     <p><strong>Requirements:</strong></p>
     <ul>
-        <li>Create 4 Character objects</li>
-        <li>Name them (Grog the Warrior, Elara the Mage, etc.)</li>
+        <li>Create 4 <code>Character</code> objects</li>
+        <li>Name them (Grog the Warrior, Elara the Mage, ...)</li>
         <li>Call <code>generateStats()</code> on each</li>
         <li>Call <code>printCharacterSheet()</code> on each</li>
     </ul>
 
+    <p>
+        Nothing tests <code>CharacterTester.java</code> — it is your scratch file. The
+        acceptance test only ever looks at <code>Character.java</code>.
+    </p>
+
     <div class="tinker">
         <h3>Tinker: The Weakest Link</h3>
         <p>
-            After generating all four characters, find and print the name of
-            the character with the LOWEST total HP and the character with the
-            HIGHEST strength. You'll need to compare values across objects.
+            After generating all four characters, find and print the name of the character
+            with the LOWEST total HP and the character with the HIGHEST strength. You will
+            need to compare values across objects — for example
+            <code>party[0].strength > party[1].strength</code>. The dot works on any
+            object, not just on one.
+        </p>
+        <p>
+            Before you write the loop: how do you track the best-so-far when you do not
+            yet know what the best will be? What value would you start with, and why is
+            starting at 0 a trap for a field that can be negative?
+        </p>
+    </div>
+
+    <div class="tinker">
+        <h3>Tinker: Make the Party Fight</h3>
+        <p>
+            Give the party something to do. Use <code>abilityCheck()</code> to resolve a
+            group check: pick a difficulty, have all four characters roll against it using
+            their strength, and report how many succeeded. What does the return code of
+            <code>2</code> mean, and how would the party react differently to a crit
+            success than to an ordinary one?
         </p>
     </div>
 
     <div class="socratic">
         <h3>Final Socratic Checkpoint — Unit 2 Kickoff</h3>
         <ol>
-            <li>Trace through the entire Character Creator. Where is the
-                three-step pattern? Which section of the pattern is in
-                <code>Character.java</code> vs <code>CharacterTester.java</code>?</li>
-            <li>You use <code>Dice.statRoll()</code> in your Character class.
-                How is this different from copying the Math.random() formula
-                directly into Character.java?</li>
-            <li>If you wanted to add an Elf race that gets +2 DEX and -1 CON,
-                where would you add that logic?</li>
-            <li>You've now started Unit 2. What patterns, habits, and mental
-                models do you want to carry through the rest of Unit 2?</li>
+            <li>Trace through the entire character creator. Where is the three-step
+                pattern? Which part is in <code>Character.java</code>, which is in
+                <code>CharacterTester.java</code>, and which is in
+                <code>CharacterCheck.java</code>?</li>
+            <li>You use <code>Dice.statRoll()</code> and <code>Dice.skillCheck(dc, score)</code>
+                inside your Character class. How is that different from copying the
+                Math.random() formula directly into <code>Character.java</code>?</li>
+            <li>Your fields are public, and the test reads them directly. Name one
+                specific thing that could go wrong because of that — "it is bad
+                practice" is not an answer. Then: in Unit 5 you will cause that failure
+                on purpose and fix it. What do you predict the fix will be?</li>
+            <li>If you wanted to add an Elf race that gets +2 DEX and −1 CON, where would
+                that logic go — and which derived values would need recomputing?</li>
+            <li>You have now started Unit 2. What patterns, habits, and mental models do
+                you want to carry through the rest of the unit?</li>
         </ol>
     </div>
 
@@ -59,8 +186,11 @@ const body = `<h1>2.7c — Character Creator: Build a Party</h1>
         <ul>
             <li>Create and configure multiple instances of a class</li>
             <li>Call methods on objects from a separate tester class</li>
-            <li>Compare values across objects (highest/lowest)</li>
-            <li>Explain the full architecture: Dice.java → Character.java → CharacterTester.java</li>
+            <li>Compare values across objects (highest / lowest)</li>
+            <li>Explain the full architecture:
+                <code>Dice.java</code> → <code>Character.java</code> → <code>CharacterTester.java</code></li>
+            <li>Get <code>CharacterCheck.java</code> to report
+                <code>44 passed, 0 failed</code></li>
         </ul>
     </div>
 </div>
@@ -69,8 +199,9 @@ const body = `<h1>2.7c — Character Creator: Build a Party</h1>
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-02/character-creator.html">Student RPG Guide: Character Creator</a></li>
+        <li><a href="../docs/unit-02/character-creator.html">Student RPG Guide: Character Creator</a> — full spec</li>
         <li><a href="../docs/unit-02/objects-and-classes.html">Objects &amp; Classes</a> — reference</li>
+        <li><a href="../docs/unit-01/dice-roller.html">Dice Roller</a> — <code>skillCheck</code> and friends</li>
     </ul>
 </div>`;
 ---

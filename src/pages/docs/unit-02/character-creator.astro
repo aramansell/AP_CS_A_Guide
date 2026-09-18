@@ -13,129 +13,488 @@ const crumbs = `<nav>
 const body = `<h1>Student RPG Guide: Character Creator</h1>
 
 <div class="callout">
-    <strong>This is YOUR guide.</strong> The teacher built Mad Libs and Rock-Paper-Scissors
-    with you. Now you use those same skills — Scanner, String concatenation, Dice.roll() —
-    to build a character generator on your own. Instead of code blanks, you are provided
-    with <strong>Acceptance Criteria</strong>: if your code passes every test, it works.
+    <strong>This is YOUR guide.</strong> In Unit 1 you built the dice engine. Now you
+    build a character on top of it: six ability scores, hit points, armor class, and a
+    character sheet. Instead of code blanks, you are provided with <strong>Acceptance
+    Criteria</strong> — a downloadable test that runs your code and tells you whether
+    it is correct.
 </div>
+
+<p>
+    The rules are <strong>Dungeons &amp; Dragons 5th edition</strong>, simplified where
+    full 5e would need tools you have not met yet. Every formula below is the real 5e
+    one, or a deliberate trimming of it. Where a rule is trimmed, this guide says so.
+</p>
 
 <h2>The Setup</h2>
 
+<p>Three files. You write the first one:</p>
+
+<ol>
+    <li><code>Character.java</code> — the character itself. This is today's build.</li>
+    <li><code>Dice.java</code> — your engine from Unit 1.7. <code>generateStats()</code>
+        and <code>abilityCheck()</code> both call it, so it must sit in the same folder.</li>
+    <li><a href="../../data/CharacterCheck.java" download>CharacterCheck.java</a> — the
+        acceptance test. You do not write this one. Download it.</li>
+</ol>
+
 <p>
-    Create a new file called <code>CharacterCreator.java</code>. You will write four
-    methods and a main driver. Your program reads the player's name with Scanner, rolls
-    four RPG stats (Strength, Dexterity, Intelligence, Constitution) using your
-    <code>Dice.java</code> engine from Unit 1, and prints a formatted character sheet.
+    You will also want a <code>CharacterTester.java</code> with a <code>main</code>
+    method, for experiments of your own. That file is yours to play in — nothing tests it.
+</p>
+
+<p>Start <code>Character.java</code> with the class outline and its fields:</p>
+
+<pre><code>public class Character {
+
+    public String name = "Unnamed";
+    public int level = 1;
+
+    public int strength, dexterity, constitution;
+    public int intelligence, wisdom, charisma;
+
+    public int hp, maxHp, ac, initiative;
+    public int proficiencyBonus, passivePerception;
+}</code></pre>
+
+<p>
+    The <code>= "Unnamed"</code> and <code>= 1</code> are <strong>field
+    initializers</strong> — the value a field holds before anything is assigned to it.
+    Without them, a new <code>String</code> field is <code>null</code> and your character
+    sheet prints <code>null</code> for a name.
+</p>
+
+<div class="callout warn">
+    <strong>The fields are <code>public</code> in this unit, and that is deliberate.</strong>
+    In a finished class, fields are <code>private</code> and the outside world reaches
+    them through getters. You will do exactly that in Unit 5 — to this file. For now
+    public fields keep the ceremony out of your way while you learn what an object
+    <em>is</em>, and they cost you nothing you can measure yet.
+    <br><br>
+    They do cost you something, though, and you will feel it twice:
+    <br>
+    <strong>1.</strong> Your field <em>names</em> are part of the contract.
+    <code>CharacterCheck</code> reads <code>hero.strength</code> and
+    <code>hero.maxHp</code> directly, so renaming <code>hp</code> to
+    <code>hitPoints</code> stops the test compiling.
+    <br>
+    <strong>2.</strong> Nothing stops you writing <code>hero.level = 9</code> and leaving
+    <code>proficiencyBonus</code> saying <code>+2</code> — a sheet that contradicts
+    itself. There is no method that changes one value and repairs its consequences. Keep
+    both of those in mind; they are the whole agenda for Unit 5.
+</div>
+
+<hr>
+
+<h2>How to Run the Acceptance Test</h2>
+
+<p>
+    <code>CharacterCheck.java</code> calls every method in this guide and prints
+    <code>PASS</code> or <code>FAIL</code> for each one. It does not read your code —
+    it <em>runs</em> it, so the only way to pass is to actually be correct.
+</p>
+
+<ol>
+    <li>
+        Download <a href="../../data/CharacterCheck.java" download>CharacterCheck.java</a>
+        and put it in the same folder as your <code>Character.java</code> and
+        <code>Dice.java</code>.
+    </li>
+    <li>Open a terminal in that folder.</li>
+    <li>
+        Compile all three files together:
+        <pre><code>javac Dice.java Character.java CharacterCheck.java</code></pre>
+        All three must compile before anything runs. If the error message names one of
+        your methods or fields, that name is missing or its shape does not match this
+        guide — fix your <code>Character.java</code>, not the test file.
+    </li>
+    <li>
+        Run the tests:
+        <pre><code>java CharacterCheck</code></pre>
+    </li>
+    <li>
+        Read the output. Every check is a <code>PASS</code> or a <code>FAIL</code>,
+        and the last two lines count them:
+        <pre><code>44 passed, 0 failed
+Your Character class meets the spec.</code></pre>
+    </li>
+</ol>
+
+<div class="callout">
+    <strong>If the compile step fails on everything at once</strong>, check the file
+    name before you check the logic. <code>javac</code> requires the class inside
+    <code>Character.java</code> to be named <code>Character</code>. A file called
+    <code>Character.java</code> holding <code>public class Player</code> will not compile,
+    no matter how good the code inside is.
+</div>
+
+<p>
+    <strong>Why ranges, and never exact numbers?</strong> <code>generateStats()</code>
+    rolls real dice, so a correct <code>strength</code> is allowed to be anything from
+    3 to 18. The test cannot demand a particular score. Instead it generates hundreds of
+    characters and checks two things: that every score lands <em>in range</em>, and that
+    your derived values are <em>correctly related</em> to the scores — it compares your
+    <code>maxHp</code> against <code>10 + modifier(constitution)</code>, using your own
+    modifier method. That works no matter what the dice rolled, and it still catches a
+    wrong formula.
 </p>
 
 <hr>
 
-<h2>Part 1: readName() — Get the Player's Name</h2>
+<h2>The 5e Rules This Class Uses</h2>
 
-<h3>Requirements:</h3>
-<ul>
-    <li>Method signature: <code>public static String readName(Scanner input)</code></li>
-    <li>Prints a prompt (use <code>System.out.print</code> — no newline — so the user types on the same line)</li>
-    <li>Calls <code>input.nextLine()</code> to read whatever the user types</li>
-    <li>Returns the name as a String</li>
-</ul>
+<table>
+    <tr><th>Value</th><th>5e rule</th><th>Formula</th></tr>
+    <tr>
+        <td>Ability modifier</td>
+        <td>(score − 10) ÷ 2, rounded down</td>
+        <td><code>(score - 10) / 2</code></td>
+    </tr>
+    <tr>
+        <td>Hit points at level 1</td>
+        <td>hit die maximum + CON modifier</td>
+        <td><code>10 + modifier(constitution)</code></td>
+    </tr>
+    <tr>
+        <td>Armor class, unarmored</td>
+        <td>10 + DEX modifier</td>
+        <td><code>10 + modifier(dexterity)</code></td>
+    </tr>
+    <tr>
+        <td>Initiative</td>
+        <td>DEX modifier</td>
+        <td><code>modifier(dexterity)</code></td>
+    </tr>
+    <tr>
+        <td>Passive Perception</td>
+        <td>10 + WIS modifier</td>
+        <td><code>10 + modifier(wisdom)</code></td>
+    </tr>
+    <tr>
+        <td>Proficiency bonus</td>
+        <td>+2 at level 1, rising every four levels</td>
+        <td><code>2 + (level - 1) / 4</code></td>
+    </tr>
+</table>
 
-<h3>Socratic Checkpoint:</h3>
-<p>Why use <code>System.out.print</code> instead of <code>System.out.println</code> for the prompt? What would happen visually if you used println?</p>
+<p>
+    <strong>Why a 10 for hit points?</strong> In 5e your starting HP is your class's hit
+    die maximum plus your CON modifier. A Fighter's hit die is a d10, so level 1 gives
+    10 + CON. We use the Fighter's d10 for every character — one fewer rule to track,
+    same shape.
+</p>
 
-<h3>Acceptance Test:</h3>
-<p>Add this to a tester:</p>
-<pre><code>Scanner sc = new Scanner(System.in);
-String name = CharacterCreator.readName(sc);
-System.out.println("Got: " + name);</code></pre>
-<p>Run it. Verify the prompt appears correctly and whatever you type is returned.</p>
-
-<hr>
-
-<h2>Part 2: rollStats() — Roll Four Ability Scores</h2>
-
-<h3>Requirements:</h3>
-<ul>
-    <li>Method signature: <code>public static int[] rollStats()</code></li>
-    <li>Rolls four stats using your Dice.java engine from Unit 1</li>
-    <li>Each stat uses 3d6: <code>Dice.rollDice(3, 6)</code></li>
-    <li>Returns an int array in this order: <code>{strength, dexterity, intelligence, constitution}</code></li>
-</ul>
-
-<h3>Socratic Checkpoint:</h3>
-<p>Why is <code>Dice.rollDice(3, 6)</code> used instead of <code>Dice.roll(18)</code> for a stat? What does 3d6 mean, and why does the sum distribution matter in a game?</p>
-
-<h3>Acceptance Test:</h3>
-<pre><code>int[] stats = CharacterCreator.rollStats();
-System.out.println("STR: " + stats[0]);
-System.out.println("DEX: " + stats[1]);
-System.out.println("INT: " + stats[2]);
-System.out.println("CON: " + stats[3]);
-// Each stat should be between 3 and 18 (3d6 range)
-// Run multiple times to verify the range</code></pre>
-
-<hr>
-
-<h2>Part 3: printSheet() — Display the Character Sheet</h2>
-
-<h3>Requirements:</h3>
-<ul>
-    <li>Method signature: <code>public static void printSheet(String name, int[] stats)</code></li>
-    <li>Prints a formatted character sheet matching this template:</li>
-</ul>
-<pre><code>--- CHARACTER SHEET ---
-Name: [name]
-STR: [stats[0]]
-DEX: [stats[1]]
-INT: [stats[2]]
-CON: [stats[3]]
------------------------</code></pre>
-
-<h3>Socratic Checkpoint:</h3>
-<p>The <code>stats</code> parameter is an array. What do <code>stats[0]</code>, <code>stats[1]</code>, etc. represent? What happens if you pass an array that only has 2 elements?</p>
-
-<h3>Acceptance Test:</h3>
-<pre><code>int[] testStats = {14, 12, 16, 10};
-CharacterCreator.printSheet("Thorn Ironvein", testStats);
-// Verify the output matches the template exactly</code></pre>
+<p>
+    <strong>Where we trimmed 5e.</strong> A real skill check adds your proficiency bonus
+    when you are proficient in the skill. <code>abilityCheck()</code> leaves that out, so
+    it can hand the work straight to your Unit 1 engine. The proficiency bonus is still
+    computed and displayed — it just does not enter the check.
+</p>
 
 <hr>
 
-<h2>Part 4: main() — Tie It All Together</h2>
+<h2>Part 1: modifier(int score) — Score to Modifier</h2>
+
+<p>
+    This is the 5e rule underneath everything else. An ability score of 14 is not a +14
+    to anything; it is a +2. Learn this one method and every derived value below becomes
+    a single line.
+</p>
 
 <h3>Requirements:</h3>
 <ul>
-    <li>Creates a <code>Scanner</code> connected to <code>System.in</code></li>
-    <li>Calls <code>readName(input)</code> to get the player's name</li>
-    <li>Calls <code>rollStats()</code> to get the stat array</li>
-    <li>Calls <code>printSheet(name, stats)</code> to display the character sheet</li>
-    <li>Closes the Scanner with <code>input.close()</code></li>
+    <li>Method signature: <code>public int modifier(int score)</code></li>
+    <li>Returns <code>(score - 10) / 2</code></li>
+    <li>Works for scores above <em>and</em> below 10 — a score of 8 gives −1, a score of 6 gives −2</li>
+    <li>Do not round up. A score of 11 is a +0 in 5e, not a +1</li>
 </ul>
 
 <h3>Socratic Checkpoint:</h3>
-<p>Why is the Scanner closed at the end? What would happen if you tried to call <code>input.nextLine()</code> after closing it?</p>
+<p>
+    Why subtract 10? Because 10 is the score of an average person, so 10 must come out to
+    +0 — no bonus, no penalty. Why divide by 2? Because 5e wants each +1 to cost two
+    points of score. Work out the modifier for 10, 12, and 20 before you write the code.
+</p>
 
 <h3>Acceptance Test:</h3>
-<p>Run <code>CharacterCreator.main()</code>. Type a name when prompted. Verify the full character sheet prints with all four stats between 3 and 18.</p>
+<pre><code>System.out.println("14 -> " + c.modifier(14));  // +2
+System.out.println("10 -> " + c.modifier(10));  // +0
+System.out.println(" 8 -> " + c.modifier(8));   // -1</code></pre>
+<p>
+    Run it. Is 18 a +4? Is 4 a −3? If 14 comes back as 14, you forgot to do the
+    arithmetic. If 18 comes back as 8, you forgot to divide.
+</p>
+
+<hr>
+
+<h2>Part 2: generateStats() — Roll the Six Abilities</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public void generateStats()</code></li>
+    <li>Rolls <strong>six</strong> ability scores using <code>Dice.statRoll()</code> from Unit 1</li>
+    <li>
+        Stores them in this order, which is the order <code>Dice.statRoll()</code>
+        returns them in:
+        <code>strength, dexterity, constitution, intelligence, wisdom, charisma</code>
+    </li>
+    <li>Each stat is a 3d6 roll, so each lands between 3 and 18</li>
+    <li>Then fills in every derived value from the table above, and sets <code>hp</code> to <code>maxHp</code></li>
+    <li>Leaves <code>name</code> and <code>level</code> alone — those are not rolled</li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>
+    <code>Dice.statRoll()</code> returns an <code>int[]</code> of six values. What is the
+    index of the first one? The last one? If you wrote the array's values into the six
+    fields in the wrong order, would <code>CharacterCheck</code> notice? Think carefully —
+    the dice are rolled inside <code>Dice</code>, so the test never sees which number was
+    meant for which ability. This is a check you have to make yourself.
+</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>Character c = new Character();
+c.generateStats();
+System.out.println("STR " + c.strength + "  DEX " + c.dexterity);
+System.out.println("CON " + c.constitution + "  HP " + c.maxHp);</code></pre>
+<p>
+    Run it several times. Every stat should move around between 3 and 18. If all six
+    stats are always identical, you are filling them from one roll instead of six.
+</p>
+
+<hr>
+
+<h2>Part 3: proficiencyBonus — The 5e Level Table</h2>
+
+<p>
+    In 5e your proficiency bonus is not something you pick; it is a function of your
+    level. It is +2 for levels 1 through 4, then rises by one every four levels, topping
+    out at +6.
+</p>
+
+<h3>Requirements:</h3>
+<ul>
+    <li><code>level</code> starts at <strong>1</strong> (that is the field initializer)</li>
+    <li><code>generateStats()</code> sets <code>proficiencyBonus</code> to <code>2 + (level - 1) / 4</code></li>
+</ul>
+
+<table>
+    <tr><th>Level</th><td>1–4</td><td>5–8</td><td>9–12</td><td>13–16</td><td>17–20</td></tr>
+    <tr><th>Bonus</th><td>+2</td><td>+3</td><td>+4</td><td>+5</td><td>+6</td></tr>
+</table>
+
+<h3>Socratic Checkpoint:</h3>
+<p>
+    Check the formula against the table. At level 4 you get <code>2 + 3 / 4</code>, which
+    is <code>2 + 0</code>. At level 5 you get <code>2 + 4 / 4</code>, which is
+    <code>2 + 1</code>. Why does integer division make this formula work — where would it
+    break if Java rounded instead of truncating?
+</p>
+
+<p>
+    <strong>There is something wrong here, and you should notice it.</strong> Your
+    proficiency bonus — how good you are at the things you are trained in — is computed
+    inside <code>generateStats()</code>, whose job is rolling ability scores. Rolling dice
+    has nothing to do with how proficient you are. And because that is the only method
+    that recomputes the bonus, levelling up means rerolling your entire character:
+</p>
+<pre><code>c.level = 9;
+c.printCharacterSheet();   // says Level 9 and Proficiency: +2. A lie.
+c.generateStats();         // now +4 - but every stat was rerolled</code></pre>
+<p>
+    Nothing here is a bug you can fix with the tools you have. It is a design problem,
+    and it is the reason Unit 5 exists. You will fix it on this file, properly, in Unit 5.
+</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>Character c = new Character();
+c.level = 9;
+c.generateStats();
+System.out.println("Level " + c.level + " -> +" + c.proficiencyBonus);  // +4</code></pre>
+<p>
+    Try levels 1, 5, 9, and 17. You should see +2, +3, +4, and +6.
+</p>
+
+<hr>
+
+<h2>Part 4: abilityCheck(int dc, int score) — Skill Checks</h2>
+
+<p>
+    The payoff for Unit 1. An ability check is a d20 roll plus the relevant ability
+    modifier, against a difficulty class. You already wrote this: it is
+    <code>Dice.skillCheck(pass, skill)</code>.
+</p>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public int abilityCheck(int dc, int score)</code></li>
+    <li><code>dc</code> is the difficulty to beat; <code>score</code> is the ability score being tested</li>
+    <li>Delegates to <code>Dice.skillCheck(dc, score)</code> — do not rewrite the d20 logic</li>
+    <li>Returns the same four codes: −1 crit fail, 0 fail, 1 success, 2 crit success</li>
+</ul>
+
+<h3>Socratic Checkpoint:</h3>
+<p>
+    You are calling a method you wrote in Unit 1 rather than copying its body. If you
+    later find a bug in <code>skillCheck</code>, how many places would you have to fix —
+    and how many if <code>Character</code> had its own copy of the d20 logic?
+</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>System.out.println("STR check, DC 14: " + c.abilityCheck(14, c.strength));
+System.out.println("INT check, DC 14: " + c.abilityCheck(14, c.intelligence));</code></pre>
+<p>
+    Run each twenty times. A character with a high strength should succeed on a strength
+    check more often than on an intelligence check. If both look the same, check that you
+    are passing the score through to <code>Dice.skillCheck</code> and not dropping it.
+</p>
+
+<hr>
+
+<h2>Part 5: printCharacterSheet() — Show Your Creation</h2>
+
+<h3>Requirements:</h3>
+<ul>
+    <li>Method signature: <code>public void printCharacterSheet()</code></li>
+    <li>Prints the character's name, an HP bar, and all six ability scores</li>
+    <li>The HP bar is <strong>exactly 10 characters</strong> wide, between <code>[</code> and <code>]</code>:
+        filled blocks first, then empty blocks</li>
+    <li>An HP line shows the current and maximum hit points as <code>hp/maxHp</code></li>
+    <li>Use <code>System.out.println()</code> to format each line</li>
+</ul>
+
+<p><strong>Sample output:</strong></p>
+<pre><code><span class="output">====================
+== GROG THE MIGHTY ==
+====================
+Level 1   HP: [##########] 12/12
+
+STR: 15
+DEX: 10
+CON: 14
+INT:  8
+WIS: 11
+CHA:  9
+
+AC: 10
+Initiative: 0
+Passive Perception: 11
+Proficiency: +2
+====================</span></code></pre>
+
+<h3>The HP bar is a formula</h3>
+<p>
+    The bar shows what fraction of your hit points remain, out of 10 blocks. That makes it
+    a calculation, not a decoration — and it hides the integer-division trap from Unit 1:
+</p>
+<pre><code>int filled = hp * 10 / maxHp;     // correct
+int filled = hp / maxHp * 10;     // always 0 at half health - division happens first</code></pre>
+<p>
+    At 50 of 100 hit points, <code>50 / 100</code> is <code>0</code>, so the second line
+    gives an empty bar at half health. The first line multiplies before dividing and gives
+    the 5 blocks you expect. Work out why, then build the bar:
+</p>
+<pre><code>String full  = "##########";
+String empty = "..........";
+String bar = full.substring(0, filled) + empty.substring(0, 10 - filled);</code></pre>
+<p>
+    <code>substring(0, filled)</code> takes the first <code>filled</code> characters of
+    the ten-block string. Two substrings added together always make exactly 10 characters.
+    You met <code>substring</code> in the String unit — this is what it is for.
+</p>
+
+<div class="callout">
+    <strong>Use plain ASCII for the bar.</strong> Blocks (<code>█</code> and
+    <code>░</code>) look better, but they are not ASCII, and on some machines
+    <code>javac</code> will misread them and turn your 10-character bar into
+    something longer. If you want blocks anyway, compile with
+    <code>javac -encoding UTF-8 ...</code>. The test checks the bar's
+    <em>width</em>, not which character you drew, so either choice can pass.
+</div>
+
+<p>
+    <strong>Nothing clamps <code>hp</code>.</strong> In 5e, hit points never fall below 0
+    and never rise above your maximum. This class cannot enforce that yet — there is no
+    setter, and the field is public, so <code>c.hp = 999;</code> compiles and quietly
+    produces a bar wider than ten characters. Enforcing a legal range on the way in is a
+    Unit 5 topic, and guarding fields is how you do it.
+</p>
+
+<h3>Acceptance Test:</h3>
+<pre><code>Character c = new Character();
+c.name = "Grog the Mighty";
+c.generateStats();
+c.printCharacterSheet();</code></pre>
+<p>
+    Expected: the name, a full bar at full health, and six labeled scores between 3 and
+    18. Then try <code>c.hp = c.maxHp / 2;</code> and print again — the bar should be
+    about half filled. If it does not move when HP changes, your <code>filled</code>
+    calculation is not using <code>hp</code>.
+</p>
 
 <hr>
 
 <h2>Full Method Summary</h2>
 
-<p>When complete, your class should have this shape:</p>
+<p>When complete, your class should have exactly this shape:</p>
 
-<pre><code>import java.util.Scanner;
+<pre><code>public class Character {
 
-public class CharacterCreator {
+    public String name = "Unnamed";
+    public int level = 1;
 
-    public static String readName(Scanner input) { ... }
+    public int strength, dexterity, constitution;
+    public int intelligence, wisdom, charisma;
 
-    public static int[] rollStats() { ... }
+    public int hp, maxHp, ac, initiative;
+    public int proficiencyBonus, passivePerception;
 
-    public static void printSheet(String name, int[] stats) { ... }
+    public int  modifier(int score)
+    public void generateStats()
+    public int  abilityCheck(int dc, int score)
+    public void printCharacterSheet()
+}</code></pre>
 
-    public static void main(String[] args) { ... }
-}</code></pre>`;
+<p>
+    Four methods, twelve fields, and no getters — because there is nothing to get
+    <em>through</em>. That is the shape of a class before encapsulation, and it is
+    entirely workable. It is just not finished.
+</p>
+
+<div class="callout">
+    <strong>Check yourself against the test, not against this page.</strong> This guide
+    and <code>CharacterCheck.java</code> describe the same contract. If they ever seem to
+    disagree, the test wins — it is what will be run.
+</div>
+
+<h2>What Unit 5 Will Do To This File</h2>
+
+<p>
+    Nothing in this guide is wasted, and nothing in it is <em>wrong</em> — but it has two
+    flaws you should be able to name by the time you finish 2.7. You will fix both in
+    Unit 5, on this file:
+</p>
+
+<ul>
+    <li>
+        <strong>The fields are naked.</strong> Anything that can reach a
+        <code>Character</code> can set <code>hp</code> to 999 or <code>level</code> to 9
+        without consequence. Unit 5 makes them <code>private</code> and adds getters, so
+        the only way in is through methods you wrote.
+    </li>
+    <li>
+        <strong>A derived value cannot be updated on its own.</strong>
+        <code>proficiencyBonus</code> follows from <code>level</code>, but the only line
+        that recomputes it lives inside <code>generateStats()</code> — alongside a full
+        reroll of every ability score. Unit 5 adds a setter that changes the <code>level</code>
+        and repairs its consequence, and nothing else.
+    </li>
+</ul>
+
+<p>
+    Keep this file. You will hand it back to yourself, with a much better version of it
+    beside it.
+</p>`;
 ---
 <Base title="Student RPG Guide: Character Creator — Unit 2" active="docs" root="../.." docsHome="../index.html" css="../style.css">
   {crumbs && <Fragment slot="breadcrumb" set:html={crumbs} />}

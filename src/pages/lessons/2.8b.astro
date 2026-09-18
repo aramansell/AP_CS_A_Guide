@@ -41,6 +41,8 @@ public class CommentsLab {
         <p>Type it, then hover over the class name where you use it. Editors read the
         javadoc and show it back to you. That is the difference between javadoc and
         ordinary comments: javadoc is machine-readable documentation.</p>
+        <p>Before you hover: where exactly do you expect the documentation to appear, and
+        which of the three comment styles do you expect your editor to ignore?</p>
     </div>
 
     <div class="tinker">
@@ -53,9 +55,15 @@ public class CommentsLab {
  * @return a random int between 1 and sides, inclusive
  */
 public static int roll(int sides) { ... }</code></pre>
-        <p>Do the same for <code>rollDice</code> and <code>isCritical</code>. Then call
-        <code>Dice.roll(20)</code> from your tester and hover. Your own words are now
-        official documentation, exactly like <code>Math.abs</code>.</p>
+        <p>Do the same for <code>roll(int num, int sides)</code> and
+        <code>statRoll()</code>. The first takes two parameters, so it needs two
+        <code>@param</code> lines, one per parameter, in the order they appear. The
+        second takes none — the callout below has something to say about that. Then
+        call <code>Dice.roll(20)</code> from your tester and hover. Your own words are
+        now official documentation, exactly like <code>Math.abs</code>.</p>
+        <p>Write the blocks the way you think they should read, then compare with a
+        partner's. For <code>statRoll()</code>, how many <code>@param</code> lines and
+        how many <code>@return</code> lines did you write — and why that number?</p>
     </div>
 
     <div class="callout warn">
@@ -73,6 +81,8 @@ public static int roll(int sides) { ... }</code></pre>
         the code does another. Find the lie, then fix the comment (or the code, if the
         comment was right all along). The lies are subtle: off-by-one, wrong bounds,
         "random" where it is deterministic.</p>
+        <p>For each of the four pairs: which did you change, the comment or the code? And
+        what evidence — from actually running it — settled the question for you?</p>
     </div>
 
     <div class="socratic">

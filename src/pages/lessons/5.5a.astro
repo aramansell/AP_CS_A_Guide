@@ -13,11 +13,13 @@ const body = `<h1>5.5a — Player.java: Encapsulate Your Hero</h1>
     </div>
 
     <p>
-        For three units, your RPG has used scattered variables — <code>int playerHP</code>,
-        <code>String playerName</code>, scattered across DungeonCrawl. Every time you
-        need player stats, you pass four arguments. Every time you update HP, you write
-        the same validation code. It's time to wrap all of that into a single
-        <strong>Player class</strong>.
+        You have had a <code>Character</code> object since 2.7 — real fields, real methods,
+        and a character sheet that prints. But its fields are <code>public</code>, so
+        anything with a reference can reach in and set <code>hp</code> to 999, and a
+        derived value like <code>proficiencyBonus</code> cannot be corrected without
+        rerolling the whole character. In this unit you close both holes: fields go
+        <code>private</code>, the outside world gets getters and validating setters, and
+        the class becomes something you can trust to defend itself.
     </p>
 
     <p>
@@ -47,8 +49,10 @@ const body = `<h1>5.5a — Player.java: Encapsulate Your Hero</h1>
             <li>Your <code>takeDamage()</code> clamps to 0. Your <code>heal()</code>
                 clamps to maxHp. Why is clamping important? What's the worst bug
                 that could happen without it?</li>
-            <li>Compare Player.java to Character.java from Unit 2.7. What's the
-                same? What's different? Why did we wait until now to encapsulate?</li>
+            <li>Compare Player.java to Character.java from Unit 2.7. What is the same?
+                What is different? In 2.7 you wrote <code>c.level = 9;</code> and the
+                sheet lied to you. Why did we wait until you had felt that before
+                teaching encapsulation?</li>
         </ol>
     </div>
 
