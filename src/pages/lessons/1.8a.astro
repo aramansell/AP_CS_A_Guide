@@ -46,12 +46,16 @@ System.out.println((int) (5.0 / 2));</code></pre>
 
     <div class="tinker">
         <h3>Experiment 2: The Casting Order Trap</h3>
-        <p>Now predict these two lines. They look almost identical. They are not.</p>
+        <p>Now predict these two lines. They look almost identical — the only thing
+        that moved is a parenthesis. Write your predicted range for each one before
+        you run anything.</p>
         <pre><code>System.out.println((int) (Math.random() * 6) + 1);   // line A
-System.out.println((int) (Math.random() * 6 + 1));   // line B</code></pre>
-        <p>Run each 20 times and watch the ranges carefully. Did both lines behave
-        the way you predicted? Write the explanation in your own words — what do the
-        parentheses decide? This exact trap appears on the AP exam almost every year.</p>
+System.out.println((int) Math.random() * 6 + 1);     // line B</code></pre>
+        <p>Run each line 20 times, then count the distinct values you actually saw.
+        One of these is a working d6. The other is not, and re-running it will never
+        change that. Write the explanation in your own words: where does the cast
+        bind, and what does it grab before the multiply ever happens? This exact trap
+        appears on the AP exam almost every year.</p>
     </div>
 
     <div class="tinker">
