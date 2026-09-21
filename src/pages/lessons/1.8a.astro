@@ -95,9 +95,10 @@ System.out.println("Average score: " + average);</code></pre>
             <li>Your RPG stores gold as <code>double</code> (loot can be fractional) but
             displays it as a whole number. Should you cast, or round? What does
             <code>(int) 2.9</code> give, and is that fair to the player?</li>
-            <li><code>Math.random()</code> returns a <code>double</code> from 0.0 up to
-            1.0. Explain, in one sentence each, what <code>(int)(Math.random() * 10)</code>
-            and <code>(int)(Math.random() * 10) + 1</code> can produce.</li>
+            <li>Experiment 1 taught you that a cast chops the decimal. Experiment 2
+            taught you where the cast binds. Use both to explain why
+            <code>(int)(Math.random() * 10)</code> can never produce <code>10</code> —
+            and why that is exactly the reason a d6 needs a <code>+1</code>.</li>
             <li>Look at the <a href="../docs/unit-01/casting.html">Casting docs page</a>.
             Find the "predict and confirm" section. Do the four mystery lines. How many
             did you get right?</li>
