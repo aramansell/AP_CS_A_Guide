@@ -37,6 +37,22 @@ const body = `<h1>4.3b — String Traversal: Build a Cipher</h1>
         <li>Wrap around: 'Z' + 1 should become 'A', not '['</li>
     </ul>
 
+    <p>
+        Both character tools in this build are off the
+        <a href="../exam/java-quick-reference.html">Java Quick Reference</a>.
+        <code>charAt(i)</code> becomes <code>s.substring(i, i + 1)</code>, a
+        one-character String, which matters if you compare it: Strings use
+        <code>equals</code>, not <code>==</code>. And <code>Character.isLetter(c)</code>,
+        which the checkpoint below asks for, becomes a <code>compareTo</code> range check
+        on that one-character String:
+        <code>ch.compareTo("a") &gt;= 0 &amp;&amp; ch.compareTo("z") &lt;= 0</code>, plus
+        the same pair for the capitals. One consequence for the cipher itself: the
+        cast-to-<code>int</code> trick needs a <code>char</code>, and the sheet never
+        hands you one, so a sheet-only cipher shifts by position inside an alphabet
+        String instead (<code>alphabet.indexOf(ch)</code> for 0 through 25, then
+        <code>alphabet.substring(newPos, newPos + 1)</code> for the shifted letter).
+    </p>
+
     <div class="callout trap">
         <strong>ASCII Trap:</strong> Casting <code>char</code> to <code>int</code> gives you the Unicode code point. 'A' is 65, 'Z' is 90, 'a' is 97, 'z' is 122. If you shift 'Z' by 1, you get 91 (which is '['). You need to detect when a character passes 'Z' or 'z' and wrap it back to 'A' or 'a'. The <code>%</code> operator can help — but there's a trick to getting the math right. Open the <a href="../docs/unit-04/string-loops.html">String Loops docs</a> for the pattern.
     </div>

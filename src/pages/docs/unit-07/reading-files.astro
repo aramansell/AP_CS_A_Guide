@@ -16,7 +16,7 @@ const body = `<h1>Reading Files: File + Scanner</h1>
     CED topic 4.6, new in the 2025 revision. The idea is small and mighty: the
     Scanner you already know can wrap a File instead of System.in, and suddenly
     your programs eat data instead of keyboard taps. The JQR lists exactly what
-    you need: File's constructor, Scanner's File constructor, six next-methods,
+    you need: File's constructor, Scanner's File constructor, five next-methods,
     hasNext, and close.
 </p>
 
@@ -107,6 +107,18 @@ on purpose.</p>
 <p>Every piece is a lesson you already own: the loop (this page), split and
 parseInt (2.9a), guards (6.6b), objects (Unit 5), ArrayList (7.1). File reading
 is not a new topic. It is the reunion episode.</p>
+
+<p>
+    <strong>Off-sheet flag in the loader above:</strong> <code>line.trim()</code> and
+    <code>line.isEmpty()</code> are both standard Java, and neither is on the exam
+    sheet. The loop's other calls (<code>hasNext</code>, <code>nextLine</code>,
+    <code>split</code>, <code>parseInt</code>, <code>close</code>) are all on it. For
+    the blank-line guard, the sheet-only form is <code>line.length() == 0</code>. For
+    whitespace, there is no sheet substitute at all: nothing on the sheet strips it, so
+    find the first and last characters that are not spaces with <code>indexOf</code> and
+    <code>substring</code>, or keep the spaces out of the file in the first place. See
+    the <a href="../../exam/java-quick-reference.html">Java Quick Reference</a>.
+</p>
 
 <h2>Saving: The Other Direction</h2>
 

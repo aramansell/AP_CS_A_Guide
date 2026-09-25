@@ -66,6 +66,23 @@ const body = `<h1>Writing a BankAccount Class — Full Walkthrough</h1>
     Without it, you might see $577.5000000000001. With it: $577.50. Clean money.
 </p>
 
+<div class="callout warn">
+    <strong>String.format is not on the exam sheet.</strong> The
+    <a href="../../exam/java-quick-reference.html">Java Quick Reference</a> gives you no
+    formatting method at all, so the sheet's answer is concatenation with the padding
+    built by hand. That is every use in this walkthrough: the two
+    <code>toString</code> lines and the two <code>println</code> lines in deposit and
+    withdraw.
+<pre><code>int cents = (int)(balance * 100 + 0.5);   // round to the nearest cent
+String money = "$" + (cents / 100) + "."
+             + (cents % 100 &lt; 10 ? "0" : "") + (cents % 100);</code></pre>
+    <p>57750 cents becomes <code>"$577.50"</code>, and the <code>"0"</code> branch is what
+    keeps 5 cents from printing as <code>".5"</code>. The <code>+ 0.5</code> handles
+    rounding for the positive balances the guards above allow. Keep
+    <code>String.format</code> in the class below, it is the right tool in your own
+    programs, and know that on paper you would write the lines above instead.</p>
+</div>
+
 <h2>Step 3: Mutators — Deposit and Withdraw</h2>
 
 <pre><code>    public void deposit(double amount) {

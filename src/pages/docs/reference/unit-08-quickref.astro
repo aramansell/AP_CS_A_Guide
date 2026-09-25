@@ -52,6 +52,8 @@ if (c &lt; grid[r].length-1)   check grid[r][c+1]   // right</code></pre>
     for (int c = Math.max(0, c1); c &lt;= Math.min(grid[r].length-1, c2); c++)
         visit(grid[r][c]);</code></pre>
 
+<p><strong>Off-sheet:</strong> <code>Math.max</code> and <code>Math.min</code> are not on the exam sheet, so the bounds above are also written with an <code>if</code>, and a running max starts at <code>Integer.MIN_VALUE</code> instead. See the <a href="../../exam/java-quick-reference.html">Java Quick Reference</a>.</p>
+
 
 <h2>The Unit's Traps, One Line Each</h2>
 <ul>
@@ -59,6 +61,7 @@ if (c &lt; grid[r].length-1)   check grid[r][c+1]   // right</code></pre>
     <li>Jagged rows are legal. Use grid[r].length per row; a width constant breaks.</li>
     <li>Swapped bounds compile on square grids and crash on rectangles. Match variable to bound.</li>
     <li>Negative indices do not exist. Bounds checks BEFORE access, every neighbor, every time.</li>
+    <li>Math.max and Math.min are off the sheet. An <code>if</code> clamps; <code>Integer.MIN_VALUE</code> starts a running max.</li>
 </ul>
 
 <h2>See Also</h2>

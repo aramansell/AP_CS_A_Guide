@@ -170,6 +170,16 @@ Sword s3 = new Sword("Fire Blade", 22, 60);</code></pre>
     </ol>
 </div>
 
+<div class="callout warn">
+    <strong>isEmpty here is your field, and that is fine.</strong> The JDK also has an
+    <code>isEmpty()</code> method on String and on ArrayList, and that method is not on
+    the <a href="../../exam/java-quick-reference.html">Java Quick Reference</a>. When you
+    need to ask a String or a list whether it is empty, the sheet gives you
+    <code>name.length() == 0</code> and <code>list.size() == 0</code>. Your own
+    <code>isEmpty</code> boolean is untouched by this: <code>potion.isEmpty</code> is
+    just a field your class owns.
+</div>
+
 
 <h2>See Also</h2>
 <ul>

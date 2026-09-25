@@ -38,6 +38,7 @@ public static int count(int[] arr, int index, int target) {
     return match + count(arr, index + 1, target);
 }</code></pre>
         <p>Convert each to an iterative version. Compare line counts and readability.</p>
+        <p><code>Math.max</code> is not on the <a href="../exam/java-quick-reference.html">Java Quick Reference</a>. Write the <code>if</code> instead: <code>if (arr[index] &gt; restMax) return arr[index];</code> then <code>return restMax;</code>. When you chase a running max from scratch, start at <code>Integer.MIN_VALUE</code> and replace it whenever you find something bigger.</p>
     </div>
 
     <div class="callout trap">
@@ -59,6 +60,7 @@ public static boolean isPalindrome(String s) {
     return isPalindrome(s.substring(1, s.length() - 1));     // strip both ends
 }</code></pre>
     <p>Trace isPalindrome("racecar") on paper. How many calls? What substring does each call see?</p>
+    <p><code>charAt</code> is not on the sheet either. The substitute is <code>s.substring(i, i + 1)</code>, a one-character String you compare with <code>equals</code>: <code>s.charAt(0) != s.charAt(s.length() - 1)</code> becomes <code>!s.substring(0, 1).equals(s.substring(s.length() - 1))</code>.</p>
     </div>
 
     <div class="tinker">

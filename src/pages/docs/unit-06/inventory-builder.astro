@@ -143,6 +143,15 @@ const body = `<h1>Student RPG Guide: Item.java + FixedInventory.java</h1>
     </tr>
 </table>
 
+<div class="callout warn">
+    <strong>One method in that table is off the exam sheet.</strong>
+    <code>equalsIgnoreCase</code> is standard Java, and it is not on the
+    <a href="../../exam/java-quick-reference.html">Java Quick Reference</a>. Use it while
+    you build. On exam day, compare lowercased copies:
+    <code>item.getName().toLowerCase().equals(name.toLowerCase())</code>. That is the
+    shape to write for both <code>removeByName</code> and <code>contains</code> above.
+</div>
+
 <hr>
 
 <h2>Test It</h2>

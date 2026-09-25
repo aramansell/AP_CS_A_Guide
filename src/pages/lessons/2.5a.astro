@@ -74,9 +74,22 @@ System.out.println(Math.max(3, 7));   // predict: ____
 
 // Combine them to clamp a value:
 int clamped = Math.max(0, Math.min(value, 100));
+// The exam sheet has no min and no max, so there the clamp is two ifs:
+//   if (value &lt; 0) value = 0;   if (value &gt; 100) value = 100;
 // If value = -5  → max(0, -5)  = 0
 // If value = 50  → max(0, 50)  = 50
 // If value = 150 → max(0, 100) = 100</code></pre>
+
+    <div class="callout warn">
+        <strong>Exam sheet check:</strong> <code>Math.min</code> and
+        <code>Math.max</code> are not on the
+        <a href="../exam/java-quick-reference.html">Java Quick Reference</a>. The sheet's
+        Math table is <code>abs</code>, <code>pow</code>, <code>sqrt</code>, and
+        <code>random</code>, and nothing else. Keep using min and max in your programs.
+        On exam day you write the comparison, and if you are chasing a running maximum
+        you start at <code>Integer.MIN_VALUE</code> (that constant is on the sheet) and
+        replace it whenever you find something bigger.
+    </div>
 
     <div class="tinker">
         <h3>Tinker Challenge: Math Predictions</h3>

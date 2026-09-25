@@ -66,6 +66,31 @@ public Item(String name, int value) {
     this(name, 1, value, "Common");
 }</code></pre>
 
+<p>
+    <code>Math.max</code> and <code>Math.min</code> are not on the
+    <a href="../../exam/java-quick-reference.html">Java Quick Reference</a>: the sheet's
+    Math table is <code>abs</code>, <code>pow</code>, <code>sqrt</code>, and
+    <code>random</code>, and that is all. On exam day you clamp with an <code>if</code>:
+</p>
+
+<pre><code>// the same clamps, with nothing off the sheet
+int w = weight;
+if (w &lt; 1)  w = 1;
+if (w &gt; 50) w = 50;
+this.weight = w;
+
+int v = value;
+if (v &lt; 0) v = 0;
+this.goldValue = v;</code></pre>
+
+<p>
+    Two <code>if</code> statements do the whole job, because only one of the two
+    conditions can be true for any single value: the clamp is a floor and a ceiling, not
+    a sequence. Keep <code>Math.max</code> and <code>Math.min</code> in the constructor
+    above, they are correct Java; just know what you would write with the sheet in front
+    of you.
+</p>
+
 <h3>Step 4-5: Getters + Methods</h3>
 <pre><code>// Getters (no setters — immutable!)
 public String getName() { return name; }

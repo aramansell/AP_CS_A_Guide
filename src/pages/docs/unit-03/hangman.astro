@@ -50,13 +50,26 @@ System.out.println("Secret word: " + display);</code></pre>
     The display string grows as letters are revealed.
 </p>
 
+<p>
+    <strong>One flag before you build:</strong> <code>charAt()</code> is not on the
+    <a href="../../exam/java-quick-reference.html">Java Quick Reference</a>. The sheet
+    gives you <code>substring(from, to)</code>, so the version to reach for is
+    <code>s.substring(i, i + 1)</code>: one character, returned as a String you can
+    compare with <code>equals</code>. The same goes for <code>indexOf</code> with a
+    char argument, which is not on the sheet either; hand it the one-character String.
+    This walkthrough keeps <code>charAt</code> so you can read it in the code below,
+    and the sheet spelling is written beside it.
+</p>
+
 <h2>Step 2: Read a Guess and Check It</h2>
 
 <pre><code>Scanner input = new Scanner(System.in);
 
 System.out.print("Guess a letter: ");
 String guessStr = input.nextLine();
-char guess = guessStr.charAt(0);  // first character only
+char guess = guessStr.charAt(0);  // first character only. Not on the JQR
+// The JQR line for the same thing:
+// String guess = guessStr.substring(0, 1);   // "a", a one-character String
 
 // Check if the letter exists in the secret word
 if (secret.indexOf(guess) >= 0) {
@@ -99,6 +112,8 @@ System.out.println(display);</code></pre>
 <p>In Unit 4, wrap this in a while loop:</p>
 
 <pre><code>while (display.indexOf('_') >= 0) {
+// the sheet version of that condition, since indexOf(char) is not on it:
+// while (display.indexOf("_") >= 0) {
     // Prompt, guess, check, rebuild display
     // ... same logic as above ...
 }
@@ -126,7 +141,7 @@ public class Hangman {
         // Game loop — one guess for now (Unit 4 adds looping)
         System.out.print("Guess a letter: ");
         String guessStr = input.nextLine();
-        char guess = guessStr.charAt(0);
+        char guess = guessStr.charAt(0);   // JQR version: guessStr.substring(0, 1)
 
         if (secret.indexOf(guess) >= 0) {
             System.out.println("✓ Correct!");

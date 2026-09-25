@@ -90,12 +90,58 @@ const body = `<h1>Java Quick Reference</h1>
 
 <div class="callout warn">
     <strong>What is deliberately NOT on the sheet:</strong> String.trim,
-    String.toUpperCase, charAt, toCharArray, arrays.length, 2D array bounds,
-    the sorting algorithms, and any I/O beyond the File/Scanner basics above.
-    Anything not on the sheet that a question needs will be described in the
-    question itself. If a question uses a method you do not recognize, the
-    question defines it: read the definition, it is the whole point.
+    String.toUpperCase, String.toLowerCase, String.contains,
+    String.startsWith, charAt, toCharArray, the two-argument
+    indexOf(String, int), the Character and Boolean classes, StringBuilder,
+    String.format, System.out.printf, most of ArrayList (contains, indexOf,
+    addAll, clear, isEmpty), Collections.sort, the Arrays class, Math.max,
+    Math.min, Math.round, arrays.length and 2D array bounds (the sheet has no
+    array section at all, so these you simply know), and any I/O beyond
+    the File/Scanner basics above.
+    The table below gives the substitute for the ones you will actually
+    reach for. Anything not on the sheet that a question needs will be
+    described in the question itself. If a question uses a method you do not
+    recognize, the question defines it: read the definition, it is the whole
+    point.
 </div>
+
+<h2>Methods You Will Reach For, and What to Write Instead</h2>
+
+<p>
+    Every entry here works in Java and none of them is on the sheet. Learn the
+    right-hand column now, while you have a compiler in front of you, so that
+    on exam day your fingers write the version that runs.
+</p>
+
+<table>
+    <tr><th>Not on the sheet</th><th>Write this instead</th></tr>
+    <tr><td><code>s.contains(t)</code></td><td><code>s.indexOf(t) != -1</code>. <code>0</code> means found at the very start, which is a hit</td></tr>
+    <tr><td><code>s.trim()</code></td><td>Nothing on the sheet removes whitespace. Trim in a loop with <code>indexOf</code> and <code>substring</code>, or keep the spaces out in the first place</td></tr>
+    <tr><td><code>s.charAt(i)</code></td><td><code>s.substring(i, i + 1)</code>, a one-character String you can compare with <code>equals</code></td></tr>
+    <tr><td><code>s.equalsIgnoreCase(t)</code></td><td><code>s.toLowerCase().equals(t.toLowerCase())</code></td></tr>
+    <tr><td><code>s.startsWith(t)</code></td><td><code>s.indexOf(t) == 0</code>, the same "found at the very start" fact the contains row turns on</td></tr>
+    <tr><td><code>s.isEmpty()</code></td><td><code>s.length() == 0</code></td></tr>
+    <tr><td><code>s.toUpperCase()</code>, <code>s.toLowerCase()</code></td><td>No substitute. Chain them onto <code>equals</code> or <code>indexOf</code> when you need case-insensitive work</td></tr>
+    <tr><td><code>s.indexOf(t, from)</code></td><td><code>s.substring(first + 1).indexOf(t) + first + 1</code>, the second occurrence built out of the first</td></tr>
+    <tr><td><code>String.format(f, x)</code></td><td>Concatenation. Build any padding yourself</td></tr>
+    <tr><td><code>System.out.printf(f, x)</code></td><td>Concatenation again, with the spacing built by hand</td></tr>
+    <tr><td><code>Character.isDigit(ch)</code></td><td>Get the one-character String first, then compare: <code>ch.compareTo("0") &gt;= 0 &amp;&amp; ch.compareTo("9") &lt;= 0</code></td></tr>
+    <tr><td><code>Character.isLetter(ch)</code></td><td>The same idea with two ranges: <code>(ch.compareTo("A") &gt;= 0 &amp;&amp; ch.compareTo("Z") &lt;= 0) || (ch.compareTo("a") &gt;= 0 &amp;&amp; ch.compareTo("z") &lt;= 0)</code></td></tr>
+    <tr><td><code>Math.max(a, b)</code>, <code>Math.min(a, b)</code></td><td>An <code>if</code>. Chasing a running max in a loop? Start at <code>Integer.MIN_VALUE</code> and replace when you find something bigger</td></tr>
+    <tr><td><code>Math.round(x)</code></td><td>Not on the sheet either. If the value cannot be negative, add 0.5 and cast: <code>(int) (x + 0.5)</code>. Negative halves round differently, so handle those deliberately</td></tr>
+    <tr><td><code>list.contains(obj)</code></td><td>A loop with <code>equals</code>, returning true when you find it</td></tr>
+    <tr><td><code>list.indexOf(obj)</code></td><td>The same loop, tracking the index</td></tr>
+    <tr><td><code>list.isEmpty()</code></td><td><code>list.size() == 0</code></td></tr>
+    <tr><td><code>list.clear()</code></td><td>Remove in a loop, or hand back a new <code>ArrayList</code></td></tr>
+    <tr><td><code>list.addAll(other)</code></td><td>A loop with <code>add</code>, one element at a time</td></tr>
+    <tr><td><code>list.remove(obj)</code></td><td>The sheet's <code>remove</code> takes an index, not an object. Find the index with the <code>equals</code> loop, then call <code>remove(int)</code></td></tr>
+    <tr><td><code>Collections.sort(list)</code>, <code>Arrays.sort(arr)</code></td><td>Write the sort. Unit 7's sorting page builds both of them</td></tr>
+    <tr><td><code>Arrays.copyOfRange(arr, from, to)</code>, and the rest of the Arrays class</td><td>Nothing from Arrays is on the sheet. Copy by hand into a new array with a <code>for</code> loop</td></tr>
+    <tr><td><code>StringBuilder</code></td><td><code>+=</code> on a String</td></tr>
+    <tr><td><code>Boolean.parseBoolean(s)</code></td><td>The Boolean class is not on the sheet. Compare instead: <code>s.equals("true")</code></td></tr>
+    <tr><td><code>Scanner.hasNextInt()</code></td><td><code>hasNext()</code> plus <code>next()</code> and <code>parseInt</code>, or let <code>nextInt()</code> throw and catch it</td></tr>
+    <tr><td><code>f.exists()</code></td><td>Not on the sheet. A question that needs it will say so</td></tr>
+</table>
 
 <h2>Reading Speed Targets</h2>
 <table>

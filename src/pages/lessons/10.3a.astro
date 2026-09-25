@@ -60,6 +60,7 @@ public static int[] merge(int[] left, int[] right) {
     return merge(left, right);
 }</code></pre>
         <p>Test with <code>{38, 27, 43, 3, 9, 82, 10}</code>. Draw the recursion tree — each split creates two children until you hit single elements, then merge on the way back up.</p>
+        <p><code>Arrays.copyOfRange</code> is not on the <a href="../exam/java-quick-reference.html">Java Quick Reference</a>, which lists no Arrays class at all. Copy the halves by hand, which is the version the exam expects you to write: <code>int[] left = new int[mid];</code> followed by a <code>for</code> loop that assigns <code>arr[i]</code> to <code>left[i]</code>, then the same again for <code>right</code> starting at <code>mid</code>. Four more lines, and it runs on the sheet.</p>
     </div>
 
     <div class="callout trap">

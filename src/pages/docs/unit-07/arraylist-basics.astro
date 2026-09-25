@@ -161,6 +161,27 @@ ArrayList&lt;String&gt; names = new ArrayList&lt;&gt;();
     </tr>
 </table>
 
+<div class="callout warn">
+    <strong>Four of those rows are off the exam sheet.</strong> <code>clear()</code>,
+    <code>contains(Object)</code>, <code>indexOf(Object)</code>, and the
+    <code>remove(Object obj)</code> form all work in Java, and none of them is on the
+    <a href="../../exam/java-quick-reference.html">Java Quick Reference</a>. The sheet's
+    ArrayList table has only <code>size</code>, <code>add(E)</code>,
+    <code>add(int, E)</code>, <code>get</code>, <code>set</code>, and
+    <code>remove(int)</code>. Keep using the convenient versions while you build, and
+    know the substitutes:
+    <ul>
+        <li>Is the element in the list? Walk it with <code>get(i)</code>, compare each
+            element with <code>equals</code>, return true when one matches.</li>
+        <li>Where is it? The same loop, tracking the index as you go.</li>
+        <li>Remove by value? Find the index that way, then call
+            <code>remove(int)</code>, which is on the sheet.</li>
+        <li>Empty the list? Remove in a loop, or hand back a new
+            <code>ArrayList</code>.</li>
+        <li>Is the list empty? <code>size() == 0</code>.</li>
+    </ul>
+</div>
+
 <h2>The #1 Trap: <code>remove(int)</code> vs <code>remove(Object)</code></h2>
 
 <p>

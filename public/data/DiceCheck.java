@@ -15,6 +15,12 @@
  * many trials and tests the RANGE of results instead. That catches the bugs
  * that actually happen: an off-by-one (a d6 that returns 0 or 7), a method that
  * ignores one of its parameters, and a "sum" that is secretly a multiplication.
+ *
+ * A NOTE ON METHODS
+ * This checker uses Math.min() and Math.max() to track the low and high rolls.
+ * Neither is on the AP sheet, and both are exactly right here. In code you write
+ * under time pressure, that job is an if statement. The Java Quick Reference page
+ * on the site gives the substitute for each.
  */
 public class DiceCheck {
 

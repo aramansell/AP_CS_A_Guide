@@ -114,6 +114,105 @@ System.out.println(word);</code></pre>
     <p>Run this. Why is it still lowercase? Fix the code so it prints "DRAGON".</p>
 </div>
 
+<h2>Methods the Exam Sheet Does Not Have</h2>
+
+<p>
+    Java's String class has more methods than the exam gives you. The
+    <a href="../../exam/java-quick-reference.html">Java Quick Reference</a> lists only
+    <code>length</code>, <code>substring</code> (both forms),
+    <code>indexOf(String)</code>, <code>equals</code>, <code>compareTo</code>, and
+    <code>split</code>. Everything below is standard Java, and some of it shows up in
+    this unit's labs. Learn the substitute next to it, because on exam day the
+    substitute is what you get.
+</p>
+
+<h3>contains(text): use indexOf and compare to -1</h3>
+<pre><code>String password = "pass@word";
+
+password.contains("@");         // true. Works in Java, not on the exam sheet
+password.indexOf("@") != -1;    // true. This is the version to write
+password.indexOf("#") != -1;    // false. indexOf answers -1 when nothing matches</code></pre>
+<p>
+    <code>!= -1</code> is doing the work. <code>indexOf</code> answers "where is it," and
+    <code>-1</code> is its way of saying "nowhere." So "does this String contain that"
+    becomes "is the position anything other than -1." Watch the trap: <code>0</code>
+    means found at the very start, which is a hit, not a miss.
+</p>
+
+<h3>charAt(i): pull one character out with substring</h3>
+<pre><code>String weapon = "Excalibur";
+
+weapon.charAt(0);                     // 'E'. A char, and charAt is not on the sheet
+weapon.substring(0, 1);               // "E". A one-character String, and this IS on the sheet
+weapon.substring(0, 1).equals("E");   // true. Compare it like any other String</code></pre>
+<p>
+    The sheet's String list has no <code>charAt</code>, so the one-character
+    <code>substring</code> is the version to write. It is also the friendlier one: you get
+    a String back, and you already know how to compare Strings. Unit 4 walks whole
+    Strings this way, one character at a time.
+</p>
+
+<h3>trim(): removes the spaces Scanner leaves behind</h3>
+<pre><code>String raw = "  attack goblin  ";
+raw.trim();   // "attack goblin"
+
+System.out.println(raw);   // "  attack goblin  ". raw itself never changed</code></pre>
+<p>
+    <code>trim()</code> strips leading and trailing whitespace, and it does not modify the
+    original (immutability again). It is not on the sheet either, but this course uses it
+    whenever data arrives from a file or the keyboard, because stray spaces are normal
+    there. Without it, you find the edges yourself: the first character that is not a
+    space and the last one that is.
+</p>
+
+<h3>Finding the second occurrence</h3>
+<p>
+    The sheet gives you the one-argument <code>indexOf(String)</code>, so it reports the
+    first match and stops. To find the next one, search what is left over:
+</p>
+<pre><code>String commands = "attack goblin attack dragon";
+
+int first  = commands.indexOf("attack");                            // 0
+int rest   = first + 1;                                             // skip past the match
+int second = commands.substring(rest).indexOf("attack") + rest;     // 14</code></pre>
+<p>
+    Read it from the inside out: cut off everything through the first match, search that
+    shorter String, then add back how much you cut. Java also has
+    <code>indexOf(text, fromIndex)</code>, a two-argument form that does this in a single
+    call. It is convenient in your own programs and it is not on the sheet, so the
+    composition above is the one worth knowing.
+</p>
+
+<h3>Comparing without caring about case</h3>
+<pre><code>String typed = "PassWord";
+
+typed.toLowerCase().indexOf("password") != -1;   // true
+typed.toLowerCase().equals("password");          // true</code></pre>
+<p>
+    <code>toLowerCase()</code> and <code>toUpperCase()</code> are everywhere in this
+    unit's labs and neither is on the sheet. Use them when you build. When a task needs a
+    case-insensitive comparison, chain them onto the methods you already have, which is
+    exactly what the password validator asks you to do.
+</p>
+
+<h3>StringBuilder: building a long string without the copies</h3>
+<pre><code>String log = "";
+log += "attack";    // a brand-new String every time
+log += " goblin";   // "attack goblin"
+
+StringBuilder sb = new StringBuilder();   // not on the sheet
+sb.append("attack");
+sb.append(" goblin");
+sb.toString();      // "attack goblin"</code></pre>
+<p>
+    Every <code>+=</code> builds a whole new String, because a String cannot be
+    changed in place. <code>StringBuilder</code> appends to one growing buffer
+    instead, and <code>toString()</code> hands back the finished String at the
+    end. It is the faster tool for assembling a String in a loop, and it is not on
+    the sheet: <code>+=</code> is the version you write on exam day, and at the
+    sizes you will handle there, <code>+=</code> is fine.
+</p>
+
 <h2>Want More?</h2>
 <ul>
     <li><a href="scanner.html">Scanner</a> — read Strings from the keyboard</li>

@@ -22,6 +22,7 @@ const body = `<h1>2.1b — Object Inspection: Call Methods, Read Fields</h1>
             <li>Create a Rectangle object (from the engine): <code>new Rectangle(0, 0, 50, 30)</code>. Call <code>getWidth()</code> and <code>getHeight()</code>.</li>
             <li>Create a second Rectangle with different values. Call the same methods. Are the results the same?</li>
         </ol>
+        <p>One exam note on step 2. The <a href="../exam/java-quick-reference.html">Java Quick Reference</a> has <code>length()</code>, but it does not have <code>charAt</code> and it does not have <code>toUpperCase()</code>. For a single character, the sheet's version is <code>.substring(0, 1)</code>, which hands you a one-character String you can compare with <code>equals</code>. For the case change there is no substitute at all, so chain <code>toUpperCase()</code> onto whatever comparison needs it. Keep both calls in your program; just know which ones you would have to write yourself with only the sheet in front of you.</p>
     </div>
 
     <div class="section">

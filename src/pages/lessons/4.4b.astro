@@ -21,6 +21,22 @@ const body = `<h1>4.4b — Nested Loops: Build Useful Grids</h1>
             <li>Print each product aligned in columns. Use <code>System.out.printf("%4d", row * col)</code> for alignment.</li>
             <li>After each inner loop, print a newline to start the next row.</li>
         </ol>
+        <p>
+            One flag on step 2: <code>System.out.printf</code> is not on the
+            <a href="../exam/java-quick-reference.html">Java Quick Reference</a>, so on
+            exam day you build the spacing yourself. It is the same idea as the table
+            itself, a small loop that pads the cell until it is four characters wide.
+        </p>
+        <pre><code>String cell = "" + (row * col);
+while (cell.length() &lt; 4) {
+    cell = " " + cell;      // right-align: the spaces go on the left
+}
+System.out.print(cell);     // same four columns as printf("%4d", row * col)</code></pre>
+        <p>
+            Keep <code>printf</code> while you build, then swap one cell to the loop above
+            and check that the output is identical. Note there is no newline in
+            <code>print</code>, which is exactly what you want inside the row.
+        </p>
     </div>
 
     <div class="section">

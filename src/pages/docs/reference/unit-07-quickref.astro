@@ -65,6 +65,9 @@ in.close();</code></pre>
     <li>Removing forward skips: after remove(i), the next element slides into i, and i++ jumps it.</li>
     <li>Binary search on unsorted data returns confident garbage, not an error.</li>
     <li>size() inside the loop condition when the loop removes: cache it or loop backwards.</li>
+    <li><code>contains(obj)</code>, <code>indexOf(obj)</code>, <code>isEmpty()</code>, and <code>clear()</code> are all OFF the sheet. Substitutes: the equals loop, that same loop tracking the index, <code>size() == 0</code>, and remove in a loop or a new list. <code>addAll(list2)</code> is off it too: add in a loop. Full trade table: <a href="../../exam/java-quick-reference.html">Java Quick Reference</a>.</li>
+    <li><code>Collections.sort(list)</code> and <code>Arrays.sort(arr)</code> are off the sheet. Write the sort; <a href="../unit-07/sorting.html">Sorting</a> builds both.</li>
+    <li><code>trim()</code> is off the sheet, and the Files snippet above uses it. Nothing on the sheet strips whitespace; find the first and last non-space characters yourself.</li>
 </ul>
 
 <h2>See Also</h2>

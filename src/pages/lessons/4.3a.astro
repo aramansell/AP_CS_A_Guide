@@ -24,6 +24,18 @@ const body = `<h1>4.3a — Loops + Strings: Character by Character</h1>
         one character at a time, doing something at each position.
     </p>
 
+    <p>
+        Two flags before you start, both from the
+        <a href="../exam/java-quick-reference.html">Java Quick Reference</a>.
+        <code>charAt()</code> is not on the sheet, so the version to reach for is
+        <code>word.substring(i, i + 1)</code>: one character, returned as a String you
+        compare with <code>equals</code>. And the whole <code>Character</code> class is
+        missing from the sheet, so <code>Character.isLetter(c)</code> becomes a
+        <code>compareTo</code> range check on that one-character String. This lesson uses
+        the Java originals so you meet them, and the docs show the sheet spelling beside
+        each one.
+    </p>
+
     <h3>The Standard Pattern</h3>
 
     <pre><code>String word = "dragon";
@@ -31,6 +43,10 @@ for (int i = 0; i < word.length(); i++) {
     char c = word.charAt(i);
     System.out.println("Position " + i + ": " + c);
 }</code></pre>
+
+    <p>The sheet's version of that middle line:</p>
+
+    <pre><code>    String c = word.substring(i, i + 1);</code></pre>
 
     <div class="tinker">
         <h3>Experiment: charAt Boundaries</h3>
@@ -40,6 +56,11 @@ System.out.println(s.length());        // what prints?
 System.out.println(s.charAt(0));       // first character?
 System.out.println(s.charAt(4));       // last character?
 // System.out.println(s.charAt(5));    // UNCOMMENT — what happens?</code></pre>
+        <p>
+            Each of those lines has a sheet twin: <code>s.substring(0, 1)</code>,
+            <code>s.substring(4, 5)</code>, and <code>s.substring(5, 6)</code>. Run those
+            as well and watch them fail at exactly the same boundaries.
+        </p>
         <p>
             Open the <a href="../docs/unit-04/string-loops.html">Loops + Strings docs</a>.
             Find the "Out of Bounds" Bug Hunt. Read the broken code. Why does
@@ -89,14 +110,16 @@ System.out.println(s.charAt(4));       // last character?
                 What happens if the player types a command with NO space?</li>
             <li>Look at the <code>Character.isDigit()</code> and <code>isLetter()</code>
                 methods in the docs. Write a loop that prints "digit", "letter",
-                or "other" for each character in "F1r3bAll!".</li>
+                or "other" for each character in "F1r3bAll!". Then write the sheet
+                version of the digit test, a range check on the one-character String:
+                <code>ch.compareTo("0") &gt;= 0 &amp;&amp; ch.compareTo("9") &lt;= 0</code>.</li>
         </ol>
     </div>
 
     <div class="checklist">
         <h3>Checkpoint — before moving on, you must be able to:</h3>
         <ul>
-            <li>Traverse a string with a for loop and charAt()</li>
+            <li>Traverse a string with a for loop, charAt() in Java and substring(i, i + 1) on the sheet</li>
             <li>Count characters matching a condition (vowels, digits, etc.)</li>
             <li>Build a new string by accumulating characters in a loop</li>
             <li>Avoid off-by-one errors with length() and charAt()</li>

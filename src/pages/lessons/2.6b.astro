@@ -51,6 +51,17 @@ Parsed: strength=15, luck=0.75, alive=true</code></pre>
         </ol>
     </div>
 
+    <div class="callout warn">
+        <strong>Exam sheet check:</strong> <code>Boolean.parseBoolean</code> is not on the
+        <a href="../exam/java-quick-reference.html">Java Quick Reference</a>. The sheet
+        lists <code>Integer.parseInt</code> and <code>Double.parseDouble</code> and never
+        mentions the <code>Boolean</code> class at all. The behavior you just found is the
+        reason: it never throws, it simply returns <code>false</code> for anything that is
+        not <code>"true"</code>, so a typo reads as a deliberate no. Keep using it here.
+        The honest version, and the one the sheet supports, is a comparison:
+        <code>answer.equals("true")</code> says exactly what it accepts.
+    </div>
+
     <h3>Build 2: Safe Parser</h3>
 
     <p>Create <code>SafeParser.java</code>. This time, don't let the program crash. For each input:</p>
@@ -61,6 +72,8 @@ Parsed: strength=15, luck=0.75, alive=true</code></pre>
     </ul>
 
     <p>The <a href="../docs/unit-02/wrapper-classes.html">Wrapper docs</a> don't show how to detect if a String is parseable — but think: what if you check every character? Open the <a href="../docs/unit-02/string.html">String docs</a> and look for methods that let you inspect individual characters.</p>
+
+    <p>One warning before you go looking. The method you will find there, <code>charAt</code>, is not on the <a href="../exam/java-quick-reference.html">Java Quick Reference</a> either. The sheet's substitute is <code>substring(i, i + 1)</code>, a one-character String that you compare with <code>equals</code>. Use <code>charAt</code> in your validator; know what you would write without it.</p>
 
     <div class="bug-hunt">
         <h3>Bug Hunt: Negative Numbers and Empty Strings</h3>

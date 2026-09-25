@@ -57,6 +57,8 @@ Target: ally</code></pre>
 ""                      // empty command</code></pre>
         <p>
             What method removes leading/trailing whitespace? Check the String docs.
+            It is one of the methods Java has and the AP sheet does not, so find it,
+            use it here, and note what you would do without it.
             What should your parser do when there's no target? (Hint: print a message
             like "No target specified" instead of crashing.)
         </p>
@@ -71,8 +73,11 @@ Target: ally</code></pre>
 "cast heal on ally"          → verb: cast, target: heal, recipient: ally</code></pre>
         <p>
             Extend your parser to handle three-part commands. You'll need
-            <code>substring</code> and <code>indexOf</code> with a start position.
-            The String docs show how to find the second occurrence of a character.
+            <code>substring</code> and <code>indexOf</code> twice over: find the first
+            space, then search what comes after it for the next one. The
+            <a href="../docs/unit-02/string.html">String docs</a> show the pattern for
+            finding a second occurrence, and why the exam sheet makes you compose it
+            instead of calling it.
         </p>
     </div>
 

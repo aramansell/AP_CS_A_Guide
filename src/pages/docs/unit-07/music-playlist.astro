@@ -59,6 +59,14 @@ const body = `<h1>Music Playlist — Full Walkthrough</h1>
     }
 }</code></pre>
 
+<p>
+    <strong>Off-sheet flag:</strong> <code>String.format("%02d", sec)</code> is not on
+    the exam sheet. The sheet-only version is concatenation, building the padding
+    yourself: <code>(sec &lt; 10 ? "0" : "") + sec</code>. The
+    <a href="../../exam/java-quick-reference.html">Java Quick Reference</a> pairs every
+    off-sheet call with its substitute.
+</p>
+
 <h2>Step 2: ArrayList Basics — Add, Remove, Display</h2>
 
 <pre><code>import java.util.ArrayList;
@@ -87,6 +95,13 @@ for (int i = 0; i < playlist.size(); i++) {
     <strong>Why ArrayList and not an array?</strong> The playlist size changes
     when songs are added or removed. ArrayList handles resizing automatically.
     No need to track count or shift elements by hand.
+</p>
+
+<p>
+    <strong>Off-sheet flag:</strong> the <code>equalsIgnoreCase</code> in that removal
+    loop (and in the search below) is not on the exam sheet. Lowercase both sides
+    instead:
+    <code>playlist.get(i).getTitle().toLowerCase().equals(toRemove.toLowerCase())</code>.
 </p>
 
 <h2>Step 3: Search and Shuffle</h2>
@@ -150,7 +165,7 @@ Search for "Queen":");
 
 <h2>Extending the Program</h2>
 <ul>
-    <li>Sort by title, artist, or duration (Collections.sort with Comparator).</li>
+    <li>Sort by title, artist, or duration (Collections.sort with Comparator). Note that <code>Collections.sort</code> is off the exam sheet, so the hand-written sort on <a href="sorting.html">Sorting</a> is the exam-day version.</li>
     <li>Save/load playlist from a file (AP extension).</li>
     <li>Add a "play next" queue separate from the main playlist.</li>
 </ul>

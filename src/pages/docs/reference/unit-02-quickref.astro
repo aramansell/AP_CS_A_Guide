@@ -28,6 +28,13 @@ night before a test. Print it and mark it up.</p>
     <tr><td>s.split(delim)</td><td>String[] of pieces, delimiter removed</td></tr>
 </table>
 
+<p><strong>Not on the sheet:</strong> <code>contains()</code>, <code>trim()</code>,
+<code>toUpperCase()</code>, <code>toLowerCase()</code>, <code>charAt()</code>, and
+<code>indexOf(text, from)</code>. Java has all of them, and the exam does not give you
+any of them. The <a href="../../exam/java-quick-reference.html">Java Quick Reference</a>
+page keeps the running list, and
+<a href="../unit-02/string.html">The String Class</a> shows the substitute for each.</p>
+
 
 <h2>Scanner (keyboard)</h2>
 <pre><code>import java.util.Scanner;
@@ -65,6 +72,9 @@ double d = in.nextDouble();</code></pre>
     <li>indexOf returns -1, not 0, when absent. 0 means FIRST position.</li>
     <li>nextInt then nextLine: nextLine grabs the leftover newline and returns "". Pick one style per Scanner.</li>
     <li>split pieces are Strings. parseInt them before arithmetic.</li>
+    <li>No contains() on the sheet. Ask s.indexOf(t) != -1, and remember 0 means found at the start.</li>
+    <li>Only the one-argument indexOf is on the sheet. For a second occurrence, search the rest: s.substring(first + 1).indexOf(t) + first + 1.</li>
+    <li>trim(), toUpperCase(), and toLowerCase() are lab tools, not sheet tools. Use them to build, and plan the substitute.</li>
 </ul>
 
 <h2>See Also</h2>

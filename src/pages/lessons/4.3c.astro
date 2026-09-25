@@ -39,6 +39,18 @@ const body = `<h1>4.3c — String Traversal: Build a Scroll Decoder</h1>
         <li>Spaces pass through unchanged</li>
     </ol>
 
+    <p>
+        Three of the tools this build and its checkpoint below reach for are not on the
+        <a href="../exam/java-quick-reference.html">Java Quick Reference</a>, so learn the
+        sheet spelling now. <code>keyword.charAt(k)</code> becomes
+        <code>keyword.substring(k, k + 1)</code>, a one-character String you compare with
+        <code>equals</code>. <code>Character.isLetter(ch)</code> becomes a
+        <code>compareTo</code> range check on that one-character String, one range for
+        lowercase and one for capitals. And <code>toUpperCase()</code> has no substitute
+        at all: the sheet has <code>equals</code> and <code>compareTo</code>, not case
+        conversion.
+    </p>
+
     <pre><code>// Working through the first character:
 // Encoded: U (position 0), Keyword: C (shift = 'C' - 'A' = 2)
 // Shift backward 2: U → T → S

@@ -49,6 +49,23 @@ Strength: 15, Weapon Damage: 8, Dexterity: 12, Armor: 50
         </ol>
     </div>
 
+    <div class="callout warn">
+        <strong>Exam sheet check.</strong> <code>Math.min</code> and
+        <code>Math.max</code> are not on the
+        <a href="../exam/java-quick-reference.html">Java Quick Reference</a>. The sheet's
+        Math table is <code>abs</code>, <code>pow</code>, <code>sqrt</code>, and
+        <code>random</code>. A clamp written with min and max becomes an <code>if</code>
+        for the floor and a second <code>if</code> for the ceiling; a running maximum
+        starts at <code>Integer.MIN_VALUE</code> and gets replaced whenever something
+        bigger turns up.
+        <br><br>
+        Rounding is off the sheet too: <code>Math.round</code> is not in that table.
+        For a value that cannot be negative,
+        the arithmetic is add 0.5 and cast, so <code>(int) (side + 0.5)</code> turns 9.43
+        into 9 and 9.5 into 10. That is the same rounding you get from the method, written
+        where you can see it.
+    </div>
+
     <div class="tinker">
         <h3>Tinker: Extreme Values</h3>
         <p>Test your calculator with these edge cases. Before running, predict what each output will be:</p>

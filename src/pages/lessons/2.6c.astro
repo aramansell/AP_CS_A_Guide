@@ -46,6 +46,8 @@ String loaded = "85|0.625|true";
 // Piece 0 → Integer.parseInt → int
 // Piece 1 → Double.parseDouble → double
 // Piece 2 → Boolean.parseBoolean → boolean
+//   parseBoolean is not on the JQR. The sheet's substitute is a comparison:
+//   alive = piece.equals("true");
 System.out.println("hp=" + hp + " luck=" + luck + " alive=" + alive);</code></pre>
 
     <div class="socratic">
@@ -53,7 +55,7 @@ System.out.println("hp=" + hp + " luck=" + luck + " alive=" + alive);</code></pr
         <ol>
             <li>You used <code>"|"</code> as a separator. What would happen if a stat value contained a pipe character? (It can't — but what if you stored a String field instead?)</li>
             <li>Why use Double.parseDouble() instead of Integer.parseInt() for luck? What would Integer.parseInt("0.625") do?</li>
-            <li>You used String <code>+</code> to concatenate. What's another way to build this string? Check the <a href="../docs/unit-02/string.html">String docs</a> for alternatives.</li>
+            <li>You used String <code>+</code> to concatenate. What's another way to build this string? Check the <a href="../docs/unit-02/string.html">String docs</a> for alternatives. Whichever you choose here, <code>+</code> is the version the exam sheet gives you.</li>
         </ol>
     </div>
 

@@ -40,6 +40,13 @@ import java.io.PrintStream;
  * odd score below 10 rounds down (-1 for a score of 9), while Java's integer
  * division truncates toward zero (0 for a score of 9). Both are defensible
  * and Unit 1 let you choose, so this test stays out of that argument.
+ *
+ * A NOTE ON METHODS
+ * This checker uses trim(), toLowerCase(), contains(), and charAt(). None of them
+ * is on the AP sheet, and all of them are the right tool for writing a checker.
+ * The point stands for the code YOU write under time pressure: substring and
+ * indexOf are the versions that are always available. The Java Quick Reference
+ * page on the site gives the substitute for each.
  */
 public class CharacterCheck {
 

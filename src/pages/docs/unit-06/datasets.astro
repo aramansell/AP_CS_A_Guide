@@ -51,6 +51,12 @@ int level = Integer.parseInt(f[2].trim());</code></pre>
 fields so <code>parseInt(" 45")</code> never happens. Free, one word, saves a
 crash.</p>
 
+<p><strong>Off-sheet flag:</strong> <code>.trim()</code> is not on the exam
+sheet, and nothing on the sheet strips whitespace. When you cannot call it,
+strip in a loop: <code>indexOf</code> and <code>substring</code> find the first
+and last characters that are not spaces. Or design the file so the spaces never
+arrive.</p>
+
 <h2>Cleaning: Guard Clauses</h2>
 
 <p>A guard clause checks one thing and bails early with a reason. Chain them:</p>
@@ -60,6 +66,12 @@ if (f[1].isEmpty()) return "BAD: missing class";
 if (level &lt; 0)      return "BAD: negative level";
 if (minutes &gt; 1440) return "BAD: minutes over a day";
 // all guards passed: CLEAN</code></pre>
+
+<p><strong>Off-sheet flag:</strong> <code>isEmpty()</code> is not on the exam
+sheet either. The sheet-only version of that guard is
+<code>f[1].length() == 0</code>. Same question, same answer, and it is the one
+that exists in the exam room. The full trade table lives on the
+<a href="../../exam/java-quick-reference.html">Java Quick Reference</a>.</p>
 
 <p>Two design decisions hiding in cleaning, and they are judgment calls, not
 code calls: do you REJECT bad rows (count them, skip them) or REPAIR them

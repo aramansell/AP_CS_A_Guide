@@ -82,6 +82,16 @@ public void addScore(String player, int score) {
     }
 }</code></pre>
 
+<p>
+    <strong>Two off-sheet calls in that method.</strong> <code>Math.min</code> is not
+    on the exam sheet: the limit comes from an <code>if</code> instead, as in
+    <code>int limit = n; if (limit &gt; leaderboard.size()) limit = leaderboard.size();</code>.
+    And <code>leaderboard.isEmpty()</code> is <code>leaderboard.size() == 0</code>.
+    Both substitutes are built from what the sheet gives you. The
+    <a href="../../exam/java-quick-reference.html">Java Quick Reference</a> carries the
+    full trade table.
+</p>
+
 <h2>The Full Program</h2>
 
 <pre><code>import java.util.ArrayList;
@@ -125,7 +135,7 @@ public class Leaderboard {
 <h2>Extending the Program</h2>
 <ul>
     <li>Prevent duplicate player names — keep only the highest score per player.</li>
-    <li>Use Collections.sort() with a custom Comparator instead of sorted insert.</li>
+    <li>Use Collections.sort() with a custom Comparator instead of sorted insert. Off the exam sheet: <a href="sorting.html">Sorting</a> has the hand-written version.</li>
     <li>Export to CSV for a spreadsheet.</li>
 </ul>
 

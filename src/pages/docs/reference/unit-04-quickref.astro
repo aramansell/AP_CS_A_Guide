@@ -33,6 +33,11 @@ for (int i = n - 1; i &gt;= 0; i--)  // backwards: removal-safe</code></pre>
     String ch = s.substring(i, i + 1);   // the exam idiom
     // or char c = s.charAt(i);
 }</code></pre>
+<p><code>charAt</code> is not on the <a href="../../exam/java-quick-reference.html">Java
+Quick Reference</a> and <code>substring</code> is. Take the String form: a
+one-character String compares with <code>equals</code>, not <code>==</code>. The same
+goes for <code>indexOf</code> with a char argument, which is off the sheet too: hand it
+the one-character String.</p>
 
 <h2>The Trace Table</h2>
 <table>
@@ -51,6 +56,8 @@ for (int i = n - 1; i &gt;= 0; i--)  // backwards: removal-safe</code></pre>
     <li>Infinite loops: the update must move the condition toward false. Missing i++ is the classic.</li>
     <li>Removing while looping forward skips elements. Loop backwards, or build a survivor list.</li>
     <li>int counter in a division: (double) total / count, or the average truncates.</li>
+    <li>charAt and Character.isLetter/isDigit are not on the sheet. substring(i, i + 1) is, and the type tests become <code>compareTo</code> range checks on that one-character String.</li>
+    <li>StringBuilder is not on the sheet either. <code>+=</code> on a String is what the sheet gives you for building one.</li>
 </ul>
 
 <h2>See Also</h2>

@@ -274,6 +274,15 @@ public class MonsterChase {
 
 <p><strong>Important:</strong> This is exponential — O(4^N) in the worst case. For an 8×8 dungeon it's fine. For a 100×100 maze, use BFS. This implementation is for learning backtracking, not production pathfinding.</p>
 
+<p><strong>Not on the exam sheet:</strong> three ArrayList calls above are off the
+<a href="../../exam/java-quick-reference.html">Java Quick Reference</a>, which lists only
+<code>size</code>, <code>add</code> (both forms), <code>get</code>, <code>set</code>, and
+<code>remove(int)</code>. Ask a list for its size instead of <code>isEmpty()</code>:
+<code>bestPath.size() == 0</code> is the same question. To empty a list, remove in a loop
+or hand back a new ArrayList, since <code>clear()</code> is not on the sheet. To copy one
+list into another, which is what <code>addAll()</code> does here, add in a loop:
+<code>for (int i = 0; i &lt; currentPath.size(); i++) bestPath.add(currentPath.get(i));</code>.</p>
+
 <hr>
 
 <h2>Integrate Into Your RPG</h2>

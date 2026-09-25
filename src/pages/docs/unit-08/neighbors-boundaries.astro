@@ -139,12 +139,27 @@ if (row > 0) {
 int clampedRow = Math.max(0, Math.min(grid.length - 1, row + dRow));
 int clampedCol = Math.max(0, Math.min(grid[0].length - 1, col + dCol));
 
+// Math.max and Math.min are NOT on the exam sheet. The same clamp with an if:
+int r = row + dRow;
+if (r &lt; 0) r = 0;
+if (r &gt; grid.length - 1) r = grid.length - 1;
+
 // CHOICE 2: Wrap — appear on the opposite side (Pac-Man style)
 int wrappedRow = (row + dRow + grid.length) % grid.length;
 int wrappedCol = (col + dCol + grid[0].length) % grid[0].length;</code></pre>
 
 <p>
     Most RPG maps use clamping. Pac-Man uses wrapping. Know which one your game needs.
+</p>
+
+<p>
+    <strong>Off-sheet flag:</strong> <code>Math.max</code> and <code>Math.min</code> are
+    both off the sheet, which is why the clamp above is also written with an
+    <code>if</code>. The same rule covers the running max: instead of starting at a
+    value from the data, start at <code>Integer.MIN_VALUE</code> (that one IS on the
+    sheet) and replace it whenever you find something bigger. The
+    <a href="../../exam/java-quick-reference.html">Java Quick Reference</a> has both
+    entries.
 </p>
 
 <h2>The Diagonal Question</h2>

@@ -71,6 +71,8 @@ const body = `<h1>10.3c &#8212; Recursive Palindrome Checker</h1>
     }
 }</code></pre>
 
+    <p><code>charAt</code> is not on the <a href="../exam/java-quick-reference.html">Java Quick Reference</a>. The substitute is <code>s.substring(i, i + 1)</code>, a one-character String you compare with <code>equals</code>: the two reads above become <code>String first = s.substring(0, 1);</code> and <code>String last = s.substring(s.length() - 1);</code>, and <code>first.equals(last)</code> is the test.</p>
+
     <div class="socratic">
         <h3>Socratic Checkpoint</h3>
         <ol>

@@ -56,6 +56,14 @@ public class StringAnalyzer {
     }
 }</code></pre>
 
+    <p>
+        <code>charAt</code> is not on the
+        <a href="../exam/java-quick-reference.html">Java Quick Reference</a>. The sheet
+        line for the same job is <code>String c = word.substring(i, i + 1);</code>, and
+        because the result is a String you compare it with <code>equals</code>, not
+        <code>==</code>. The rest of the loop is identical.
+    </p>
+
     <div class="tinker">
         <h3>Tinker Challenge &#8212; Reverse It</h3>
         <p>Add a loop that builds the reversed version of the word.
@@ -64,7 +72,9 @@ public class StringAnalyzer {
         each character. Don't look up the formula &#8212; think about what
         index the last character is at.</p>
         <p><strong>Do NOT use StringBuilder.reverse().</strong> Build it
-        character by character. You'll understand loops better.</p>
+        character by character. You'll understand loops better. (<code>StringBuilder</code>
+        is not on the exam sheet either: the sheet's tool for assembling a String is
+        <code>+=</code>, which is exactly what this challenge asks for.)</p>
     </div>
 
     <div class="bug-hunt">
@@ -86,7 +96,11 @@ public class StringAnalyzer {
 }</code></pre>
 
     <p>But wait &#8212; try "Racecar" with a capital R. Does it still work?
-    Fix it so case doesn't matter.</p>
+    Fix it so case doesn't matter. Neither of the usual fixes makes it onto the exam
+    sheet: <code>equalsIgnoreCase</code> is off it, and <code>toLowerCase</code>, which
+    you would pair with <code>equals</code>, is off it too with no substitute of its own.
+    Build the program with either one; on exam day a case-insensitive comparison usually
+    means the text arrives already in a single case.</p>
 
     <div class="socratic">
         <h3>Socratic Checkpoint</h3>

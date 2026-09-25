@@ -18,16 +18,40 @@ const body = `<h1>Loops + Strings</h1>
     validate text.
 </p>
 
-<h2>Accessing Characters: charAt()</h2>
+<h2>Accessing Characters</h2>
 
-<p><code>charAt(index)</code> returns the character at that position. Index starts at 0.</p>
+<p>
+    <code>substring(i, i + 1)</code> returns the character at position <code>i</code>,
+    as a one-character String. Index starts at 0, and the second argument is exclusive,
+    so the slice is exactly one character wide. This is the version to reach for: it is
+    on the <a href="../../exam/java-quick-reference.html">Java Quick Reference</a>, and
+    it hands you a String, which is what the sheet's other methods expect.
+</p>
 
 <pre><code>String weapon = "Longsword";
-// Index:          012345678
+// Index:           012345678
 
-weapon.charAt(0);  // 'L'
+weapon.substring(0, 1);  // "L"
+weapon.substring(4, 5);  // "s"
+weapon.substring(8, 9);  // "d"</code></pre>
+
+<p>
+    Java also has <code>charAt(index)</code>, which returns a <code>char</code> instead
+    of a String, and that method is not on the sheet. It shows up all over this unit's
+    code because it is shorter to type, so learn to read it, and write the
+    <code>substring</code> form when the exam asks:
+</p>
+
+<pre><code>weapon.charAt(0);  // 'L'. Java only, not on the sheet
 weapon.charAt(4);  // 's'
 weapon.charAt(8);  // 'd'</code></pre>
+
+<p>
+    Two things change when you switch to the sheet version. The result is a String, so
+    you compare it with <code>equals</code> (<code>weapon.substring(0, 1).equals("L")</code>)
+    rather than <code>==</code>. And the last index is still <code>length() - 1</code>,
+    so the off-by-one rules do not move.
+</p>
 
 <div class="callout lab bug-hunt">
     <h3>🐛 Bug Hunt: Out of Bounds</h3>
@@ -36,6 +60,10 @@ weapon.charAt(8);  // 'd'</code></pre>
 char lastLetter = weapon.charAt(weapon.length());
 System.out.println(lastLetter);</code></pre>
     <p><strong>Your Task:</strong> Why does this code throw a <code>StringIndexOutOfBoundsException</code>? What exact change needs to be made to fix it?</p>
+    <p>The sheet version fails the same way, and for the same reason:
+    <code>weapon.substring(weapon.length(), weapon.length() + 1)</code> also asks for a
+    character that is not there. The boundary rule belongs to the index, not to the
+    method.</p>
 </div>
 
 <h2>String Traversal Pattern</h2>
@@ -44,6 +72,13 @@ System.out.println(lastLetter);</code></pre>
 
 for (int i = 0; i < spell.length(); i++) {
     char c = spell.charAt(i);
+    System.out.println("Position " + i + ": " + c);
+}</code></pre>
+
+<p>The same loop with the sheet's tool, which returns each character as a String:</p>
+
+<pre><code>for (int i = 0; i &lt; spell.length(); i++) {
+    String c = spell.substring(i, i + 1);
     System.out.println("Position " + i + ": " + c);
 }</code></pre>
 
@@ -63,6 +98,13 @@ for (int i = 0; i < spell.length(); i++) {
 System.out.println("Found " + count + " 'l' characters.");
 // → "Found 2 'l' characters."</code></pre>
 
+<p>
+    On the sheet that test line becomes
+    <code>if (spell.substring(i, i + 1).equals("l"))</code>. The loop itself does not
+    change, only the comparison, because a one-character String is still a String and
+    Strings compare with <code>equals</code>.
+</p>
+
 <h2>Building Strings in a Loop</h2>
 
 <p>
@@ -75,6 +117,8 @@ String reversed = "";
 
 for (int i = original.length() - 1; i >= 0; i--) {
     reversed += original.charAt(i);
+    // on the sheet, append the one-character String instead:
+    // reversed += original.substring(i, i + 1);
 }
 System.out.println(reversed);  // "drows"</code></pre>
 
@@ -82,6 +126,11 @@ System.out.println(reversed);  // "drows"</code></pre>
     <h3>🧠 Socratic Checkpoint: The Memory Cost</h3>
     <p>Strings in Java are <em>immutable</em>, meaning they can never be changed once created. Every time you use <code>+=</code>, Java creates a brand new String and throws the old one away.</p>
     <p><strong>Think about it:</strong> If you use a loop to build a String of 1,000 characters one by one using <code>+=</code>, how many temporary Strings does Java have to create and destroy? (Hint: Later, you'll learn about <code>StringBuilder</code> which solves this problem!)</p>
+    <p>One flag on <code>StringBuilder</code>: it is not on the Java Quick Reference
+    either. The sheet's tool for assembling a String is the <code>+=</code> you are using
+    right now, so on exam day the loop you already have is the answer, and
+    <code>StringBuilder</code> is the performance upgrade you reach for in your own
+    programs.</p>
 </div>
 
 <h2>Application: RPG Word Filter</h2>
@@ -99,7 +148,8 @@ if (spell.length() >= 4) {
     }
 }</code></pre>
 
-<p>Easier way (once you know substring):</p>
+<p>Easier way (once you know substring), and the version that runs on exam day, since
+<code>charAt</code> is not on the sheet:</p>
 
 <pre><code>if (spell.substring(0, 4).equals("Fire")) { ... }</code></pre>
 
@@ -132,6 +182,8 @@ for (int i = 0; i < cmd.length(); i++) {
         break;
     }
 }
+// The sheet finds the same position in one call:
+// int spacePos = cmd.indexOf(" ");   // -1 when there is no space
 
 if (spacePos == -1) {
     System.out.println("One-word command: " + cmd);
@@ -143,7 +195,9 @@ if (spacePos == -1) {
 
 <h2>Character Testing Methods</h2>
 
-<p>These <code>Character</code> class methods test what kind of character something is:</p>
+<p>These <code>Character</code> class methods test what kind of character something is.
+None of the five is on the Java Quick Reference: the sheet has no
+<code>Character</code> class at all.</p>
 
 <table>
     <tr><th>Method</th><th>True for...</th></tr>
@@ -154,11 +208,40 @@ if (spacePos == -1) {
     <tr><td><code>Character.isWhitespace(c)</code></td><td>space, tab, newline</td></tr>
 </table>
 
+<p>
+    The sheet's tool for the same question is <code>compareTo</code> on a String, so each
+    test becomes a range check on a one-character String:
+</p>
+
+<pre><code>String ch = name.substring(i, i + 1);      // one character, as a String
+boolean isDigit  = ch.compareTo("0") &gt;= 0 &amp;&amp; ch.compareTo("9") &lt;= 0;
+boolean isLetter = (ch.compareTo("a") &gt;= 0 &amp;&amp; ch.compareTo("z") &lt;= 0)
+                || (ch.compareTo("A") &gt;= 0 &amp;&amp; ch.compareTo("Z") &lt;= 0);</code></pre>
+
+<p>
+    Uppercase and lowercase sit in two separate runs, which is why the letter test needs
+    both halves. <code>isUpperCase</code> is the first half alone, <code>isLowerCase</code>
+    the second, and <code>isWhitespace</code> covers space, tab, and newline, so where you
+    are testing for a space the substitute is <code>ch.equals(" ")</code>.
+</p>
+
+<p>Here is the counting loop twice, Java first, then the sheet:</p>
+
 <pre><code>// Count only the letters in a player name
 String name = "Gandalf99";
 int letters = 0;
 for (int i = 0; i < name.length(); i++) {
     if (Character.isLetter(name.charAt(i))) {
+        letters++;
+    }
+}</code></pre>
+
+<pre><code>// The same loop with nothing but sheet methods
+int letters = 0;
+for (int i = 0; i &lt; name.length(); i++) {
+    String ch = name.substring(i, i + 1);
+    if ((ch.compareTo("a") &gt;= 0 &amp;&amp; ch.compareTo("z") &lt;= 0)
+     || (ch.compareTo("A") &gt;= 0 &amp;&amp; ch.compareTo("Z") &lt;= 0)) {
         letters++;
     }
 }</code></pre>
@@ -171,7 +254,7 @@ for (int i = 0; i < name.length(); i++) {
     <ul>
         <li>Ask the user to enter a spell name.</li>
         <li>Write a loop that traverses the string and counts the total number of vowels (A, E, I, O, U). Make sure it works for both uppercase and lowercase!</li>
-        <li><strong>Bonus:</strong> Modify your loop so it also counts how many numbers (digits) are in the spell name, using the <code>Character.isDigit()</code> method.</li>
+        <li><strong>Bonus:</strong> Modify your loop so it also counts how many numbers (digits) are in the spell name, using the <code>Character.isDigit()</code> method (or, on exam day, the <code>compareTo</code> range check above).</li>
     </ul>
     <p><em>Testing:</em> If the user types "F1r3bAll", what should the vowel count be? What should the digit count be?</p>
 </div>

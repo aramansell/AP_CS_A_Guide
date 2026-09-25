@@ -97,6 +97,15 @@ for (int i = 0; i &lt; party.size(); i++) {
     return result;
 }</code></pre>
 
+<p>
+    <strong>Off-sheet flag:</strong> <code>equalsIgnoreCase</code> is not on the exam
+    sheet. It appears here and again in the accumulator and removal examples below. The
+    sheet-only version lowercases both sides:
+    <code>item.getRarity().toLowerCase().equals(rarity.toLowerCase())</code>. The
+    <a href="../../exam/java-quick-reference.html">Java Quick Reference</a> carries the
+    full trade table.
+</p>
+
 <h2>Accumulator — Sum, Average, Count</h2>
 
 <pre><code>// Sum all gold values
@@ -170,6 +179,16 @@ public static void removeByRarity(ArrayList&lt;Item&gt; inventory, String rarity
         }
     }
 }</code></pre>
+
+<p>
+    <strong>Two more off-sheet calls in Option A:</strong> <code>clear()</code> and
+    <code>addAll()</code> are both standard Java and neither is on the exam sheet. The
+    substitute for <code>clear()</code> is a removal loop or a fresh
+    <code>ArrayList</code>, and the substitute for <code>addAll()</code> is a loop that
+    calls <code>add</code> on each element of the other list. That loop is also the
+    version a free-response question expects you to write, because every call in it is
+    on the sheet.
+</p>
 
 <h2>Socratic Checkpoint</h2>
 

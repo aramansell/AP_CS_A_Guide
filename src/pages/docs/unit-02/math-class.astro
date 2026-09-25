@@ -63,6 +63,32 @@ Math.max(3, 7);   // 7
 // Clamp a value between min and max:
 int clamped = Math.max(0, Math.min(value, 100));</code></pre>
 
+<div class="callout warn">
+    <strong>Math.max and Math.min are not on the exam sheet.</strong> The
+    <a href="../../exam/java-quick-reference.html">Java Quick Reference</a> Math table
+    lists <code>abs</code>, <code>pow</code>, <code>sqrt</code>, and <code>random</code>
+    and stops there. Both methods work in Java and both are worth using in your game,
+    but on exam day you write the comparison yourself:
+</div>
+
+<pre><code>// Math.max(1, damage): keep damage at 1 or above
+int dealt = damage;
+if (dealt &lt; 1) {
+    dealt = 1;
+}
+
+// Math.min(20, strength + bonus): cap it at 20
+int capped = strength + bonus;
+if (capped &gt; 20) {
+    capped = 20;
+}
+
+// Chasing the biggest value in a loop? Start at the bottom and replace.
+int best = Integer.MIN_VALUE;   // this constant IS on the sheet
+if (candidate &gt; best) {
+    best = candidate;           // the same check, repeated each pass
+}</code></pre>
+
 <h2>Tinker Challenge: Math Predictions</h2>
 
 <div class="callout lab">

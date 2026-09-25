@@ -29,11 +29,27 @@ const body = `<h1>3.4c — Command Interpreter: Text-Driven Combat</h1>
             <li>"status" → print current HP and MP (hardcoded values).</li>
             <li>Anything else → print "Unknown command. Try: attack, defend, flee, status."</li>
         </ol>
+        <p>
+            <code>equalsIgnoreCase()</code> is not on the
+            <a href="../exam/java-quick-reference.html">Java Quick Reference</a>. The
+            sheet's shape for it lowercases both sides and compares with
+            <code>equals</code>: <code>command.toLowerCase().equals("attack")</code>.
+            Be aware that <code>toLowerCase()</code> is off the sheet as well and has no
+            substitute of its own, so a question that needs case-insensitive matching
+            will usually hand you the lowercased text and let you do the comparison.
+        </p>
     </div>
 
     <div class="section">
         <h3>Extend: Command Prefixes</h3>
         <p>What if a player types "attack goblin"? Use <code>.startsWith("attack")</code> to detect attack commands that include a target. Print "You attack the [target]!" by extracting the target from the command string.</p>
+        <p>
+            <code>startsWith()</code> is off the sheet too. The sheet's version asks where
+            the prefix sits: <code>command.indexOf("attack") == 0</code>, using the same
+            fact the JQR page's <code>contains</code> row turns on, that <code>0</code>
+            means found at the very start. Or spell it out:
+            <code>command.substring(0, 6).equals("attack")</code>.
+        </p>
     </div>
 </div>
 

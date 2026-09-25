@@ -107,6 +107,19 @@ const body = `<h1>Student RPG Guide: DynamicInventory.java</h1>
     </tr>
 </table>
 
+<div class="callout warn">
+    <strong>Off-sheet flags in that table.</strong> Three calls in the spec are
+    standard Java and absent from the
+    <a href="../../exam/java-quick-reference.html">Java Quick Reference</a>.
+    <code>items.isEmpty()</code> becomes <code>items.size() == 0</code>.
+    <code>Collections.sort()</code> becomes a hand-written sort, which
+    <a href="sorting.html">Sorting</a> builds for you; <code>Arrays.sort</code> for
+    arrays is off the sheet for the same reason. And <code>equalsIgnoreCase</code>
+    becomes <code>item.getName().toLowerCase().equals(name.toLowerCase())</code>.
+    Everything else in the table (<code>add</code>, <code>get</code>,
+    <code>remove(int)</code>, <code>size</code>) is on the sheet.
+</div>
+
 <hr>
 
 <h2>Test It</h2>
