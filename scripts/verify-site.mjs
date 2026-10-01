@@ -16,6 +16,9 @@
  *   8. Exam hub complete (9 pages).
  *   9. URL parity: every URL in legacy/site-manifest.json exists in dist/.
  *  10. Search index (pagefind) present; PACING.md regenerated.
+ *  11. Syntax-colour palette: the nine Dark+ hexes agree across
+ *      scripts/highlight-code.mjs and both stylesheets, every colour class on a
+ *      page is nameable, and none arrived as an inline style.
  *
  * Usage: npm run verify        (from the repo root, after npm run build)
  * Exit code 1 if anything fails.
@@ -216,6 +219,54 @@ const pacing = fs.readFileSync(path.join(ROOT, 'PACING.md'), 'utf8');
 pacing.startsWith('# AP CS A Pacing, 2026-27') && pacing.includes('src/data/curriculum.ts')
   ? ok('PACING.md regenerated from curriculum data')
   : bad('PACING.md', ['not regenerated — run npm run build']);
+
+// ---------------------------------------------------------------------------
+// 11: syntax-colour palette — the three copies must agree
+// ---------------------------------------------------------------------------
+// The nine Dark+ hexes are written three times: keyed to class names in
+// scripts/highlight-code.mjs, and as CSS in public/style.css and
+// public/docs/style.css (the docs subtree carries its own stylesheet). Drift
+// between them is invisible — a colour simply stops matching — so it is checked.
+// The scan also catches a colour the palette cannot name, which is how a grammar
+// update would try to arrive as an inline `style="color:#…"`.
+const scriptSrc = fs.readFileSync(path.join(ROOT, 'scripts/highlight-code.mjs'), 'utf8');
+const scriptPal = Object.fromEntries([...scriptSrc.matchAll(/'(#[0-9A-Fa-f]{6})':\s*'tk-([\w]+)'/g)]
+  .map((m) => [m[2], m[1].toUpperCase()]));
+const cssPal = (file) => Object.fromEntries([...fs.readFileSync(path.join(ROOT, file), 'utf8')
+  .matchAll(/\.tk-([\w]+)\s*\{\s*color:\s*(#[0-9A-Fa-f]{6})/g)].map((m) => [m[1], m[2].toUpperCase()]));
+
+const names = Object.keys(scriptPal).sort();
+const drift = [];
+for (const file of ['public/style.css', 'public/docs/style.css']) {
+  const pal = cssPal(file);
+  for (const n of names) {
+    if ((pal[n] || '') !== scriptPal[n]) drift.push(`${file}: .tk-${n} is ${pal[n] || '(missing)'}, the script writes ${scriptPal[n]}`);
+  }
+  for (const n of Object.keys(pal)) if (!(n in scriptPal)) drift.push(`${file}: .tk-${n} has no counterpart in the script`);
+}
+
+const usedTk = new Set();
+const inlined = [];
+for (const [rel, { text }] of pages) {
+  for (const m of text.matchAll(/class="([^"]*\btk-[^"]*)"/g)) for (const c of m[1].split(/\s+/)) if (c.startsWith('tk-')) usedTk.add(c);
+  // Only the code blocks are the highlighter's to write. Hand-authored inline
+  // colour elsewhere (the JavaDoc-style callouts) is the author's business.
+  for (const m of text.matchAll(/<pre(?=[\s>])[^>]*>[\s\S]*?<\/pre>/g)) {
+    for (const s of m[0].matchAll(/style="color:\s*(#[0-9A-Fa-f]{3,8})"/g)) inlined.push(`${rel}: style="color:${s[1]}"`);
+  }
+}
+const unknown = [...usedTk].filter((c) => c !== 'tk-it' && !(c.slice(3) in scriptPal));
+
+drift.length ? bad('palette in step across the three copies', drift) : ok(`palette in step (${names.length} colours, script + both stylesheets)`);
+unknown.length
+  ? bad('every colour on a page is nameable by the palette', unknown.map((c) => `.${c} used but not in the palette`))
+  : ok('every colour class on a page is in the palette');
+inlined.length
+  ? bad('no token colour inlined into a code block', inlined)
+  : ok('no token colours inlined into a code block');
+usedTk.size
+  ? ok(`syntax colour present (${usedTk.size} token classes across dist/)`)
+  : bad('syntax colour present', ['no tk- spans in dist/ — did scripts/highlight-code.mjs run in the build?']);
 
 // ---------------------------------------------------------------------------
 console.log();

@@ -102,11 +102,43 @@ pre {
     border: 1px solid var(--border);
     font-size: 13px;
     line-height: 1.5;
+    position: relative; /* the language badge in the corner is positioned against this */
 }
 pre code {
     background: none;
     padding: 0;
     border-radius: 0;
+}
+
+/* ---- Syntax colour — VS Code Dark+ --------------------------------------
+   The nine hexes ARE the theme; #D4D4D4 is plain text and stays the page's
+   own colour, so those tokens carry no span. Kept in step with the copy in
+   public/style.css and with scripts/highlight-code.mjs — verify check 11 fails
+   if any of the three drift apart. */
+.tk-kw { color: #569CD6; }  /* keyword */
+.tk-ct { color: #C586C0; }  /* control flow */
+.tk-ty { color: #4EC9B0; }  /* type */
+.tk-fn { color: #DCDCAA; }  /* function */
+.tk-va { color: #9CDCFE; }  /* variable, field, parameter */
+.tk-st { color: #CE9178; }  /* string */
+.tk-nu { color: #B5CEA8; }  /* number */
+.tk-cm { color: #6A9955; }  /* comment */
+.tk-es { color: #D7BA7D; }  /* escape: \n, \t, \" inside a string */
+.tk-it { font-style: italic; }  /* a modifier, not a colour */
+
+/* The language, in the corner, the way the editor labels the file it is showing. */
+pre[data-lang]::after {
+    content: attr(data-lang);
+    position: absolute;
+    top: 0.4rem;
+    right: 0.7rem;
+    font-size: 10px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #6a6a6a;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 /* ---- Callout boxes ---- */
@@ -281,5 +313,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     a { color: #000; text-decoration: none; }
     h1, h2, h3, th, code { color: #000; }
     pre { border: 1px solid #999; background: #f4f4f4; color: #000; }
+    /* Dark+ on white paper is unreadable — flatten the theme, drop the badge. */
+    .tk-kw, .tk-ct, .tk-ty, .tk-fn, .tk-va, .tk-st, .tk-nu, .tk-cm, .tk-es { color: #000 !important; }
+    pre[data-lang]::after { display: none; }
     .callout { border-color: #999; background: #f4f4f4; }
 }
