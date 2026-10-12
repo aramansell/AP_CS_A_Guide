@@ -18,9 +18,10 @@ Exam: **Wednesday, May 12, 2027**, 12:00 PM (Session 2). Source of truth: src/da
 | 2026-10-01 (Thu) | Lesson | 2.4 | Scanner Discovery & Character Input | 1.4 1.14 |
 | 2026-10-05 (Mon) | Lesson | 2.5 | The Math Class: Damage & Distance | 1.10 1.11 |
 | 2026-10-07 (Wed) | Lesson | 2.6 | Wrapper Classes & Stat Serializer | 4.7 |
-| 2026-10-12 (Mon) | Lesson | 2.7 | Character Creator RPG Build | 1.12 1.13 1.14 1.15 |
-| 2026-10-15 (Thu) | Lesson | 2.8 | APIs, Comments & Method Signatures — New CED topics: API and libraries, documentation with comments, method signatures. First JQR drills. Javadoc your Player class. | 1.7 1.8 1.9 |
-| 2026-10-19 (Mon) | Lesson | 2.9 | split() & Data Lines — Completes String manipulation: split for loot lines, seeding the file-reading units. | 1.15 |
+| 2026-10-12 (Mon) | Lesson | 2.7 | Character Creator RPG Build — StatBlock | 1.12 1.13 1.14 1.15 |
+| 2026-10-14 (Wed) | Lesson | 2.7 | Character Creator RPG Build — Print the Sheet — Shortened class period — the display day is sized to fit. | 1.15 |
+| 2026-10-15 (Thu) | Lesson | 2.7 | Character Creator RPG Build — Party & Skill Checks |  |
+| 2026-10-19 (Mon) | Lesson | 2.8 | APIs, Comments & Method Signatures — New CED topics: API and libraries, documentation with comments, method signatures. First JQR drills. Javadoc your Player class. | 1.7 1.8 1.9 |
 | 2026-10-21 (Wed) | Test | T1 | Phase 1 Test + Progress Check Unit 1 — Unit test in class. AP Classroom Progress Check Unit 1 assigned as follow-up. |  |
 | 2026-10-23 (Fri) | Clinic | R1 | PC1 Debrief + Phase 1 Weak-Spot Clinic — Error-driven review of the Progress Check. Then Phase 2 launch: decisions. |  |
 | 2026-10-27 (Tue) | Lesson | 3.1 | Relational Operators & if | 2.2 2.3 |
