@@ -18,6 +18,17 @@ const body = `<h1>2.7a — Character Creator: StatBlock</h1>
     class, initiative, and the proficiency table are all the real 5e formulas.
 </p>
 
+<div class="callout">
+    <strong>Starting files.</strong> If your own <code>Dice.java</code> never passed
+    <code>DiceCheck</code> in Unit 1.7, download the complete reference
+    <a href="../data/Dice.java" download>Dice.java</a> and use it instead — then read
+    every method until you could write it yourself. And to start the build itself,
+    download the scaffold
+    <a href="../data/Character.java" download>Character.java</a>: it has every field
+    and every method stubbed, so <code>CharacterCheck.java</code> compiles from the
+    first minute. Fill in the <code>TODO</code> bodies as the three days go by.
+</div>
+
 <!-- ============================================================ -->
 <div class="activity rpg">
     <div class="activity-header">
@@ -36,10 +47,19 @@ const body = `<h1>2.7a — Character Creator: StatBlock</h1>
 
     <h3>The Setup</h3>
 
-    <p>Three files. You write the first one:</p>
+    <p>Three files. You write the first one (or start from the scaffold above):</p>
     <ol>
-        <li><code>Character.java</code> — the character. This is today's build.</li>
-        <li><code>Dice.java</code> — your engine from 1.7, in the same folder.</li>
+        <li>
+            <code>Character.java</code> — the character. This is today's build. Start
+            from scratch, or download the
+            <a href="../data/Character.java" download>Character.java scaffold</a>
+            and fill in its TODOs.
+        </li>
+        <li>
+            <code>Dice.java</code> — your engine from 1.7, in the same folder.
+            If yours never passed the acceptance test, use the reference
+            <a href="../data/Dice.java" download>Dice.java</a> above.
+        </li>
         <li>
             <a href="../data/CharacterCheck.java" download>CharacterCheck.java</a> —
             the acceptance test. Download it; you do not write it.

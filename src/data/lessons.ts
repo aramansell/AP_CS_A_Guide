@@ -62,7 +62,6 @@ export const LESSONS: Record<string, LessonMeta> = {
   '2.8a': { title: "APIs & Libraries: Reading the Docs Like a Pro", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '2.8' },
   '2.8b': { title: "Documentation with Comments", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.8' },
   '2.8c': { title: "Method Signatures: The Contract", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.8' },
-  '2.9a': { title: "split(): One Line In, Many Pieces Out", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '2.9' },
   '3.1a': { title: "Relational Operators & if", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '3.1' },
   '3.1b': { title: "Conditional Scoring", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '3.1' },
   '3.1c': { title: "Combat Hit Check", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '3.1' },

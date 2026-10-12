@@ -1,6 +1,3 @@
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 /**
  * CharacterCheck.java - acceptance test for your Character.java.
  *
@@ -40,6 +37,11 @@ import java.io.PrintStream;
  * odd score below 10 rounds down (-1 for a score of 9), while Java's integer
  * division truncates toward zero (0 for a score of 9). Both are defensible
  * and Unit 1 let you choose, so this test stays out of that argument.
+ *
+ * NO IMPORTS ON PURPOSE
+ * This file uses fully qualified names (java.io.PrintStream) and needs no
+ * import lines, so even a corrupted or truncated download still compiles.
+ * Keep it that way.
  *
  * A NOTE ON METHODS
  * This checker uses trim(), toLowerCase(), contains(), and charAt(). None of them
@@ -431,10 +433,10 @@ public class CharacterCheck {
      */
     private static String capture(Character c) {
         System.out.flush();
-        PrintStream original = System.out;
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        java.io.PrintStream original = System.out;
+        java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream();
         try {
-            System.setOut(new PrintStream(buffer, true));
+            System.setOut(new java.io.PrintStream(buffer, true));
             c.printCharacterSheet();
         } catch (Throwable t) {
             sheetThrew = true;

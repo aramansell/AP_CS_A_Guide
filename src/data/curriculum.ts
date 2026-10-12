@@ -37,9 +37,10 @@ export const A_DAYS: string[] = [
   // September 2026
   '2026-09-02', '2026-09-04', '2026-09-09', '2026-09-11', '2026-09-15',
   '2026-09-17', '2026-09-21', '2026-09-23', '2026-09-25', '2026-09-29',
-  // October 2026
-  '2026-10-01', '2026-10-05', '2026-10-07', '2026-10-12', '2026-10-15',
-  '2026-10-19', '2026-10-21', '2026-10-23', '2026-10-27',
+  // October 2026 (Oct 14 is a shortened-period A day - the 2.7 build week
+  // runs Mon/Wed/Thu around it)
+  '2026-10-01', '2026-10-05', '2026-10-07', '2026-10-12', '2026-10-14',
+  '2026-10-15', '2026-10-19', '2026-10-21', '2026-10-23', '2026-10-27',
   // November 2026 (no A/B label on the 29th; Thanksgiving week off)
   '2026-11-02', '2026-11-04', '2026-11-06', '2026-11-10', '2026-11-13',
   '2026-11-17', '2026-11-19', '2026-11-30',
@@ -69,6 +70,7 @@ export const A_DAYS: string[] = [
 /** Calendar notes for pace.html (non-teaching events on teaching days). */
 export const DAY_NOTES: Record<string, string> = {
   '2026-08-31': 'First day of school. Syllabus, accounts, lab setup, then straight into code.',
+  '2026-10-14': 'Shortened class period (half-day schedule). The Character Creator week runs Mon/Wed/Thu: 2.7a, 2.7b, 2.7c.',
   '2026-10-21': 'End of Quarter 1 is Oct 28. The Phase 1 test closes the quarter grades.',
   '2026-11-13': 'Combat Engine build complete - trade take-home demos.',
   '2026-11-19': 'Last class before Thanksgiving week.',
@@ -134,14 +136,21 @@ export const SEQUENCE: SequenceEntry[] = [
     title: 'The Math Class: Damage & Distance', lessons: ['2.5a', '2.5b', '2.5c'] },
   { d: '2026-10-07', kind: 'lesson', group: '2.6', phase: 1, ced: ['4.7'],
     title: 'Wrapper Classes & Stat Serializer', lessons: ['2.6a', '2.6b', '2.6c'] },
+  // The 2.7 Character Creator gets the whole week of Oct 12: Oct 14 is a
+  // shortened-period A day, so the build runs Mon (2.7a) / Wed (2.7b, short)
+  // / Thu (2.7c). 2.8 moves to Mon Oct 19. The 2.9 split() lesson is cut as a
+  // standalone day; its content is taught inline in 7.6a and 7.6b, and the
+  // split() guide page stays in Unit 2 as reference. T1 is unaffected.
   { d: '2026-10-12', kind: 'lesson', group: '2.7', phase: 1, ced: ['1.12', '1.13', '1.14', '1.15'],
-    title: 'Character Creator RPG Build', lessons: ['2.7a', '2.7b', '2.7c'] },
-  { d: '2026-10-15', kind: 'lesson', group: '2.8', phase: 1, ced: ['1.7', '1.8', '1.9'],
+    title: 'Character Creator RPG Build — StatBlock', lessons: ['2.7a'] },
+  { d: '2026-10-14', kind: 'lesson', group: '2.7', phase: 1, ced: ['1.15'],
+    title: 'Character Creator RPG Build — Print the Sheet', lessons: ['2.7b'],
+    note: 'Shortened class period — the display day is sized to fit.' },
+  { d: '2026-10-15', kind: 'lesson', group: '2.7', phase: 1, ced: [],
+    title: 'Character Creator RPG Build — Party & Skill Checks', lessons: ['2.7c'] },
+  { d: '2026-10-19', kind: 'lesson', group: '2.8', phase: 1, ced: ['1.7', '1.8', '1.9'],
     title: 'APIs, Comments & Method Signatures', lessons: ['2.8a', '2.8b', '2.8c'], new: true,
     note: 'New CED topics: API and libraries, documentation with comments, method signatures. First JQR drills. Javadoc your Player class.' },
-  { d: '2026-10-19', kind: 'lesson', group: '2.9', phase: 1, ced: ['1.15'],
-    title: 'split() & Data Lines', lessons: ['2.9a'], new: true,
-    note: 'Completes String manipulation: split for loot lines, seeding the file-reading units.' },
   { d: '2026-10-21', kind: 'test',    group: 'T1', phase: 1, ced: [],
     title: 'Phase 1 Test + Progress Check Unit 1', lessons: [],
     note: 'Unit test in class. AP Classroom Progress Check Unit 1 assigned as follow-up.' },
