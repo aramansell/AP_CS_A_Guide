@@ -1,106 +1,455 @@
 ---
-// Dashboard — rebuilt at every `npm run build` from src/data/curriculum.ts
-// and src/data/lessons.ts (the port of the old scripts/gen_dashboard.py).
-// Lesson lists can no longer drift out of sync with the pacing calendar:
-// both render from the same SEQUENCE data.
+// Unified Dashboard & Pacing Calendar — rebuilt at every `npm run build` from
+// src/data/curriculum.ts and src/data/lessons.ts.
+// Combines the day-by-day A-day calendar, CED topic mapping, direct lesson
+// launch links, and local progress tracking into one view.
 import Base from '../layouts/BaseLayout.astro';
-import { PHASES, phaseLessons, EXAM_DATE, mediumDate } from '../data/curriculum';
+import {
+  PHASES, SEQUENCE, DAY_NOTES, KIND_LABEL,
+  phaseLessons, phaseEntries, EXAM_DATE, mediumDate, compactDate, prettyDate,
+} from '../data/curriculum';
 import { LESSONS } from '../data/lessons';
 
-const TABS = { 1: 'Phase 1', 2: 'Phase 2', 3: 'Phase 3', 4: 'Phase 4', 5: 'Sprint', 6: 'Season 2' } as const;
+const TABS = {
+  1: 'Phase 1',
+  2: 'Phase 2',
+  3: 'Phase 3',
+  4: 'Phase 4',
+  5: 'Sprint',
+  6: 'Season 2',
+} as const;
 const MIDDOT = '\u00B7';
 const totalLessons = Object.keys(LESSONS).length;
+
+const KIND_BADGE: Record<string, { cls: string; label: string }> = {
+  launch:   { cls: 'discovery',  label: 'Launch' },
+  lesson:   { cls: 'basic-app',  label: 'Lesson' },
+  frq:      { cls: 'expand-app', label: 'FRQ Lab' },
+  clinic:   { cls: 'hybrid',     label: 'Clinic' },
+  test:     { cls: 'assessment', label: 'Diagnostic Test' },
+  mock:     { cls: 'assessment', label: 'Mock Exam' },
+  eve:      { cls: 'hybrid',     label: 'Exam Eve' },
+  exam:     { cls: 'assessment', label: 'AP EXAM' },
+  season2:  { cls: 'hybrid',     label: 'Season 2' },
+  capstone: { cls: 'rpg',        label: 'Capstone' },
+};
 ---
-<Base title="Dashboard \u2014 AP CS A" active="dashboard" root="" docsHome="docs/index.html" css="style.css">
-<h1>Dashboard</h1>
+<Base title="Dashboard &amp; Pacing — AP CS A" active="dashboard" root="" docsHome="docs/index.html" css="style.css">
+<h1>Dashboard &amp; Pacing Guide</h1>
 
 <p>
-    Pick your phase below. The course runs September to the AP exam on
-    <strong>{mediumDate(EXAM_DATE)}</strong>, then Season 2 after it. Lessons are
-    numbered <strong>Unit.Lesson</strong> with activities <strong>a, b, c</strong>.
-    The four phases are the four CED units: finish them all and you have
-    covered 100% of the exam's required content.
+    Every A-day of the 2026–27 school year mapped directly to its activity and
+    build. No more switching between a pacing guide and a lesson list — find
+    your date below and launch the day's build in one click. The AP exam is
+    <strong>{mediumDate(EXAM_DATE)}</strong>.
 </p>
 
-<p>
-    <strong>Plan by day, not by guess:</strong> the
-    <a href="pace.html">Pacing Calendar</a> maps every single A-day of the
-    year to its lesson. Check it when you miss a day, or to see what is coming.
-</p>
+<div id="up-next-banner" class="up-next-banner" data-pagefind-ignore style="display:none;">
+    <div class="up-next-header">
+        <span class="up-next-pill" id="up-next-status">UP NEXT</span>
+        <span class="up-next-date" id="up-next-date"></span>
+        <span class="up-next-ced" id="up-next-ced"></span>
+    </div>
+    <div class="up-next-main">
+        <div>
+            <h2 id="up-next-title" class="up-next-title"></h2>
+            <p id="up-next-note" class="up-next-note"></p>
+        </div>
+        <div id="up-next-actions" class="up-next-actions"></div>
+    </div>
+</div>
 
 <div class="dashboard-total" data-total data-pagefind-ignore>
     <strong>0</strong> of {totalLessons} lessons complete on this device.
     <button class="progress-reset" data-reset type="button">reset progress</button>
 </div>
 
-<div class="mywork" data-pagefind-ignore>
-    <h2>My work</h2>
-    <p>
-        Your lesson answers and progress are saved on this device as you go.
-        Back them up, or move them to another machine, with one file:
-    </p>
-    <div class="mywork-row">
-        <input id="mywork-name" type="text" placeholder="Student name (first last)" autocomplete="name" />
-        <button id="mywork-download" type="button" class="lab-download">Download all my work</button>
-        <label class="mywork-import">Restore from file
-            <input id="mywork-import" type="file" accept=".json,application/json" />
-        </label>
+<details class="mywork-details" data-pagefind-ignore>
+    <summary class="mywork-summary">Backup / Restore My Work (.json)</summary>
+    <div class="mywork">
+        <p>
+            Your lesson answers and progress are saved on this device as you go.
+            Back them up, or move them to another machine, with one file:
+        </p>
+        <div class="mywork-row">
+            <input id="mywork-name" type="text" placeholder="Student name (first last)" autocomplete="name" />
+            <button id="mywork-download" type="button" class="lab-download">Download all my work</button>
+            <label class="mywork-import">Restore from file
+                <input id="mywork-import" type="file" accept=".json,application/json" />
+            </label>
+        </div>
+        <p class="mywork-note" id="mywork-note"></p>
     </div>
-    <p class="mywork-note" id="mywork-note"></p>
-</div>
+</details>
 
 <div class="unit-selector" id="unit-nav" data-pagefind-ignore>
     {Object.entries(TABS).map(([p, label], idx) => (
-        <a href={`#phase-${p}`} class={idx === 0 ? 'active' : undefined}>{label}</a>
+        <a href={`#phase-${p}`} data-phase-tab={p} class={idx === 1 ? 'active' : undefined}>{label}</a>
     ))}
+    <a href="#phase-all" data-phase-tab="all">All Days</a>
 </div>
+<div id="phase-all"></div>
 
-{Object.entries(TABS).map(([p, label], idx) => {
-    const d = PHASES[Number(p)];
-    const lids = phaseLessons(Number(p));
+{Object.entries(TABS).map(([p]) => {
+    const phaseNum = Number(p);
+    const d = PHASES[phaseNum];
+    const lids = phaseLessons(phaseNum);
+    const entries = phaseEntries(phaseNum);
     return (
-    <div id={`phase-${p}`} class="unit-section" style={idx === 0 ? 'display:block;' : 'display:none;'}>
+    <div id={`phase-${p}`} class="unit-section" style={phaseNum === 2 ? 'display:block;' : 'display:none;'}>
         <h2>{d.name}</h2>
         <p>{[d.ced, d.weight].filter(Boolean).join(` ${MIDDOT} `)} {MIDDOT} {d.span} {MIDDOT} {d.old}</p>
 
-        <div class="phase-progress" data-phase-lessons={lids.join(' ')} data-pagefind-ignore>
-            <div class="bar"><div class="fill"></div></div>
-            <span class="count">0/{lids.length}</span>
-        </div>
+        {lids.length > 0 && (
+            <div class="phase-progress" data-phase-lessons={lids.join(' ')} data-pagefind-ignore>
+                <div class="bar"><div class="fill"></div></div>
+                <span class="count">0/{lids.length}</span>
+            </div>
+        )}
 
-        <ul class="lesson-list">
-            {lids.map((lid) => {
-                const meta = LESSONS[lid];
+        <div class="schedule-list">
+            {entries.map((e) => {
+                const notes: string[] = [];
+                if (DAY_NOTES[e.d]) notes.push(DAY_NOTES[e.d]);
+                if (e.note) notes.push(e.note);
+                const fallbackBadge = KIND_BADGE[e.kind] ?? { cls: 'discovery', label: KIND_LABEL[e.kind] };
+                const isSingleLesson = e.lessons.length === 1;
+                const singleId = isSingleLesson ? e.lessons[0] : null;
+                const singleMeta = singleId ? LESSONS[singleId] : null;
+
                 return (
-                    <li data-lesson={lid}>
-                        <span class="lesson-num">{meta.group}</span>
-                        <span class="lesson-title"><a href={`lessons/${lid}.html`}>{lid} {meta.title}</a></span>
-                        <span class={`badge ${meta.badgeClass}`}>{meta.badgeLabel}</span>
-                    </li>
+                <div
+                    class={`day-card kind-${e.kind}`}
+                    data-date={e.d}
+                    data-phase={e.phase}
+                    data-group={e.group}
+                    data-title={e.title}
+                    data-note={notes.join(' ')}
+                    data-ced={e.ced.join(', ')}
+                    data-lessons={e.lessons.join(' ')}
+                >
+                    <div class="day-card-top">
+                        <span class="day-date" title={prettyDate(e.d)}>{compactDate(e.d)}</span>
+                        <span class="day-group">{e.group}</span>
+
+                        {isSingleLesson && singleMeta ? (
+                            <div class="day-main-single" data-lesson={singleId}>
+                                <a class="day-primary-link" href={`lessons/${singleId}.html`}>
+                                    {singleId} — {singleMeta.title}
+                                </a>
+                                <span class={`badge ${singleMeta.badgeClass}`}>{singleMeta.badgeLabel}</span>
+                            </div>
+                        ) : (
+                            <div class="day-main-multi">
+                                <span class="day-title-text">{e.title}</span>
+                                <span class={`badge ${fallbackBadge.cls}`}>{fallbackBadge.label}</span>
+                            </div>
+                        )}
+
+                        {e.ced.length > 0 && (
+                            <span class="day-ced" title="CED topics">CED {e.ced.join(', ')}</span>
+                        )}
+                    </div>
+
+                    {e.lessons.length > 1 && (
+                        <ul class="lesson-list day-sublessons">
+                            {e.lessons.map((lid) => {
+                                const meta = LESSONS[lid];
+                                return (
+                                    <li data-lesson={lid}>
+                                        <span class="lesson-num">{lid}</span>
+                                        <span class="lesson-title"><a href={`lessons/${lid}.html`}>{lid} {meta.title}</a></span>
+                                        <span class={`badge ${meta.badgeClass}`}>{meta.badgeLabel}</span>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    )}
+
+                    {notes.length > 0 && (
+                        <div class="day-notes">
+                            {notes.map((n) => <p class="day-note-line">{n}</p>)}
+                        </div>
+                    )}
+                </div>
                 );
             })}
-        </ul>
+        </div>
     </div>
     );
 })}
+
+<style>
+.up-next-banner {
+    background: linear-gradient(135deg, rgba(108, 191, 108, 0.12), rgba(92, 175, 255, 0.08));
+    border: 1px solid var(--accent);
+    border-left: 5px solid var(--accent);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0 1.25rem;
+}
+.up-next-header {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: 0.4rem;
+    font-size: 12px;
+}
+.up-next-pill {
+    background: var(--accent);
+    color: #10231a;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    font-size: 11px;
+}
+.up-next-date {
+    color: #fff;
+    font-weight: 600;
+}
+.up-next-ced {
+    color: var(--muted);
+    margin-left: auto;
+}
+.up-next-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.up-next-title {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #fff;
+    border: none;
+    padding: 0;
+}
+.up-next-note {
+    margin: 0.25rem 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+.up-next-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.up-next-btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #10231a !important;
+    font-weight: 700;
+    font-size: 13px;
+    text-decoration: none;
+    padding: 0.5rem 0.95rem;
+    border-radius: 6px;
+    transition: background 0.15s;
+}
+.up-next-btn:hover {
+    background: #7dd07d;
+}
+
+.mywork-details {
+    margin: 0.75rem 0 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.65rem 1.1rem;
+}
+.mywork-summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--muted);
+}
+.mywork-details[open] .mywork-summary {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+}
+.mywork-details .mywork {
+    margin: 0;
+    padding: 0.5rem 0 0;
+    border: none;
+    background: none;
+}
+
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+.day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1.1rem;
+    transition: border-color 0.15s, background-color 0.15s;
+}
+.day-card:hover {
+    border-color: #4f4f4f;
+}
+.day-card.is-today {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px rgba(108, 191, 108, 0.35);
+}
+.day-card-top {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+.day-date {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    min-width: 5.5rem;
+}
+.day-group {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--accent);
+    min-width: 2.4rem;
+}
+.day-main-single, .day-main-multi {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+.day-primary-link {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+}
+.day-primary-link:hover {
+    color: var(--accent);
+}
+.day-main-single.done .day-primary-link {
+    text-decoration: line-through;
+    opacity: 0.65;
+}
+.day-main-single.done::after {
+    content: '\2713';
+    color: var(--accent);
+    font-weight: 700;
+}
+.day-title-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+}
+.day-ced {
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--code-bg);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    margin-left: auto;
+}
+.day-sublessons {
+    margin-top: 0.55rem;
+    padding-top: 0.55rem;
+    border-top: 1px dashed var(--border);
+}
+.day-sublessons li {
+    padding: 0.45rem 0.85rem;
+}
+.day-notes {
+    margin-top: 0.4rem;
+    padding-left: 8.65rem;
+}
+.day-note-line {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 0.1rem 0;
+}
+@media (max-width: 640px) {
+    .day-notes { padding-left: 0; }
+}
+</style>
 </Base>
 
 <script>
-// Phase tab switcher (ported from the original inline script - no framework needed).
+// Phase tab switcher (supports #phase-1 .. #phase-6 and #phase-all).
+function activateTab(tabKey: string) {
+    document.querySelectorAll('#unit-nav a').forEach((l) => {
+        l.classList.toggle('active', l.getAttribute('data-phase-tab') === tabKey);
+    });
+    document.querySelectorAll<HTMLElement>('.unit-section').forEach((s) => {
+        if (tabKey === 'all') {
+            s.style.display = 'block';
+        } else {
+            s.style.display = s.id === `phase-${tabKey}` ? 'block' : 'none';
+        }
+    });
+}
+
 document.querySelectorAll('#unit-nav a').forEach((link) => {
     link.addEventListener('click', (e) => {
         e.preventDefault();
-        document.querySelectorAll('#unit-nav a').forEach((l) => l.classList.remove('active'));
-        document.querySelectorAll('.unit-section').forEach((s) => (s.style.display = 'none'));
-        link.classList.add('active');
-        const target = document.querySelector(link.getAttribute('href'));
-        if (target) target.style.display = 'block';
+        const tabKey = link.getAttribute('data-phase-tab') || '2';
+        activateTab(tabKey);
+        history.replaceState(null, '', `#phase-${tabKey}`);
     });
 });
-if (window.location.hash) {
-    const match = document.querySelector(`#unit-nav a[href="${window.location.hash}"]`);
-    if (match) match.click();
-}
+
+// Highlight today's or the next upcoming A-day and auto-select its phase tab.
+(function highlightNextDay() {
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const todayIso = `${yyyy}-${mm}-${dd}`;
+
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.day-card'));
+    const nextCard = cards.find((c) => (c.dataset.date ?? '') >= todayIso) ?? cards[cards.length - 1];
+
+    if (nextCard) {
+        nextCard.classList.add('is-today');
+        const dateIso = nextCard.dataset.date ?? '';
+        const isToday = dateIso === todayIso;
+        const banner = document.getElementById('up-next-banner');
+        const statusEl = document.getElementById('up-next-status');
+        const dateEl = document.getElementById('up-next-date');
+        const cedEl = document.getElementById('up-next-ced');
+        const titleEl = document.getElementById('up-next-title');
+        const noteEl = document.getElementById('up-next-note');
+        const actionsEl = document.getElementById('up-next-actions');
+
+        if (banner && statusEl && dateEl && titleEl && noteEl && actionsEl) {
+            statusEl.textContent = isToday ? 'TODAY IN CLASS' : 'NEXT A-DAY';
+            dateEl.textContent = `${nextCard.querySelector('.day-date')?.getAttribute('title') || dateIso} \u00B7 Unit ${nextCard.dataset.group}`;
+            if (cedEl) {
+                cedEl.textContent = nextCard.dataset.ced ? `CED ${nextCard.dataset.ced}` : '';
+            }
+            titleEl.textContent = `${nextCard.dataset.group} \u2014 ${nextCard.dataset.title}`;
+            noteEl.textContent = nextCard.dataset.note || '';
+            actionsEl.innerHTML = '';
+            const lids = (nextCard.dataset.lessons || '').split(' ').filter(Boolean);
+            lids.forEach((lid) => {
+                const a = document.createElement('a');
+                a.href = `lessons/${lid}.html`;
+                a.className = 'up-next-btn';
+                a.textContent = lids.length === 1 ? `Open ${lid} Build \u2192` : `${lid} \u2192`;
+                actionsEl.appendChild(a);
+            });
+            banner.style.display = 'block';
+        }
+
+        if (!window.location.hash && nextCard.dataset.phase) {
+            activateTab(nextCard.dataset.phase);
+        }
+    }
+
+    if (window.location.hash) {
+        const m = window.location.hash.match(/^#phase-(\w+)$/);
+        if (m) activateTab(m[1]);
+    }
+})();
 
 // Progress readout - reads the same localStorage key the lesson pages write.
 const KEY = 'apcsa-progress';
@@ -111,7 +460,6 @@ const read = (): Record<string, boolean> => {
 function renderProgress() {
     const done = read();
     let totalDone = 0;
-    let totalAll = 0;
     document.querySelectorAll<HTMLElement>('.phase-progress').forEach((bar) => {
         const lids = (bar.dataset.phaseLessons ?? '').split(' ').filter(Boolean);
         const n = lids.filter((id) => done[id]).length;
@@ -120,8 +468,11 @@ function renderProgress() {
         if (fill) fill.style.width = lids.length ? `${Math.round((100 * n) / lids.length)}%` : '0%';
         if (count) count.textContent = `${n}/${lids.length}`;
         totalDone += n;
-        totalAll += lids.length;
-        lids.forEach((id) => document.querySelector(`li[data-lesson="${id}"]`)?.classList.toggle('done', !!done[id]));
+        lids.forEach((id) => {
+            document.querySelectorAll(`[data-lesson="${id}"]`).forEach((el) => {
+                el.classList.toggle('done', !!done[id]);
+            });
+        });
     });
     const strong = document.querySelector('[data-total] strong');
     if (strong) strong.textContent = String(totalDone);
@@ -135,19 +486,18 @@ document.querySelector('[data-reset]')?.addEventListener('click', () => {
 
 <script>
 // My work — backup / restore of progress + all lab answers in one file.
-// Uses the same localStorage keys the lesson pages write.
 (function () {
     'use strict';
     var PKEY = 'apcsa-progress';
     var AKEY = 'apcsa-lab-answers';
     var NKEY = 'apcsa-lab-student';
 
-    var nameEl = document.getElementById('mywork-name');
+    var nameEl = document.getElementById('mywork-name') as HTMLInputElement | null;
     var dlBtn = document.getElementById('mywork-download');
-    var importEl = document.getElementById('mywork-import');
+    var importEl = document.getElementById('mywork-import') as HTMLInputElement | null;
     var noteEl = document.getElementById('mywork-note');
 
-    function note(msg, isError) {
+    function note(msg: string, isError?: boolean) {
         if (!noteEl) return;
         noteEl.textContent = msg;
         noteEl.classList.toggle('error', !!isError);
@@ -156,7 +506,7 @@ document.querySelector('[data-reset]')?.addEventListener('click', () => {
     if (nameEl) {
         nameEl.value = localStorage.getItem(NKEY) || '';
         nameEl.addEventListener('input', function () {
-            try { localStorage.setItem(NKEY, nameEl.value); } catch (e) {}
+            try { localStorage.setItem(NKEY, nameEl!.value); } catch (e) {}
         });
     }
 

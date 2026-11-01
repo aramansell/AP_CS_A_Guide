@@ -1,93 +1,128 @@
 ---
-// Migrated from lessons/4.6a.html - the body below is the original page content.
-// The head, top nav, and the prev/next chain now come from
-// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
 import Lesson from '../../layouts/LessonLayout.astro';
 
-const body = `<h1>4.6a — Dungeon Loop: Combat While Loop</h1>
+const body = `<h1>4.6 (Day 1) — Dungeon Crawler RPG Build: Combat &amp; Duel Engine</h1>
 
 <p>
-    <strong>Type:</strong> RPG Integration. You've studied while loops, for loops,
-    nested loops, and loop analysis. Now you put all four concepts into one system:
-    a dungeon crawler where combat uses while loops and room exploration uses
-    for loops. This is a 3-day assignment.
+    <strong>CED Topics 2.1, 2.9 · 90-Minute RPG Build (Day 1 of 2).</strong> Over the next two
+    classes you will build <code>DungeonLoop.java</code> — combining indeterminate
+    <code>while</code> loops (for combat rounds until one fighter falls) with fixed-count
+    <code>for</code> loops (for rooms and multi-floor campaigns). Today you complete Parts 1 and 2;
+    next class (<code>4.6b</code>) you build floor exploration and the multi-floor campaign.
 </p>
+
+<div class="callout">
+    <strong>Starting Files (Download All Three into the Same Folder):</strong>
+    <ul>
+        <li>
+            <a href="../data/DungeonLoop.java" download>DungeonLoop.java</a> — bare-minimum
+            compiling stub for both days of the 4.6 build.
+        </li>
+        <li>
+            <a href="../data/DungeonLoopCheck.java" download>DungeonLoopCheck.java</a> — automated
+            acceptance test suite (13 checks across Parts 1–4).
+        </li>
+        <li>
+            <a href="../data/Dice.java" download>Dice.java</a> — your dice engine from Unit 1.7.
+        </li>
+    </ul>
+    <pre><code>javac Dice.java DungeonLoop.java DungeonLoopCheck.java
+java DungeonLoopCheck</code></pre>
+</div>
 
 <!-- ============================================================ -->
 <div class="activity rpg">
     <div class="activity-header">
-        <span class="activity-label">RPG Build</span>
-        <span class="activity-time">~25 min</span>
+        <span class="activity-label">Part 1 · Discovery &amp; Build</span>
+        <span class="activity-time">~45 min</span>
     </div>
 
-    <h3>The Goal</h3>
+    <h3>Part 1: <code>simulateDuelToDeath(int playerHP, int playerDmgPerHit, int monsterHP, int monsterDmgPerHit)</code></h3>
 
-    <p>Create a <code>DungeonLoop.java</code> class. Today you build the combat
-    engine — a while-loop that keeps two combatants fighting until one falls.
-    You already wrote combat logic in Unit 3's Combat.java. Now you wrap it in a
-    loop that runs an unknown number of rounds.</p>
+    <p>
+        Before adding dice randomness, build the deterministic duel engine that <code>DungeonLoopCheck</code>
+        and tomorrow's floor crawler both rely on:
+    </p>
+    <ul>
+        <li>Loop <strong>while both combatants are alive</strong>
+            (<code>playerHP &gt; 0 &amp;&amp; monsterHP &gt; 0</code>).</li>
+        <li>In each round:
+            <ol>
+                <li>The player strikes first: subtract <code>playerDmgPerHit</code> from
+                    <code>monsterHP</code>.</li>
+                <li><strong>Only if <code>monsterHP &gt; 0</code></strong>, the monster strikes back:
+                    subtract <code>monsterDmgPerHit</code> from <code>playerHP</code>.</li>
+            </ol>
+        </li>
+        <li>When the loop ends, return the player's remaining HP — <strong>clamped at
+            <code>0</code></strong> if <code>playerHP</code> dropped below <code>0</code>.</li>
+    </ul>
 
-    <p>Open the <a href="../docs/unit-04/dungeon-system.html">Dungeon Loop System
-    (Student RPG Guide)</a>. Follow the specification for Part 1: runCombat().</p>
+    <div class="bug-hunt">
+        <h3>Discovery Trap: Using <code>||</code> Instead of <code>&amp;&amp;</code> in a Duel Loop</h3>
+        <ol>
+            <li>What happens if a student writes
+                <code>while (playerHP &gt; 0 || monsterHP &gt; 0)</code> ("keep fighting while
+                someone is alive") instead of <code>&amp;&amp;</code>? Trace what happens after the
+                monster dies on Round 2 while the player still has <code>15 HP</code>!</li>
+            <li>Apply De Morgan's Law: the duel stops when
+                <code>playerHP &lt;= 0 || monsterHP &lt;= 0</code>. Negate that stop condition to
+                prove why the continuation condition must use <code>&amp;&amp;</code>.</li>
+        </ol>
+    </div>
+</div>
 
-    <h3>Part 1: runCombat() — The While Loop</h3>
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">Part 2 · Live Dice Combat</span>
+        <span class="activity-time">~45 min</span>
+    </div>
 
-    <p>Create <code>DungeonLoop.java</code>. Add this method:</p>
+    <h3>Part 2: <code>runCombat(...)</code></h3>
+
+    <p>
+        Now implement the live dice-driven combat loop using <code>Dice.roll(...)</code>:
+    </p>
     <pre><code>public static boolean runCombat(String playerName, int playerHP, int playerAC,
                                 int playerAttackBonus, String monsterName,
                                 int monsterHP, int monsterAC,
                                 int monsterAttackBonus, int monsterDamageDie)</code></pre>
-
-    <p><strong>Requirements:</strong></p>
     <ul>
-        <li>Print a combat header: <code>"=== COMBAT: [player] vs [monster] ==="</code></li>
-        <li>Use a <code>while</code> loop. Condition: <code>playerHP > 0 && monsterHP > 0</code></li>
-        <li>Each iteration: print current HP, player attacks, monster counterattacks
-            (only if still alive)</li>
-        <li>Attack pattern: roll d20, add bonus. Natural 20 = critical (d8 × 2).
-            Total ≥ AC = hit (d8). Otherwise miss.</li>
-        <li>After loop: return <code>true</code> if player won, <code>false</code> otherwise</li>
+        <li>Loop while <code>playerHP &gt; 0 &amp;&amp; monsterHP &gt; 0</code>:
+            <ol>
+                <li><strong>Player attack:</strong> Roll <code>int d20 = Dice.roll(20);</code>. A
+                    natural <code>20</code> deals <code>Dice.roll(8) * 2</code> damage; a natural
+                    <code>1</code> deals <code>0</code>; otherwise if
+                    <code>d20 + playerAttackBonus &gt;= monsterAC</code>, deal
+                    <code>Dice.roll(8)</code> damage. Subtract from <code>monsterHP</code>.</li>
+                <li><strong>Monster counterattack (only if <code>monsterHP &gt; 0</code>):</strong>
+                    Roll <code>int m20 = Dice.roll(20);</code>. If
+                    <code>m20 + monsterAttackBonus &gt;= playerAC</code>, subtract
+                    <code>Dice.roll(monsterDamageDie)</code> from <code>playerHP</code>.</li>
+            </ol>
+        </li>
+        <li>Return <code>true</code> if <code>playerHP &gt; 0</code> (player won), or
+            <code>false</code> otherwise.</li>
     </ul>
 
-    <div class="socratic">
-        <h3>Socratic Checkpoint</h3>
-        <ol>
-            <li>You don't know how many rounds this fight will last. Why is this
-                a while loop and not a for loop? What's the rule for choosing?</li>
-            <li>Why does the monster only counterattack when <code>monsterHP > 0</code>?
-                What would happen if you removed that check?</li>
-            <li>Trace through one round: player attacks, damage is subtracted, then
-                monster attacks. Does the order matter? What if the monster went first?</li>
-        </ol>
+    <div class="checklist">
+        <h3>Day 1 Milestone — Done When</h3>
+        <ul>
+            <li>All <strong>6 checks in Parts 1 and 2</strong> of <code>java DungeonLoopCheck</code> report <code>PASS</code></li>
+            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+        </ul>
     </div>
-
-    <div class="tinker">
-        <h3>Tinker: Variable Damage</h3>
-        <p>
-            Right now both sides roll d8 for damage. Make the player's damage die
-            a parameter too. Then make the monster's critical hit do double damage
-            (dmgDie × 2 on a natural 20). Does the fight feel more dangerous?
-        </p>
-    </div>
-
-    <p><strong>Acceptance Test:</strong></p>
-    <pre><code>boolean result = DungeonLoop.runCombat("Hero", 20, 14, 3, "Goblin", 10, 12, 2, 6);
-System.out.println("Result: " + (result ? "Won" : "Lost"));
-// Run 5 times. Verify combat ends when one side hits 0 HP.
-// Verify the boolean matches the winner.</code></pre>
 </div>
 
-<!-- ============================================================ -->
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
         <li><a href="../docs/unit-04/dungeon-system.html">Dungeon Loop System (Student RPG Guide)</a></li>
-        <li><a href="../docs/unit-04/while-loops.html">while Loops</a> — indeterminate iteration</li>
-        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — comparison with while</li>
-        <li><a href="../docs/unit-03/combat-system.html">Combat Engine (Unit 3)</a> — attack logic you're reusing</li>
+        <li><a href="../docs/unit-04/while-loops.html">while Loops</a></li>
     </ul>
 </div>`;
 ---
-<Lesson id="4.6a" title="4.6a Dungeon Loop — AP CS A" root=".." css="../style.css">
+<Lesson id="4.6a" title="4.6a Dungeon Crawler (Day 1): Combat &amp; Duel Engine — AP CS A" root=".." css="../style.css">
   <Fragment set:html={body} />
 </Lesson>

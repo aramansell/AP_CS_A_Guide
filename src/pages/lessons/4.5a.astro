@@ -1,133 +1,163 @@
 ---
-// Migrated from lessons/4.5a.html - the body below is the original page content.
-// The head, top nav, and the prev/next chain now come from
-// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
 import Lesson from '../../layouts/LessonLayout.astro';
 
-const body = `<h1>4.5a — Tracing Loops: How Many Times?</h1>
+const body = `<h1>4.5 — Loop Analysis, Fencepost Traps &amp; The LoopTracer Build</h1>
+
+<p>
+    <strong>CED Topics 2.1, 2.9 · 90-Minute Unified Build.</strong> On the AP CS A exam, nearly a
+    quarter of Multiple Choice questions ask you to determine how many times a loop executes, spot
+    an off-by-one ("fencepost") error, or trace a loop whose variable both gains and loses value
+    within the cycle. Today you build <code>LoopTracer.java</code> and confront the three nastiest
+    loop-analysis traps on the exam.
+</p>
+
+<div class="callout">
+    <strong>Starting Files (Download Both):</strong>
+    <ul>
+        <li>
+            <a href="../data/LoopTracer.java" download>LoopTracer.java</a> — bare-minimum compiling
+            stub.
+        </li>
+        <li>
+            <a href="../data/LoopTracerCheck.java" download>LoopTracerCheck.java</a> — automated
+            AP-style test suite (17 checks across 4 parts).
+        </li>
+    </ul>
+    <pre><code>javac LoopTracer.java LoopTracerCheck.java
+java LoopTracerCheck</code></pre>
+</div>
 
 <!-- ============================================================ -->
-<div class="activity discovery">
+<div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Discovery Lab</span>
-        <span class="activity-time">~25 min</span>
+        <span class="activity-label">Parts 1 &amp; 2 · Fenceposts &amp; Iteration Counts</span>
+        <span class="activity-time">~40 min</span>
     </div>
 
+    <h3>Part 1: <code>countWhileIterations(int start, int limit, int step)</code></h3>
     <p>
-        You can run code and see what happens. But on the AP exam, you can't run
-        anything — you have to trace it on paper. This is the skill that
-        separates guessing from knowing.
+        Return the exact number of times the body of this loop executes:
     </p>
+    <pre><code>int val = start;
+while (val &lt; limit) {
+    // body
+    val += step;
+}</code></pre>
+    <ul>
+        <li>If <code>start &gt;= limit</code>, the condition is immediately <code>false</code> on
+            the first check, so the loop runs <code>0</code> times (even if <code>step &lt;= 0</code>!).</li>
+        <li>If <code>start &lt; limit</code> and <code>step &lt;= 0</code>, the loop would run
+            forever; return <code>-1</code> without hanging.</li>
+        <li>Otherwise, simulate or compute the exact number of iterations.</li>
+    </ul>
 
+    <h3>Part 2: <code>buildRunedFence(String rune, int pillars)</code></h3>
     <p>
-        A <strong>trace table</strong> is a grid where each row is one loop iteration
-        and each column is a variable. You write down what every variable equals
-        at every step. No computer. No compiler. Just you and the logic.
+        Build a fence banner containing <code>pillars</code> copies of <code>"[" + rune + "]"</code>
+        connected by <code>"---"</code> dividers:
     </p>
+    <ul>
+        <li><code>buildRunedFence("*", 3)</code> returns <code>"[*]---[*]---[*]"</code> (3 pillars,
+            <strong>2</strong> dividers).</li>
+        <li><code>buildRunedFence("SOL", 1)</code> returns <code>"[SOL]"</code> (1 pillar,
+            <strong>0</strong> dividers).</li>
+        <li>If <code>pillars &lt;= 0</code>, return <code>""</code>.</li>
+    </ul>
 
-    <h3>Trace Table Format</h3>
-
-    <pre><code>int sum = 0;
-for (int i = 1; i <= 4; i++) {
-    sum += i;
-}</code></pre>
-
-    <table>
-        <tr><th>Iteration</th><th>i</th><th>sum (before)</th><th>sum += i</th><th>sum (after)</th></tr>
-        <tr><td>Start</td><td>—</td><td>—</td><td>—</td><td>0</td></tr>
-        <tr><td>1</td><td>1</td><td>0</td><td>0+1</td><td>1</td></tr>
-        <tr><td>2</td><td>2</td><td>1</td><td>1+2</td><td>3</td></tr>
-        <tr><td>3</td><td>3</td><td>3</td><td>3+3</td><td>6</td></tr>
-        <tr><td>4</td><td>4</td><td>6</td><td>6+4</td><td>10</td></tr>
-        <tr><td>End</td><td>5 (fails)</td><td>—</td><td>—</td><td>10</td></tr>
-    </table>
-
-    <div class="tinker">
-        <h3>Practice: Trace on Paper</h3>
+    <div class="bug-hunt">
+        <h3>Discovery Trap 1: The Fencepost Problem</h3>
         <p>
-            Open the <a href="../docs/unit-04/loop-analysis.html">Tracing Loops docs</a>.
-            There's a while-loop trace table (HP, damage, hits). Study it. Now,
-            WITHOUT looking at the docs, trace this loop on paper:
-        </p>
-        <pre><code>int hp = 15;
-int hits = 0;
-while (hp > 0) {
-    hp -= 4;
-    hits++;
-}</code></pre>
-        <p>
-            What's the final value of hits? What's the final value of hp?
-            How many iterations ran? Write your trace table, then run the code
-            to verify.
-        </p>
-    </div>
-
-    <div class="tinker">
-        <h3>Practice: How Many Times?</h3>
-        <p>
-            The docs have a "How Many Times?" table with six common loop patterns.
-            Study it. Then, WITHOUT looking, answer THESE:
+            To build a 3-pillar fence, there are <code>3</code> pillars (<code>[*]</code>) but only
+            <code>2</code> spans of wire (<code>---</code>) between them.
         </p>
         <ol>
-            <li><code>for (int i = 0; i < 10; i++)</code> — how many iterations? What are the values of i?</li>
-            <li><code>for (int i = 1; i <= 10; i++)</code> — how many iterations? Values of i?</li>
-            <li><code>for (int i = 5; i > 0; i--)</code> — how many iterations? Values of i?</li>
-            <li><code>for (int i = 0; i <= 10; i += 2)</code> — how many iterations? Values of i?</li>
+            <li>If a loop simply runs <code>pillars</code> times and does
+                <code>result += "[" + rune + "]---";</code> every iteration, what does
+                <code>buildRunedFence("*", 3)</code> return, and why does it fail?</li>
+            <li>Explain the "Fencepost Pattern": how do you place the first post outside the loop
+                (or check the loop index) so there are always <code>pillars - 1</code> dividers for
+                <code>pillars</code> posts?</li>
         </ol>
-        <p>
-            Write your answers, then check against the doc.
-        </p>
-    </div>
-
-    <div class="callout trap">
-        <strong>Off-By-One Trap:</strong> Read the off-by-one section in the docs.
-        The loop <code>for (int i = 0; i <= 5; i++)</code> runs 6 times, not 5.
-        The loop <code>for (int i = 5; i < 5; i++)</code> runs 0 times.
-        The difference between <code>&lt;</code> and <code>&lt;=</code> is exactly
-        one iteration. When does each matter?
-    </div>
-
-    <div class="socratic">
-        <h3>Socratic Checkpoint — AP Exam Prep</h3>
-        <ol>
-            <li>Read the "Exam Prep" Socratic Checkpoint in the docs. Which of the
-                four loops produces the same output as <code>for (int i = 0; i < 5; i++)</code>?
-                Answer WITHOUT running. Explain WHY the others are wrong.</li>
-            <li>Trace this nested loop: how many times does the print statement execute?
-                <pre><code>for (int i = 0; i < 3; i++) {
-    for (int j = 0; j < 4; j++) {
-        System.out.print("*");
-    }
-    System.out.println();
-}</code></pre>
-            </li>
-            <li>What's the difference between <code>break</code> and continuing
-                through the normal loop exit? When would you use <code>break</code>
-                inside a combat loop?</li>
-        </ol>
-    </div>
-
-    <div class="checklist">
-        <h3>Checkpoint — before moving on, you must be able to:</h3>
-        <ul>
-            <li>Create a trace table for any loop and fill it correctly</li>
-            <li>Predict the number of iterations from a loop header</li>
-            <li>Identify and fix off-by-one errors</li>
-            <li>Determine if two loops are equivalent without running them</li>
-        </ul>
     </div>
 </div>
 
 <!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">Parts 3 &amp; 4 · Discovery &amp; Build</span>
+        <span class="activity-time">~50 min</span>
+    </div>
+
+    <h3>Part 3: <code>firstTurnReachingMana(int startMana, int gainPerTurn, int drainEveryThirdTurn, int targetMana)</code></h3>
+
+    <p>
+        A mage starts with <code>startMana</code>. If <code>startMana &gt;= targetMana</code>
+        before Turn 1 even begins, return <code>0</code>. Otherwise, during each turn
+        <code>turn = 1, 2, 3, ...</code>:
+    </p>
+    <ol>
+        <li>The mage gains <code>gainPerTurn</code> mana.</li>
+        <li>If <code>turn</code> is a multiple of <code>3</code> (<code>turn % 3 == 0</code>), a
+            curse drains <code>drainEveryThirdTurn</code> mana during that same turn.</li>
+        <li>At the end of the turn (after any Turn-3 drain), check if mana is now
+            <code>&gt;= targetMana</code>. If so, return <code>turn</code>!</li>
+    </ol>
+    <p>
+        If the mage will <strong>never</strong> reach <code>targetMana</code>, return
+        <code>-1</code> without an infinite loop.
+    </p>
+
+    <div class="bug-hunt">
+        <h3>Discovery Trap 2: The Peak-Before-Drain Trap</h3>
+        <p>
+            Over every 3-turn cycle, the mage's net mana change is
+            <code>3 * gainPerTurn - drainEveryThirdTurn</code>. Suppose a programmer writes this
+            infinite-loop check at the top of the method:
+        </p>
+        <pre><code>// Naive guard — why does this fail Check 4 in Part 3?
+if (3 * gainPerTurn - drainEveryThirdTurn &lt;= 0) {
+    return -1;
+}</code></pre>
+        <ol>
+            <li>Trace <code>firstTurnReachingMana(6, 2, 10, 10)</code>: the mage starts at
+                <code>6</code> mana, gains <code>2</code> per turn, loses <code>10</code> on Turn
+                3, and needs <code>10</code> mana. Even though the 3-turn net change is negative
+                (<code>6 - 10 = -4</code>), what is the mage's mana at the end of Turn 1 and Turn
+                2? Why does the mage win on Turn 2 <em>before</em> the Turn-3 drain ever fires?</li>
+            <li>Why is it safe to simulate Turn 1, Turn 2, and Turn 3 first, and only return
+                <code>-1</code> if the mage hasn't reached <code>targetMana</code> by the end of
+                Turn 3 AND their mana at the end of Turn 3 is <code>&lt;= startMana</code>?</li>
+        </ol>
+    </div>
+
+    <h3>Part 4: <code>countTriangularSteps(int n)</code></h3>
+    <p>
+        Return the total number of times <code>steps++</code> executes in this nested loop (or
+        <code>0</code> if <code>n &lt;= 0</code>):
+    </p>
+    <pre><code>int steps = 0;
+for (int i = 1; i &lt;= n; i++) {
+    for (int j = i; j &lt;= n; j += 2) {
+        steps++;
+    }
+}</code></pre>
+
+    <div class="checklist">
+        <h3>Done When</h3>
+        <ul>
+            <li><code>java LoopTracerCheck</code> reports <strong><code>17 passed, 0 failed</code></strong></li>
+            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+        </ul>
+    </div>
+</div>
+
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-04/loop-analysis.html">Tracing Loops</a> — trace tables, iteration counts, off-by-one</li>
-        <li><a href="../docs/unit-04/while-loops.html">while Loops</a> — the loops you're tracing</li>
-        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — counting patterns reference</li>
+        <li><a href="../docs/unit-04/loop-analysis.html">Tracing Loops</a> — trace tables, off-by-one, iteration counts</li>
     </ul>
 </div>`;
 ---
-<Lesson id="4.5a" title="4.5a Loop Analysis &amp; Tracing — AP CS A" root=".." css="../style.css">
+<Lesson id="4.5a" title="4.5 Loop Analysis, Fencepost Traps &amp; LoopTracer Build — AP CS A" root=".." css="../style.css">
   <Fragment set:html={body} />
 </Lesson>

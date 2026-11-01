@@ -1,118 +1,199 @@
 ---
-// Migrated from lessons/4.1a.html - the body below is the original page content.
-// The head, top nav, and the prev/next chain now come from
-// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
 import Lesson from '../../layouts/LessonLayout.astro';
 
-const body = `<h1>4.1a — while Loops: Repeating While True</h1>
+const body = `<h1>4.1 — while Loops &amp; The WhileLab Algorithms Build</h1>
+
+<p>
+    <strong>CED Topics 2.1, 2.7 · 90-Minute Unified Build.</strong> A <code>while</code> loop
+    repeats a block of code as long as a boolean condition remains <code>true</code> — making it
+    the right tool whenever the number of iterations is <em>unknown in advance</em>. On the AP CS A
+    exam, <code>while</code> loops appear in two classic forms: state-driven simulations (where a
+    quantity like HP or energy ticks up and down until a threshold is crossed) and integer digit
+    extraction (using <code>% 10</code> and <code>/ 10</code>).
+</p>
+
+<div class="callout">
+    <strong>Starting Files (Download Both):</strong>
+    <ul>
+        <li>
+            <a href="../data/WhileLab.java" download>WhileLab.java</a> — bare-minimum compiling stub.
+        </li>
+        <li>
+            <a href="../data/WhileLabCheck.java" download>WhileLabCheck.java</a> — automated AP-style
+            test suite (19 checks across 4 parts).
+        </li>
+    </ul>
+    <pre><code>javac WhileLab.java WhileLabCheck.java
+java WhileLabCheck</code></pre>
+</div>
 
 <!-- ============================================================ -->
-<div class="activity discovery">
+<div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Discovery Lab</span>
-        <span class="activity-time">~25 min</span>
+        <span class="activity-label">Part 1 · Discovery &amp; Build</span>
+        <span class="activity-time">~30 min</span>
     </div>
+
+    <h3>Part 1: <code>roundsToSurvivePoison(int startingHP, int poisonPerRound, int regenPerRound)</code></h3>
 
     <p>
-        Every program you've written runs its code once and stops. One attack roll.
-        One tip calculation. But games don't work that way — combat rounds repeat.
-        You explore rooms until the dungeon runs out. Your player keeps drinking
-        potions until their inventory is empty.
+        A hero enters a toxic swamp with <code>startingHP</code> hit points. During each round:
     </p>
-
+    <ol>
+        <li><strong>First, poison strikes:</strong> subtract <code>poisonPerRound</code> from the
+            hero's HP.</li>
+        <li><strong>Second, check for survival:</strong> if the hero's HP is still strictly greater
+            than <code>0</code>, their amulet restores <code>regenPerRound</code> HP. If their HP
+            dropped to <code>0</code> or below from the poison tick, the hero dies immediately and
+            regeneration does <strong>not</strong> occur.</li>
+    </ol>
     <p>
-        A <code>while</code> loop is an if statement that <strong>runs again</strong>.
-        It checks a condition, and if it's true, runs the body. Then checks again.
-        And again. Until the condition becomes false.
+        Your method returns the total number of rounds the hero was subjected to poison before
+        dying (or <code>0</code> if <code>startingHP &lt;= 0</code> to begin with). If the hero
+        will survive <strong>forever</strong> (an infinite loop!), your method must return
+        <code>-1</code> without freezing.
     </p>
 
-    <h3>The Core Idea</h3>
-
-    <pre><code>while (condition) {
-    // runs REPEATEDLY while condition is true
-}
-// execution continues here when condition becomes false</code></pre>
-
-    <div class="tinker">
-        <h3>Experiment: Your First Loop</h3>
-        <p>Create <code>FirstLoop.java</code>. Run this code:</p>
-        <pre><code>int count = 0;
-while (count < 5) {
-    System.out.println("Count is: " + count);
-    count++;
-}
-System.out.println("Done!");</code></pre>
-        <p>Write down: how many times does the println inside the loop run?
-        What's the first value of count printed? The last? Now change
-        <code>&lt; 5</code> to <code>&lt;= 5</code> and run again. What changed?</p>
-    </div>
-
-    <div class="callout trap">
-        <strong>Infinite Loop Trap:</strong> Open the
-        <a href="../docs/unit-04/while-loops.html">while Loops docs</a>.
-        Find the Bug Hunt section "The Frozen Game." Read the broken code.
-        Before looking at the answer: why does it freeze? What is the loop
-        MISSING? Write down your answer, then run the broken code yourself.
-        (Save your work first — you'll need Ctrl+C to stop it.)
-    </div>
-
-    <div class="tinker">
-        <h3>Build: Combat Round Loop</h3>
+    <div class="bug-hunt">
+        <h3>Discovery Trap 1: The Round-1 Lethal Tick vs. Infinite Regen</h3>
         <p>
-            You already have Combat.java from Unit 3. Now wrap a combat round
-            in a while loop. Create <code>CombatLoop.java</code>:
+            To avoid an infinite loop, most programmers immediately write this guard at the top of
+            <code>roundsToSurvivePoison</code>:
         </p>
-        <ul>
-            <li>Initialize <code>int playerHP = 20</code> and <code>int enemyHP = 12</code></li>
-            <li>Use a while loop: keep fighting while BOTH are alive</li>
-            <li>Inside: the player attacks, then — only if the enemy is still alive —
-                the enemy counterattacks</li>
-            <li>Print HP after each round</li>
-            <li>When someone dies: print victory or defeat</li>
-        </ul>
-        <p>
-            This is the same combat from 3.6c, but now you understand WHY the
-            while loop goes there instead of blindly copying it.
-        </p>
-    </div>
-
-    <div class="socratic">
-        <h3>Socratic Checkpoint</h3>
+        <pre><code>// Naive infinite-loop guard — why does this fail Check 4 in WhileLabCheck?
+if (regenPerRound &gt;= poisonPerRound) {
+    return -1;
+}</code></pre>
         <ol>
-            <li>In your CombatLoop, what would happen if you forgot to subtract
-                damage from enemyHP? What about playerHP? Try it — but save first.</li>
-            <li>Read the <a href="../docs/unit-04/while-loops.html">docs section
-                on sentinel loops</a>. What's the difference between a counted loop
-                and a sentinel loop? Which one is combat?</li>
-            <li>The docs say every while loop needs three parts: initialize, test,
-                update. Identify all three in your combat loop.</li>
-            <li>Look at the sentinel loop example in the docs (the one with Scanner
-                and "quit"). What's the sentinel value? Why does the loop use
-                <code>!command.equals("quit")</code> instead of
-                <code>command.equals("quit")</code>?</li>
+            <li>Trace <code>roundsToSurvivePoison(5, 5, 10)</code>: the hero starts with
+                <code>5 HP</code>, takes <code>5</code> poison per round, and regenerates
+                <code>10</code> HP per round. Even though <code>regenPerRound &gt;= poisonPerRound</code>,
+                what happens on Round 1 when poison hits <em>before</em> regeneration? Why does the
+                naive guard above return <code>-1</code> when the correct answer is <code>1</code>?</li>
+            <li>What is the exact condition under which a hero with <code>startingHP &gt; 0</code>
+                truly survives forever? (Check both <code>poisonPerRound &lt;= 0</code> and what
+                must be true after Round 1's poison tick!)</li>
         </ol>
-    </div>
-
-    <div class="checklist">
-        <h3>Checkpoint — before moving on, you must be able to:</h3>
-        <ul>
-            <li>Write a while loop with all three parts (initialize, test, update)</li>
-            <li>Identify what causes an infinite loop and fix it</li>
-            <li>Use a while loop for indeterminate repetition (combat, sentinel)</li>
-            <li>Explain the difference between while and if</li>
-        </ul>
     </div>
 </div>
 
 <!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Parts 2 &amp; 3 · AP Digit Extraction</span>
+        <span class="activity-time">~35 min</span>
+    </div>
+
+    <h3>Parts 2 &amp; 3: <code>sumRuneDigits(int runeCode)</code> &amp; <code>countEvenDigits(int runeCode)</code></h3>
+
+    <p>
+        One of the most frequent algorithms on the AP CS A exam peels digits off a non-negative
+        integer from right to left using two arithmetic operators:
+    </p>
+    <ul>
+        <li><code>runeCode % 10</code> — extracts the <strong>rightmost digit</strong>
+            (e.g., <code>4729 % 10</code> is <code>9</code>).</li>
+        <li><code>runeCode / 10</code> — removes the rightmost digit via integer division
+            (e.g., <code>4729 / 10</code> is <code>472</code>).</li>
+    </ul>
+
+    <div class="bug-hunt">
+        <h3>Discovery Trap 2: The Premature Return &amp; The Zero Edge Case</h3>
+        <p>
+            Look at two common bugs when students write <code>countEvenDigits(int runeCode)</code>:
+        </p>
+        <pre><code>// Bug A: Premature else-return inside the loop
+while (runeCode &gt; 0) {
+    int digit = runeCode % 10;
+    if (digit % 2 == 0) {
+        count++;
+    } else {
+        return count;   // &lt;-- What does this do on 20405?!
+    }
+    runeCode /= 10;
+}
+
+// Bug B: What happens when runeCode starts at 0?
+// How many times does while (runeCode &gt; 0) run when runeCode == 0?</code></pre>
+        <ol>
+            <li>In Bug A, why does putting <code>return count;</code> inside the loop stop after the
+                very first odd digit (<code>5</code> in <code>20405</code>), never inspecting <code>0</code>, <code>4</code>, <code>0</code>, or <code>2</code>?</li>
+            <li>The integer <code>0</code> has one digit, and <code>0</code> is an even number (<code>0 % 2 == 0</code>),
+                so <code>countEvenDigits(0)</code> must return <code>1</code>. Why does a plain
+                <code>while (runeCode &gt; 0)</code> loop return <code>0</code> for
+                <code>countEvenDigits(0)</code>, and how do you guard for it?</li>
+        </ol>
+    </div>
+
+    <h4>AP Specification — Parts 2 &amp; 3</h4>
+    <ul>
+        <li><code>public static int sumRuneDigits(int runeCode)</code> — precondition:
+            <code>runeCode &gt;= 0</code>. Returns the sum of all base-10 digits in
+            <code>runeCode</code>.</li>
+        <li><code>public static int countEvenDigits(int runeCode)</code> — precondition:
+            <code>runeCode &gt;= 0</code>. Returns the count of even base-10 digits (<code>0, 2, 4, 6, 8</code>)
+            in <code>runeCode</code>. Note that <code>countEvenDigits(0)</code> returns <code>1</code>.</li>
+    </ul>
+</div>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">Part 4 · AP FRQ Synthesis Build</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>Part 4: <code>manaCrystalSteps(int startingEnergy)</code></h3>
+
+    <p>
+        An unstable mana crystal oscillates according to the Collatz (Hailstone) rules until its
+        energy stabilizes at <code>1</code>:
+    </p>
+    <ul>
+        <li>If <code>startingEnergy &lt;= 1</code>, it is already stable; return <code>0</code> steps.</li>
+        <li>While energy is greater than <code>1</code>:
+            <ul>
+                <li>If energy is <strong>even</strong>, divide it by <code>2</code>.</li>
+                <li>If energy is <strong>odd</strong>, multiply it by <code>3</code> and add <code>1</code>.</li>
+            </ul>
+        </li>
+        <li>Count and return the total number of transformations required to reach <code>1</code>.</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — <code>if / else</code> vs. Two Separate <code>if</code>s Inside a Loop</h3>
+        <ol>
+            <li>Suppose a student writes two separate <code>if</code> statements instead of
+                <code>if / else</code> inside the <code>while</code> loop:
+                <pre><code>if (energy % 2 != 0) {
+    energy = energy * 3 + 1;
+}
+if (energy % 2 == 0) {
+    energy = energy / 2;
+}</code></pre>
+                Trace what happens on a single iteration when <code>energy</code> starts at
+                <code>3</code>. Why does the second <code>if</code> immediately fire in the same
+                iteration, and how does <code>else</code> prevent that?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Done When</h3>
+        <ul>
+            <li><code>java WhileLabCheck</code> reports <strong><code>19 passed, 0 failed</code></strong></li>
+            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+        </ul>
+    </div>
+</div>
+
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-04/while-loops.html">while Loops</a> — syntax, combat, sentinel patterns</li>
-        <li><a href="../docs/unit-03/boolean-logic.html">Boolean Logic</a> — combining alive checks with &&</li>
+        <li><a href="../docs/unit-04/while-loops.html">while Loops</a> — initialization, test, update, infinite loop guards</li>
+        <li><a href="../docs/unit-01/arithmetic.html">Arithmetic &amp; Modulo</a> — % 10 and / 10 digit extraction</li>
     </ul>
 </div>`;
 ---
-<Lesson id="4.1a" title="4.1a while Loops — AP CS A" root=".." css="../style.css">
+<Lesson id="4.1a" title="4.1 while Loops &amp; The WhileLab Algorithms Build — AP CS A" root=".." css="../style.css">
   <Fragment set:html={body} />
 </Lesson>

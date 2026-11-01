@@ -1,119 +1,263 @@
 ---
-// Migrated from lessons/3.5a.html - the body below is the original page content.
-// The head, top nav, and the prev/next chain now come from
-// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
 import Lesson from '../../layouts/LessonLayout.astro';
 
-const body = `<h1>3.5a — De Morgan's Laws: Flipping Conditions</h1>
+const body = `<h1>3.5 — De Morgan's Laws &amp; The DungeonGatekeeper Build</h1>
+
+<p>
+    <strong>CED Topics 2.2, 2.5, 2.6 · 90-Minute Unified Build.</strong> Compound boolean
+    expressions and De Morgan's Laws appear on the AP CS A exam every single year — both in
+    Multiple Choice ("Which of the following is equivalent to...") and inside Free Response guard
+    conditions. Today you will discover the four traps that catch almost every programmer who
+    trusts intuition over truth tables, and build <code>DungeonGatekeeper.java</code> to pass all
+    31 automated checks.
+</p>
+
+<div class="callout">
+    <strong>Starting Files (Download Both):</strong>
+    <ul>
+        <li>
+            <a href="../data/DungeonGatekeeper.java" download>DungeonGatekeeper.java</a> —
+            bare-minimum compiling stub.
+        </li>
+        <li>
+            <a href="../data/DungeonGatekeeperCheck.java" download>DungeonGatekeeperCheck.java</a> —
+            automated AP-style test suite (31 checks across 5 parts).
+        </li>
+    </ul>
+    <pre><code>javac DungeonGatekeeper.java DungeonGatekeeperCheck.java
+java DungeonGatekeeperCheck</code></pre>
+</div>
 
 <!-- ============================================================ -->
-<div class="activity discovery">
+<div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Discovery Lab</span>
+        <span class="activity-label">Part 1 · Discovery &amp; Build</span>
+        <span class="activity-time">~15 min</span>
+    </div>
+
+    <h3>Part 1: <code>isVaultLockedOut(boolean hasRunekey, boolean isBloodMoon)</code></h3>
+
+    <p>
+        The Shadow Vault opens only when a hero holds the Runekey <strong>AND</strong> the Blood
+        Moon is rising: <code>hasRunekey &amp;&amp; isBloodMoon</code>. You are writing
+        <code>isVaultLockedOut</code>, which returns <code>true</code> when the vault remains
+        locked — <strong>without</strong> using an outer <code>!</code> around parentheses.
+    </p>
+
+    <div class="bug-hunt">
+        <h3>Discovery Trap 1: Why Distributing <code>!</code> Like Algebra Fails</h3>
+        <p>
+            In algebra, <code>-(a + b)</code> becomes <code>-a + -b</code>. Many programmers try the
+            same thing with <code>!(hasRunekey &amp;&amp; isBloodMoon)</code> and write:
+        </p>
+        <pre><code>// Naive attempt — put this in isVaultLockedOut and run DungeonGatekeeperCheck:
+return !hasRunekey &amp;&amp; !isBloodMoon;</code></pre>
+        <ol>
+            <li>Run <code>java DungeonGatekeeperCheck</code> with that line. Why did
+                <code>(true, true)</code> and <code>(false, false)</code> PASS, while
+                <code>(true, false)</code> and <code>(false, true)</code> FAILED?</li>
+            <li>State De Morgan's two laws in your own words: what happens to <code>&amp;&amp;</code>
+                and <code>||</code> when you push <code>!</code> inside parentheses?</li>
+        </ol>
+    </div>
+
+    <h4>AP Specification — <code>isVaultLockedOut</code></h4>
+    <ul>
+        <li><strong>Signature:</strong> <code>public static boolean isVaultLockedOut(boolean hasRunekey, boolean isBloodMoon)</code></li>
+        <li><strong>Requirement:</strong> Return the exact De Morgan equivalent of
+            <code>!(hasRunekey &amp;&amp; isBloodMoon)</code> with no outer <code>!</code>.</li>
+    </ul>
+</div>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Part 2 · Discovery &amp; Build</span>
         <span class="activity-time">~20 min</span>
     </div>
 
-    <p>
-        You have a condition. It works. Then someone asks: "Can you rewrite
-        that WITHOUT the <code>!</code> on the outside?" That's what De Morgan's
-        Laws let you do — flip conditions into equivalent forms.
-    </p>
-
-    <h3>The Two Laws</h3>
-
-    <pre><code>Law 1:  !(A && B)  →  !A || !B
-Law 2:  !(A || B)  →  !A && !B</code></pre>
+    <h3>Part 2: <code>isInvalidStatScore(int score)</code> &amp; <code>isSafeStatScore(int score)</code></h3>
 
     <p>
-        In words: NOT (both are true) means at least one is false.
-        NOT (either is true) means both are false.
+        A legal 5e ability score rolled on 3d6 is between <code>3</code> and <code>18</code>,
+        inclusive:
     </p>
+    <pre><code>score &gt;= 3 &amp;&amp; score &lt;= 18</code></pre>
 
-    <div class="tinker">
-        <h3>Experiment: Prove It</h3>
+    <div class="bug-hunt">
+        <h3>Discovery Trap 2: The Impossible Range &amp; The Boundary Flip</h3>
         <p>
-            Create <code>DeMorganTest.java</code>. Pick two booleans (try TT, TF,
-            FT, FF). For each pair, print BOTH sides of Law 1 and verify they
-            give the same result. Then do the same for Law 2. Build a truth table
-            proving both laws hold.
+            When asked to write <code>isInvalidStatScore(int score)</code> (true when
+            <code>score</code> is <em>outside</em> <code>3..18</code>), two bugs show up constantly:
         </p>
+        <pre><code>// Bug A: The Impossible Number
+return score &lt; 3 &amp;&amp; score &gt; 18;
+
+// Bug B: The Boundary Thief
+return score &lt;= 3 || score &gt;= 18;</code></pre>
+        <ol>
+            <li>Why does Bug A return <code>false</code> for <em>every</em> possible integer in Java
+                (even <code>-999</code> and <code>999</code>)?</li>
+            <li>Why does Bug B fail specifically when <code>score</code> is <code>3</code> or
+                <code>18</code>? What is the exact negation of <code>&gt;=</code>, and what is the
+                exact negation of <code>&lt;=</code>?</li>
+        </ol>
     </div>
+
+    <h4>AP Specification — Stat Range Methods</h4>
+    <ul>
+        <li><code>public static boolean isSafeStatScore(int score)</code> — returns <code>true</code>
+            if <code>score</code> is in the closed interval <code>[3, 18]</code>, <code>false</code>
+            otherwise.</li>
+        <li><code>public static boolean isInvalidStatScore(int score)</code> — returns <code>true</code>
+            if <code>score</code> is outside <code>[3, 18]</code>, written without <code>!</code>.</li>
+    </ul>
+</div>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Part 3 · Discovery &amp; Build</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <h3>Part 3: <code>doesBossEnrage(boolean lowHp, boolean minionFell, boolean isSilenced)</code></h3>
+
+    <p>
+        <strong>The Rule:</strong> The dungeon boss enrages if its HP is low <strong>OR</strong> a
+        minion fell this round — <strong>provided the boss is NOT silenced</strong>. If the boss is
+        silenced, it can never enrage.
+    </p>
+
+    <div class="bug-hunt">
+        <h3>Discovery Trap 3: Operator Precedence (<code>&amp;&amp;</code> Binds Tighter Than <code>||</code>)</h3>
+        <p>
+            Translate the English rule straight into Java without parentheses and run
+            <code>DungeonGatekeeperCheck</code>:
+        </p>
+        <pre><code>// Try this in doesBossEnrage:
+return lowHp || minionFell &amp;&amp; !isSilenced;</code></pre>
+        <ol>
+            <li>Look at the 5th check in Part 3:
+                <code>doesBossEnrage(true, false, true)</code> — the boss has low HP, no minion fell,
+                and the boss <strong>IS silenced</strong>. Your method returned <code>true</code>!
+                Why did Java ignore <code>!isSilenced</code> when <code>lowHp</code> was
+                <code>true</code>?</li>
+            <li>In arithmetic, <code>*</code> has higher precedence than <code>+</code>, so
+                <code>a + b * c</code> means <code>a + (b * c)</code>. Between <code>!</code>,
+                <code>&amp;&amp;</code>, and <code>||</code>, what is Java's exact order of
+                precedence from highest to lowest?</li>
+        </ol>
+    </div>
+
+    <h4>AP Specification — <code>doesBossEnrage</code></h4>
+    <ul>
+        <li><strong>Signature:</strong> <code>public static boolean doesBossEnrage(boolean lowHp, boolean minionFell, boolean isSilenced)</code></li>
+        <li><strong>Behavior:</strong> Returns <code>true</code> when <code>(lowHp || minionFell)</code>
+            is true and <code>isSilenced</code> is false; returns <code>false</code> otherwise.</li>
+    </ul>
+</div>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Part 4 · Discovery &amp; Build</span>
+        <span class="activity-time">~15 min</span>
+    </div>
+
+    <h3>Part 4: <code>hasFairGoldSplit(int partySize, int totalGold, int minShare)</code></h3>
+
+    <p>
+        After clearing a room, the party splits <code>totalGold</code> equally among
+        <code>partySize</code> heroes. A split is fair if:
+    </p>
+    <ol>
+        <li>There is at least 1 hero in the party (<code>partySize &gt; 0</code>),</li>
+        <li>Each hero's integer share (<code>totalGold / partySize</code>) is at least
+            <code>minShare</code>, AND</li>
+        <li>The gold divides evenly with <code>0</code> coins left over
+            (<code>totalGold % partySize == 0</code>).</li>
+    </ol>
 
     <div class="socratic">
-        <h3>Socratic Checkpoint</h3>
+        <h3>Socratic Checkpoint — The Short-Circuit Shield</h3>
         <ol>
-            <li>Read the <a href="../docs/unit-03/de-morgan.html">De Morgan's Laws docs</a>.
-                Look at the "Why This Matters" section. Which version is clearer
-                to you: <code>!(score &lt; 0 || score &gt; 100)</code> or
-                <code>score &gt;= 0 &amp;&amp; score &lt;= 100</code>?
-                Why?</li>
-            <li>Now find the Bug Hunt in the docs. The student wanted to check
-                for extreme d20 rolls (1 or 20). They started with
-                <code>!(roll &gt; 1 &amp;&amp; roll &lt; 20)</code> which works,
-                then "removed the !" and got <code>roll &lt; 1 &amp;&amp; roll &gt; 20</code>.
-                Why will that NEVER be true? How SHOULD they have applied
-                De Morgan's Law?</li>
+            <li>What happens in Part 4 of <code>DungeonGatekeeperCheck</code> if you write
+                <code>totalGold / partySize &gt;= minShare &amp;&amp; partySize &gt; 0</code> when
+                <code>partySize</code> is <code>0</code>? Why does reversing the order of the two
+                sides of <code>&amp;&amp;</code> prevent an <code>ArithmeticException</code>?</li>
         </ol>
-    </div>
-
-    <div class="tinker">
-        <h3>Apply: Rewrite These</h3>
-        <p>
-            Each of the following uses an outer <code>!</code>. Rewrite it
-            without the <code>!</code> using De Morgan's Laws:
-        </p>
-        <ol>
-            <li><code>!(hp &lt;= 0 || armorBroken)</code> — when would this be true?</li>
-            <li><code>!(enemyAlive &amp;&amp; hasAmmo)</code> — when can't you attack?</li>
-            <li><code>!(score &lt; 0 || score &gt; 100)</code> — what does this check?</li>
-        </ol>
-        <p>
-            Write your answers down on paper first. Then write code to verify
-            both versions give the same result for multiple input values.
-        </p>
-    </div>
-
-    <div class="tinker">
-        <h3>Apply: Combat Validation</h3>
-        <p>
-            Your combat system needs to validate whether a player can attack.
-            A player CAN attack when they are alive AND have a weapon AND the
-            enemy is alive. Write this condition.
-        </p>
-        <p>
-            Now the game needs to print "You cannot attack!" when the player
-            CANNOT attack. You could write:
-        </p>
-        <pre><code>if (!(playerAlive && hasWeapon && enemyAlive)) {
-    System.out.println("You cannot attack!");
-}</code></pre>
-        <p>
-            Apply De Morgan's Law to rewrite this without the outer <code>!</code>.
-            Which version is more readable? Which would be better for printing
-            a specific reason (e.g., "You're dead!" vs "You have no weapon!")?
-        </p>
-    </div>
-
-    <div class="checklist">
-        <h3>Checkpoint — before moving on, you must be able to:</h3>
-        <ul>
-            <li>State both of De Morgan's Laws</li>
-            <li>Rewrite a negated compound condition without the outer !</li>
-            <li>Verify that both forms produce the same truth table</li>
-            <li>Choose the more readable form for a given situation</li>
-        </ul>
     </div>
 </div>
 
 <!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">Part 5 · AP FRQ Synthesis Build</span>
+        <span class="activity-time">~20 min</span>
+    </div>
+
+    <h3>Part 5: <code>classifyEncounterZone(int floor, int partyLevel, boolean hasTorch, String guildRank)</code></h3>
+
+    <p>
+        Combine short-circuit null safety, De Morgan logic, and multi-branch conditions to classify a
+        dungeon floor into a zone tier:
+    </p>
+    <table>
+        <tr><th>Priority</th><th>Condition</th><th>Return Tier</th></tr>
+        <tr>
+            <td>1 (Highest)</td>
+            <td><strong>Forbidden / Invalid:</strong> <code>floor &lt;= 0</code>, OR
+                <code>partyLevel &lt;= 0</code>, OR <code>guildRank</code> is <code>null</code>, OR
+                <code>guildRank</code> equals <code>"Banned"</code></td>
+            <td><code>-1</code></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><strong>Abyssal Boss Zone:</strong> <code>floor &gt;= 10</code> AND
+                <code>(partyLevel &gt;= 12 || guildRank.equals("Grandmaster"))</code> AND
+                <code>hasTorch</code></td>
+            <td><code>3</code></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td><strong>Dark Hazard Zone:</strong> The party does <strong>NOT</strong> have a torch,
+                AND it is <strong>NOT</strong> the case that <code>(floor &lt; 5 &amp;&amp; guildRank.equals("Veteran"))</code></td>
+            <td><code>2</code></td>
+        </tr>
+        <tr>
+            <td>4 (Default)</td>
+            <td><strong>Standard Zone:</strong> All other valid cases</td>
+            <td><code>1</code></td>
+        </tr>
+    </table>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — Simplifying Priority 3</h3>
+        <ol>
+            <li>Look at the second half of Priority 3:
+                <code>!(floor &lt; 5 &amp;&amp; guildRank.equals("Veteran"))</code>. Apply De Morgan's
+                Law to rewrite that inner condition without the outer <code>!</code>.</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Done When</h3>
+        <ul>
+            <li><code>java DungeonGatekeeperCheck</code> reports <strong><code>25 passed, 0 failed</code></strong></li>
+            <li>All reflection questions above are answered and your <code>.json</code> is downloaded for Canvas</li>
+        </ul>
+    </div>
+</div>
+
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-03/de-morgan.html">De Morgan's Laws</a> — both laws, range trap, combat examples</li>
-        <li><a href="../docs/unit-03/boolean-logic.html">Boolean Logic</a> — the operators being flipped</li>
+        <li><a href="../docs/unit-03/de-morgan.html">De Morgan's Laws</a> — truth tables, range negations, precedence</li>
+        <li><a href="../docs/unit-03/boolean-logic.html">Boolean Logic</a> — short-circuit evaluation</li>
     </ul>
 </div>`;
 ---
-<Lesson id="3.5a" title="3.5a De Morgan's Laws — AP CS A" root=".." css="../style.css">
+<Lesson id="3.5a" title="3.5 De Morgan's Laws &amp; The DungeonGatekeeper Build — AP CS A" root=".." css="../style.css">
   <Fragment set:html={body} />
 </Lesson>

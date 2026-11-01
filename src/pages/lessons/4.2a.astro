@@ -1,126 +1,190 @@
 ---
-// Migrated from lessons/4.2a.html - the body below is the original page content.
-// The head, top nav, and the prev/next chain now come from
-// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
 import Lesson from '../../layouts/LessonLayout.astro';
 
-const body = `<h1>4.2a — for Loops: When You Know the Count</h1>
+const body = `<h1>4.2 — for Loops &amp; The EncounterSim Build</h1>
+
+<p>
+    <strong>CED Topic 2.8 · 90-Minute Unified Build.</strong> When you know the exact range of
+    rooms, turns, or indices to visit, a <code>for</code> loop packs initialization, termination
+    condition, and step update into a single header. Today you will build
+    <code>EncounterSim.java</code> — an AP FRQ-style dungeon simulator that tests accumulators,
+    streak tracking, and multi-condition room hazards.
+</p>
+
+<div class="callout">
+    <strong>Starting Files (Download Both):</strong>
+    <ul>
+        <li>
+            <a href="../data/EncounterSim.java" download>EncounterSim.java</a> — bare-minimum
+            compiling stub.
+        </li>
+        <li>
+            <a href="../data/EncounterSimCheck.java" download>EncounterSimCheck.java</a> —
+            automated AP-style test suite (16 checks across 4 parts).
+        </li>
+    </ul>
+    <pre><code>javac EncounterSim.java EncounterSimCheck.java
+java EncounterSimCheck</code></pre>
+</div>
 
 <!-- ============================================================ -->
-<div class="activity discovery">
+<div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Discovery Lab</span>
-        <span class="activity-time">~25 min</span>
+        <span class="activity-label">Parts 1 &amp; 2 · Discovery &amp; Build</span>
+        <span class="activity-time">~35 min</span>
     </div>
 
+    <h3>Part 1: <code>totalScaledXP(int startFloor, int endFloor, int bossMultiplier)</code></h3>
     <p>
-        while loops are for unknown counts — "keep fighting until someone dies."
-        But what about "generate exactly 5 rooms" or "print inventory items 1 through 10"?
-        When you know the count, a <code>for</code> loop packs all the loop control
-        into one clean line.
+        Compute the total XP earned by clearing every floor from <code>startFloor</code> through
+        <code>endFloor</code>, <strong>inclusive</strong> (if <code>startFloor &gt; endFloor</code>,
+        return <code>0</code>):
+    </p>
+    <ul>
+        <li>A standard floor <code>f</code> awards <code>f * 100</code> XP.</li>
+        <li>Every 5th floor (when <code>f % 5 == 0</code>) is a Boss Floor and awards
+            <code>f * 100 * bossMultiplier</code> XP instead.</li>
+    </ul>
+
+    <h3>Part 2: <code>countDangerSpikes(int numRooms, int seed, int threshold)</code></h3>
+    <p>
+        For each room <code>r</code> from <code>1</code> through <code>numRooms</code> inclusive,
+        the procedural generator computes a danger rating:
+    </p>
+    <pre><code>int danger = (r * seed + 17) % 100;</code></pre>
+    <p>
+        Return the number of rooms whose danger rating is greater than or equal to
+        <code>threshold</code>.
     </p>
 
-    <p>
-        A for loop bundles initialize, test, and update into its header.
-        It's not different from while — it's just organized differently.
-    </p>
-
-    <h3>The Pattern</h3>
-
-    <pre><code>for (initialize; test; update) {
-    // body
-}</code></pre>
-
-    <pre><code>// A while loop:
-int i = 0;           // initialize
-while (i < 5) {      // test
-    System.out.println(i);
-    i++;             // update
+    <div class="bug-hunt">
+        <h3>Discovery Trap 1: The Amnesiac Accumulator &amp; Inclusive Bounds</h3>
+        <p>
+            Compare these two broken implementations of <code>totalScaledXP</code>:
+        </p>
+        <pre><code>// Bug A: Where is total declared?
+for (int f = startFloor; f &lt;= endFloor; f++) {
+    int total = 0;
+    total += f * 100;
 }
 
-// The SAME thing as a for loop:
-for (int i = 0; i < 5; i++) {
-    System.out.println(i);
+// Bug B: Look at the loop test
+int total = 0;
+for (int f = startFloor; f &lt; endFloor; f++) {
+    ...
 }</code></pre>
-
-    <div class="tinker">
-        <h3>Experiment: Rewrite the Rewrite</h3>
-        <p>
-            Take your <code>CombatLoop.java</code> from 4.1a. The combat loop
-            is a while loop because you don't know how many rounds. But can
-            you add a round counter that prints the round number? Try it.
-        </p>
-        <p>
-            Now create a new file <code>ForExplorer.java</code>. Write a for loop
-            that prints exactly 5 rooms — room 1 through room 5. Include a d20
-            roll for each room: if roll >= 10, print "Enemy appears!" Otherwise,
-            print "Room is empty."
-        </p>
-    </div>
-
-    <div class="callout trap">
-        <strong>Scope Trap:</strong> Open the
-        <a href="../docs/unit-04/for-loops.html">for Loops docs</a>. Find the
-        "Lost in Scope" Socratic Checkpoint. Read the broken code, then answer:
-        why can't you use <code>i</code> after the loop? How would you fix it
-        if you NEEDED the final value after the loop?
-    </div>
-
-    <div class="tinker">
-        <h3>Build: Counting Patterns</h3>
-        <p>
-            The <a href="../docs/unit-04/for-loops.html">for Loops docs</a>
-            have a section called "Counting Patterns." It shows five different
-            loop headers. Write a program that creates all five loops and prints
-            what each one outputs.
-        </p>
-        <p>
-            Before running, PREDICT the output of each one. Write it down.
-            Then run. How many did you get right?
-        </p>
-        <p>
-            Which pattern would you use for: printing even numbers? Printing
-            numbers 10, 20, 30 up to 100? Countdown from 10?
-        </p>
-    </div>
-
-    <div class="socratic">
-        <h3>Socratic Checkpoint</h3>
         <ol>
-            <li>The docs say: "while = unknown repetitions, for = known repetitions."
-                Think of a game situation where you'd use NEITHER — where the
-                repetition needs both a counter AND an unknown exit condition.
-                How would you write that?</li>
-            <li>Read "The Missing Item" Bug Hunt in the docs. Why does the buggy
-                inventory loop crash? What's the difference between starting at
-                0 vs starting at 1 when your array has 5 items?</li>
-            <li>Look at the enhanced for loop at the bottom of the docs. When
-                would you use <code>for (String item : items)</code> instead of
-                <code>for (int i = 0; ...)</code>? What can the index version do
-                that the enhanced version can't?</li>
+            <li>In Bug A, why does declaring <code>int total = 0;</code> inside the loop body cause
+                both a compiler scope error after the loop AND reset your running sum on every floor?</li>
+            <li>In Bug B, if <code>startFloor = 1</code> and <code>endFloor = 5</code>, why does
+                <code>f &lt; endFloor</code> miss the Boss Floor at floor 5 completely?</li>
         </ol>
-    </div>
-
-    <div class="checklist">
-        <h3>Checkpoint — before moving on, you must be able to:</h3>
-        <ul>
-            <li>Write a for loop with any of the five counting patterns</li>
-            <li>Explain when to use for vs while</li>
-            <li>Explain loop variable scope (why i disappears after the loop)</li>
-            <li>Rewrite a while loop as a for loop and vice versa</li>
-        </ul>
     </div>
 </div>
 
 <!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Part 3 · Discovery &amp; Build</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <h3>Part 3: <code>longestSafeStreak(int numRooms, int trapCycle, int bossRoom)</code></h3>
+
+    <p>
+        Streak-finding is one of the College Board's favorite AP FRQ 1 patterns. You walk through
+        rooms <code>1</code> to <code>numRooms</code> inclusive:
+    </p>
+    <ul>
+        <li>A room <code>r</code> is <strong>unsafe</strong> if <code>r == bossRoom</code> OR
+            <code>r % trapCycle == 0</code>.</li>
+        <li>Otherwise, room <code>r</code> is <strong>safe</strong>.</li>
+        <li>Return the length of the <strong>longest consecutive streak</strong> of safe rooms.</li>
+    </ul>
+
+    <div class="bug-hunt">
+        <h3>Discovery Trap 2: The Trailing Streak Bug</h3>
+        <p>
+            Watch how many programmers write their streak tracker:
+        </p>
+        <pre><code>int currentStreak = 0;
+int maxStreak = 0;
+for (int r = 1; r &lt;= numRooms; r++) {
+    if (r == bossRoom || r % trapCycle == 0) {
+        if (currentStreak &gt; maxStreak) {
+            maxStreak = currentStreak;
+        }
+        currentStreak = 0;
+    } else {
+        currentStreak++;
+    }
+}
+return maxStreak;</code></pre>
+        <ol>
+            <li>Trace that code on <code>longestSafeStreak(10, 6, 2)</code>: Room 2 is the boss and
+                Room 6 is a trap, so Rooms <code>7, 8, 9, 10</code> are all safe (a streak of
+                <code>4</code> at the very end of the dungeon!). What does the code above return,
+                and why was <code>maxStreak</code> never updated for Rooms 7–10?</li>
+            <li>How can you structure your update of <code>maxStreak</code> so that a streak ending
+                on the final room is always captured?</li>
+        </ol>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">Part 4 · AP FRQ Synthesis Build</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>Part 4: <code>simulateGauntletHP(int startingHP, int numRooms, int trapCycle, int healCycle)</code></h3>
+
+    <p>
+        Simulate a hero starting with <code>startingHP</code> walking through rooms
+        <code>1</code> through <code>numRooms</code> in order. In each room <code>r</code>:
+    </p>
+    <ul>
+        <li>If <code>r</code> is divisible by <strong>BOTH</strong> <code>trapCycle</code> and
+            <code>healCycle</code>: it is a Cursed Fountain! Subtract <code>5</code> HP.</li>
+        <li>Else if <code>r</code> is divisible by <code>trapCycle</code>: subtract
+            <code>r * 2</code> HP.</li>
+        <li>Else if <code>r</code> is divisible by <code>healCycle</code>: add <code>6</code> HP.</li>
+        <li>Otherwise: subtract <code>1</code> HP for travel fatigue.</li>
+    </ul>
+    <p>
+        <strong>Critical Death Rule:</strong> At the end of each room, if the hero's HP has dropped
+        to <code>0</code> or below, the hero dies immediately — return <code>0</code> right away so
+        a future healing room cannot resurrect a dead hero!
+    </p>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — Post-Mortem Healing &amp; FizzBuzz Ordering</h3>
+        <ol>
+            <li>Why would waiting until <em>after</em> the <code>for</code> loop finishes to check
+                <code>if (hp &lt;= 0) return 0;</code> fail Check 2 in Part 4
+                (<code>simulateGauntletHP(5, 4, 2, 3)</code>)? Trace the hero's HP in Room 1, Room
+                2, and Room 3 to see what happens if the loop keeps running after death.</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Done When</h3>
+        <ul>
+            <li><code>java EncounterSimCheck</code> reports <strong><code>16 passed, 0 failed</code></strong></li>
+            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+        </ul>
+    </div>
+</div>
+
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — syntax, counting patterns, scope, inventory</li>
-        <li><a href="../docs/unit-04/while-loops.html">while Loops</a> — comparison reference</li>
+        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — counting patterns, scope, accumulators</li>
+        <li><a href="../docs/unit-04/while-loops.html">while vs for</a> — choosing the right loop</li>
     </ul>
 </div>`;
 ---
-<Lesson id="4.2a" title="4.2a for Loops — AP CS A" root=".." css="../style.css">
+<Lesson id="4.2a" title="4.2 for Loops &amp; The EncounterSim Build — AP CS A" root=".." css="../style.css">
   <Fragment set:html={body} />
 </Lesson>

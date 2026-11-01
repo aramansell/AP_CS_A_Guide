@@ -1,123 +1,129 @@
 ---
-// Migrated from lessons/4.6b.html - the body below is the original page content.
-// The head, top nav, and the prev/next chain now come from
-// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
 import Lesson from '../../layouts/LessonLayout.astro';
 
-const body = `<h1>4.6b — Dungeon Loop: Room Exploration</h1>
+const body = `<h1>4.6 (Day 2) — Dungeon Crawler RPG Build: Multi-Floor Campaign &amp; Boss</h1>
 
-<!-- ============================================================ -->
-<div class="activity rpg">
-    <div class="activity-header">
-        <span class="activity-label">RPG Build</span>
-        <span class="activity-time">~25 min</span>
-    </div>
+<p>
+    <strong>CED Topics 2.9, 2.11 · 90-Minute RPG Build (Day 2 of 2).</strong> Yesterday in
+    <code>4.6a</code> you built <code>simulateDuelToDeath</code> and <code>runCombat</code> inside
+    <code>DungeonLoop.java</code>. Today you complete Parts 3 and 4 in that same file: wrapping
+    your <code>while</code>-loop combat engine inside a <code>for</code> loop over rooms and an
+    outer <code>for</code> loop over dungeon floors.
+</p>
 
-    <h3>Part 2: runDungeon() — The For Loop</h3>
-
-    <p>Your combat while loop works. Now build the dungeon that uses a for loop
-    to generate a fixed number of rooms. Each room has a random encounter:
-    combat, treasure, or trap. This is where you see the while-vs-for distinction
-    in action — combat uses while (unknown rounds), rooms use for (known count).</p>
-
-    <p>Open the <a href="../docs/unit-04/dungeon-system.html">Dungeon Loop System
-    (Student RPG Guide)</a>. Follow Part 2: runDungeon().</p>
-
-    <p>Add this method to <code>DungeonLoop.java</code>:</p>
-    <pre><code>public static void runDungeon(int difficulty)</code></pre>
-
-    <p><strong>Requirements:</strong></p>
-    <ul>
-        <li>Print header: <code>"=== DUNGEON CRAWL (Difficulty: [N]) ==="</code></li>
-        <li>Track: playerHP (start 20), gold (start 0), roomsSurvived (start 0)</li>
-        <li>For loop: room 1 to 5. At top of each iteration: if playerHP ≤ 0, break</li>
-        <li>Each room: random type 0/1/2:
-            <ul>
-                <li><strong>Combat (0):</strong> Scale a monster. HP = 5 + room × difficulty,
-                    AC = 10 + room. Call runCombat(). Win → add 10 × room gold.
-                    Lose → playerHP = 0.</li>
-                <li><strong>Treasure (1):</strong> Add 5 + Dice.roll(10) × difficulty gold.
-                    Print what was found.</li>
-                <li><strong>Trap (2):</strong> Subtract Dice.roll(6) from playerHP.
-                    Print damage and remaining HP.</li>
-            </ul>
-        </li>
-        <li>Increment roomsSurvived after each room</li>
-        <li>After loop: print summary (rooms explored, gold, HP remaining)</li>
-    </ul>
-
-    <div class="socratic">
-        <h3>Socratic Checkpoint</h3>
-        <ol>
-            <li>Why is the dungeon loop a for loop but the combat loop is a while
-                loop? Could you swap them? What would break?</li>
-            <li>You use <code>break</code> when the player dies. What happens to the
-                remaining rooms? What if you used <code>return</code> instead?</li>
-            <li>HP carries over across rooms. Gold accumulates. Where are these
-                variables declared — inside the for loop or outside it? Why?</li>
-        </ol>
-    </div>
-
-    <div class="tinker">
-        <h3>Tinker: Escalating Difficulty</h3>
-        <p>
-            Make room difficulty scale: monster HP and AC increase by 1 per room.
-            By room 5, monsters are significantly tougher. Run the dungeon at
-            difficulty 1, then difficulty 3. How often does the player survive?
-            What difficulty feels "fair"?
-        </p>
-    </div>
-
-    <p><strong>Acceptance Test:</strong></p>
-    <pre><code>DungeonLoop.runDungeon(1);
-// Verify: exactly 5 rooms (or fewer if player dies)
-// Room types vary (re-run to see all three)
-// Combat, treasure, and trap rooms work as described
-// HP and gold carry across rooms
-// Player death skips remaining rooms</code></pre>
+<div class="callout">
+    <strong>Continue in Your Existing Files:</strong> Keep working in your
+    <code>DungeonLoop.java</code> from <code>4.6a</code> alongside
+    <a href="../data/DungeonLoopCheck.java" download>DungeonLoopCheck.java</a> and
+    <a href="../data/Dice.java" download>Dice.java</a>.
+    <pre><code>javac Dice.java DungeonLoop.java DungeonLoopCheck.java
+java DungeonLoopCheck</code></pre>
 </div>
 
 <!-- ============================================================ -->
 <div class="activity rpg">
     <div class="activity-header">
-        <span class="activity-label">RPG Build</span>
-        <span class="activity-time">~10 min</span>
+        <span class="activity-label">Part 3 · Discovery &amp; Build</span>
+        <span class="activity-time">~40 min</span>
     </div>
 
-    <h3>Part 3: main() — Wire It Together</h3>
+    <h3>Part 3: <code>exploreFloorDeterministic(int startingHP, int numRooms, int monsterBaseHP, int playerDmg, int monsterDmg)</code></h3>
 
-    <p>Add a main method that tests both pieces:</p>
+    <p>
+        Walk a hero with <code>startingHP</code> through rooms <code>r = 1</code> to
+        <code>numRooms</code> inclusive:
+    </p>
     <ol>
-        <li>Call <code>runCombat()</code> once with hardcoded stats to verify the
-            while loop in isolation</li>
-        <li>Call <code>runDungeon(1)</code> to run the full game</li>
+        <li>In room <code>r</code>, the monster's starting HP is
+            <code>monsterBaseHP + r * 2</code>.</li>
+        <li>Call your own <code>simulateDuelToDeath(hp, playerDmg, roomMonsterHP, monsterDmg)</code>
+            from Day 1 to update the hero's HP!</li>
+        <li>If the hero died in that duel (<code>hp &lt;= 0</code>), immediately return
+            <code>0</code> (or <code>break</code>) — a dead hero cannot visit a shrine or enter the
+            next room!</li>
+        <li>If the hero <strong>survived</strong> room <code>r</code> AND <code>r</code> is a
+            multiple of <code>3</code> (<code>r % 3 == 0</code>), the room contains a Healing Shrine
+            that restores <code>+4</code> HP.</li>
+    </ol>
+    <p>
+        Return the hero's remaining HP after room <code>numRooms</code> (or <code>0</code> if they
+        fell).
+    </p>
+
+    <div class="bug-hunt">
+        <h3>Discovery Trap 1: The Dead-Hero Shrine Resurrection</h3>
+        <ol>
+            <li>In Check 2 of Part 3 (<code>exploreFloorDeterministic(8, 3, 4, 5, 3)</code>), the
+                hero enters Room 3 with <code>2 HP</code> and dies during the Room 3 fight
+                (<code>hp</code> becomes <code>0</code>). Since Room 3 is a multiple of 3
+                (<code>r % 3 == 0</code>), what happens if you check
+                <code>if (r % 3 == 0) hp += 4;</code> <em>before</em> checking whether the hero
+                survived the duel in Room 3?</li>
+        </ol>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">Part 4 · Nested Campaign Synthesis</span>
+        <span class="activity-time">~50 min</span>
+    </div>
+
+    <h3>Part 4: <code>runMultiFloorCampaign(int startingHP, int maxHP, int floors, int roomsPerFloor, int playerDmg, int monsterDmg)</code></h3>
+
+    <p>
+        Now nest three levels of loops together — an outer <code>for</code> loop over floors
+        (<code>floor = 1 .. floors</code>), an inner <code>for</code> loop over rooms
+        (<code>room = 1 .. roomsPerFloor</code>), and your <code>while</code>-loop duel inside
+        <code>simulateDuelToDeath</code>:
+    </p>
+    <ol>
+        <li>In each room <code>(floor, room)</code>, the monster's HP scales with both depth and
+            room number:
+            <pre><code>int monsterHP = floor * 4 + room * 2;</code></pre>
+        </li>
+        <li>Update the hero's HP by calling
+            <code>simulateDuelToDeath(hp, playerDmg, monsterHP, monsterDmg)</code>.</li>
+        <li><strong>Defeat Code:</strong> If the hero's HP drops to <code>0</code> in any room on
+            <code>floor</code>, immediately return <code>-floor</code> (for example, dying on Floor
+            2 returns <code>-2</code>).</li>
+        <li><strong>End-of-Floor Campfire Rest:</strong> After clearing all rooms on a floor (at the
+            end of the inner room loop, before moving to the next floor), the surviving hero rests
+            and recovers <code>floor * 3</code> HP — <strong>capped at <code>maxHP</code></strong>
+            so HP never exceeds <code>maxHP</code>!</li>
+        <li>If the hero survives all floors, return their final positive HP.</li>
     </ol>
 
-    <p>Run DungeonLoop.main() several times. Results should vary — dice rolls
-    make every run different.</p>
+    <div class="socratic">
+        <h3>Socratic Checkpoint — Campfire Placement &amp; Overheal Clamping</h3>
+        <ol>
+            <li>What would happen if you placed the campfire heal (<code>hp += floor * 3</code>)
+                inside the <em>inner</em> room loop instead of at the end of the <em>outer</em>
+                floor loop? How many times would the hero rest on a 3-floor, 4-room-per-floor
+                campaign?</li>
+            <li>Why does Check 2 in Part 4 fail if you write <code>hp += floor * 3;</code> without
+                clamping <code>if (hp &gt; maxHP) hp = maxHP;</code>?</li>
+        </ol>
+    </div>
 
     <div class="checklist">
-        <h3>Checkpoint — before moving on, you must be able to:</h3>
+        <h3>Day 2 Milestone — Done When</h3>
         <ul>
-            <li>Explain when to use while vs for based on the problem</li>
-            <li>Write a while loop for indeterminate combat rounds</li>
-            <li>Write a for loop for a fixed series of dungeon rooms</li>
-            <li>Use <code>break</code> to exit a loop early</li>
-            <li>Call a method from inside a loop and use its return value</li>
+            <li><code>java DungeonLoopCheck</code> reports <strong><code>13 passed, 0 failed</code></strong> across all 4 parts</li>
+            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
         </ul>
     </div>
 </div>
 
-<!-- ============================================================ -->
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-04/dungeon-system.html">Dungeon Loop System (Student RPG Guide)</a></li>
-        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — fixed-count iteration</li>
-        <li><a href="../docs/unit-04/while-loops.html">while Loops</a> — condition-based iteration</li>
+        <li><a href="../docs/unit-04/dungeon-crawl.html">Dungeon Crawl Extended (Student RPG Guide)</a></li>
+        <li><a href="../docs/unit-04/nested-loops.html">Nested Loops</a></li>
     </ul>
 </div>`;
 ---
-<Lesson id="4.6b" title="4.6b Dungeon For Loop — AP CS A" root=".." css="../style.css">
+<Lesson id="4.6b" title="4.6b Dungeon Crawler (Day 2): Multi-Floor Campaign &amp; Boss — AP CS A" root=".." css="../style.css">
   <Fragment set:html={body} />
 </Lesson>

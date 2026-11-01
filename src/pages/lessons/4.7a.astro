@@ -1,131 +1,140 @@
 ---
-// Migrated from lessons/4.7a.html - the body below is the original page content.
-// The head, top nav, and the prev/next chain now come from
-// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
 import Lesson from '../../layouts/LessonLayout.astro';
 
-const body = `<h1>4.7a — How Fast Does It Run? (Informal Run-Time Analysis)</h1>
+const body = `<h1>4.7 — Informal Run-Time Analysis &amp; The RuntimeAnalyzer Build</h1>
+
+<p>
+    <strong>CED Topic 2.12 · 90-Minute Unified Build.</strong> On the AP Computer Science A exam,
+    informal run-time analysis asks you to compare algorithms not with a stopwatch, but by counting
+    <strong>how many times a key statement executes</strong> as the problem size <code>n</code>
+    grows. Today you will build <code>RuntimeAnalyzer.java</code> to instrument linear, logarithmic,
+    and quadratic loop structures and prove how their step counts scale.
+</p>
+
+<div class="callout">
+    <strong>Starting Files (Download Both):</strong>
+    <ul>
+        <li>
+            <a href="../data/RuntimeAnalyzer.java" download>RuntimeAnalyzer.java</a> — bare-minimum
+            compiling stub.
+        </li>
+        <li>
+            <a href="../data/RuntimeAnalyzerCheck.java" download>RuntimeAnalyzerCheck.java</a> —
+            automated AP-style test suite (12 checks across 3 parts).
+        </li>
+    </ul>
+    <pre><code>javac RuntimeAnalyzer.java RuntimeAnalyzerCheck.java
+java RuntimeAnalyzerCheck</code></pre>
+</div>
 
 <!-- ============================================================ -->
-<div class="activity discovery">
+<div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Discovery Lab</span>
-        <span class="activity-time">~40 min</span>
+        <span class="activity-label">Parts 1 &amp; 2 · Linear vs. Halving Search</span>
+        <span class="activity-time">~45 min</span>
     </div>
 
+    <h3>Part 1: <code>countLinearSearchSteps(int n, int targetIndex)</code></h3>
     <p>
-        Every algorithm you have written has a cost. Today you learn to price them.
-        Not with a stopwatch: with structure. The AP exam tests this as "informal
-        run-time analysis" and it is the doorway to the searching and sorting questions
-        that dominate the data-collections unit. You already own every piece of
-        intuition you need. You built them in the dungeon.
+        Simulate a linear search over indices <code>0</code> through <code>n - 1</code> looking for
+        <code>targetIndex</code>:
     </p>
+    <ul>
+        <li>Loop <code>i</code> from <code>0</code> to <code>n - 1</code>.</li>
+        <li>On every iteration, increment a <code>steps</code> counter by <code>1</code>.</li>
+        <li>If <code>i == targetIndex</code>, immediately return <code>steps</code> (found!).</li>
+        <li>If the loop finishes without finding <code>targetIndex</code>, return
+            <code>steps</code> (which will equal <code>n</code>).</li>
+    </ul>
 
-    <div class="tinker">
-        <h3>Experiment 1: Count the Steps, Watch the Shape</h3>
-        <p>Create <code>SpeedLab.java</code>:</p>
-        <pre><code>// A: sum an array by visiting every element once
-int sum = 0;
-for (int i = 0; i &lt; n; i++) sum += data[i];        // n steps
-
-// B: sum by nested loops (silly, but legal)
-int sum2 = 0;
-for (int i = 0; i &lt; n; i++)
-    for (int j = 0; j &lt; n; j++)
-        sum2 += (i == j) ? data[i] : 0;             // n * n steps</code></pre>
-        <p>Build both with <code>n = 10</code>, print the sums to confirm they match,
-        and count steps with a counter variable (add <code>steps++</code> inside each
-        loop body). Record step counts for n = 10, 100, 1000. Make a table in your
-        notes. The A column: what happens when n grows 10x? The B column: what happens?
-        One of them grows like a straight line. The other does something much worse.</p>
-    </div>
-
-    <div class="callout">
-        <strong>The vocabulary, earned:</strong> Algorithm A does about n steps. We
-        call that <strong>linear</strong> ("grows like a line"). Doubling n doubles
-        the work. Algorithm B does about n-squared steps. We call that
-        <strong>quadratic</strong>. Doubling n QUADRUPLES the work. That is the whole
-        difference, and it is the difference between "runs in a second" and "heat
-        death of the universe before the second dungeon loads."
-    </div>
-
-    <div class="tinker">
-        <h3>Experiment 2: Price Your Own Dungeon</h3>
-        <p>Go back to your Unit 4 dungeon crawl. Find and price these:</p>
-        <ol>
-            <li>The room loop that prints 5 rooms (linear in rooms)</li>
-            <li>Your ASCII dungeon map printer from 4.4c: nested loops over rows and
-            columns. If the map is r rows by c columns, how many print operations?
-            Write your price — then defend it.</li>
-            <li>The "search every room for the key" pattern: rooms inside a
-            traversal of floors. What shape is that?</li>
-        </ol>
-        <p>Write your prices in your notes. Then the big question: your map printer
-        handles a 9x9 map instantly. What about 1000x1000? Same algorithm, one million
-        prints. Does it finish? (Try it. Time it. Feel the quadratic wall.)</p>
-    </div>
-
-    <div class="tinker">
-        <h3>Experiment 3: Linear Search Gets a Price Tag</h3>
-        <p>You wrote linear search in Unit 6 (check each element until found). Price
-        it: n elements, worst case n steps. Best case 1 (the target is first). Average
-        n/2. All are "about n". Now, this is the setup for the punchline you get in
-        Phase 4: binary search on sorted data does about log n steps. You do not need
-        the math yet. You need the feeling: log n means "cut the remaining search in
-        half every step." Watch it happen:</p>
-        <pre><code>int lo = 0, hi = n - 1, steps = 0;
+    <h3>Part 2: <code>countBinarySearchSteps(int n, int targetIndex)</code></h3>
+    <p>
+        Now simulate binary search (halving the search range every step) over the sorted index range
+        <code>lo = 0</code> to <code>hi = n - 1</code>:
+    </p>
+    <pre><code>int lo = 0;
+int hi = n - 1;
+int steps = 0;
 while (lo &lt;= hi) {
     steps++;
     int mid = (lo + hi) / 2;
-    System.out.println("step " + steps + ": checking index " + mid);
-    if (data[mid] == target) break;
-    else if (data[mid] &lt; target) lo = mid + 1;
-    else hi = mid - 1;
+    if (mid == targetIndex) {
+        return steps;
+    } else if (mid &lt; targetIndex) {
+        lo = mid + 1;
+    } else {
+        hi = mid - 1;
+    }
 }
-System.out.println("total steps: " + steps);</code></pre>
-        <p>Run it on a sorted array of 1000 elements with target at the end. Count the
-        steps. Now run linear search on the same array with the same target. Put both
-        numbers in your table. THAT gap, 10 steps vs 1000, is why the rest of the
-        course exists.</p>
-    </div>
+return steps;</code></pre>
 
     <div class="socratic">
-        <h3>Socratic Checkpoint</h3>
+        <h3>Socratic Checkpoint — 10 Steps vs. 1,023 Steps</h3>
         <ol>
-            <li>Algorithm A is linear, algorithm B is quadratic. Both are "correct."
-            When would you actually choose B? Come up with at least one honest
-            answer — and be ready to defend it.</li>
-            <li>A loop that runs n times containing another loop that runs n times is
-            quadratic. What about a loop that runs n times containing a loop that runs
-            10 times (a constant)? Linear or quadratic? Why does the constant not
-            matter at scale?</li>
-            <li>Predict: selection sort, which you meet in 7.3, uses nested loops over
-            the list. Linear or quadratic? When you get there, come back and check
-            your prediction.</li>
+            <li>Look at Part 2 of <code>RuntimeAnalyzerCheck</code>: when <code>n = 1023</code> and
+                <code>targetIndex = 1022</code> (the very last element!), how many steps does
+                <code>countLinearSearchSteps(1023, 1022)</code> take vs.
+                <code>countBinarySearchSteps(1023, 1022)</code>? Why does doubling <code>n</code>
+                from <code>1023</code> to <code>2047</code> add <code>1024</code> steps to linear
+                search, but only <strong><code>1</code></strong> step to binary search?</li>
         </ol>
-    </div>
-
-    <div class="checklist">
-        <h3>Checkpoint — before moving on, you must be able to:</h3>
-        <ul>
-            <li>Count steps with a counter and tabulate growth as n scales</li>
-            <li>Classify a loop structure as linear or quadratic on sight</li>
-            <li>Explain why constants fade and shapes dominate at scale</li>
-            <li>State the step counts of linear vs binary search and why they differ</li>
-        </ul>
     </div>
 </div>
 
 <!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Part 3 · Discovery &amp; Build</span>
+        <span class="activity-time">~45 min</span>
+    </div>
+
+    <h3>Part 3: <code>countFullGridSteps(int n)</code> &amp; <code>countUniquePairSteps(int n)</code></h3>
+
+    <p>
+        Implement both nested-loop step counters (return <code>0</code> if <code>n &lt;= 0</code>):
+    </p>
+    <ul>
+        <li><code>countFullGridSteps(int n)</code> — counts how many times the inner body runs in a
+            full <code>n × n</code> nested loop:
+            <code>for (int i = 0; i &lt; n; i++) for (int j = 0; j &lt; n; j++)</code>.</li>
+        <li><code>countUniquePairSteps(int n)</code> — counts how many times the inner body runs
+            when comparing only unique pairs:
+            <code>for (int i = 0; i &lt; n; i++) for (int j = i + 1; j &lt; n; j++)</code>.</li>
+    </ul>
+
+    <div class="bug-hunt">
+        <h3>Discovery Trap: Does Starting at <code>j = i + 1</code> Escape Quadratic Growth?</h3>
+        <p>
+            Many students assume that because <code>j = i + 1</code> skips roughly half the grid,
+            it is no longer quadratic. Let's check the numbers from your own methods!
+        </p>
+        <ol>
+            <li>Compare <code>countUniquePairSteps(10)</code> (<code>45</code>),
+                <code>countUniquePairSteps(100)</code> (<code>4,950</code>), and
+                <code>countUniquePairSteps(1000)</code> (<code>499,500</code>). When <code>n</code>
+                grows by a factor of <strong>10×</strong> (from 100 to 1,000), by roughly what
+                factor does the number of steps grow (10× or 100×)? Why does cutting a quadratic
+                algorithm in half still leave it quadratic at scale?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Done When</h3>
+        <ul>
+            <li><code>java RuntimeAnalyzerCheck</code> reports <strong><code>11 passed, 0 failed</code></strong></li>
+            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+        </ul>
+    </div>
+</div>
+
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-04/run-time-analysis.html">Run-Time Analysis</a> — linear vs quadratic, the step-counting method, search costs</li>
-        <li><a href="../docs/unit-07/sorting.html">Sorting (Unit 7)</a> — where these ideas return with real algorithms</li>
-        <li><a href="../docs/unit-04/loop-analysis.html">Loop Analysis &amp; Tracing</a> — the tracing skills behind step counting</li>
+        <li><a href="../docs/unit-04/run-time-analysis.html">Run-Time Analysis</a> — linear, quadratic, and logarithmic step counting</li>
+        <li><a href="../docs/unit-04/loop-analysis.html">Tracing Loops</a></li>
     </ul>
 </div>`;
 ---
-<Lesson id="4.7a" title="4.7a How Fast Does It Run? — AP CS A" root=".." css="../style.css">
+<Lesson id="4.7a" title="4.7 Informal Run-Time Analysis &amp; RuntimeAnalyzer Build — AP CS A" root=".." css="../style.css">
   <Fragment set:html={body} />
 </Lesson>

@@ -1,88 +1,208 @@
 ---
-// Migrated from lessons/3.6b.html - the body below is the original page content.
-// The head, top nav, and the prev/next chain now come from
-// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
 import Lesson from '../../layouts/LessonLayout.astro';
 
-const body = `<h1>3.6b — Combat Engine: The Combat Round</h1>
+const body = `<h1>3.6 (Day 2) — Combat Engine RPG Build: Tactical Round &amp; Stances</h1>
+
+<p>
+    <strong>CED Topics 2.1, 2.3, 2.4, 2.5 · 90-Minute RPG Build (Day 2 of 2).</strong> Yesterday in
+    <code>3.6a</code> you built <code>evaluateStrike</code>, <code>playerAttack</code>, and
+    <code>monsterAttack</code> inside <code>Combat.java</code>. Today you complete the remaining
+    three methods in that same <code>Combat.java</code> file: armor/defend damage mitigation,
+    full-round counterattack gating, and multi-stance tactical exchanges.
+</p>
+
+<div class="callout">
+    <strong>Continue in Your Existing Files:</strong> Keep working in your
+    <code>Combat.java</code> from <code>3.6a</code> alongside
+    <a href="../data/CombatCheck.java" download>CombatCheck.java</a> and
+    <a href="../data/Dice.java" download>Dice.java</a>. When you finish today's build, all
+    <strong>32 checks</strong> across Parts 1–5 will pass!
+    <pre><code>javac Dice.java Combat.java CombatCheck.java
+java CombatCheck</code></pre>
+</div>
 
 <!-- ============================================================ -->
 <div class="activity rpg">
     <div class="activity-header">
-        <span class="activity-label">RPG Build</span>
-        <span class="activity-time">~25 min</span>
+        <span class="activity-label">Part 3 · Discovery &amp; Build</span>
+        <span class="activity-time">~30 min</span>
     </div>
 
-    <p>
-        You have attack methods. Now combine them into a full combat round:
-        player attacks, monster takes damage, and — only if it's still alive —
-        the monster counterattacks.
-    </p>
+    <h3>Part 3: <code>applyMitigatedDamage(int currentHP, int rawDamage, boolean isDefending, int flatShield)</code></h3>
 
     <p>
-        Read <strong>Part 3</strong> of the
-        <a href="../docs/unit-03/combat-system.html">Combat System Student RPG Guide</a>.
+        When a character takes damage in an RPG, raw damage is reduced by two things in order:
     </p>
+    <ol>
+        <li><strong>Defending Stance:</strong> If <code>isDefending</code> is <code>true</code>,
+            incoming <code>rawDamage</code> is cut in half using integer division
+            (<code>rawDamage / 2</code>) <em>before</em> the shield is applied.</li>
+        <li><strong>Flat Shield / Armor Absorption:</strong> Subtract <code>flatShield</code> from
+            the damage.</li>
+    </ol>
 
-    <div class="socratic">
-        <h3>Socratic Checkpoint — Before You Code</h3>
+    <div class="bug-hunt">
+        <h3>Discovery Trap 1: The Armor-Heal Bug &amp; Overkill Negatives</h3>
+        <p>
+            Almost every programmer writes their first draft of damage mitigation like this:
+        </p>
+        <pre><code>// Naive draft — test this in applyMitigatedDamage and run CombatCheck!
+public static int applyMitigatedDamage(int currentHP, int rawDamage, boolean isDefending, int flatShield) {
+    if (isDefending) {
+        rawDamage = rawDamage / 2;
+    }
+    int netDamage = rawDamage - flatShield;
+    return currentHP - netDamage;
+}</code></pre>
         <ol>
-            <li>The method has 8 parameters. Trace through one call: which
-                parameter controls the player's roll bonus? Which controls
-                the monster's defense? Which tracks the monster's HP?</li>
-            <li>Why does the guide say "the monster should ONLY attack the player
-                if the monster is still alive"? What boolean condition checks
-                this? What happens if you forget this check?</li>
-            <li>Why does <code>combatRound</code> return <code>monsterHP</code>?
-                If we didn't return it, how would the next round know the
-                monster's current HP?</li>
-            <li>Look at the acceptance test in the guide. It calls combatRound
-                twice with the same monster. What's the point of the second call?
-                What are we verifying?</li>
+            <li>Suppose a hero has <code>currentHP = 20</code> and a tough <code>flatShield = 5</code>.
+                A weak Goblin hits them for <code>rawDamage = 3</code> (not defending). Trace the
+                naive code above: what is <code>netDamage</code>, and what does
+                <code>currentHP - netDamage</code> return? Why did getting hit by a Goblin
+                <strong>HEAL</strong> the hero to <code>22 HP</code>?!</li>
+            <li>Now suppose <code>currentHP = 12</code> and a Dragon hits for
+                <code>rawDamage = 35</code> with <code>flatShield = 2</code>. What happens if you
+                don't clamp the final HP at <code>0</code>?</li>
         </ol>
     </div>
 
-    <div class="callout trap">
-        <strong>Trap:</strong> The monster should NOT attack if it's dead!
-        This is where boolean logic from 3.2a is critical. What condition
-        do you write after the player's attack to decide whether the
-        monster gets a counterattack?
+    <h4>AP Specification — <code>applyMitigatedDamage</code></h4>
+    <ul>
+        <li><strong>Signature:</strong> <code>public static int applyMitigatedDamage(int currentHP, int rawDamage, boolean isDefending, int flatShield)</code></li>
+        <li><strong>Rules:</strong>
+            <ol>
+                <li>If <code>rawDamage &lt;= 0</code>, no damage is taken; return <code>currentHP</code> unchanged.</li>
+                <li>If <code>isDefending</code> is <code>true</code>, halve <code>rawDamage</code> via
+                    integer division (<code>rawDamage / 2</code>).</li>
+                <li>Subtract <code>flatShield</code> to get net damage. If net damage is less than
+                    <code>0</code>, clamp net damage to <code>0</code> (a shield never heals!).</li>
+                <li>Subtract net damage from <code>currentHP</code>. If the resulting HP is less than
+                    <code>0</code>, return <code>0</code>; otherwise return the resulting HP.</li>
+            </ol>
+        </li>
+    </ul>
+</div>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">Part 4 · Discovery &amp; Build</span>
+        <span class="activity-time">~25 min</span>
     </div>
 
-    <div class="tinker">
-        <h3>Tinker: Print the Story</h3>
-        <p>
-            After you get the basic combat round working, make it more readable.
-            Print a separator line before the round. Print the player's attack
-            result with the monster's name. Print the monster's remaining HP.
-            If the monster counterattacks, print how much damage the player
-            took. If the monster dies, print a dramatic death message.
-        </p>
-        <p>
-            The output should tell a story — not just numbers.
-        </p>
-    </div>
+    <h3>Part 4: <code>combatRound(...)</code> — The Zombie Counterattack Trap</h3>
 
-    <div class="checklist">
-        <h3>Checkpoint — before moving on, you must be able to:</h3>
-        <ul>
-            <li>Orchestrate multiple method calls in sequence</li>
-            <li>Use a conditional to decide whether a counterattack happens</li>
-            <li>Track and return state (HP) across method boundaries</li>
-            <li>Trace the flow of a multi-step combat round</li>
-        </ul>
+    <p>
+        In a turn-based combat exchange, the player attacks first. Subtract the player's damage from
+        <code>monsterHP</code>. Then — <strong>and only if the monster is still alive
+        (<code>monsterHP &gt; 0</code>)</strong> — the monster counterattacks!
+    </p>
+
+    <h4>AP Specification — <code>combatRound</code></h4>
+    <ul>
+        <li><strong>Signature:</strong>
+            <pre><code>public static int combatRound(int playerAtk, int monsterAC, int playerDmg,
+                              int monsterAtk, int playerAC, int monsterDmg,
+                              String monsterName, int monsterHP)</code></pre>
+        </li>
+        <li><strong>Behavior:</strong>
+            <ol>
+                <li>Call <code>playerAttack(playerAtk, monsterAC, playerDmg, monsterName)</code> and
+                    subtract the returned damage from <code>monsterHP</code>.</li>
+                <li>If <code>monsterHP &gt; 0</code>, call
+                    <code>monsterAttack(monsterAtk, playerAC, monsterDmg, monsterName)</code>;
+                    otherwise print a victory message and skip the monster's turn.</li>
+                <li>Return the updated <code>monsterHP</code>.</li>
+            </ol>
+        </li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — Pass-By-Value Discovery</h3>
+        <ol>
+            <li>In <code>combatRound</code>, you subtract damage from the parameter
+                <code>monsterHP</code>. Why does <code>combatRound</code> ALSO have to
+                <code>return monsterHP</code>? If the caller in <code>main</code> wrote
+                <code>Combat.combatRound(..., goblinHP);</code> without assigning
+                <code>goblinHP = Combat.combatRound(..., goblinHP);</code>, what would
+                <code>goblinHP</code> in <code>main</code> still equal after the call, and why?</li>
+        </ol>
     </div>
 </div>
 
 <!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">Part 5 · AP FRQ Synthesis Build</span>
+        <span class="activity-time">~35 min</span>
+    </div>
+
+    <h3>Part 5: <code>resolveTacticalExchange(String stance, int playerHP, int monsterHP, int playerDmgDealt, int monsterRawDmg, int flatShield)</code></h3>
+
+    <p>
+        Finally, combine String comparison (from <code>3.4</code>), boolean gating (from
+        <code>3.5</code>), and your <code>applyMitigatedDamage</code> helper (from Part 3) to
+        resolve a complete tactical turn and return the <strong>player's remaining HP</strong>:
+    </p>
+
+    <table>
+        <tr><th><code>stance</code></th><th>Player's Attack on <code>monsterHP</code></th><th>If Monster Survives (<code>monsterHP &gt; 0</code>), Player Takes:</th></tr>
+        <tr>
+            <td><code>null</code> or <code>"flee"</code></td>
+            <td>Player does not attack (escapes or no-op)</td>
+            <td>Monster does not attack; return <code>playerHP</code> unchanged</td>
+        </tr>
+        <tr>
+            <td><code>"attack"</code></td>
+            <td>Subtract <code>playerDmgDealt</code> from <code>monsterHP</code></td>
+            <td><code>applyMitigatedDamage(playerHP, monsterRawDmg, false, flatShield)</code></td>
+        </tr>
+        <tr>
+            <td><code>"defend"</code></td>
+            <td>Cautious strike: subtract <code>playerDmgDealt / 2</code> from <code>monsterHP</code></td>
+            <td><code>applyMitigatedDamage(playerHP, monsterRawDmg, true, flatShield)</code></td>
+        </tr>
+        <tr>
+            <td><code>"charge"</code></td>
+            <td>Reckless strike: subtract <code>playerDmgDealt * 2</code> from <code>monsterHP</code></td>
+            <td>Shield is dropped! <code>applyMitigatedDamage(playerHP, monsterRawDmg * 2, false, 0)</code></td>
+        </tr>
+        <tr>
+            <td>Any other string</td>
+            <td>Fumbled command: <code>0</code> damage dealt to <code>monsterHP</code></td>
+            <td><code>applyMitigatedDamage(playerHP, monsterRawDmg, false, flatShield)</code></td>
+        </tr>
+    </table>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — Trace the Stance Trade-Off</h3>
+        <ol>
+            <li>Suppose <code>playerHP = 25</code>, <code>monsterHP = 12</code>,
+                <code>playerDmgDealt = 6</code>, <code>monsterRawDmg = 10</code>, and
+                <code>flatShield = 5</code>. Trace the player's final HP under all three combat
+                stances (<code>"attack"</code>, <code>"defend"</code>, and <code>"charge"</code>).
+                Which stance leaves the player with the most HP in this exact scenario, and why?</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Day 2 Milestone — Done When</h3>
+        <ul>
+            <li><code>java CombatCheck</code> reports <strong><code>32 passed, 0 failed</code></strong> across all 5 parts</li>
+            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+        </ul>
+    </div>
+</div>
+
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-03/combat-system.html">Student RPG Guide: Combat System</a> — Part 3</li>
-        <li><a href="../docs/unit-03/boolean-logic.html">Boolean Logic</a> — the alive check</li>
+        <li><a href="../docs/unit-03/combat-system.html">Student RPG Guide: Combat System</a></li>
+        <li><a href="../docs/unit-03/comparing-objects.html">Comparing Objects</a></li>
+        <li><a href="../docs/unit-03/boolean-logic.html">Boolean Logic</a></li>
     </ul>
 </div>`;
 ---
-<Lesson id="3.6b" title="3.6b Combat Round — AP CS A" root=".." css="../style.css">
+<Lesson id="3.6b" title="3.6b Combat Engine (Day 2): Tactical Round &amp; Stances — AP CS A" root=".." css="../style.css">
   <Fragment set:html={body} />
 </Lesson>

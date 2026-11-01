@@ -1,31 +1,28 @@
 ---
 // Pacing Calendar — rebuilt at every `npm run build` from
-// src/data/curriculum.ts (the port of the pace.html half of
-// scripts/gen_dashboard.py). PACING.md is regenerated from the same data
-// by src/integrations/pacing-md.ts.
+// src/data/curriculum.ts. The main Dashboard (index.html) now includes this
+// full schedule with progress tracking; pace.html remains available as a
+// compact single-table printable view with direct lesson links.
 import Base from '../layouts/BaseLayout.astro';
-import { SEQUENCE, DAY_NOTES, KIND_LABEL, EXAM_DATE, EXAM_TIME, CED_TOPICS, coveredTopics, prettyDate, longDate } from '../data/curriculum';
+import { SEQUENCE, DAY_NOTES, KIND_LABEL, EXAM_DATE, EXAM_TIME, CED_TOPICS, prettyDate, longDate } from '../data/curriculum';
 
 const NBSP = '\u00A0';
-const covered = coveredTopics();
-const allCovered = covered.size === Object.keys(CED_TOPICS).length;
 ---
-<Base title="Pacing Calendar 2026-27 \u2014 AP CS A" active="dashboard" root="" docsHome="docs/index.html" css="style.css">
+<Base title="Pacing Calendar 2026-27 — AP CS A" active="dashboard" root="" docsHome="docs/index.html" css="style.css">
 <h1>Pacing Calendar, 2026-27</h1>
+
+<div class="callout">
+    <strong>Unified Dashboard:</strong> The <a href="index.html">Dashboard</a>
+    now combines this day-by-day pacing schedule with your lesson progress
+    and one-click build links. This page provides the compact full-year print
+    view.
+</div>
 
 <p>
     Every A-day of the school year, mapped to its work. Built from the PPS
-    district calendar (breaks, planning days, holidays) and our A/B
-    alternation. The class meets on A days only; this calendar is the contract
-    between the syllabus and the clock.
-</p>
-
-<p>
-    <strong>The shape:</strong> four phases (the four CED units), a two-week
-    sprint, the <strong>exam on {longDate(EXAM_DATE)} at {EXAM_TIME}</strong>,
-    then Season 2: inheritance and the engine room, post-exam, for the love
-    of the game. All {Object.keys(CED_TOPICS).length} required CED topics are covered by April 26. The last
-    two weeks are pure sharpening.
+    district calendar and our A/B alternation. All {Object.keys(CED_TOPICS).length}
+    required CED topics are covered by April 8, followed by a one-month AP Exam
+    Prep &amp; Testing Sprint leading into the <strong>exam on {longDate(EXAM_DATE)} at {EXAM_TIME}</strong>.
 </p>
 
 <table class="pace-table">
@@ -45,7 +42,20 @@ const allCovered = covered.size === Object.keys(CED_TOPICS).length;
             <td>{KIND_LABEL[e.kind]}</td>
             <td>{e.group}</td>
             <td>
-                {e.title}
+                {e.lessons.length === 1 ? (
+                    <a href={`lessons/${e.lessons[0]}.html`}><strong>{e.title}</strong></a>
+                ) : (
+                    <>
+                        <strong>{e.title}</strong>
+                        {e.lessons.length > 1 && (
+                            <span style="margin-left:0.4rem; font-size:12px;">
+                                ({e.lessons.map((lid, idx) => (
+                                    <>{idx > 0 && ', '}<a href={`lessons/${lid}.html`}>{lid}</a></>
+                                ))})
+                            </span>
+                        )}
+                    </>
+                )}
                 {e.new && <span class="badge discovery" style="margin-left:.5rem">NEW</span>}
                 {notes.map((n) => <><br /><span class="day-note">{n}</span></>)}
             </td>
@@ -54,13 +64,6 @@ const allCovered = covered.size === Object.keys(CED_TOPICS).length;
         );
     })}
 </table>
-
-<p style="margin-top:2rem; color:var(--muted); font-size:13px;">
-    Calendar sources: PPS 2026-27 district calendar (updated March 2026),
-    IBW A/B bell schedule, College Board 2027 exam schedule. Snow days are
-    not modeled; if one lands on an A day, that lesson shifts and the
-    low-priority flex slots (marked in the notes) absorb it.
-</p>
 </Base>
 
 <style>

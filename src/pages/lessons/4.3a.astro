@@ -1,141 +1,197 @@
 ---
-// Migrated from lessons/4.3a.html - the body below is the original page content.
-// The head, top nav, and the prev/next chain now come from
-// src/layouts/LessonLayout.astro and src/data/curriculum.ts.
 import Lesson from '../../layouts/LessonLayout.astro';
 
-const body = `<h1>4.3a — Loops + Strings: Character by Character</h1>
+const body = `<h1>4.3 — String Traversal: The ScrollCipher &amp; AP String Build</h1>
+
+<p>
+    <strong>CED Topics 2.8, 2.10 · 90-Minute Unified Build.</strong> String traversal is one of the
+    highest-weight topics on the AP Computer Science A exam. Because <code>charAt()</code> and the
+    <code>Character</code> class are <strong>not</strong> on the
+    <a href="../exam/java-quick-reference.html">Java Quick Reference</a>, every AP String algorithm
+    uses a loop over indices combined with <code>substring(i, i + 1)</code>, <code>indexOf</code>,
+    <code>length()</code>, and <code>equals</code>.
+</p>
+
+<div class="callout">
+    <strong>Starting Files (Download Both):</strong>
+    <ul>
+        <li>
+            <a href="../data/ScrollCipher.java" download>ScrollCipher.java</a> — bare-minimum
+            compiling stub.
+        </li>
+        <li>
+            <a href="../data/ScrollCipherCheck.java" download>ScrollCipherCheck.java</a> —
+            automated AP-style test suite (18 checks across 4 parts).
+        </li>
+    </ul>
+    <pre><code>javac ScrollCipher.java ScrollCipherCheck.java
+java ScrollCipherCheck</code></pre>
+</div>
 
 <!-- ============================================================ -->
-<div class="activity discovery">
+<div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Discovery Lab</span>
-        <span class="activity-time">~25 min</span>
+        <span class="activity-label">Part 1 · Discovery &amp; Build</span>
+        <span class="activity-time">~20 min</span>
     </div>
 
-    <p>
-        A String is a sequence of characters. You know <code>charAt()</code> and
-        <code>length()</code> from Unit 2. Now combine those with loops to visit
-        every character — searching, counting, building new strings.
-    </p>
+    <h3>Part 1: <code>countAdjacentDoubles(String spell)</code></h3>
 
     <p>
-        This is called <strong>string traversal</strong>: walking through a string
-        one character at a time, doing something at each position.
+        Count how many times two identical adjacent characters appear in <code>spell</code>. For
+        example, <code>"bookkeeper"</code> contains <code>"oo"</code>, <code>"kk"</code>, and
+        <code>"ee"</code> (returns <code>3</code>), and <code>"aaa"</code> contains two adjacent
+        pairs at indices <code>0–1</code> and <code>1–2</code> (returns <code>2</code>).
     </p>
 
-    <p>
-        Two flags before you start, both from the
-        <a href="../exam/java-quick-reference.html">Java Quick Reference</a>.
-        <code>charAt()</code> is not on the sheet, so the version to reach for is
-        <code>word.substring(i, i + 1)</code>: one character, returned as a String you
-        compare with <code>equals</code>. And the whole <code>Character</code> class is
-        missing from the sheet, so <code>Character.isLetter(c)</code> becomes a
-        <code>compareTo</code> range check on that one-character String. This lesson uses
-        the Java originals so you meet them, and the docs show the sheet spelling beside
-        each one.
-    </p>
-
-    <h3>The Standard Pattern</h3>
-
-    <pre><code>String word = "dragon";
-for (int i = 0; i < word.length(); i++) {
-    char c = word.charAt(i);
-    System.out.println("Position " + i + ": " + c);
-}</code></pre>
-
-    <p>The sheet's version of that middle line:</p>
-
-    <pre><code>    String c = word.substring(i, i + 1);</code></pre>
-
-    <div class="tinker">
-        <h3>Experiment: charAt Boundaries</h3>
-        <p>Create <code>StringWalker.java</code>. Run these experiments:</p>
-        <pre><code>String s = "sword";
-System.out.println(s.length());        // what prints?
-System.out.println(s.charAt(0));       // first character?
-System.out.println(s.charAt(4));       // last character?
-// System.out.println(s.charAt(5));    // UNCOMMENT — what happens?</code></pre>
+    <div class="bug-hunt">
+        <h3>Discovery Trap 1: The Lookahead Out-of-Bounds Crash</h3>
         <p>
-            Each of those lines has a sheet twin: <code>s.substring(0, 1)</code>,
-            <code>s.substring(4, 5)</code>, and <code>s.substring(5, 6)</code>. Run those
-            as well and watch them fail at exactly the same boundaries.
+            To compare character <code>i</code> with character <code>i + 1</code> using the AP Java
+            Quick Reference, you compare <code>spell.substring(i, i + 1)</code> with
+            <code>spell.substring(i + 1, i + 2)</code>. Watch what happens if you use a standard
+            <code>i &lt; spell.length()</code> loop header:
         </p>
-        <p>
-            Open the <a href="../docs/unit-04/string-loops.html">Loops + Strings docs</a>.
-            Find the "Out of Bounds" Bug Hunt. Read the broken code. Why does
-            <code>weapon.charAt(weapon.length())</code> crash? What's the fix?
-        </p>
-    </div>
-
-    <div class="tinker">
-        <h3>Build: Count and Search</h3>
-        <p>
-            Pick a spell name: "Fireball", "IceStorm", "Thunderbolt", or your own.
-            Write a traversal loop that counts:
-        </p>
+        <pre><code>// Put this in countAdjacentDoubles and run ScrollCipherCheck:
+int count = 0;
+for (int i = 0; i &lt; spell.length(); i++) {
+    if (spell.substring(i, i + 1).equals(spell.substring(i + 1, i + 2))) {
+        count++;
+    }
+}
+return count;</code></pre>
         <ol>
-            <li>How many vowels (a, e, i, o, u) are in the spell name?</li>
-            <li>How many total characters?</li>
-            <li>Does the spell name contain the letter 'z'?</li>
+            <li>When <code>spell</code> is <code>"bookkeeper"</code> (length <code>10</code>), what
+                is the value of <code>i</code> on the final iteration of
+                <code>i &lt; spell.length()</code>, and what second argument gets passed into
+                <code>spell.substring(i + 1, i + 2)</code>?</li>
+            <li>What must the loop bound be whenever your loop body inspects both index
+                <code>i</code> and index <code>i + 1</code>?</li>
         </ol>
-        <p>
-            Run on multiple spell names. Does your vowel counter handle uppercase?
-            If the user types "FIREBALL", does it still count correctly?
-        </p>
-    </div>
-
-    <div class="tinker">
-        <h3>Build: Reverse It</h3>
-        <p>
-            The docs show a reverse-string example. Read it. Then write your own
-            version without looking — write it from memory.
-        </p>
-        <p>
-            Start with an empty String (not <code>null</code> — <code>""</code>).
-            Loop through the original string BACKWARDS. Use <code>+=</code> to
-            build the reversed version. Test: "sword" → "drows", "java" → "avaj".
-        </p>
-    </div>
-
-    <div class="socratic">
-        <h3>Socratic Checkpoint</h3>
-        <ol>
-            <li>Read "The Memory Cost" Socratic Checkpoint in the docs. If you
-                use <code>+=</code> inside a loop to build a 1000-character string,
-                how many temporary String objects does Java create? Why is this
-                wasteful?</li>
-            <li>The docs show a "Combat Command Parser" that splits "attack goblin"
-                into verb and target. Read it. Why does it search for a space?
-                What happens if the player types a command with NO space?</li>
-            <li>Look at the <code>Character.isDigit()</code> and <code>isLetter()</code>
-                methods in the docs. Write a loop that prints "digit", "letter",
-                or "other" for each character in "F1r3bAll!". Then write the sheet
-                version of the digit test, a range check on the one-character String:
-                <code>ch.compareTo("0") &gt;= 0 &amp;&amp; ch.compareTo("9") &lt;= 0</code>.</li>
-        </ol>
-    </div>
-
-    <div class="checklist">
-        <h3>Checkpoint — before moving on, you must be able to:</h3>
-        <ul>
-            <li>Traverse a string with a for loop, charAt() in Java and substring(i, i + 1) on the sheet</li>
-            <li>Count characters matching a condition (vowels, digits, etc.)</li>
-            <li>Build a new string by accumulating characters in a loop</li>
-            <li>Avoid off-by-one errors with length() and charAt()</li>
-        </ul>
     </div>
 </div>
 
 <!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Part 2 · Discovery &amp; Build</span>
+        <span class="activity-time">~15 min</span>
+    </div>
+
+    <h3>Part 2: <code>reverseRunes(String scroll)</code></h3>
+
+    <p>
+        Return a new <code>String</code> containing the characters of <code>scroll</code> in
+        reverse order (e.g., <code>"dragon"</code> becomes <code>"nogard"</code>).
+    </p>
+
+    <div class="bug-hunt">
+        <h3>Discovery Trap 2: Backward Traversal Boundaries</h3>
+        <ol>
+            <li>If you walk backward from the end of <code>scroll</code>, why does starting at
+                <code>int i = scroll.length()</code> and calling
+                <code>scroll.substring(i, i + 1)</code> immediately throw
+                <code>StringIndexOutOfBoundsException</code>?</li>
+            <li>If your backward loop condition is <code>i &gt; 0</code> instead of
+                <code>i &gt;= 0</code>, what exact character is missing from
+                <code>reverseRunes("dragon")</code>?</li>
+        </ol>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Part 3 · Discovery &amp; Build</span>
+        <span class="activity-time">~30 min</span>
+    </div>
+
+    <h3>Part 3: <code>shiftUppercaseCipher(String text, int shift)</code></h3>
+
+    <p>
+        Using the uppercase alphabet string:
+    </p>
+    <pre><code>String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";</code></pre>
+    <p>
+        For each 1-character substring <code>ch = text.substring(i, i + 1)</code>:
+    </p>
+    <ul>
+        <li>Find its position <code>int pos = alpha.indexOf(ch);</code>.</li>
+        <li>If <code>pos == -1</code> (spaces, punctuation, digits), append <code>ch</code>
+            unchanged.</li>
+        <li>If <code>pos &gt;= 0</code>, shift the position by <code>shift</code> (which may be
+            positive, negative, or larger than 26!) wrapped into the range <code>0..25</code>, and
+            append the shifted letter from <code>alpha</code>.</li>
+    </ul>
+
+    <div class="bug-hunt">
+        <h3>Discovery Trap 3: How Java's <code>%</code> Operator Handles Negative Numbers</h3>
+        <p>
+            Suppose <code>ch</code> is <code>"A"</code> (<code>pos = 0</code>) and you are
+            decrypting with <code>shift = -2</code>. You want to wrap backward 2 steps to
+            <code>"Y"</code> (index <code>24</code>).
+        </p>
+        <ol>
+            <li>What does Java evaluate <code>(0 + (-2)) % 26</code> to? (It is <strong>not</strong>
+                <code>24</code>!) What happens when you pass that number into
+                <code>alpha.substring(newPos, newPos + 1)</code>?</li>
+            <li>Explain why the two-step normalization formula
+                <code>int newPos = ((pos + shift) % 26 + 26) % 26;</code> guarantees a valid index
+                in <code>0..25</code> for every possible positive or negative <code>shift</code>.</li>
+        </ol>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="activity rpg">
+    <div class="activity-header">
+        <span class="activity-label">Part 4 · AP FRQ Synthesis Build</span>
+        <span class="activity-time">~25 min</span>
+    </div>
+
+    <h3>Part 4: <code>purgeCursedGlyph(String scroll, String glyph)</code></h3>
+
+    <p>
+        A classic AP CS A Free Response question asks you to remove every occurrence of a substring
+        <code>glyph</code> from <code>scroll</code> using a <code>while</code> loop and
+        <code>indexOf</code>:
+    </p>
+    <ul>
+        <li>While <code>scroll.indexOf(glyph)</code> is not <code>-1</code>:</li>
+        <li>Slice out the occurrence at index <code>idx</code> by concatenating everything
+            <em>before</em> <code>idx</code> (<code>scroll.substring(0, idx)</code>) with everything
+            <em>after</em> the glyph (<code>scroll.substring(idx + glyph.length())</code>).</li>
+    </ul>
+
+    <div class="socratic">
+        <h3>Socratic Checkpoint — The Chained Formation Effect</h3>
+        <ol>
+            <li>Look at Check 3 in Part 4 of <code>ScrollCipherCheck</code>:
+                <code>purgeCursedGlyph("boook", "oo")</code>. On iteration 1, removing the first
+                <code>"oo"</code> from <code>"boook"</code> leaves <code>"bok"</code> (only one
+                <code>'o'</code> left). What if the input was <code>"b" + "o" + "oo" + "o" + "k"</code>
+                or <code>"ababa"</code>? Trace <code>purgeCursedGlyph("boook", "oo")</code> step by
+                step to verify why <code>idx + glyph.length()</code> slices at the exact right spot.</li>
+        </ol>
+    </div>
+
+    <div class="checklist">
+        <h3>Done When</h3>
+        <ul>
+            <li><code>java ScrollCipherCheck</code> reports <strong><code>18 passed, 0 failed</code></strong></li>
+            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+        </ul>
+    </div>
+</div>
+
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>
-        <li><a href="../docs/unit-04/string-loops.html">Loops + Strings</a> — traversal, counting, building, Character methods</li>
-        <li><a href="../docs/unit-04/for-loops.html">for Loops</a> — the loop backbone</li>
+        <li><a href="../docs/unit-04/string-loops.html">Loops + Strings</a> — traversal, reversing, substring patterns</li>
+        <li><a href="../exam/java-quick-reference.html">Java Quick Reference</a> — String methods on the exam</li>
     </ul>
 </div>`;
 ---
-<Lesson id="4.3a" title="4.3a String Traversal — AP CS A" root=".." css="../style.css">
+<Lesson id="4.3a" title="4.3 String Traversal: ScrollCipher &amp; AP String Build — AP CS A" root=".." css="../style.css">
   <Fragment set:html={body} />
 </Lesson>
