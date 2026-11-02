@@ -134,7 +134,7 @@ LESSON_CHAIN.forEach((lid, i) => {
   if (!text) { badNav.push(`${lid}: no built page`); return; }
   const m = text.match(/<div class="lesson-nav"[^>]*>([\s\S]*?)<\/div>/);
   if (!m) { badNav.push(`${lid}: no lesson-nav block`); return; }
-  const hrefs = [...m[1].matchAll(/href="([\d.]+[abc])\.html"/g)].map((x) => x[1]);
+  const hrefs = [...m[1].matchAll(/href="([\d.]+[a-z]?)\.html"/g)].map((x) => x[1]);
   if (wantPrev && hrefs[0] !== wantPrev) badNav.push(`${lid}: prev should be ${wantPrev}, got ${hrefs[0] ?? 'none'}`);
   if (wantNext && hrefs[hrefs.length - 1] !== wantNext) badNav.push(`${lid}: next should be ${wantNext}, got ${hrefs[hrefs.length - 1] ?? 'none'}`);
   if (!wantPrev && hrefs.length === 2) badNav.push(`${lid}: first lesson has a prev link`);
@@ -145,7 +145,7 @@ badNav.length ? bad('nav chain wiring', badNav) : ok('nav chain bidirectionally 
 // 4: dashboard completeness
 // ---------------------------------------------------------------------------
 const idx = pages.get('index.html');
-const dash = idx ? [...idx.text.matchAll(/lessons\/([\d.]+[abc])\.html/g)].map((m) => m[1]) : [];
+const dash = idx ? [...idx.text.matchAll(/lessons\/([\d.]+[a-z]?)\.html/g)].map((m) => m[1]) : [];
 const dashSet = new Set(dash);
 const notListed = LESSON_CHAIN.filter((l) => !dashSet.has(l));
 if (!idx || notListed.length) {
