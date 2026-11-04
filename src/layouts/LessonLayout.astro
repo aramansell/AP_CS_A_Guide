@@ -40,7 +40,12 @@ const next = i < LESSON_CHAIN.length - 1 ? LESSON_CHAIN[i + 1] : null;
 // with a stable id. Rendered slot -> string -> transform -> set:html.
 const rawBody = await Astro.slots.render('default');
 const { html: formBody, questionCount } = formify(rawBody, id);
-const lessonTitle = LESSONS[id]?.title ?? id;
+const meta = LESSONS[id];
+const lessonTitle = meta?.title ?? id;
+const targets = meta?.targets ?? [];
+const h1CloseIdx = formBody.indexOf('</h1>');
+const headingHtml = h1CloseIdx !== -1 ? formBody.slice(0, h1CloseIdx + 5) : '';
+const restBodyHtml = h1CloseIdx !== -1 ? formBody.slice(h1CloseIdx + 5) : formBody;
 ---
 <Base title={title} active="dashboard" root={root} docsHome={root + '/docs/index.html'} css={css}
   description={"Lesson " + id + " " + lessonTitle + " — AP CS A. Predict-first labs, bug hunts, and checkpoints with answer boxes you can download and turn in."}>
@@ -50,7 +55,33 @@ const lessonTitle = LESSONS[id]?.title ?? id;
     {next ? <a href={next + '.html'}>{next} &#9654;</a> : <span></span>}
   </div>
 
-  <Fragment set:html={formBody} />
+  <header class="lesson-header">
+    <Fragment set:html={headingHtml} />
+    {targets.length > 0 && (
+      <div class="lesson-targets" aria-label="Learning Targets and Success Criteria">
+        <div class="lesson-targets-head">
+          <span class="lesson-targets-kicker">Learning Targets &amp; Success Criteria</span>
+          {meta && <span class={`badge ${meta.badgeClass}`}>{meta.badgeLabel}</span>}
+        </div>
+        <ol class="lesson-targets-list">
+          {targets.map((t, idx) => (
+            <li class="lesson-target-item">
+              <div class="target-row">
+                <span class="target-pill">LT {idx + 1}</span>
+                <span class="target-text"><strong>Learning Target:</strong> {t.target}</span>
+              </div>
+              <div class="criteria-row">
+                <span class="criteria-pill">SC {idx + 1}</span>
+                <span class="criteria-text"><strong>Success Criteria:</strong> {t.criteria}</span>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    )}
+  </header>
+
+  <Fragment set:html={restBodyHtml} />
 
   {questionCount > 0 && (
     <div class="lab-bar" data-lesson={id} data-lesson-title={lessonTitle} data-count={questionCount} data-pagefind-ignore>

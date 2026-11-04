@@ -79,7 +79,16 @@ let data = fs.readFileSync(dataPath, 'utf8');
 if (data.includes(`'${id}':`)) {
   console.log(`${id} already in lessons.ts`);
 } else {
-  const entry = `  '${id}': { title: ${JSON.stringify(title)}, badgeClass: '${badgeClass}', badgeLabel: '${badgeLabels[badgeClass]}', group: '${group}' },\n`;
+  const entry = [
+    `  '${id}': {`,
+    `    title: ${JSON.stringify(title)}, badgeClass: '${badgeClass}', badgeLabel: '${badgeLabels[badgeClass]}', group: '${group}',`,
+    `    targets: [`,
+    `      { target: "TODO: learning target 1.", criteria: "I can TODO: success criteria 1." },`,
+    `      { target: "TODO: learning target 2.", criteria: "I can TODO: success criteria 2." },`,
+    `    ],`,
+    `  },`,
+    '',
+  ].join('\n');
   data = data.replace(/\n\};\n$/, (m) => '\n' + entry + '};\n');
   fs.writeFileSync(dataPath, data);
   console.log(`added ${id} to ${dataPath}`);

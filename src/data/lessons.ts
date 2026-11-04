@@ -6,181 +6,1196 @@
  *   badgeClass - activity type CSS class (discovery | basic-app | expand-app | rpg | assessment | hybrid)
  *   badgeLabel - activity type label shown on the dashboard
  *   group      - the "Unit.Lesson" group number ("1.1")
+ *   targets    - <3 clear learning targets for the lesson, each paired with a success criteria
  */
+export interface LearningTarget {
+  target: string;
+  criteria: string;
+}
+
 export interface LessonMeta {
   title: string;
   badgeClass: string;
   badgeLabel: string;
   group: string;
+  targets: LearningTarget[];
 }
 
 export const LESSONS: Record<string, LessonMeta> = {
-  '1.1a': { title: "Hello World & Compile", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.1' },
-  '1.1b': { title: "Variables & Types", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.1' },
-  '1.1c': { title: "Arithmetic & Operators", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.1' },
-  '1.2a': { title: "Printing & Concatenation", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.2' },
-  '1.2b': { title: "StatBlock", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.2' },
-  '1.2c': { title: "The Three-Step Pattern", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.2' },
-  '1.3a': { title: "Math.random() Deep Dive", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.3' },
-  '1.3b': { title: "Dice Roller Warmup", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.3' },
-  '1.3c': { title: "Random Formula Mastery", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.3' },
-  '1.4a': { title: "Slot Machine Build", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '1.4' },
-  '1.4b': { title: "Slot Machine Reflect", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '1.4' },
-  '1.4c': { title: "Slot Machine Extend", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '1.4' },
-  '1.5a': { title: "Tip Calculator Build", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '1.5' },
-  '1.5b': { title: "Tip Calculator Test", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '1.5' },
-  '1.5c': { title: "Tip Calculator Extend", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '1.5' },
-  '1.6a': { title: "Split Between Friends", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '1.6' },
-  '1.6b': { title: "Random Tip Generator", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '1.6' },
-  '1.6c': { title: "Reflect & Design", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '1.6' },
-  '1.7a': { title: "Dice Roller Part 1", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '1.7' },
-  '1.7b': { title: "Dice Roller Part 2", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '1.7' },
-  '1.7c': { title: "Testing & Integration", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '1.7' },
-  '1.8a': { title: "Casting: Slicing Doubles into Ints", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.8' },
-  '1.8b': { title: "Compound Assignment & The Overflow Bug", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '1.8' },
-  '2.1a': { title: "Objects & Classes", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '2.1' },
-  '2.1b': { title: "Object Inspection", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.1' },
-  '2.1c': { title: "RPG Character Creator", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.1' },
-  '2.2a': { title: "String Exploration", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '2.2' },
-  '2.2b': { title: "String Methods in Context", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.2' },
-  '2.2c': { title: "String Methods: Build a Parser", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.2' },
-  '2.3a': { title: "Scanner Input", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.3' },
-  '2.3b': { title: "Scanner in Context", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.3' },
-  '2.3c': { title: "Scanner: Combat Dialogue", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.3' },
-  '2.4a': { title: "Scanner Discovery", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '2.4' },
-  '2.4b': { title: "Character Creator Input", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.4' },
-  '2.4c': { title: "Scanner + Strings RPG", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.4' },
-  '2.5a': { title: "The Math Class", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.5' },
-  '2.5b': { title: "Math Class in Context", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.5' },
-  '2.5c': { title: "Math Class: Damage & Distance", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.5' },
-  '2.6a': { title: "Wrapper Classes", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '2.6' },
-  '2.6b': { title: "Wrapper Classes in Context", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.6' },
-  '2.6c': { title: "Wrapper Classes: Stat Serializer", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.6' },
-  '2.7a': { title: "Character Creator", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '2.7' },
-  '2.7b': { title: "Print Char Sheet", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '2.7' },
-  '2.7c': { title: "Build a Party", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '2.7' },
-  '2.8a': { title: "APIs & Libraries: Reading the Docs Like a Pro", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '2.8' },
-  '2.8b': { title: "Documentation with Comments", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.8' },
-  '2.8c': { title: "Method Signatures: The Contract", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.8' },
-  '3.1a': { title: "Relational Operators & if", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '3.1' },
-  '3.1b': { title: "Conditional Scoring", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '3.1' },
-  '3.1c': { title: "Combat Hit Check", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '3.1' },
-  '3.2a': { title: "Boolean Logic", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '3.2' },
-  '3.2b': { title: "Boolean Logic Puzzles", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '3.2' },
-  '3.2c': { title: "Combat Condition Builder", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '3.2' },
-  '3.3a': { title: "else-if Chains", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '3.3' },
-  '3.3b': { title: "Multi-Branch Menu", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '3.3' },
-  '3.3c': { title: "Combat Round Resolver", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '3.3' },
-  '3.4': { title: "Comparing Objects & The CommandParser Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '3.4' },
-  '3.5': { title: "De Morgan's Laws & The DungeonGatekeeper Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '3.5' },
-  '3.6a': { title: "Combat Engine (Day 1): Attack & Crit Resolver", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '3.6' },
-  '3.6b': { title: "Combat Engine (Day 2): Tactical Round & Stances", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '3.6' },
-  '4.1': { title: "while Loops & The WhileLab Algorithms Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '4.1' },
-  '4.2': { title: "for Loops & The EncounterSim Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '4.2' },
-  '4.3': { title: "String Traversal: ScrollCipher & AP String Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '4.3' },
-  '4.4': { title: "Nested Loops: GridArchitect & Fog-of-War Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '4.4' },
-  '4.5': { title: "Loop Analysis, Fencepost Traps & LoopTracer Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '4.5' },
-  '4.6a': { title: "Dungeon Crawler (Day 1): Combat & Floor Engine", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '4.6' },
-  '4.6b': { title: "Dungeon Crawler (Day 2): Multi-Floor Campaign & Boss", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '4.6' },
-  '4.7': { title: "Informal Run-Time Analysis & RuntimeAnalyzer Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '4.7' },
-  '5.1a': { title: "Anatomy of a Class", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '5.1' },
-  '5.1b': { title: "Your First Class", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '5.1' },
-  '5.1c': { title: "RPG Character Sheet", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '5.1' },
-  '5.2a': { title: "Constructors", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '5.2' },
-  '5.2b': { title: "Overloaded Constructors", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '5.2' },
-  '5.2c': { title: "Enemy Factory", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '5.2' },
-  '5.3a': { title: "Accessors & Mutators", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '5.3' },
-  '5.3b': { title: "Inventory with Validation", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '5.3' },
-  '5.3c': { title: "Damage with Validation", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '5.3' },
-  '5.4a': { title: "Methods & Static", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '5.4' },
-  '5.4b': { title: "Card Class", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '5.4' },
-  '5.4c': { title: "BankAccount", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '5.4' },
-  '5.5a': { title: "Player Class", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '5.5' },
-  '5.5b': { title: "Monster + Integration", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '5.5' },
-  '5.5c': { title: "Boss Fight & Testing", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '5.5' },
-  '5.6a': { title: "Design From a Spec", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '5.6' },
-  '6.1a': { title: "Array Basics", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '6.1' },
-  '6.1b': { title: "Array Indexing Practice", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '6.1' },
-  '6.1c': { title: "RPG Inventory Array", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '6.1' },
-  '6.2a': { title: "Array Traversal", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '6.2' },
-  '6.2b': { title: "Traversal Patterns", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '6.2' },
-  '6.2c': { title: "Party Manager", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '6.2' },
-  '6.3a': { title: "Array Algorithms", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '6.3' },
-  '6.3b': { title: "Search & Insert", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '6.3' },
-  '6.3c': { title: "Combat Tracker", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '6.3' },
-  '6.4a': { title: "Arrays of Objects", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '6.4' },
-  '6.4b': { title: "High Score Table", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '6.4' },
-  '6.4c': { title: "Card Deck", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '6.4' },
-  '6.5a': { title: "Item Class", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '6.5' },
-  '6.5b': { title: "FixedInventory", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '6.5' },
-  '6.5c': { title: "Inventory Integration", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '6.5' },
-  '6.6a': { title: "Data Ethics: The Telemetry File", badgeClass: 'hybrid', badgeLabel: 'Discovery Lab', group: '6.6' },
-  '6.6b': { title: "Data Sets: Clean, Aggregate, Answer", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '6.6' },
-  '7.1a': { title: "ArrayList Basics", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '7.1' },
-  '7.1b': { title: "ArrayList Methods Lab", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '7.1' },
-  '7.1c': { title: "RPG Quest Log", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '7.1' },
-  '7.2a': { title: "ArrayList Traversal", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '7.2' },
-  '7.2b': { title: "ArrayList Traversal Patterns", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '7.2' },
-  '7.2c': { title: "Enemy Horde Manager", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '7.2' },
-  '7.3a': { title: "Searching & Sorting", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '7.3' },
-  '7.3b': { title: "Music Playlist", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '7.3' },
-  '7.3c': { title: "Leaderboard", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '7.3' },
-  '7.4a': { title: "Dynamic Inventory", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '7.4' },
-  '7.4b': { title: "Inventory Sort & Swap", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '7.4' },
-  '7.4c': { title: "Inventory Integration & Unit Retrospective", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '7.4' },
-  '7.5a': { title: "Deduplication & Frequency", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '7.5' },
-  '7.5b': { title: "Pair Finding & Rotation", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '7.5' },
-  '7.5c': { title: "Shuffle & Loot Drop", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '7.5' },
-  '7.6a': { title: "Reading Files: The Bestiary Loads Itself", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '7.6' },
-  '7.6b': { title: "Save Games & High Score Files", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '7.6' },
-  '8.1a': { title: "2D Array Basics", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '8.1' },
-  '8.1b': { title: "Grid Coordinates", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '8.1' },
-  '8.1c': { title: "Tile Map Editor", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '8.1' },
-  '8.2a': { title: "2D Array Traversal", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '8.2' },
-  '8.2b': { title: "Row/Column Sums", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '8.2' },
-  '8.2c': { title: "Battle Grid", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '8.2' },
-  '8.3a': { title: "2D Array Algorithms", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '8.3' },
-  '8.3b': { title: "Tic-Tac-Toe", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '8.3' },
-  '8.3c': { title: "Connect Four", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '8.3' },
-  '8.4a': { title: "Dungeon Grid", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '8.4' },
-  '8.4b': { title: "Rooms & Entities", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '8.4' },
-  '8.4c': { title: "Dungeon Movement", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '8.4' },
-  '8.5a': { title: "Pixel Arrays & Filters", badgeClass: 'hybrid', badgeLabel: 'Season 2', group: '8.5' },
-  '8.5b': { title: "Convolution & Edge Detection", badgeClass: 'hybrid', badgeLabel: 'Season 2', group: '8.5' },
-  '8.5c': { title: "Dungeon Fog of War", badgeClass: 'hybrid', badgeLabel: 'Season 2', group: '8.5' },
-  '8.6a': { title: "Dungeon Maps From Files", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '8.6' },
-  '9.1a': { title: "Inheritance Basics", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '9.1' },
-  '9.1b': { title: "Writing Subclasses", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '9.1' },
-  '9.1c': { title: "Polymorphic Party", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '9.1' },
-  '9.2a': { title: "Method Overriding", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '9.2' },
-  '9.2b': { title: "Override vs Overload", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '9.2' },
-  '9.2c': { title: "Elemental Combat", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '9.2' },
-  '9.3a': { title: "Polymorphism", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '9.3' },
-  '9.3b': { title: "Polymorphism: Type-Driven Behavior", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '9.3' },
-  '9.3c': { title: "Polymorphism: Battle System", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '9.3' },
-  '9.4a': { title: "Interfaces", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '9.4' },
-  '9.4b': { title: "Implementing Interfaces", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '9.4' },
-  '9.4c': { title: "Combat Abilities Engine", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '9.4' },
-  '9.5a': { title: "Downcasting", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '9.5' },
-  '9.5b': { title: "Shape Hierarchy", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '9.5' },
-  '9.5c': { title: "ShapeCollection", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '9.5' },
-  '9.6a': { title: "Combat Hierarchy", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '9.6' },
-  '9.6b': { title: "Polymorphic Battle Engine", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '9.6' },
-  '9.6c': { title: "Monster Spawner + Integrate", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '9.6' },
-  '10.1a': { title: "Recursion Basics", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '10.1' },
-  '10.1b': { title: "Recursive Patterns", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '10.1' },
-  '10.1c': { title: "Recursive Dungeon Crawler", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '10.1' },
-  '10.2a': { title: "Recursive Traversal", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '10.2' },
-  '10.2b': { title: "Recursive String/Array Problems", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '10.2' },
-  '10.2c': { title: "Recursive Loot Finder", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '10.2' },
-  '10.3a': { title: "Merge Sort", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '10.3' },
-  '10.3b': { title: "Recursive Fibonacci", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '10.3' },
-  '10.3c': { title: "Recursive Palindrome", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '10.3' },
-  '10.4a': { title: "Flood Fill", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '10.4' },
-  '10.4b': { title: "Shortest Path", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '10.4' },
-  '10.4c': { title: "Dungeon Generator & Course Retrospective", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '10.4' },
-  '10.5a': { title: "Permutation Generation", badgeClass: 'hybrid', badgeLabel: 'Season 2', group: '10.5' },
-  '10.5b': { title: "Maze Solver & Subsets", badgeClass: 'hybrid', badgeLabel: 'Season 2', group: '10.5' },
-  '10.5c': { title: "RPG Pathfinding", badgeClass: 'hybrid', badgeLabel: 'Season 2', group: '10.5' },
-  '10.6a': { title: "Recursive Search: Halving the Dungeon", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '10.6' },
+  '1.1a': {
+    title: "Hello World & Compile", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.1',
+    targets: [
+      { target: "Compile a .java source file into bytecode with javac and execute the class with java.", criteria: "I can write Hello.java with a matching class name and main method signature, compile it with javac Hello.java, and run it with java Hello without errors." },
+      { target: "Diagnose syntax and command-line errors using compiler output and terminal navigation.", criteria: "I can navigate folders with pwd, ls, and cd, locate the exact line number in a javac error message, and fix missing semicolons or class-name mismatches." },
+    ],
+  },
+  '1.1b': {
+    title: "Variables & Types", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.1',
+    targets: [
+      { target: "Declare and initialize primitive variables using int, double, and boolean data types.", criteria: "I can declare typed variables, assign initial values with =, and explain why assigning a decimal like 3.5 to an int fails at compile time." },
+      { target: "Trace how the assignment operator (=) updates variable state sequentially.", criteria: "I can distinguish declaration from initialization and accurately trace the value of a variable across multiple reassignment statements." },
+    ],
+  },
+  '1.1c': {
+    title: "Arithmetic & Operators", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.1',
+    targets: [
+      { target: "Evaluate arithmetic expressions involving integer division, mixed types, and the modulus operator (%).", criteria: "I can predict when / truncates decimals versus preserves them with a double operand, and use % to test divisibility or extract remainders." },
+      { target: "Update numeric state using compound assignment operators and proper operator precedence.", criteria: "I can rewrite updates with +=, -=, *=, /=, and %=, and fix broken average calculations caused by missing parentheses or integer division." },
+    ],
+  },
+  '1.2a': {
+    title: "Printing & Concatenation", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.2',
+    targets: [
+      { target: "Format console output using print, println, and escape sequences (\\n, \\t, \\\", \\\\).", criteria: "I can control line breaks and column alignment in terminal output using print, println, and escape characters." },
+      { target: "Predict and control left-to-right evaluation in mixed String concatenation and arithmetic.", criteria: "I can explain why \"Score: \" + 3 + 4 prints \"Score: 34\" and use parentheses so arithmetic evaluates before String concatenation." },
+    ],
+  },
+  '1.2b': {
+    title: "StatBlock", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.2',
+    targets: [
+      { target: "Combine variable declarations, arithmetic formulas, and tab-aligned output in a single StatBlock program.", criteria: "I can build a complete StatBlock program that declares character attributes, computes derived stats without integer-division bugs, and prints an aligned table." },
+      { target: "Separate stored base attributes from calculated derived values.", criteria: "I can modify a base stat variable and verify that all dependent output values update automatically upon recompiling." },
+    ],
+  },
+  '1.2c': {
+    title: "The Three-Step Pattern", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.2',
+    targets: [
+      { target: "Structure programs using the Three-Step Pattern: Declare, Calculate, and Display.", criteria: "I can scaffold a new Java program from memory by organizing variable declarations, calculations, and print statements into three distinct sections." },
+      { target: "Isolate and fix logic bugs by identifying which stage of the Three-Step Pattern failed.", criteria: "I can inspect wrong program output and pinpoint whether the defect occurred during input declaration, formula calculation, or display formatting." },
+    ],
+  },
+  '1.3a': {
+    title: "Math.random() Deep Dive", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.3',
+    targets: [
+      { target: "Scale and shift Math.random() to generate random integers across any inclusive range [min, max].", criteria: "I can write (int)(Math.random() * (max - min + 1)) + min for ranges like 1..6, 1..20, and 10..99 and verify the minimum and maximum possible outputs." },
+      { target: "Prevent premature truncation when casting Math.random() expressions to int.", criteria: "I can explain why (int) Math.random() * 6 always evaluates to 0 and place parentheses around the multiplication before casting." },
+    ],
+  },
+  '1.3b': {
+    title: "Dice Roller Warmup", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.3',
+    targets: [
+      { target: "Simulate multi-sided dice rolls and evaluate outcomes with conditional checks.", criteria: "I can generate d6 and d20 rolls from memory, print labeled results, and use if statements to detect critical hits or misses." },
+      { target: "Combine multiple independent random rolls into a single game mechanic.", criteria: "I can roll and sum multiple dice in separate variables and verify that each die rolls independently." },
+    ],
+  },
+  '1.3c': {
+    title: "Random Formula Mastery", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.3',
+    targets: [
+      { target: "Trace arbitrary casting and parentheses combinations in Math.random() expressions.", criteria: "I can state the exact minimum and maximum output of any Math.random() expression without running the code." },
+      { target: "Build weighted random probability tables using range-based conditional branches.", criteria: "I can map a 1..100 random roll into unequal probability tiers (such as common, rare, and legendary loot drops) with no overlapping or missing ranges." },
+    ],
+  },
+  '1.4a': {
+    title: "Slot Machine Build", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '1.4',
+    targets: [
+      { target: "Build a multi-reel Slot Machine simulation using random integer generation and symbol mapping.", criteria: "I can generate three independent random reel values and map each numeric code to its display symbol." },
+      { target: "Write compound win conditions that distinguish three-of-a-kind from two-of-a-kind.", criteria: "I can test reel combinations with == and ||/&& so jackpots, pairs, and losses are classified accurately." },
+    ],
+  },
+  '1.4b': {
+    title: "Slot Machine Reflect", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '1.4',
+    targets: [
+      { target: "Trace execution flow and variable state across every line of the Slot Machine program.", criteria: "I can identify the Declare, Calculate, and Display sections of the Slot Machine and trace variable values for sample reel outcomes." },
+      { target: "Calculate the theoretical probability of matching outcomes in a discrete random simulation.", criteria: "I can compute the exact probability of rolling three-of-a-kind or a pair and compare it to observed program runs." },
+    ],
+  },
+  '1.4c': {
+    title: "Slot Machine Extend", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '1.4',
+    targets: [
+      { target: "Implement mutually exclusive payout tiers and maintain a running coin balance.", criteria: "I can order three-of-a-kind and two-of-a-kind checks so a jackpot never double-counts as a pair, and update the player balance with += and -=." },
+      { target: "Polish console game output into a clear, readable arcade display.", criteria: "I can format reel symbols, payout messages, and updated balances cleanly using borders and escape sequences." },
+    ],
+  },
+  '1.5a': {
+    title: "Tip Calculator Build", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '1.5',
+    targets: [
+      { target: "Translate percentage and currency formulas into Java expressions without integer-division truncation.", criteria: "I can compute tip amount and total bill from a subtotal and integer tip percentage by dividing by 100.0 instead of 100." },
+      { target: "Build a formatted receipt generator following the Three-Step Pattern.", criteria: "I can declare bill inputs, calculate tip and total values, and display a labeled receipt with aligned numbers." },
+    ],
+  },
+  '1.5b': {
+    title: "Tip Calculator Test", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '1.5',
+    targets: [
+      { target: "Verify program correctness by hand-tracing variable values against known test cases.", criteria: "I can construct a trace table showing the exact value of each variable after every line for at least three different bill inputs." },
+      { target: "Diagnose and explain precision and truncation bugs in financial calculations.", criteria: "I can explain why tipPercent / 100 evaluates to 0 for percentages under 100 and demonstrate the fix." },
+    ],
+  },
+  '1.5c': {
+    title: "Tip Calculator Extend", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '1.5',
+    targets: [
+      { target: "Partition totals across multiple recipients using division and modulus for remainders.", criteria: "I can split a restaurant bill or RPG gold pile evenly among party members and use % to compute any leftover coins." },
+      { target: "Apply the Three-Step Pattern independently to a multi-requirement problem specification.", criteria: "I can implement per-person check splitting, service-tier tip selection, and remainder handling in a well-structured program." },
+    ],
+  },
+  '1.6a': {
+    title: "Split Between Friends", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '1.6',
+    targets: [
+      { target: "Extend a financial calculation to incorporate sales tax before tip and per-person splitting.", criteria: "I can compute tax, pre-tax or post-tax tip, grand total, and per-friend share in the correct dependency order." },
+      { target: "Evaluate how calculation order affects final numerical outputs.", criteria: "I can trace and compare tipping on the pre-tax subtotal versus the post-tax total and explain the difference." },
+    ],
+  },
+  '1.6b': {
+    title: "Random Tip Generator", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '1.6',
+    targets: [
+      { target: "Integrate Math.random() into a financial application to generate randomized tip percentages.", criteria: "I can generate a random integer tip percentage within a specified range and feed it into the receipt calculation." },
+      { target: "Switch between fixed and randomized program modes using conditional logic.", criteria: "I can implement two selectable calculation modes and verify that both produce accurate totals." },
+    ],
+  },
+  '1.6c': {
+    title: "Reflect & Design", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '1.6',
+    targets: [
+      { target: "Decompose a new problem specification into Declare, Calculate, and Display phases before coding.", criteria: "I can write the three-step skeleton and variable plan for a brand-new specification on a blank page." },
+      { target: "Isolate feature changes to a single step of an existing program architecture.", criteria: "I can identify exactly which section (Declare, Calculate, or Display) must change when adding a new requirement." },
+    ],
+  },
+  '1.7a': {
+    title: "Dice Roller Part 1", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '1.7',
+    targets: [
+      { target: "Write overloaded static roll() methods that parameterize the random integer formula.", criteria: "I can implement roll(), roll(int sides), and roll(int num, int sides) in Dice.java and delegate between overloaded methods." },
+      { target: "Accumulate multiple dice rolls using a loop and a running total.", criteria: "I can sum num independent rolls of a sides-sided die and pass the acceptance checks for Parts 1–3." },
+    ],
+  },
+  '1.7b': {
+    title: "Dice Roller Part 2", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '1.7',
+    targets: [
+      { target: "Compute tabletop ability modifiers and resolve d20 skill checks with critical outcomes.", criteria: "I can compute (stat - 10) / 2 and implement skillCheck methods that distinguish natural 1, natural 20, pass, and fail." },
+      { target: "Construct and populate an integer array of ability scores in statRoll().", criteria: "I can allocate an int[6], fill each slot with a 3d6 roll, and return the completed array." },
+    ],
+  },
+  '1.7c': {
+    title: "Testing & Integration", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '1.7',
+    targets: [
+      { target: "Systematically test utility methods for range bounds, edge cases, and critical overrides.", criteria: "I can run repeated trials in DiceTester.java to verify minimum/maximum bounds and natural 1/20 precedence." },
+      { target: "Call static methods across class boundaries from a separate driver class.", criteria: "I can invoke Dice methods from DiceTester.java and pass all automated acceptance tests." },
+    ],
+  },
+  '1.8a': {
+    title: "Casting: Slicing Doubles into Ints", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '1.8',
+    targets: [
+      { target: "Predict the result of implicit widening conversions and explicit (int) narrowing casts.", criteria: "I can evaluate expressions mixing int, double, and (int) casts without running the code and explain why casting truncates toward zero." },
+      { target: "Place type casts at the exact point in an expression to preserve fractional precision.", criteria: "I can fix broken average and rounding formulas by casting before division rather than after." },
+    ],
+  },
+  '1.8b': {
+    title: "Compound Assignment & The Overflow Bug", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '1.8',
+    targets: [
+      { target: "Trace compound assignment operators (+=, -=, *=, /=, %=) and increment/decrement operators.", criteria: "I can evaluate state changes across chains of compound assignments and distinguish prefix (++x) from postfix (x++)." },
+      { target: "Explain 32-bit integer range limits (Integer.MIN_VALUE to Integer.MAX_VALUE) and integer overflow.", criteria: "I can predict when a repeated multiplication or addition exceeds 2,147,483,647 and wraps around to a negative number." },
+    ],
+  },
+  '2.1a': {
+    title: "Objects & Classes", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '2.1',
+    targets: [
+      { target: "Instantiate objects using the new keyword and the Three-Step Object Pattern (Declare, Construct, Use).", criteria: "I can distinguish a class blueprint from an object instance and write declaration, instantiation, and method calls from memory." },
+      { target: "Diagnose and prevent NullPointerException when working with object references.", criteria: "I can explain why calling a method on an uninitialized reference crashes at runtime and fix it by constructing the object." },
+    ],
+  },
+  '2.1b': {
+    title: "Object Inspection", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.1',
+    targets: [
+      { target: "Inspect object state by reading fields and invoking instance methods with dot notation.", criteria: "I can construct multiple objects, access their fields and methods with object.member syntax, and print their state." },
+      { target: "Verify that separate instances of the same class maintain independent state.", criteria: "I can mutate a field on one object instance and demonstrate that another instance of the same class is unaffected." },
+    ],
+  },
+  '2.1c': {
+    title: "RPG Character Creator", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.1',
+    targets: [
+      { target: "Model RPG heroes as distinct object instances with custom attribute values.", criteria: "I can instantiate multiple character objects, assign each hero unique stats, and print their summaries." },
+      { target: "Coordinate multiple object instances within a single driver program.", criteria: "I can compare and combine stats across two or more hero objects in main()." },
+    ],
+  },
+  '2.2a': {
+    title: "String Exploration", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '2.2',
+    targets: [
+      { target: "Call core AP String methods (length, substring, indexOf, equals, compareTo) and predict their return values.", criteria: "I can trace index positions and return values for substring(from, to), substring(from), indexOf(str), and equals(other)." },
+      { target: "Explain String immutability and why String content must be compared with equals() instead of ==.", criteria: "I can explain why s.toUpperCase() does not modify s unless reassigned, and why == checks memory references rather than characters." },
+    ],
+  },
+  '2.2b': {
+    title: "String Methods in Context", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.2',
+    targets: [
+      { target: "Extract and format structured text by combining indexOf() and substring().", criteria: "I can locate a delimiter such as \"@\" or a space with indexOf() and slice out the prefix and suffix using substring()." },
+      { target: "Guard String parsing logic against missing delimiters, empty strings, and null references.", criteria: "I can check whether indexOf() returns -1 before calling substring() so malformed input never throws StringIndexOutOfBoundsException." },
+    ],
+  },
+  '2.2c': {
+    title: "String Methods: Build a Parser", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.2',
+    targets: [
+      { target: "Build a multi-word combat command parser that separates action verbs from target names.", criteria: "I can parse commands like \"attack goblin\" into verb and target strings while handling single-word commands and extra whitespace." },
+      { target: "Validate parsed String tokens against a set of legal game commands.", criteria: "I can use equals() and boolean logic to accept valid verbs and reject unknown or malformed commands cleanly." },
+    ],
+  },
+  '2.3a': {
+    title: "Scanner Input", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.3',
+    targets: [
+      { target: "Read interactive console input using java.util.Scanner (nextLine, nextInt, nextDouble).", criteria: "I can import java.util.Scanner, construct new Scanner(System.in), and read text, integers, and decimals from the user." },
+      { target: "Diagnose and fix the Scanner newline buffer trap when switching from numeric input to nextLine().", criteria: "I can explain why nextInt() leaves a newline in the input buffer and insert a consuming nextLine() call so subsequent text input is not skipped." },
+    ],
+  },
+  '2.3b': {
+    title: "Scanner in Context", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.3',
+    targets: [
+      { target: "Chain multiple numeric and text prompts in a Character Creation terminal without input skips.", criteria: "I can sequence multiple nextInt(), nextDouble(), and nextLine() reads and place buffer-clearing calls only where needed." },
+      { target: "Format user-entered character data into a bordered, aligned summary sheet.", criteria: "I can echo all collected Scanner inputs into a clean multi-line character card." },
+    ],
+  },
+  '2.3c': {
+    title: "Scanner: Combat Dialogue", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.3',
+    targets: [
+      { target: "Build an interactive multi-turn combat dialogue loop driven by Scanner input.", criteria: "I can read player action choices each turn, update player and enemy HP, and terminate when combat ends." },
+      { target: "Handle invalid menu selections and mixed input types inside an interactive loop.", criteria: "I can prevent buffer traps across repeated loop iterations and respond gracefully to out-of-range action numbers." },
+    ],
+  },
+  '2.4a': {
+    title: "Scanner Discovery", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '2.4',
+    targets: [
+      { target: "Explore token-based versus line-based Scanner methods through guided experimentation.", criteria: "I can predict how Scanner splits input on whitespace versus newlines and document the behavior of each read method." },
+      { target: "Match prompt types to the appropriate Scanner method and variable type.", criteria: "I can select the right Scanner method for names, whole numbers, and decimals without type mismatch errors." },
+    ],
+  },
+  '2.4b': {
+    title: "Character Creator Input", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.4',
+    targets: [
+      { target: "Build an interactive hero sheet generator that combines user input with derived stat formulas.", criteria: "I can read a hero name, class, and base stats from the console and compute derived combat stats." },
+      { target: "Order Scanner prompts or buffer flushes to avoid the newline trap.", criteria: "I can structure the input sequence so every String and int prompt waits properly for user input." },
+    ],
+  },
+  '2.4c': {
+    title: "Scanner + Strings RPG", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.4',
+    targets: [
+      { target: "Combine Scanner input with String manipulation methods in interactive mini-projects.", criteria: "I can read user strings from the terminal and process them with length(), substring(), and indexOf() to analyze names, validate passwords, or build Mad Libs." },
+      { target: "Use reference documentation independently to select and apply String and Scanner methods.", criteria: "I can look up method signatures in the course docs to solve parsing tasks without step-by-step code templates." },
+    ],
+  },
+  '2.5a': {
+    title: "The Math Class", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.5',
+    targets: [
+      { target: "Call static Math class methods (abs, pow, sqrt, min, max, random) using ClassName.method() syntax.", criteria: "I can explain why Math methods are called on the Math class rather than an instance, and state the return type of each method." },
+      { target: "Clamp numeric values within [min, max] bounds by composing Math.max and Math.min.", criteria: "I can write Math.max(min, Math.min(max, val)) and cast double results from Math.pow and Math.sqrt when storing into an int." },
+    ],
+  },
+  '2.5b': {
+    title: "Math Class in Context", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.5',
+    targets: [
+      { target: "Implement game stat formulas and boundary clamping using Math class methods.", criteria: "I can build StatCalculator.java using Math.sqrt, Math.pow, Math.min, and Math.max, and round doubles to the nearest integer." },
+      { target: "Debug clamping errors caused by swapped bounds or single-sided checks.", criteria: "I can test extreme negative and oversized inputs to verify that clamped stats never fall below the floor or exceed the ceiling." },
+    ],
+  },
+  '2.5c': {
+    title: "Math Class: Damage & Distance", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.5',
+    targets: [
+      { target: "Compute 2D Euclidean distance and distance-based damage falloff using Math.sqrt and Math.pow.", criteria: "I can implement the distance formula between (x1, y1) and (x2, y2) and explain why squaring coordinate differences eliminates negative signs." },
+      { target: "Combine randomized rolls, stat modifiers, and clamping in a damage calculation engine.", criteria: "I can compute combat damage that scales with distance and clamps minimum damage to zero." },
+    ],
+  },
+  '2.6a': {
+    title: "Wrapper Classes", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '2.6',
+    targets: [
+      { target: "Convert between primitives, Strings, and Wrapper objects (Integer, Double, Boolean) using parsing and autoboxing.", criteria: "I can use Integer.parseInt() and Double.parseDouble() on numeric strings and explain when Java autoboxes or unboxes values." },
+      { target: "Avoid the Integer caching trap (== vs equals) and NullPointerException when unboxing null.", criteria: "I can explain why two Integer objects with value 200 fail == comparison and why unboxing a null Integer crashes at runtime." },
+    ],
+  },
+  '2.6b': {
+    title: "Wrapper Classes in Context", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.6',
+    targets: [
+      { target: "Validate raw String input before parsing with Integer.parseInt and Double.parseDouble.", criteria: "I can guard against empty strings and non-digit characters so invalid input does not crash with NumberFormatException." },
+      { target: "Use Integer.MIN_VALUE and Integer.MAX_VALUE constants in range and boundary checks.", criteria: "I can validate parsed numbers against domain bounds and explain how Boolean.parseBoolean differs from numeric parsers." },
+    ],
+  },
+  '2.6c': {
+    title: "Wrapper Classes: Stat Serializer", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.6',
+    targets: [
+      { target: "Serialize character stats into a delimited String and deserialize them back into typed values.", criteria: "I can pack multiple stats into a single save string (e.g. \"Aragorn:15:100\") and reconstruct the typed fields using indexOf, substring, and parseInt." },
+      { target: "Detect and handle malformed or out-of-range fields during deserialization.", criteria: "I can identify reversed delimiters or out-of-bounds stat values and reject corrupt serialized strings." },
+    ],
+  },
+  '2.7a': {
+    title: "Character Creator", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '2.7',
+    targets: [
+      { target: "Implement ability modifier math and stat generation in Character.java using Dice utility methods.", criteria: "I can implement modifier(int score) with (score - 10) / 2 and populate all six ability scores and maxHP in generateStats()." },
+      { target: "Distinguish stored instance fields from derived values computed on demand.", criteria: "I can explain which character attributes are stored as fields versus calculated by calling modifier()." },
+    ],
+  },
+  '2.7b': {
+    title: "Print Char Sheet", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '2.7',
+    targets: [
+      { target: "Render a proportional ASCII HP bar using substring() and scaled integer arithmetic.", criteria: "I can compute filled bar segments with hp * width / maxHp (multiplying before dividing) and slice a 10-character bar using two substring() calls." },
+      { target: "Format a multi-line character sheet displaying fields and derived modifiers.", criteria: "I can implement printCharacterSheet() so all stats, modifiers, and the HP bar align cleanly." },
+    ],
+  },
+  '2.7c': {
+    title: "Build a Party", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '2.7',
+    targets: [
+      { target: "Implement d20 ability checks and proficiency scaling across multiple Character instances.", criteria: "I can write abilityCheck(int dc, int score), instantiate a full party of heroes, and pass all 44 checks in CharacterCheck.java." },
+      { target: "Coordinate multi-class interactions across Dice.java, Character.java, and CharacterTester.java.", criteria: "I can compare ability scores across party members to find the strongest or weakest hero for a given skill check." },
+    ],
+  },
+  '2.8a': {
+    title: "APIs & Libraries: Reading the Docs Like a Pro", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '2.8',
+    targets: [
+      { target: "Navigate the AP Java Quick Reference (JQR) to locate class methods, parameters, and return types.", criteria: "I can find any String, Math, Integer, Double, Object, or ArrayList method on the JQR in under 30 seconds and state whether it is static or instance." },
+      { target: "Call unfamiliar library methods accurately by reading their API specification alone.", criteria: "I can read a method header and description from documentation and write a valid call without needing prior sample code." },
+    ],
+  },
+  '2.8b': {
+    title: "Documentation with Comments", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '2.8',
+    targets: [
+      { target: "Document Java classes and methods using single-line (//), block (/* */), and Javadoc (/** */) comments.", criteria: "I can write accurate Javadoc comments with @param, @return, and preconditions for every method in a utility class." },
+      { target: "Audit code comments to identify outdated or contradictory documentation.", criteria: "I can spot when a comment disagrees with the actual code behavior and fix either the contract or the implementation." },
+    ],
+  },
+  '2.8c': {
+    title: "Method Signatures: The Contract", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '2.8',
+    targets: [
+      { target: "Decode and author Java method signatures specifying access, static/instance scope, return type, name, and parameter list.", criteria: "I can translate an English specification into an exact method header and identify which contract violations cause compile-time errors." },
+      { target: "Implement methods strictly to a signature-first specification.", criteria: "I can write method bodies whose parameter types and return values satisfy all callers expecting the contract." },
+    ],
+  },
+  '3.1a': {
+    title: "Relational Operators & if", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '3.1',
+    targets: [
+      { target: "Write conditional branches using if, else, and the six relational operators (==, !=, <, <=, >, >=).", criteria: "I can evaluate boolean comparisons on primitives, distinguish assignment (=) from equality (==), and trace which branch executes." },
+      { target: "Test conditional logic with boundary values where behavior switches.", criteria: "I can choose test inputs below, directly on, and above a threshold to verify both branches of an if/else statement." },
+    ],
+  },
+  '3.1b': {
+    title: "Conditional Scoring", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '3.1',
+    targets: [
+      { target: "Apply sequential and branching if statements to calculate conditional game scores and bonuses.", criteria: "I can implement a score calculator that awards threshold bonuses and multipliers based on player performance." },
+      { target: "Distinguish when to use independent if statements versus mutually exclusive if/else branches.", criteria: "I can explain when two conditions can both trigger (separate ifs) versus when only one outcome is possible (if/else)." },
+    ],
+  },
+  '3.1c': {
+    title: "Combat Hit Check", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '3.1',
+    targets: [
+      { target: "Build an RPG attack hit-check system comparing d20 rolls and modifiers against Armor Class.", criteria: "I can implement hit, miss, and critical-hit branches and clamp target HP so it never drops below zero." },
+      { target: "Order conditional checks so special-case overrides (like natural 20 or natural 1) are not shadowed.", criteria: "I can trace high-bonus natural 1 rolls and low-bonus natural 20 rolls to prove special cases are checked before total comparisons." },
+    ],
+  },
+  '3.2a': {
+    title: "Boolean Logic", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '3.2',
+    targets: [
+      { target: "Combine boolean expressions using logical AND (&&), OR (||), and NOT (!) with truth tables.", criteria: "I can construct truth tables for compound conditions and use parentheses when mixing && and ||." },
+      { target: "Use short-circuit evaluation to guard against division by zero or null/bounds errors.", criteria: "I can order a guard condition first in && or || and explain when the right-hand operand is skipped." },
+    ],
+  },
+  '3.2b': {
+    title: "Boolean Logic Puzzles", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '3.2',
+    targets: [
+      { target: "Translate multi-rule English access policies into compound boolean expressions.", criteria: "I can implement an Access Checker combining level requirements, key items, and status overrides without redundant nested ifs." },
+      { target: "Verify compound boolean logic against all combinations of truth-table inputs.", criteria: "I can test all 4 or 8 truth-table combinations to confirm the expression matches the specification on every case." },
+    ],
+  },
+  '3.2c': {
+    title: "Combat Condition Builder", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '3.2',
+    targets: [
+      { target: "Model complex RPG combat rules (sneak attack, flanking, and status immunity) with compound booleans.", criteria: "I can combine visibility, weapon type, ally proximity, and stun status into a single accurate sneak-attack condition." },
+      { target: "Refactor deeply nested if statements into clear boolean helper expressions.", criteria: "I can simplify multi-level combat checks using named boolean variables and logical operators." },
+    ],
+  },
+  '3.3a': {
+    title: "else-if Chains", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '3.3',
+    targets: [
+      { target: "Implement multi-way selection using ordered if / else if / else chains.", criteria: "I can order range thresholds from most restrictive to least restrictive so every input triggers exactly one branch." },
+      { target: "Write clean boolean conditions and returns using Boolean Zen (avoiding == true / == false).", criteria: "I can replace if (flag == true) return true; else return false; with a direct boolean expression." },
+    ],
+  },
+  '3.3b': {
+    title: "Multi-Branch Menu", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '3.3',
+    targets: [
+      { target: "Build a multi-branch town menu dispatcher using if / else if / else chains.", criteria: "I can route player menu commands to distinct shop, inn, blacksmith, and exit actions with a catch-all else for invalid choices." },
+      { target: "Trace execution through multi-branch menus and nested state checks.", criteria: "I can predict the exact output and gold/HP state changes for any sequence of menu inputs." },
+    ],
+  },
+  '3.3c': {
+    title: "Combat Round Resolver", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '3.3',
+    targets: [
+      { target: "Resolve turn order and tie-breakers using multi-stage conditional branching.", criteria: "I can implement an initiative resolver that compares speed rolls, breaks ties using dexterity modifiers, and handles simultaneous ties." },
+      { target: "Design exhaustive edge-case tests for multi-branch combat resolution.", criteria: "I can test equal rolls, equal modifiers, and boundary stats to confirm every tie-breaker rule works." },
+    ],
+  },
+  '3.4': {
+    title: "Comparing Objects & The CommandParser Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '3.4',
+    targets: [
+      { target: "Compare String objects safely using equals(), compareTo(), and short-circuit null guards.", criteria: "I can explain why == fails on dynamically sliced Strings, guard against null before calling equals(), and interpret negative/zero/positive compareTo() results." },
+      { target: "Parse and dispatch multi-part combat commands using JQR indexOf() and substring() methods.", criteria: "I can implement extractVerb, extractTarget, firstInTurnOrder, and resolveCombatTurn so CommandParserCheck passes all 38 automated checks." },
+    ],
+  },
+  '3.5': {
+    title: "De Morgan's Laws & The DungeonGatekeeper Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '3.5',
+    targets: [
+      { target: "Apply De Morgan's Laws to negate compound boolean expressions and range comparisons without outer ! operators.", criteria: "I can transform !(A && B) into !A || !B, flip relational boundaries (< to >=, <= to >) when negating ranges, and respect && over || precedence." },
+      { target: "Guard division and object operations using short-circuit evaluation in multi-priority rules.", criteria: "I can implement all five methods in DungeonGatekeeper.java so DungeonGatekeeperCheck passes all 31 automated checks." },
+    ],
+  },
+  '3.6a': {
+    title: "Combat Engine (Day 1): Attack & Crit Resolver", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '3.6',
+    targets: [
+      { target: "Order conditional branches in an attack resolver so natural 1 and natural 20 overrides precede AC comparisons.", criteria: "I can implement evaluateStrike so natural 1 always misses, natural 20 doubles damage only when canCrit is true, and normal hits compare roll + bonus >= targetAC." },
+      { target: "Eliminate duplicate combat logic by delegating randomized attacks to a deterministic helper method.", criteria: "I can implement playerAttack and monsterAttack by rolling via Dice.roll(20) and delegating to evaluateStrike, passing all 14 Day 1 checks in CombatCheck." },
+    ],
+  },
+  '3.6b': {
+    title: "Combat Engine (Day 2): Tactical Round & Stances", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '3.6',
+    targets: [
+      { target: "Clamp mitigated damage and post-hit HP using Math.max so shields never heal and overkill never produces negative HP.", criteria: "I can implement applyMitigatedDamage with defending halving, flat shield subtraction floored at 0, and final HP clamped at 0." },
+      { target: "Sequence two-way combat rounds with death-gated counterattacks and stance trade-offs.", criteria: "I can prevent defeated monsters from counterattacking in combatRound and implement resolveTacticalExchange to pass all 32 checks in CombatCheck." },
+    ],
+  },
+  '4.1': {
+    title: "while Loops & The WhileLab Algorithms Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '4.1',
+    targets: [
+      { target: "Write condition-controlled while loops for indeterminate survival simulations and Collatz-style state transitions.", criteria: "I can order lethal damage checks before end-of-round regeneration, prevent infinite loops when regen >= poison, and use if/else inside loops so branches don't double-fire." },
+      { target: "Extract, sum, and filter base-10 digits of an integer using the % 10 and / 10 while-loop idiom.", criteria: "I can implement sumRuneDigits and countEvenDigits without premature returns inside the loop, passing all 19 checks in WhileLabCheck." },
+    ],
+  },
+  '4.2': {
+    title: "for Loops & The EncounterSim Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '4.2',
+    targets: [
+      { target: "Write count-controlled for loops with accumulators, inclusive bounds, and streak tracking.", criteria: "I can declare accumulators outside the loop, update maxStreak on every safe room (including trailing streaks), and avoid off-by-one boundary errors." },
+      { target: "Order intra-round events and divisibility checks inside a multi-room simulation loop.", criteria: "I can check for lethal trap damage before healing shrines and order multiple-condition checks so EncounterSimCheck passes all 16 checks." },
+    ],
+  },
+  '4.3': {
+    title: "String Traversal: ScrollCipher & AP String Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '4.3',
+    targets: [
+      { target: "Traverse Strings character-by-character using JQR substring(i, i + 1) in forward and reverse order.", criteria: "I can bound lookahead loops at length() - 1 to prevent StringIndexOutOfBoundsException and build reversed or Caesar-shifted Strings." },
+      { target: "Remove all occurrences of a target substring using a while (indexOf != -1) loop.", criteria: "I can slice and reassemble Strings around matched indices so chained formations are removed too, passing all 18 checks in ScrollCipherCheck." },
+    ],
+  },
+  '4.4': {
+    title: "Nested Loops: GridArchitect & Fog-of-War Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '4.4',
+    targets: [
+      { target: "Generate 2D coordinate grids and Manhattan-distance fog-of-war maps using rectangular nested for loops.", criteria: "I can use outer row loops and inner column loops, place \"\\n\" breaks after the inner loop, and classify border vs. interior vs. vision-radius cells." },
+      { target: "Use dependent inner loop bounds (c = r + 1) to build triangular patterns and count unique unordered pairs.", criteria: "I can avoid self-pairs and duplicate (a, b)/(b, a) pairs so GridArchitectCheck passes all 13 automated checks." },
+    ],
+  },
+  '4.5': {
+    title: "Loop Analysis, Fencepost Traps & LoopTracer Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '4.5',
+    targets: [
+      { target: "Count exact loop iterations and resolve fencepost (N pillars, N - 1 connectors) problems.", criteria: "I can predict iteration counts using ceiling division and construct delimited strings without trailing separators." },
+      { target: "Trace mid-iteration threshold checks and nested triangular loop execution counts.", criteria: "I can check win/threshold conditions before periodic drains and compute N(N + 1)/2 inner executions so LoopTracerCheck passes all 17 checks." },
+    ],
+  },
+  '4.6a': {
+    title: "Dungeon Crawler (Day 1): Combat & Floor Engine", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '4.6',
+    targets: [
+      { target: "Control two-combatant duel loops using && continuation conditions and mid-round break exits.", criteria: "I can explain why while (playerHP > 0 && monsterHP > 0) terminates as soon as either combatant falls whereas || lets a dead combatant keep fighting." },
+      { target: "Integrate Dice skill checks and combat rounds into a multi-round encounter method.", criteria: "I can implement simulateDuelToDeath and runCombat in DungeonLoop.java so all 6 Day 1 checks in DungeonLoopCheck pass." },
+    ],
+  },
+  '4.6b': {
+    title: "Dungeon Crawler (Day 2): Multi-Floor Campaign & Boss", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '4.6',
+    targets: [
+      { target: "Coordinate nested floor-by-room campaign loops with early termination on player death.", criteria: "I can break out of inner room loops and outer floor loops immediately when HP hits 0 so dead heroes never trigger post-combat shrines or campfires." },
+      { target: "Track and mutate multi-floor campaign telemetry across method calls.", criteria: "I can implement exploreFloorDeterministic and runMultiFloorCampaign with overheal clamping and boss scaling, passing all 13 checks in DungeonLoopCheck." },
+    ],
+  },
+  '4.7': {
+    title: "Informal Run-Time Analysis & RuntimeAnalyzer Build", badgeClass: 'expand-app', badgeLabel: 'AP Build + Discovery', group: '4.7',
+    targets: [
+      { target: "Count exact statement executions for linear O(N), binary O(log N), and quadratic O(N²) algorithms.", criteria: "I can instrument linear search, binary search, full N×N grids, and N(N - 1)/2 unique-pair loops to return exact comparison counts." },
+      { target: "Compare how execution counts scale when input size N doubles or grows tenfold.", criteria: "I can explain why j = i + 1 halves the work of an N×N loop but remains quadratic O(N²), and pass all 11 checks in RuntimeAnalyzerCheck." },
+    ],
+  },
+  '5.1a': {
+    title: "Anatomy of a Class", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '5.1',
+    targets: [
+      { target: "Identify the three core components of a Java class: private instance variables, constructors, and methods.", criteria: "I can read a class definition and label its state (fields), initialization logic (constructors), and behavior (methods)." },
+      { target: "Explain how a class serves as a blueprint for constructing independent object instances.", criteria: "I can instantiate multiple objects from a class with new and trace how each instance stores its own copy of the instance variables." },
+    ],
+  },
+  '5.1b': {
+    title: "Your First Class", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '5.1',
+    targets: [
+      { target: "Write a complete Java class from scratch with private fields, a constructor, and instance methods.", criteria: "I can author Item.java with encapsulated fields, initialize them in the constructor, and test the class from a separate main method." },
+      { target: "Format object state into a readable summary using a custom toString() or display method.", criteria: "I can call methods on multiple Item instances and verify that each object reports its own state accurately." },
+    ],
+  },
+  '5.1c': {
+    title: "RPG Character Sheet", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '5.1',
+    targets: [
+      { target: "Encapsulate RPG hero data and derived stat calculations inside a cohesive CharacterSheet class.", criteria: "I can move stat fields and modifier/HP calculations out of main() and into instance methods on CharacterSheet." },
+      { target: "Apply the object-oriented principle that an object should manage and compute its own data.", criteria: "I can explain why methods like getModifier() and takeDamage() belong inside CharacterSheet rather than in the driver class." },
+    ],
+  },
+  '5.2a': {
+    title: "Constructors", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '5.2',
+    targets: [
+      { target: "Write default and parameterized constructors that initialize every instance variable.", criteria: "I can write constructors matching the exact class name with no return type and explain when Java provides a default no-arg constructor." },
+      { target: "Use the this keyword to disambiguate instance variables from constructor parameters of the same name.", criteria: "I can fix the parameter-shadowing bug (hp = hp) by writing this.hp = hp." },
+    ],
+  },
+  '5.2b': {
+    title: "Overloaded Constructors", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '5.2',
+    targets: [
+      { target: "Design overloaded constructors with distinct parameter lists to support flexible object creation.", criteria: "I can write multiple constructors for a Weapon class (no-arg defaults, name-only, and full custom stats) and test all creation paths." },
+      { target: "Eliminate duplicate initialization logic across overloaded constructors.", criteria: "I can ensure every constructor initializes all fields to valid non-null, in-range values." },
+    ],
+  },
+  '5.2c': {
+    title: "Enemy Factory", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '5.2',
+    targets: [
+      { target: "Use constructor formulas to scale object attributes dynamically based on a level parameter.", criteria: "I can write an Enemy constructor that computes scaled HP, attack, and XP reward from a base type and level." },
+      { target: "Verify constructor scaling across multiple object instances at different levels.", criteria: "I can instantiate enemies at levels 1, 5, and 10 and confirm their stats scale according to the specification." },
+    ],
+  },
+  '5.3a': {
+    title: "Accessors & Mutators", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '5.3',
+    targets: [
+      { target: "Enforce encapsulation by declaring instance variables private and providing public accessor (getter) and mutator (setter) methods.", criteria: "I can write getField(), isFlag(), and setField(val) methods with standard naming and return/parameter types." },
+      { target: "Protect object invariants by adding validation and clamping logic inside mutator methods.", criteria: "I can reject negative values or clamp HP between 0 and maxHP inside mutators so an object can never enter an invalid state." },
+    ],
+  },
+  '5.3b': {
+    title: "Inventory with Validation", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '5.3',
+    targets: [
+      { target: "Build an encapsulated Backpack class that enforces capacity and weight limits in its mutators.", criteria: "I can write mutator methods that check current weight and item count before modifying fields and return boolean success status." },
+      { target: "Test accessor and mutator guardrails at exact boundary limits.", criteria: "I can test adding items at 0 weight, exact max capacity, and 1 unit over capacity to prove the guardrails hold." },
+    ],
+  },
+  '5.3c': {
+    title: "Damage with Validation", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '5.3',
+    targets: [
+      { target: "Implement combat state mutators (takeDamage, heal, isAlive) that maintain HP invariants.", criteria: "I can write a Combatant class where takeDamage clamps HP at 0, heal clamps HP at maxHP, and dead combatants cannot heal." },
+      { target: "Verify state transitions across sequences of mutator calls.", criteria: "I can trace and test a multi-hit combat sequence to confirm HP never goes negative or exceeds maxHP." },
+    ],
+  },
+  '5.4a': {
+    title: "Methods & Static", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '5.4',
+    targets: [
+      { target: "Distinguish instance methods and variables from static class methods and variables.", criteria: "I can explain why a static method cannot reference this or instance variables, and use a static field to track a shared count across all instances." },
+      { target: "Pass object references as method parameters and trace how mutating a parameter affects the caller.", criteria: "I can trace a method that takes an object reference and predict which changes persist after the method returns." },
+    ],
+  },
+  '5.4b': {
+    title: "Card Class", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '5.4',
+    targets: [
+      { target: "Build an encapsulated Card class with private fields, overloaded constructors, getters, and toString().", criteria: "I can implement Card.java without shadowing instance variables in the constructor and override toString() to return \"rank of suit\"." },
+      { target: "Diagnose field-shadowing bugs that leave instance variables at default null or 0 values.", criteria: "I can explain why redeclaring String suit inside a constructor leaves this.suit null and fix it in CardTester." },
+    ],
+  },
+  '5.4c': {
+    title: "BankAccount", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '5.4',
+    targets: [
+      { target: "Implement a BankAccount class with guarded deposit, withdraw, and transferTo mutators.", criteria: "I can reject negative deposits/withdrawals and overdrafts, and implement transferTo(BankAccount other, double amount) between two objects." },
+      { target: "Coordinate state mutation across two instances of the same class (this and other).", criteria: "I can ensure a transfer only credits the destination account when the withdrawal from this account succeeds." },
+    ],
+  },
+  '5.5a': {
+    title: "Player Class", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '5.5',
+    targets: [
+      { target: "Encapsulate hero state and combat behavior in Player.java for the course RPG engine.", criteria: "I can implement Player.java with private fields, constructors, takeDamage, heal, attack, and isAlive methods that pass all acceptance tests." },
+      { target: "Verify boundary behavior at HP = 0, HP = 1, and HP = maxHP.", criteria: "I can test overkill damage and overhealing to confirm HP clamps to [0, maxHP] and isAlive() is accurate at every boundary." },
+    ],
+  },
+  '5.5b': {
+    title: "Monster + Integration", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '5.5',
+    targets: [
+      { target: "Implement Monster.java and refactor procedural game loops to pass Player and Monster objects.", criteria: "I can replace loose int variables (playerHp, monsterHp) in DungeonCrawl with Player and Monster object instances." },
+      { target: "Update method signatures to accept object references while preserving existing game behavior.", criteria: "I can pass Player and Monster objects into combat methods and verify that health changes persist across rooms." },
+    ],
+  },
+  '5.5c': {
+    title: "Boss Fight & Testing", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '5.5',
+    targets: [
+      { target: "Design and run a comprehensive unit test suite across interacting Player and Monster classes.", criteria: "I can write systematic tests covering constructors, getters, mutator guardrails, and multi-round boss fights." },
+      { target: "Articulate how encapsulation and object boundaries simplify large programs.", criteria: "I can trace execution across class boundaries (DungeonCrawl -> Player -> Dice) and explain why encapsulating state prevents bugs." },
+    ],
+  },
+  '5.6a': {
+    title: "Design From a Spec", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '5.6',
+    targets: [
+      { target: "Translate an AP FRQ 2 specification table directly into a working Java class with private fields, constructors, and methods.", criteria: "I can implement a complete class from a method/behavior table alone and verify every row with an acceptance test table." },
+      { target: "Evaluate and author unambiguous class specifications with explicit preconditions and edge-case rules.", criteria: "I can audit another student's class against a spec for field privacy, signature accuracy, and boundary behavior." },
+    ],
+  },
+  '6.1a': {
+    title: "Array Basics", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '6.1',
+    targets: [
+      { target: "Declare, initialize, and index 1D arrays using 0-based indexing and the .length property.", criteria: "I can create arrays with initializer lists and new type[size], access first (0) and last (length - 1) elements, and state default element values." },
+      { target: "Diagnose and prevent ArrayIndexOutOfBoundsException at negative and length indices.", criteria: "I can explain why arr[arr.length] and arr[-1] crash at runtime and fix off-by-one index expressions." },
+    ],
+  },
+  '6.1b': {
+    title: "Array Indexing Practice", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '6.1',
+    targets: [
+      { target: "Read, update, and swap array elements safely using validated index expressions.", criteria: "I can build a Score Tracker that reads and updates specific array slots and guards index lookups against out-of-bounds values." },
+      { target: "Trace how in-place element updates modify array contents in memory.", criteria: "I can predict the exact contents of an array after a sequence of indexed assignments like arr[i] = arr[i - 1] + 5." },
+    ],
+  },
+  '6.1c': {
+    title: "RPG Inventory Array", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '6.1',
+    targets: [
+      { target: "Model a fixed-size RPG loot inventory using a 1D String array.", criteria: "I can store item names in an array, check slot availability, and replace or inspect specific inventory slots." },
+      { target: "Handle empty (null) slots and full-capacity edge cases in a fixed array.", criteria: "I can test adding loot when slots are empty versus when all slots are occupied without crashing." },
+    ],
+  },
+  '6.2a': {
+    title: "Array Traversal", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '6.2',
+    targets: [
+      { target: "Traverse 1D arrays using both standard indexed for loops and enhanced for-each loops.", criteria: "I can compute sum, average, min, max, and conditional counts in a single traversal pass." },
+      { target: "Choose between standard for and enhanced for-each based on whether indices or element mutation are needed.", criteria: "I can explain why modifying the loop variable in a for-each loop does not change the array and when an indexed loop is required." },
+    ],
+  },
+  '6.2b': {
+    title: "Traversal Patterns", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '6.2',
+    targets: [
+      { target: "Implement standard AP array aggregation and filtering patterns (sum, count, min/max, threshold filter).", criteria: "I can initialize min/max to the first array element (arr[0]) rather than 0 and count or collect elements matching a condition." },
+      { target: "Recognize and adapt canonical traversal templates to new data-analysis prompts.", criteria: "I can identify whether a problem calls for an accumulator, a counter, an extremum tracker, or a boolean flag." },
+    ],
+  },
+  '6.2c': {
+    title: "Party Manager", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '6.2',
+    targets: [
+      { target: "Traverse parallel or object-backed RPG party arrays to compute team-wide statistics.", criteria: "I can calculate total party HP, count living heroes, and identify the party member with the lowest health." },
+      { target: "Apply mass updates (such as party-wide healing or area damage) using an indexed array traversal.", criteria: "I can modify every living party member's HP in a loop while clamping values to valid bounds." },
+    ],
+  },
+  '6.3a': {
+    title: "Array Algorithms", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '6.3',
+    targets: [
+      { target: "Implement core array algorithms: linear search, element swapping with a temp variable, and shifting.", criteria: "I can write a three-line swap, trace why a two-line swap overwrites data, and return the index of a target element or -1." },
+      { target: "Choose the correct loop direction when shifting array elements left (deletion) or right (insertion).", criteria: "I can shift right from the back when inserting and shift left from the deleted index when removing so elements are not overwritten." },
+    ],
+  },
+  '6.3b': {
+    title: "Search & Insert", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '6.3',
+    targets: [
+      { target: "Maintain a sorted High Score array by locating the insertion index and shifting lower scores down.", criteria: "I can find where a new high score belongs, shift lower entries right from the end of the array, and insert the new score." },
+      { target: "Test array insertion at the first slot, middle slots, last slot, and below the minimum score.", criteria: "I can verify that inserting at index 0 or index length - 1 preserves array order without throwing an out-of-bounds exception." },
+    ],
+  },
+  '6.3c': {
+    title: "Combat Tracker", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '6.3',
+    targets: [
+      { target: "Rotate and sort combat initiative arrays to manage turn order across multiple rounds.", criteria: "I can shift the active combatant to the end of the turn queue each turn by saving the first element, shifting left, and placing it at the back." },
+      { target: "Synchronize element shifts across removals when a combatant is defeated mid-round.", criteria: "I can remove a defeated combatant from the initiative array and compact remaining entries without leaving gaps." },
+    ],
+  },
+  '6.4a': {
+    title: "Arrays of Objects", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '6.4',
+    targets: [
+      { target: "Create and traverse arrays of object references while guarding against null slots.", criteria: "I can explain why new Item[5] creates five null references (not five Item objects) and check if (item != null) before calling methods." },
+      { target: "Find extremum objects (such as highest-value loot) by calling getter methods during traversal.", criteria: "I can traverse an Item[] array, compare item.getValue(), and return the reference to the best Item object." },
+    ],
+  },
+  '6.4b': {
+    title: "High Score Table", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '6.4',
+    targets: [
+      { target: "Keep parallel arrays (String[] names and int[] scores) synchronized by shared index.", criteria: "I can find the maximum score's index and use that same index to report the corresponding player's name." },
+      { target: "Sort parallel arrays by swapping corresponding elements in both arrays simultaneously.", criteria: "I can ensure that whenever scores[i] and scores[j] swap, names[i] and names[j] also swap so player-score pairs never drift apart." },
+    ],
+  },
+  '6.4c': {
+    title: "Card Deck", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '6.4',
+    targets: [
+      { target: "Populate a 52-card Deck[] array of Card objects using nested suit-and-rank loops.", criteria: "I can compute the 1D array index inside nested loops (or with a counter) so all 52 slots hold non-null Card instances." },
+      { target: "Implement deck shuffling and top-card dealing using index tracking and element swaps.", criteria: "I can shuffle the Card[] array with random swaps and deal cards sequentially by advancing a topCard index." },
+    ],
+  },
+  '6.5a': {
+    title: "Item Class", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '6.5',
+    targets: [
+      { target: "Build an immutable Item class with constructor validation for rarity, weight, and gold value.", criteria: "I can declare private fields with getters only (no setters), validate constructor inputs, and pass all Item acceptance tests." },
+      { target: "Explain how immutability prevents shared-reference bugs when items are stored in collections.", criteria: "I can explain why an immutable Item can be safely shared across inventories or loot tables without defensive copying." },
+    ],
+  },
+  '6.5b': {
+    title: "FixedInventory", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '6.5',
+    targets: [
+      { target: "Implement a partially-filled array container (FixedInventory) tracking both capacity (items.length) and size (count).", criteria: "I can implement add, remove, get, size, and totalWeight using count as the logical bound and shifting elements left on removal." },
+      { target: "Handle full-inventory rejections and empty-inventory removals without null gaps or crashes.", criteria: "I can return false when adding to a full inventory, null out the trailing slot after shifting on remove, and pass all acceptance tests." },
+    ],
+  },
+  '6.5c': {
+    title: "Inventory Integration", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '6.5',
+    targets: [
+      { target: "Integrate FixedInventory and Item objects into the RPG combat and dungeon exploration loop.", criteria: "I can award loot drops after combat, store them in the player's FixedInventory, and consume healing potions during battle." },
+      { target: "Trace object interactions across DungeonCrawl, Player, FixedInventory, and Item.", criteria: "I can trace how using an item updates Player HP and removes the Item reference from FixedInventory." },
+    ],
+  },
+  '6.6a': {
+    title: "Data Ethics: The Telemetry File", badgeClass: 'hybrid', badgeLabel: 'Discovery Lab', group: '6.6',
+    targets: [
+      { target: "Parse CSV telemetry rows with String.split(\",\") and compute group-level aggregate statistics.", criteria: "I can load a CSV dataset into arrays, parse numeric fields, and compare averages across player subgroups." },
+      { target: "Evaluate data privacy, re-identification risks in \"anonymized\" data, and dark patterns using computed evidence.", criteria: "I can demonstrate how combining quasi-identifiers re-identifies a record and support an ethical argument with statistics from the dataset." },
+    ],
+  },
+  '6.6b': {
+    title: "Data Sets: Clean, Aggregate, Answer", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '6.6',
+    targets: [
+      { target: "Clean messy datasets using guard clauses before computing totals, means, and category counts.", criteria: "I can filter out malformed, missing, or out-of-range rows and divide averages by the valid-row count rather than total rows." },
+      { target: "Analyze how data-cleaning and imputation choices alter computed conclusions.", criteria: "I can compare aggregate results when bad rows are dropped versus replaced with defaults and explain the trade-offs." },
+    ],
+  },
+  '7.1a': {
+    title: "ArrayList Basics", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '7.1',
+    targets: [
+      { target: "Create and manipulate dynamic lists using ArrayList<E> methods (add, get, set, remove, size).", criteria: "I can import java.util.ArrayList, use wrapper types like ArrayList<Integer>, and call size() and get(i) instead of .length and [i]." },
+      { target: "Trace how add(index, obj), set(index, obj), and remove(index) shift elements and return values.", criteria: "I can predict the exact contents and indices of an ArrayList after a sequence of indexed insertions and removals." },
+    ],
+  },
+  '7.1b': {
+    title: "ArrayList Methods Lab", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '7.1',
+    targets: [
+      { target: "Build a Spellbook Manager that searches, inserts, replaces, and removes elements in an ArrayList.", criteria: "I can implement add, remove-by-index, remove-by-name, and linear search over an ArrayList<String>." },
+      { target: "Distinguish remove(int index) from remove(Object) particularly on ArrayList<Integer>.", criteria: "I can explain how list.remove(2) removes index 2 whereas list.remove(Integer.valueOf(2)) removes the value 2." },
+    ],
+  },
+  '7.1c': {
+    title: "RPG Quest Log", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '7.1',
+    targets: [
+      { target: "Encapsulate an ArrayList inside a QuestLog class to manage active and completed quests dynamically.", criteria: "I can implement addQuest, completeQuest, and printQuests methods that move quests between lists as the player progresses." },
+      { target: "Guard ArrayList operations against invalid indices and duplicate entries.", criteria: "I can check list bounds and existing quest names before adding or completing quests." },
+    ],
+  },
+  '7.2a': {
+    title: "ArrayList Traversal", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '7.2',
+    targets: [
+      { target: "Traverse an ArrayList using indexed for loops, enhanced for-each loops, and while loops.", criteria: "I can write both traversal styles and explain why calling remove() inside a for-each loop throws ConcurrentModificationException." },
+      { target: "Remove matching elements from an ArrayList during traversal without skipping adjacent matches.", criteria: "I can explain the shifting-index skip bug when two target elements are adjacent and fix it by decrementing i-- after remove(i) or looping backward." },
+    ],
+  },
+  '7.2b': {
+    title: "ArrayList Traversal Patterns", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '7.2',
+    targets: [
+      { target: "Implement in-place ArrayList cleanup and filtering algorithms that survive consecutive matches.", criteria: "I can test my removal loop on lists with back-to-back matching items (e.g., [\"bad\", \"bad\", \"good\"]) and verify zero matches remain." },
+      { target: "Compare in-place removal against building and returning a new filtered ArrayList.", criteria: "I can implement both in-place removal and new-list filtering and state when each pattern is preferred on AP FRQs." },
+    ],
+  },
+  '7.2c': {
+    title: "Enemy Horde Manager", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '7.2',
+    targets: [
+      { target: "Manage a dynamic horde of Enemy objects in an ArrayList across spawning, area damage, and death cleanup.", criteria: "I can apply damage to every Enemy in an ArrayList and safely remove all enemies whose HP drops to 0 or below." },
+      { target: "Stress-test dynamic collection removal when all, consecutive, or boundary elements are eliminated.", criteria: "I can verify that an area attack wiping out the entire enemy horde leaves an empty list without skipping enemies or crashing." },
+    ],
+  },
+  '7.3a': {
+    title: "Searching & Sorting", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '7.3',
+    targets: [
+      { target: "Implement linear search, binary search, selection sort, and insertion sort on arrays and ArrayLists.", criteria: "I can trace the sorted/unsorted partition in selection and insertion sort and state why binary search requires sorted data." },
+      { target: "Sort an ArrayList of custom objects by comparing object attributes with getter methods or compareTo().", criteria: "I can implement selection sort on an ArrayList<Item> using get(i) and set(i, val) to swap elements." },
+    ],
+  },
+  '7.3b': {
+    title: "Music Playlist", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '7.3',
+    targets: [
+      { target: "Build an interactive Music Playlist manager using ArrayList add, bounds-checked remove, and random shuffle.", criteria: "I can translate 1-based user song numbers into 0-based ArrayList indices and swap elements using list.set(i, list.set(j, temp))." },
+      { target: "Prevent IndexOutOfBoundsException on user-driven ArrayList operations.", criteria: "I can validate that user-selected song numbers fall within 1..playlist.size() before calling remove." },
+    ],
+  },
+  '7.3c': {
+    title: "Leaderboard", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '7.3',
+    targets: [
+      { target: "Maintain a sorted Leaderboard of Player objects backed by an ArrayList.", criteria: "I can sort an ArrayList<Player> in descending score order and break ties alphabetically by player name." },
+      { target: "Insert new Player records or re-sort the leaderboard while preserving top-N rankings.", criteria: "I can add a new player score, update rankings, and print the formatted leaderboard." },
+    ],
+  },
+  '7.4a': {
+    title: "Dynamic Inventory", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '7.4',
+    targets: [
+      { target: "Build DynamicInventory.java using an internal ArrayList<Item> while matching the FixedInventory interface.", criteria: "I can implement add, remove, get, size, and totalWeight using ArrayList methods with no fixed capacity limit." },
+      { target: "Compare how ArrayList simplifies insertion and deletion compared to manual array shifting.", criteria: "I can replace manual shift loops and count tracking with list.add(), list.remove(), and list.size() and pass all acceptance tests." },
+    ],
+  },
+  '7.4b': {
+    title: "Inventory Sort & Swap", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '7.4',
+    targets: [
+      { target: "Extend DynamicInventory with selection sort (by value or weight) and rarity filtering methods.", criteria: "I can sort the internal ArrayList<Item> and return a new ArrayList<Item> containing only items of a target rarity." },
+      { target: "Swap FixedInventory for DynamicInventory in the RPG engine without changing caller combat code.", criteria: "I can rewire Player and DungeonCrawl to use DynamicInventory and verify all existing game interactions still work." },
+    ],
+  },
+  '7.4c': {
+    title: "Inventory Integration & Unit Retrospective", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '7.4',
+    targets: [
+      { target: "Implement multi-collection operations (tradeItem and mergeInventory) between two DynamicInventory instances.", criteria: "I can transfer an item atomically between two inventories and merge all items from a loot chest into the player's backpack without skipping elements." },
+      { target: "Evaluate the design trade-offs between fixed-size 1D arrays and dynamic ArrayLists.", criteria: "I can explain when to choose a 1D array versus an ArrayList based on memory, primitive support, and resizing needs." },
+    ],
+  },
+  '7.5a': {
+    title: "Deduplication & Frequency", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '7.5',
+    targets: [
+      { target: "Implement ArrayList deduplication (preserving first-seen order) and parallel-list frequency counting.", criteria: "I can remove duplicate items without skipping elements and maintain synchronized uniqueItems and counts ArrayLists." },
+      { target: "Analyze the quadratic O(N²) comparison cost of nested-loop duplicate detection.", criteria: "I can count how many pair comparisons occur when checking an N-element list for duplicates." },
+    ],
+  },
+  '7.5b': {
+    title: "Pair Finding & Rotation", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '7.5',
+    targets: [
+      { target: "Find all unique element pairs summing to a target value using nested ArrayList loops (j = i + 1).", criteria: "I can pair-match elements without pairing an element with itself (i == j) or double-counting (i, j) and (j, i)." },
+      { target: "Rotate an ArrayList left or right and analyze the shifting cost of remove(0).", criteria: "I can rotate list elements by k positions and explain why removing at index 0 shifts all remaining N - 1 elements." },
+    ],
+  },
+  '7.5c': {
+    title: "Shuffle & Loot Drop", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '7.5',
+    targets: [
+      { target: "Implement the uniform Fisher-Yates shuffle algorithm on an ArrayList.", criteria: "I can iterate backward from size() - 1 down to 1, pick a random index 0..i, and swap elements in O(N) time." },
+      { target: "Build a data-driven weighted random selector using parallel item and weight ArrayLists.", criteria: "I can sum positive weights, roll a random threshold in 0..totalWeight - 1, and walk cumulative weights to return the chosen loot drop." },
+    ],
+  },
+  '7.6a': {
+    title: "Reading Files: The Bestiary Loads Itself", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '7.6',
+    targets: [
+      { target: "Read structured text files line-by-line using java.io.File and java.util.Scanner (hasNextLine / nextLine).", criteria: "I can write the file-reading while loop from memory, split each line by its delimiter, parse numbers, and populate an ArrayList<Monster>." },
+      { target: "Handle checked IOException / FileNotFoundException and diagnose malformed file lines.", criteria: "I can declare throws IOException (or catch exceptions), skip blank or comment lines, and fix wrong-delimiter or bad-number bugs." },
+    ],
+  },
+  '7.6b': {
+    title: "Save Games & High Score Files", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '7.6',
+    targets: [
+      { target: "Design and implement persistent save-game and high-score file loaders and writers.", criteria: "I can load a high-score table from disk, insert a new score in sorted order, and write the updated table back to a file." },
+      { target: "Harden file parsers with guard clauses against corrupt, missing, or out-of-range fields.", criteria: "I can detect truncated rows, non-numeric scores, and negative values so corrupt lines are skipped with safe defaults instead of crashing." },
+    ],
+  },
+  '8.1a': {
+    title: "2D Array Basics", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '8.1',
+    targets: [
+      { target: "Declare, initialize, and access 2D arrays using grid[row][col] syntax, grid.length, and grid[r].length.", criteria: "I can distinguish the number of rows (grid.length) from the number of columns in row r (grid[r].length) on rectangular and ragged arrays." },
+      { target: "Prevent swapped row/column indices and out-of-bounds access in 2D grids.", criteria: "I can read and write corners, borders, and interior cells accurately using [row][col] coordinates." },
+    ],
+  },
+  '8.1b': {
+    title: "Grid Coordinates", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '8.1',
+    targets: [
+      { target: "Navigate 2D grid coordinates using directional offsets (north, south, east, west) and bounds validation.", criteria: "I can write an inBounds(row, col) helper method and check it before reading or writing adjacent grid cells." },
+      { target: "Build an interactive Grid Editor that modifies cells and prevents out-of-bounds crashes.", criteria: "I can update and render a 2D board as a coordinate cursor moves across the grid." },
+    ],
+  },
+  '8.1c': {
+    title: "Tile Map Editor", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '8.1',
+    targets: [
+      { target: "Encapsulate a 2D char[][] or int[][] grid inside a TileMap class for dungeon level editing.", criteria: "I can implement setTile, getTile, fillRect, and printMap methods with bounds checking on every coordinate access." },
+      { target: "Compose primitive grid operations to construct bordered rooms, walls, and hazards.", criteria: "I can build a playable multi-feature dungeon level using TileMap methods." },
+    ],
+  },
+  '8.2a': {
+    title: "2D Array Traversal", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '8.2',
+    targets: [
+      { target: "Traverse 2D arrays in row-major order, column-major order, and enhanced for-each order.", criteria: "I can write nested loops for row-major (outer row, inner col) and column-major (outer col, inner row) traversals and nested for (int[] row : grid) loops." },
+      { target: "Traverse ragged 2D arrays safely by querying grid[r].length for each row.", criteria: "I can compute grid-wide sums, maximums, and conditional counts without assuming every row has the same length." },
+    ],
+  },
+  '8.2b': {
+    title: "Row/Column Sums", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '8.2',
+    targets: [
+      { target: "Compute per-row sums, per-column sums, and main/anti-diagonal totals across a 2D array.", criteria: "I can reset row/column accumulators at the start of each outer loop iteration and index diagonals with grid[i][i] and grid[i][n - 1 - i]." },
+      { target: "Identify the row or column with the maximum or minimum aggregate value.", criteria: "I can return the index of the highest-scoring row or column in a 2D dataset." },
+    ],
+  },
+  '8.2c': {
+    title: "Battle Grid", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '8.2',
+    targets: [
+      { target: "Scan 8-directional neighborhoods and area-of-effect (AoE) regions on a 2D battle grid.", criteria: "I can iterate over a [row - radius .. row + radius] window while guarding every cell check with inBounds(r, c)." },
+      { target: "Apply range-based area attacks and target counting across a 2D combat map.", criteria: "I can count and damage all enemies within Manhattan or Chebyshev distance of an attack origin." },
+    ],
+  },
+  '8.3a': {
+    title: "2D Array Algorithms", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '8.3',
+    targets: [
+      { target: "Implement 2D array algorithms: matrix transposition (new grid[cols][rows]) and border summation.", criteria: "I can transpose rectangular R×C grids into C×R grids with transposed[c][r] = grid[r][c] and sum perimeter cells without double-counting the four corners." },
+      { target: "Search a 2D array for a target or extremum and return its (row, col) coordinates.", criteria: "I can locate a target value in a 2D grid and return its row and column in a two-element int[] array." },
+    ],
+  },
+  '8.3b': {
+    title: "Tic-Tac-Toe", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '8.3',
+    targets: [
+      { target: "Build a playable 3×3 Tic-Tac-Toe game with move validation and win/tie detection.", criteria: "I can reject moves on occupied or out-of-bounds squares and check all 3 rows, 3 columns, and 2 diagonals for a winner." },
+      { target: "Prevent empty-board false positives when checking for matching lines in a 2D board.", criteria: "I can ensure three matching empty spaces (' ' == ' ') are never reported as a winning line." },
+    ],
+  },
+  '8.3c': {
+    title: "Connect Four", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '8.3',
+    targets: [
+      { target: "Implement gravity-based column drops and 4-directional win detection in a 6×7 Connect Four grid.", criteria: "I can scan upward from the bottom row (row 5 to 0) to drop a piece into the lowest empty slot and check horizontal, vertical, and both diagonal runs of 4." },
+      { target: "Bound directional 4-in-a-row window scans so lookahead indices never exceed the 6×7 board.", criteria: "I can constrain starting row and column ranges for each direction so r + 3 and c ± 3 stay strictly in bounds." },
+    ],
+  },
+  '8.4a': {
+    title: "Dungeon Grid", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '8.4',
+    targets: [
+      { target: "Build the DungeonMap.java 2D grid foundation with bordered walls and safe tile accessors.", criteria: "I can initialize a rectangular grid of walls and floor tiles and implement getTile/setTile that handle out-of-bounds coordinates safely." },
+      { target: "Render a 2D dungeon grid to the console with player and entity symbols.", criteria: "I can display the complete bordered dungeon map and pass all 8.4a acceptance checks." },
+    ],
+  },
+  '8.4b': {
+    title: "Rooms & Entities", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '8.4',
+    targets: [
+      { target: "Carve non-overlapping rectangular rooms and connecting corridors into DungeonMap.", criteria: "I can place rooms inside the outer perimeter walls so the outer boundary is never breached and connect rooms with floor corridors." },
+      { target: "Spawn and count monsters, loot chests, and stairs on valid floor tiles.", criteria: "I can place entities only on open floor tiles and count remaining monsters or treasures across the 2D grid." },
+    ],
+  },
+  '8.4c': {
+    title: "Dungeon Movement", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '8.4',
+    targets: [
+      { target: "Implement tile-based player movement (W/A/S/D) with wall collision and tile-event triggers.", criteria: "I can compute the target (nextRow, nextCol), block movement into walls, and trigger combat or loot pickup when stepping onto entity tiles." },
+      { target: "Wire DungeonMap into the main DungeonCrawl game loop.", criteria: "I can run a playable dungeon turn loop where moving across the 2D map launches encounters and updates the tile grid." },
+    ],
+  },
+  '8.5a': {
+    title: "Pixel Arrays & Filters", badgeClass: 'hybrid', badgeLabel: 'Season 2', group: '8.5',
+    targets: [
+      { target: "Manipulate 2D grayscale pixel arrays using brighten, darken, invert (255 - v), and threshold filters.", criteria: "I can traverse a 2D int[][] image array and clamp every modified pixel value to the valid [0, 255] range." },
+      { target: "Generate procedural 2D gradients and ASCII luminance renderings from pixel data.", criteria: "I can map [0, 255] intensity values to ASCII shading characters to visualize filter output in the terminal." },
+    ],
+  },
+  '8.5b': {
+    title: "Convolution & Edge Detection", badgeClass: 'hybrid', badgeLabel: 'Season 2', group: '8.5',
+    targets: [
+      { target: "Implement 3×3 neighborhood convolution filters (box blur and edge detection) on a 2D image array.", criteria: "I can compute bounded neighbor averages and gradient magnitudes while writing results into a separate output array." },
+      { target: "Explain why neighborhood grid algorithms require reading from an unmodified source array while writing to a new destination array.", criteria: "I can demonstrate how mutating pixels in-place corrupts the neighbor calculations of subsequent cells." },
+    ],
+  },
+  '8.5c': {
+    title: "Dungeon Fog of War", badgeClass: 'hybrid', badgeLabel: 'Season 2', group: '8.5',
+    targets: [
+      { target: "Compute a 2D fog-of-war visibility map using sight radius and recursive flood fill.", criteria: "I can mark walls as visible-but-impassable so sight stops at walls and track visited cells to prevent infinite recursion." },
+      { target: "Overlay visibility and memory states (unseen, currently visible, previously explored) onto the DungeonMap renderer.", criteria: "I can render hidden tiles as fog while revealing explored rooms as the player moves through the dungeon." },
+    ],
+  },
+  '8.6a': {
+    title: "Dungeon Maps From Files", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '8.6',
+    targets: [
+      { target: "Load a 2D char[][] dungeon map from an external text file using the two-pass Scanner/ArrayList pattern.", criteria: "I can read all lines into an ArrayList<String>, allocate the 2D char[][] grid, and copy each character with substring(c, c + 1) or charAt(c)." },
+      { target: "Write grid-census and feature-locator methods that handle ragged rows safely.", criteria: "I can locate the player spawn '@', count monsters and treasure tiles on ragged maps, and explain the benefits of data-driven level design." },
+    ],
+  },
+  '9.1a': {
+    title: "Inheritance Basics", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '9.1',
+    targets: [
+      { target: "Model IS-A class hierarchies using the extends keyword and chain constructors with super(...).", criteria: "I can write a subclass that extends a superclass, place super(...) as the first statement of the subclass constructor, and store subclasses in a parent-typed array." },
+      { target: "Distinguish what a subclass inherits directly from what requires public/protected accessors.", criteria: "I can explain why private superclass fields are inherited in state but must be accessed via superclass getters/setters." },
+    ],
+  },
+  '9.1b': {
+    title: "Writing Subclasses", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '9.1',
+    targets: [
+      { target: "Extend a base Character class into specialized subclasses (Warrior, Mage, Rogue) with subclass-specific fields and methods.", criteria: "I can initialize shared fields via super(...) and add unique fields (such as mana or rage) and behavior to each subclass." },
+      { target: "Test inherited and specialized methods across multiple subclass instances.", criteria: "I can construct Warrior, Mage, and Rogue objects and verify both inherited Character methods and subclass-only methods." },
+    ],
+  },
+  '9.1c': {
+    title: "Polymorphic Party", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '9.1',
+    targets: [
+      { target: "Manage a mixed party of subclass objects inside a single superclass-typed array or ArrayList.", criteria: "I can store Warrior, Mage, and Rogue instances in a Character[] or ArrayList<Character> and traverse the party with a single loop." },
+      { target: "Coordinate shared party operations across heterogeneous character types.", criteria: "I can apply party-wide status updates and reporting through superclass references." },
+    ],
+  },
+  '9.2a': {
+    title: "Method Overriding", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '9.2',
+    targets: [
+      { target: "Override superclass methods in subclasses using matching signatures, @Override, and super.method() calls.", criteria: "I can override attack() and toString() in a subclass and augment parent behavior by calling super.toString() or super.attack()." },
+      { target: "Trace dynamic method dispatch when an overridden method is called on a superclass reference.", criteria: "I can explain why the actual runtime object type (not the declared variable type) determines which overridden method executes." },
+    ],
+  },
+  '9.2b': {
+    title: "Override vs Overload", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '9.2',
+    targets: [
+      { target: "Distinguish method overriding (same signature in a subclass) from method overloading (different parameter list).", criteria: "I can build a Weapon hierarchy that uses both overloaded constructors/methods and overridden damage calculations without signature confusion." },
+      { target: "Use @Override to catch accidental signature mismatches at compile time.", criteria: "I can explain how a typo in a parameter type turns an intended override into an overload and how @Override prevents it." },
+    ],
+  },
+  '9.2c': {
+    title: "Elemental Combat", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '9.2',
+    targets: [
+      { target: "Implement an elemental combat hierarchy where subclasses override attack and takeDamage for elemental weaknesses.", criteria: "I can write Fire, Ice, and Lightning subclasses that override damage calculation based on elemental multipliers." },
+      { target: "Verify polymorphic damage resolution across pairs of elemental combatants.", criteria: "I can run combat rounds using base-class references and confirm each subclass applies its overridden elemental rules." },
+    ],
+  },
+  '9.3a': {
+    title: "Polymorphism", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '9.3',
+    targets: [
+      { target: "Distinguish compile-time reference type (what methods the compiler allows) from runtime object type (which override executes).", criteria: "I can predict which method calls on a Creature ref = new Dragon() fail at compile time versus dispatch to Dragon at runtime." },
+      { target: "Write polymorphic loops over superclass collections that invoke overridden behavior without type-checking branches.", criteria: "I can iterate over a Creature[] array and call attack() so each creature executes its own subclass behavior." },
+    ],
+  },
+  '9.3b': {
+    title: "Polymorphism: Type-Driven Behavior", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '9.3',
+    targets: [
+      { target: "Sort, filter, and heal mixed-type Creature collections polymorphically while guarding against null elements.", criteria: "I can implement CreatureHealer and CreatureSorter operating purely on Creature references with null guards." },
+      { target: "Trace polymorphic method calls across multi-level inheritance chains.", criteria: "I can determine the exact output of a polymorphic method call when a grand-child class inherits or overrides a method." },
+    ],
+  },
+  '9.3c': {
+    title: "Polymorphism: Battle System", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '9.3',
+    targets: [
+      { target: "Build a complete turn-based BattleSystem that runs encounters on an ArrayList<Creature>.", criteria: "I can execute initiative rounds, polymorphic actions, and safe dead-creature removal without modifying BattleSystem when new Creature subclasses are added." },
+      { target: "Prevent ConcurrentModificationException and skipped turns when removing defeated combatants mid-round.", criteria: "I can safely remove fallen creatures from the active battle list and pass all multi-round battle tests." },
+    ],
+  },
+  '9.4a': {
+    title: "Interfaces", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '9.4',
+    targets: [
+      { target: "Define Java interfaces and implement them across unrelated classes using the implements keyword.", criteria: "I can write an interface with abstract method signatures and implement it in multiple classes (including Comparable<T>)." },
+      { target: "Write polymorphic code typed to an interface reference rather than a concrete class.", criteria: "I can store unrelated implementing objects in an interface-typed collection and invoke interface methods on each element." },
+    ],
+  },
+  '9.4b': {
+    title: "Implementing Interfaces", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '9.4',
+    targets: [
+      { target: "Implement multiple capability interfaces (such as Healable, Castable, and Defendable) on a single character class.", criteria: "I can write a class header implementing two or more interfaces and provide concrete implementations for every required method." },
+      { target: "Explain why interfaces enable multiple behavioral contracts where single class inheritance cannot.", criteria: "I can contrast extending one superclass with implementing multiple orthogonal capability interfaces." },
+    ],
+  },
+  '9.4c': {
+    title: "Combat Abilities Engine", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '9.4',
+    targets: [
+      { target: "Build an interface-driven Combat Abilities Engine where skills and spells implement a shared Ability contract.", criteria: "I can execute a player's loadout of diverse abilities through an ArrayList<Ability> using a single execute() call." },
+      { target: "Extend an engine with new Ability implementations without modifying the combat dispatcher.", criteria: "I can add a new ability class implementing Ability and plug it into combat with zero changes to the engine loop." },
+    ],
+  },
+  '9.5a': {
+    title: "Downcasting", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '9.5',
+    targets: [
+      { target: "Safely downcast a superclass reference to a subclass type using instanceof guards and (Subclass) casts.", criteria: "I can guard every downcast with if (obj instanceof Subclass) and place parentheses correctly in ((Subclass) obj).subclassMethod()." },
+      { target: "Explain why unguarded downcasts throw ClassCastException at runtime.", criteria: "I can trace when a downcast compiles cleanly but fails at runtime because the actual object is a different subclass." },
+    ],
+  },
+  '9.5b': {
+    title: "Shape Hierarchy", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '9.5',
+    targets: [
+      { target: "Build a polymorphic Shape hierarchy (Shape, Circle, Rectangle, Triangle) with overridden area() and perimeter() methods.", criteria: "I can implement the parent Shape class and three concrete subclasses and store them in a single Shape[] array." },
+      { target: "Combine polymorphic method calls with instanceof-guarded downcasts for subclass-specific properties.", criteria: "I can compute total area polymorphically across all shapes and safely access getRadius() only on Circle instances." },
+    ],
+  },
+  '9.5c': {
+    title: "ShapeCollection", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '9.5',
+    targets: [
+      { target: "Implement a ShapeCollection manager that aggregates, searches, and filters polymorphic Shape objects.", criteria: "I can implement totalArea, largestShape, and countCircles using polymorphism and instanceof checks." },
+      { target: "Debug operator-precedence and null-handling traps in downcast expressions.", criteria: "I can explain why (Circle) s.getRadius() fails to compile compared to ((Circle) s).getRadius() and why null instanceof Type evaluates to false." },
+    ],
+  },
+  '9.6a': {
+    title: "Combat Hierarchy", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '9.6',
+    targets: [
+      { target: "Architect the RPG Combatant hierarchy combining a Combatant interface, an abstract Creature base class, and concrete subclasses.", criteria: "I can define the 5-method Combatant interface, make Creature abstract, and implement Goblin, Skeleton, Dragon, and Player." },
+      { target: "Explain when to use an interface versus an abstract class in a game engine hierarchy.", criteria: "I can justify why shared monster fields live in abstract Creature while the shared battle contract lives in the Combatant interface." },
+    ],
+  },
+  '9.6b': {
+    title: "Polymorphic Battle Engine", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '9.6',
+    targets: [
+      { target: "Build a universal BattleEngine that resolves combat between any two Combatant implementations.", criteria: "I can write BattleEngine.fight(Combatant a, Combatant b) so Player vs. Monster, Monster vs. Monster, and Boss fights all run on one loop." },
+      { target: "Eliminate type-specific if/else branches by relying on polymorphic Combatant method dispatch.", criteria: "I can pass all acceptance tests for Goblin, Skeleton, Dragon, and Player matchups without casting inside BattleEngine." },
+    ],
+  },
+  '9.6c': {
+    title: "Monster Spawner + Integrate", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '9.6',
+    targets: [
+      { target: "Implement a MonsterSpawner factory that returns polymorphic Combatant/Creature instances by dungeon floor.", criteria: "I can write a static factory method that instantiates and returns different Creature subclasses under a parent/interface return type." },
+      { target: "Integrate MonsterSpawner and BattleEngine into the full DungeonCrawl game loop.", criteria: "I can add a brand-new Creature subclass to the spawner and fight it in the dungeon without editing BattleEngine or DungeonCrawl." },
+    ],
+  },
+  '10.1a': {
+    title: "Recursion Basics", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '10.1',
+    targets: [
+      { target: "Identify and write the two essential parts of a recursive method: the base case and the recursive step.", criteria: "I can write recursive countdown and factorial methods that progress toward a terminating base case and avoid StackOverflowError." },
+      { target: "Trace recursive call stacks showing both the winding (push) and unwinding (return) phases.", criteria: "I can draw the stack frames for factorial(4) and predict the exact order of print statements placed before versus after a recursive call." },
+    ],
+  },
+  '10.1b': {
+    title: "Recursive Patterns", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '10.1',
+    targets: [
+      { target: "Implement classic mathematical recursion patterns: factorial(n), power(base, exp), and fibonacci(n).", criteria: "I can write single-branch and two-branch recursive methods and verify their outputs against base cases (n = 0, n = 1)." },
+      { target: "Contrast linear recursion call counts with the exponential call tree of naive two-branch Fibonacci.", criteria: "I can measure and explain why power(b, n) makes O(n) calls while naive fib(n) recomputes subproblems exponentially." },
+    ],
+  },
+  '10.1c': {
+    title: "Recursive Dungeon Crawler", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '10.1',
+    targets: [
+      { target: "Traverse branching dungeon rooms recursively using depth-first exploration.", criteria: "I can write a recursive explorer that visits connected rooms, accumulates total gold, and stops at dead ends or visited rooms." },
+      { target: "Prevent infinite recursion in cyclic room graphs by marking rooms as visited before recursing.", criteria: "I can demonstrate why omitting the visited check causes a StackOverflowError when two rooms connect to each other." },
+    ],
+  },
+  '10.2a': {
+    title: "Recursive Traversal", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '10.2',
+    targets: [
+      { target: "Write recursive traversal methods over 1D arrays and Strings using an advancing index or substring(1).", criteria: "I can implement recursive array sum, count, and String character processing without using loops." },
+      { target: "Combine the current element's value with the recursive call's return value during stack unwinding.", criteria: "I can trace how return arr[i] + sum(arr, i + 1) accumulates the total as each recursive call returns." },
+    ],
+  },
+  '10.2b': {
+    title: "Recursive String/Array Problems", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '10.2',
+    targets: [
+      { target: "Implement recursive String reversal, palindrome checking, and array reduction algorithms.", criteria: "I can write reverse(s) and isPalindrome(s) by comparing outer characters and recursing on the interior substring." },
+      { target: "Define complete base cases for both empty (length 0) and single-character (length 1) Strings.", criteria: "I can trace isPalindrome(\"racecar\") and even-length strings to prove neither base case is missed." },
+    ],
+  },
+  '10.2c': {
+    title: "Recursive Loot Finder", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '10.2',
+    targets: [
+      { target: "Find the maximum-value path through a branching treasure structure using two-branch recursion and Math.max.", criteria: "I can implement maxLoot(row, col) that explores left/down choices and returns currentLoot + Math.max(leftBest, rightBest)." },
+      { target: "Trace recursive decision trees to identify the optimal path and total call count.", criteria: "I can draw the recursion tree for a small grid and verify that the method returns the highest possible loot sum." },
+    ],
+  },
+  '10.3a': {
+    title: "Merge Sort", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '10.3',
+    targets: [
+      { target: "Trace and implement the divide-and-conquer Merge Sort algorithm and its two-pointer merge() helper.", criteria: "I can split an array at mid, recursively sort both halves, and merge two sorted halves in linear O(N) time." },
+      { target: "Compare Merge Sort's O(N log N) splitting depth and work against quadratic O(N²) sorts.", criteria: "I can draw the recursion tree for an 8-element Merge Sort, state the log₂(N) tree height, and explain why each level does O(N) merge work." },
+    ],
+  },
+  '10.3b': {
+    title: "Recursive Fibonacci", badgeClass: 'basic-app', badgeLabel: 'Basic Application', group: '10.3',
+    targets: [
+      { target: "Instrument naive recursive Fibonacci to count redundant recursive calls and diagnose exponential O(2^N) blowup.", criteria: "I can add a call counter to fib(n), record how many times fib(2) is recomputed during fib(10), and explain why fib(45) hangs." },
+      { target: "Eliminate redundant recursive work using memoization (caching computed results in an array).", criteria: "I can store computed Fibonacci values in a memo[] array so fib(45) completes instantaneously in linear O(N) calls." },
+    ],
+  },
+  '10.3c': {
+    title: "Recursive Palindrome", badgeClass: 'expand-app', badgeLabel: 'Expand Application', group: '10.3',
+    targets: [
+      { target: "Build and debug a recursive palindrome checker with short-circuit base cases and case/space normalization.", criteria: "I can order length <= 1 base cases before character comparisons so empty and 1-char strings never go out of bounds." },
+      { target: "Compare recursive and iterative two-pointer implementations for clarity, time, and stack space.", criteria: "I can write both recursive and iterative isPalindrome methods and compare their call stack usage." },
+    ],
+  },
+  '10.4a': {
+    title: "Flood Fill", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '10.4',
+    targets: [
+      { target: "Implement 4-directional recursive flood fill (reveal) on DungeonMap to uncover connected floor regions.", criteria: "I can check out-of-bounds, wall tiles, and already-revealed tiles as base cases before recursing north, south, east, and west." },
+      { target: "Count connected component sizes recursively without revisiting tiles or overflowing the call stack.", criteria: "I can mark each tile as visited before making the 4 recursive calls and return 1 + N + S + E + W connected tile counts." },
+    ],
+  },
+  '10.4b': {
+    title: "Shortest Path", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '10.4',
+    targets: [
+      { target: "Implement recursive shortest-path search with backtracking (mark visited, explore 4 directions, unmark visited).", criteria: "I can explain why finding the shortest path requires unmarking visited[r][c] = false when backtracking so alternative shorter routes can use the tile." },
+      { target: "Integrate flood-fill visibility and shortest-path compass hints into the playable RPG engine.", criteria: "I can display the shortest distance from the player to the dungeon exit on every turn." },
+    ],
+  },
+  '10.4c': {
+    title: "Dungeon Generator & Course Retrospective", badgeClass: 'rpg', badgeLabel: 'RPG Build', group: '10.4',
+    targets: [
+      { target: "Validate procedural dungeon generation using recursive flood fill to guarantee every level is solvable.", criteria: "I can generate randomized dungeon maps in a loop until flood fill confirms a connected path from player spawn to the stairs." },
+      { target: "Synthesize classes, collections, 2D grids, file I/O, and recursion into a complete multi-level RPG campaign.", criteria: "I can run the complete RPG loop across multiple difficulty tiers and trace how all 10 units connect in the final architecture." },
+    ],
+  },
+  '10.5a': {
+    title: "Permutation Generation", badgeClass: 'hybrid', badgeLabel: 'Season 2', group: '10.5',
+    targets: [
+      { target: "Generate all n! permutations of a sequence using recursive backtracking and a boolean[] used array.", criteria: "I can follow the choose -> explore -> unchoose (used[i] = false) backtracking template to generate every permutation without duplicates." },
+      { target: "Debug shared-state mutation bugs when backtracking across recursive branches.", criteria: "I can explain why forgetting to undo state after a recursive call corrupts all subsequent branches of the search tree." },
+    ],
+  },
+  '10.5b': {
+    title: "Maze Solver & Subsets", badgeClass: 'hybrid', badgeLabel: 'Season 2', group: '10.5',
+    targets: [
+      { target: "Solve 2D mazes and enumerate all valid paths using recursive backtracking.", criteria: "I can distinguish single-path reachability (keep visited marked) from all-paths enumeration (unmark path[r][c] on backtrack)." },
+      { target: "Generate all 2^N subsets of a collection using the recursive include/exclude binary choice pattern.", criteria: "I can write a subset generator that branches on including versus excluding each element at index i." },
+    ],
+  },
+  '10.5c': {
+    title: "RPG Pathfinding", badgeClass: 'hybrid', badgeLabel: 'Season 2', group: '10.5',
+    targets: [
+      { target: "Implement recursive monster chase AI and constraint-satisfaction backtracking (N-Queens / equipment loadouts).", criteria: "I can write an isSafe constraint checker and column-by-column recursive solver that backtracks whenever a placement leads to a dead end." },
+      { target: "Reflect on software architecture growth from Unit 1 primitives to a full object-oriented, recursive game engine.", criteria: "I can integrate recursive pathfinding into monster movement and complete the Season 2 capstone checks." },
+    ],
+  },
+  '10.6a': {
+    title: "Recursive Search: Halving the Dungeon", badgeClass: 'discovery', badgeLabel: 'Discovery Lab', group: '10.6',
+    targets: [
+      { target: "Implement recursive binary search with lo > hi and arr[mid] == target base cases.", criteria: "I can write binarySearch(arr, target, lo, hi) from memory, passing mid - 1 for the left half and mid + 1 for the right half." },
+      { target: "Trace lo, mid, and hi across recursive calls and explain the mid vs. mid + 1 infinite-recursion trap.", criteria: "I can trace a recursive search on paper showing every call frame and state why searching 1,000,000 sorted elements takes at most 20 calls." },
+    ],
+  },
 };

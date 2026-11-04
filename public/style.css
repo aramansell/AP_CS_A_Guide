@@ -184,6 +184,157 @@ th { color: var(--accent); font-weight: 600; }
     font-size: 14px;
 }
 
+/* ---- Lesson Top Heading & Learning Targets ---- */
+.lesson-header {
+    margin-bottom: 1.5rem;
+}
+.lesson-header h1 {
+    margin-bottom: 0.75rem;
+}
+.lesson-targets {
+    background: linear-gradient(135deg, rgba(108, 191, 108, 0.08), rgba(92, 175, 255, 0.05));
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 0.95rem 1.2rem;
+    margin: 0.5rem 0 1.25rem;
+}
+.lesson-targets-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.65rem;
+}
+.lesson-targets-kicker {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--accent);
+}
+.lesson-targets-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+.lesson-target-item {
+    background: rgba(26, 26, 26, 0.55);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.65rem 0.85rem;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+.target-row, .criteria-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+.target-pill, .criteria-pill {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.1rem 0.42rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.target-pill {
+    background: rgba(108, 191, 108, 0.18);
+    color: var(--accent);
+}
+.criteria-pill {
+    background: rgba(92, 175, 255, 0.16);
+    color: var(--blue);
+}
+.target-text {
+    color: #fff;
+}
+.criteria-text {
+    color: var(--text);
+}
+.criteria-text strong {
+    color: var(--blue);
+}
+
+/* ---- Dashboard Daily Snapshot Targets ---- */
+.up-next-targets, .day-targets {
+    margin-top: 0.75rem;
+    padding-top: 0.65rem;
+    border-top: 1px dashed var(--border);
+}
+.day-targets-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    margin-bottom: 0.45rem;
+}
+.day-targets-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+.day-target-group {
+    background: rgba(26, 26, 26, 0.45);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.55rem 0.75rem;
+}
+.day-target-group-head {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.35rem;
+}
+.day-targets-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+.day-target-item {
+    margin: 0;
+    padding: 0.45rem 0.65rem;
+    background: rgba(26, 26, 26, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.day-target-group .day-target-item {
+    background: rgba(36, 36, 36, 0.6);
+}
+.day-target-line, .day-criteria-line {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: 12.5px;
+    line-height: 1.45;
+}
+.day-target-text {
+    color: #fff;
+}
+.day-criteria-text {
+    color: var(--text);
+}
+.day-criteria-text strong {
+    color: var(--blue);
+}
+
 /* ---- Activity Block ---- */
 .activity {
     background: var(--surface);
@@ -319,7 +470,7 @@ th { color: var(--accent); font-weight: 600; }
 .lesson-list .lesson-title a:hover {
     color: var(--accent);
 }
-.lesson-list .badge {
+.badge, .lesson-list .badge {
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;

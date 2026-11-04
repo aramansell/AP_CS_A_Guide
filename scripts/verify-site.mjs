@@ -158,6 +158,37 @@ const unknownMeta = LESSON_CHAIN.filter((l) => !lessonsKnown.has(l));
 unknownMeta.length ? bad('lessons.ts metadata', unknownMeta) : ok(`lessons.ts has metadata for all ${lessonsKnown.size} lessons`);
 
 // ---------------------------------------------------------------------------
+// 4b: learning targets (<3 per lesson) + success criteria in lesson headings & daily snapshot
+// ---------------------------------------------------------------------------
+const badTargets = [];
+for (const lid of LESSON_CHAIN) {
+  const meta = LESSONS[lid];
+  if (!meta || !Array.isArray(meta.targets) || meta.targets.length < 1 || meta.targets.length >= 3) {
+    badTargets.push(`${lid}: expected 1..2 learning targets (<3), got ${meta?.targets?.length ?? 0}`);
+    continue;
+  }
+  for (let ti = 0; ti < meta.targets.length; ti++) {
+    const t = meta.targets[ti];
+    if (!t.target?.trim() || !t.criteria?.trim()) {
+      badTargets.push(`${lid}[${ti}]: missing target or criteria text`);
+    }
+  }
+  const pageText = pages.get(`lessons/${lid}.html`)?.text ?? '';
+  if (!pageText.includes('class="lesson-header"') || !pageText.includes('class="lesson-targets"')) {
+    badTargets.push(`${lid}: built lesson page missing .lesson-header / .lesson-targets at top`);
+  }
+  if (!pageText.includes('Learning Target:') || !pageText.includes('Success Criteria:')) {
+    badTargets.push(`${lid}: built lesson page missing Learning Target / Success Criteria labels`);
+  }
+}
+if (!idx?.text.includes('id="up-next-targets"') || !idx?.text.includes('class="day-targets"')) {
+  badTargets.push('index.html: missing #up-next-targets or .day-targets daily snapshot blocks');
+}
+badTargets.length
+  ? bad('learning targets (<3) & success criteria', badTargets)
+  : ok(`all ${LESSON_CHAIN.length} lessons have <3 learning targets & success criteria in top heading and daily snapshot`);
+
+// ---------------------------------------------------------------------------
 // 5: quickrefs
 // ---------------------------------------------------------------------------
 const qrBad = [];

@@ -57,6 +57,7 @@ const KIND_BADGE: Record<string, { cls: string; label: string }> = {
         </div>
         <div id="up-next-actions" class="up-next-actions"></div>
     </div>
+    <div id="up-next-targets" class="up-next-targets" style="display:none;"></div>
 </div>
 
 <div class="dashboard-total" data-total data-pagefind-ignore>
@@ -169,6 +170,57 @@ const KIND_BADGE: Record<string, { cls: string; label: string }> = {
                     {notes.length > 0 && (
                         <div class="day-notes">
                             {notes.map((n) => <p class="day-note-line">{n}</p>)}
+                        </div>
+                    )}
+
+                    {e.lessons.length === 1 && singleMeta && (
+                        <div class="day-targets">
+                            <div class="day-targets-label">Daily Snapshot — Learning Targets &amp; Success Criteria</div>
+                            <ol class="day-targets-list">
+                                {singleMeta.targets.map((t, idx) => (
+                                    <li class="day-target-item">
+                                        <div class="day-target-line">
+                                            <span class="target-pill">LT {idx + 1}</span>
+                                            <span class="day-target-text"><strong>Learning Target:</strong> {t.target}</span>
+                                        </div>
+                                        <div class="day-criteria-line">
+                                            <span class="criteria-pill">SC {idx + 1}</span>
+                                            <span class="day-criteria-text"><strong>Success Criteria:</strong> {t.criteria}</span>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ol>
+                        </div>
+                    )}
+
+                    {e.lessons.length > 1 && (
+                        <div class="day-targets">
+                            <div class="day-targets-label">Daily Snapshot — Learning Targets &amp; Success Criteria</div>
+                            <div class="day-targets-groups">
+                                {e.lessons.map((lid) => {
+                                    const meta = LESSONS[lid];
+                                    if (!meta) return null;
+                                    return (
+                                        <div class="day-target-group" data-lesson-targets={lid}>
+                                            <div class="day-target-group-head">{lid} — {meta.title}</div>
+                                            <ol class="day-targets-list">
+                                                {meta.targets.map((t, idx) => (
+                                                    <li class="day-target-item">
+                                                        <div class="day-target-line">
+                                                            <span class="target-pill">LT {idx + 1}</span>
+                                                            <span class="day-target-text"><strong>Learning Target:</strong> {t.target}</span>
+                                                        </div>
+                                                        <div class="day-criteria-line">
+                                                            <span class="criteria-pill">SC {idx + 1}</span>
+                                                            <span class="day-criteria-text"><strong>Success Criteria:</strong> {t.criteria}</span>
+                                                        </div>
+                                                    </li>
+                                                ))}
+                                            </ol>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     )}
                 </div>
@@ -419,6 +471,7 @@ document.querySelectorAll('#unit-nav a').forEach((link) => {
         const titleEl = document.getElementById('up-next-title');
         const noteEl = document.getElementById('up-next-note');
         const actionsEl = document.getElementById('up-next-actions');
+        const targetsEl = document.getElementById('up-next-targets');
 
         if (banner && statusEl && dateEl && titleEl && noteEl && actionsEl) {
             statusEl.textContent = isToday ? 'TODAY IN CLASS' : 'NEXT A-DAY';
@@ -437,6 +490,16 @@ document.querySelectorAll('#unit-nav a').forEach((link) => {
                 a.textContent = lids.length === 1 ? `Open ${lid} Build \u2192` : `${lid} \u2192`;
                 actionsEl.appendChild(a);
             });
+            const cardTargets = nextCard.querySelector('.day-targets');
+            if (targetsEl) {
+                if (cardTargets) {
+                    targetsEl.innerHTML = cardTargets.innerHTML;
+                    targetsEl.style.display = 'block';
+                } else {
+                    targetsEl.innerHTML = '';
+                    targetsEl.style.display = 'none';
+                }
+            }
             banner.style.display = 'block';
         }
 
