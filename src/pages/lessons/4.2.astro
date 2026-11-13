@@ -8,21 +8,27 @@ const body = `<h1>4.2 — for Loops &amp; The EncounterSim Build</h1>
     rooms, turns, or indices to visit, a <code>for</code> loop packs initialization, termination
     condition, and step update into a single header. Today you will build
     <code>EncounterSim.java</code> — an AP FRQ-style dungeon simulator that tests accumulators,
-    streak tracking, and multi-condition room hazards.
+    inclusive bounds, streak tracking, and multi-condition room hazards.
 </p>
 
 <div class="callout">
-    <strong>Starting Files (Download Both):</strong>
+    <strong>Spec-First Workflow (Download Both Files):</strong>
     <ul>
         <li>
-            <a href="../data/EncounterSim.java" download>EncounterSim.java</a> — bare-minimum
-            compiling stub.
+            <a href="../data/EncounterSim.java" download>EncounterSim.java</a> — starter stub where
+            you will assemble all four methods.
         </li>
         <li>
-            <a href="../data/EncounterSimCheck.java" download>EncounterSimCheck.java</a> —
-            automated AP-style test suite (16 checks across 4 parts).
+            <a href="../data/EncounterSimCheck.java" download>EncounterSimCheck.java</a> — final
+            acceptance verification suite (16 checks across 4 parts).
         </li>
     </ul>
+    <p style="margin-top:0.5rem; margin-bottom:0.25rem;">
+        <strong>How to work today:</strong> For each part, read the specification and worked
+        examples, diagnose the edge-case traps, draft the individual code pieces below, and combine
+        them into <code>EncounterSim.java</code>. Test your own boundary inputs by hand or in a
+        scratch <code>main</code> <em>before</em> running <code>EncounterSimCheck</code> at the end.
+    </p>
     <pre><code>javac EncounterSim.java EncounterSimCheck.java
 java EncounterSimCheck</code></pre>
 </div>
@@ -30,35 +36,34 @@ java EncounterSimCheck</code></pre>
 <!-- ============================================================ -->
 <div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Parts 1 &amp; 2 · Discovery &amp; Build</span>
+        <span class="activity-label">Parts 1 &amp; 2 · Spec, Edge Cases &amp; Build</span>
         <span class="activity-time">~35 min</span>
     </div>
 
     <h3>Part 1: <code>totalScaledXP(int startFloor, int endFloor, int bossMultiplier)</code></h3>
+
+    <h4>AP Specification</h4>
     <p>
         Compute the total XP earned by clearing every floor from <code>startFloor</code> through
-        <code>endFloor</code>, <strong>inclusive</strong> (if <code>startFloor &gt; endFloor</code>,
-        return <code>0</code>):
+        <code>endFloor</code>, <strong>inclusive</strong>:
     </p>
     <ul>
+        <li>If <code>startFloor &gt; endFloor</code>, no floors are cleared — return <code>0</code>.</li>
         <li>A standard floor <code>f</code> awards <code>f * 100</code> XP.</li>
         <li>Every 5th floor (when <code>f % 5 == 0</code>) is a Boss Floor and awards
-            <code>f * 100 * bossMultiplier</code> XP instead.</li>
+            <code>f * 100 * bossMultiplier</code> XP <em>instead</em> of the standard XP.</li>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>(1, 4, 3)</code> &rarr; <code>100 + 200 + 300 + 400 = 1000</code>.</li>
+                <li><code>(1, 5, 3)</code> &rarr; <code>1000 + (5 * 100 * 3) = 2500</code>.</li>
+                <li><code>(5, 5, 4)</code> &rarr; <code>2000</code> (single floor, and it is a Boss Floor!).</li>
+                <li><code>(6, 3, 2)</code> &rarr; <code>0</code> (invalid/empty range).</li>
+            </ul>
+        </li>
     </ul>
 
-    <h3>Part 2: <code>countDangerSpikes(int numRooms, int seed, int threshold)</code></h3>
-    <p>
-        For each room <code>r</code> from <code>1</code> through <code>numRooms</code> inclusive,
-        the procedural generator computes a danger rating:
-    </p>
-    <pre><code>int danger = (r * seed + 17) % 100;</code></pre>
-    <p>
-        Return the number of rooms whose danger rating is greater than or equal to
-        <code>threshold</code>.
-    </p>
-
     <div class="bug-hunt">
-        <h3>Discovery Trap 1: The Amnesiac Accumulator &amp; Inclusive Bounds</h3>
+        <h3>Edge-Case Analysis: Accumulator Scope &amp; Inclusive Bounds</h3>
         <p>
             Compare these two broken implementations of <code>totalScaledXP</code>:
         </p>
@@ -77,33 +82,99 @@ for (int f = startFloor; f &lt; endFloor; f++) {
             <li>In Bug A, why does declaring <code>int total = 0;</code> inside the loop body cause
                 both a compiler scope error after the loop AND reset your running sum on every floor?</li>
             <li>In Bug B, if <code>startFloor = 1</code> and <code>endFloor = 5</code>, why does
-                <code>f &lt; endFloor</code> miss the Boss Floor at floor 5 completely?</li>
+                <code>f &lt; endFloor</code> miss the Boss Floor at floor 5 completely, and what
+                happens on a single-floor call like <code>(5, 5, 4)</code>?</li>
         </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>totalScaledXP</code></h3>
+        <ol>
+            <li><strong>Piece A (Accumulator &amp; Loop Header):</strong> Write the
+                <code>total</code> declaration and the inclusive <code>for</code> loop header from
+                <code>startFloor</code> through <code>endFloor</code> — why does that same header
+                automatically return <code>0</code> when <code>startFloor &gt; endFloor</code>?</li>
+            <li><strong>Piece B (Boss vs. Standard Floor Branch):</strong> Inside the loop, write the
+                <code>if / else</code> that adds Boss Floor XP when <code>f % 5 == 0</code> and
+                standard XP otherwise (without double-counting Floor 5!)?</li>
+        </ol>
+        <p>
+            Combine Pieces A and B with a <code>return total;</code> inside
+            <code>totalScaledXP</code> in <code>EncounterSim.java</code>.
+        </p>
+    </div>
+
+    <h3>Part 2: <code>countDangerSpikes(int numRooms, int seed, int threshold)</code></h3>
+
+    <h4>AP Specification</h4>
+    <p>
+        For each room <code>r</code> from <code>1</code> through <code>numRooms</code> inclusive,
+        the procedural generator computes a danger rating:
+    </p>
+    <pre><code>int danger = (r * seed + 17) % 100;</code></pre>
+    <ul>
+        <li>Return the count of rooms whose danger rating is <strong>greater than or equal to</strong>
+            <code>threshold</code>.</li>
+        <li>If <code>numRooms &lt;= 0</code>, return <code>0</code>.</li>
+        <li><strong>Worked trace for <code>numRooms = 5, seed = 20</code>:</strong>
+            <ul>
+                <li>Room 1: <code>(20 + 17) % 100 = 37</code></li>
+                <li>Room 2: <code>(40 + 17) % 100 = 57</code></li>
+                <li>Room 3: <code>(60 + 17) % 100 = 77</code></li>
+                <li>Room 4: <code>(80 + 17) % 100 = 97</code></li>
+                <li>Room 5: <code>(100 + 17) % 100 = 17</code></li>
+                <li>With <code>threshold = 57</code> &rarr; <code>3</code> spikes (rooms 2, 3, 4 because <code>57 &gt;= 57</code> is inclusive!). With <code>threshold = 98</code> &rarr; <code>0</code>.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>countDangerSpikes</code></h3>
+        <ol>
+            <li><strong>Piece A (1-Based Room Bounds):</strong> Why would starting the loop at
+                <code>r = 0; r &lt; numRooms</code> compute the wrong rooms compared to
+                <code>r = 1; r &lt;= numRooms</code>?</li>
+            <li><strong>Piece B (Threshold Count &amp; Return):</strong> Write the full loop body
+                (computing <code>danger</code>, checking the inclusive <code>&gt;=</code> threshold,
+                and incrementing your counter) plus the initialization and <code>return</code>?</li>
+        </ol>
+        <p>
+            Assemble <code>countDangerSpikes</code> in <code>EncounterSim.java</code>.
+        </p>
     </div>
 </div>
 
 <!-- ============================================================ -->
 <div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Part 3 · Discovery &amp; Build</span>
+        <span class="activity-label">Part 3 · Streak Tracking &amp; Build</span>
         <span class="activity-time">~30 min</span>
     </div>
 
     <h3>Part 3: <code>longestSafeStreak(int numRooms, int trapCycle, int bossRoom)</code></h3>
 
+    <h4>AP Specification</h4>
     <p>
         Streak-finding is one of the College Board's favorite AP FRQ 1 patterns. You walk through
-        rooms <code>1</code> to <code>numRooms</code> inclusive:
+        rooms <code>1</code> to <code>numRooms</code> inclusive (precondition: <code>trapCycle &gt; 0</code>):
     </p>
     <ul>
         <li>A room <code>r</code> is <strong>unsafe</strong> if <code>r == bossRoom</code> OR
             <code>r % trapCycle == 0</code>.</li>
         <li>Otherwise, room <code>r</code> is <strong>safe</strong>.</li>
         <li>Return the length of the <strong>longest consecutive streak</strong> of safe rooms.</li>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>(10, 4, 9)</code> &rarr; unsafe rooms are <code>4, 8, 9</code>; safe streaks are <code>1..3</code> (3), <code>5..7</code> (3), <code>10</code> (1) &rarr; returns <code>3</code>.</li>
+                <li><code>(10, 6, 2)</code> &rarr; unsafe rooms are <code>2, 6</code>; rooms <code>7, 8, 9, 10</code> are all safe &rarr; returns <code>4</code>.</li>
+                <li><code>(7, 99, 99)</code> &rarr; all 7 rooms are safe &rarr; returns <code>7</code>.</li>
+                <li><code>(5, 1, 3)</code> &rarr; every room is divisible by <code>1</code> &rarr; returns <code>0</code>.</li>
+            </ul>
+        </li>
     </ul>
 
     <div class="bug-hunt">
-        <h3>Discovery Trap 2: The Trailing Streak Bug</h3>
+        <h3>Edge-Case Analysis: The Trailing Streak Bug</h3>
         <p>
             Watch how many programmers write their streak tracker:
         </p>
@@ -122,12 +193,28 @@ for (int r = 1; r &lt;= numRooms; r++) {
 return maxStreak;</code></pre>
         <ol>
             <li>Trace that code on <code>longestSafeStreak(10, 6, 2)</code>: Room 2 is the boss and
-                Room 6 is a trap, so Rooms <code>7, 8, 9, 10</code> are all safe (a streak of
-                <code>4</code> at the very end of the dungeon!). What does the code above return,
+                Room 6 is a trap, so Rooms <code>7, 8, 9, 10</code> form a safe streak of
+                <code>4</code> at the very end of the dungeon! What does the code above return,
                 and why was <code>maxStreak</code> never updated for Rooms 7–10?</li>
-            <li>How can you structure your update of <code>maxStreak</code> so that a streak ending
-                on the final room is always captured?</li>
+            <li>What would that same broken code return for <code>longestSafeStreak(7, 99, 99)</code>
+                where no room is ever unsafe?</li>
         </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>longestSafeStreak</code></h3>
+        <ol>
+            <li><strong>Piece A (State Variables):</strong> What two integer variables do you
+                initialize to <code>0</code> before the loop?</li>
+            <li><strong>Piece B (Safe vs. Unsafe Update):</strong> Write the <code>if / else</code>
+                inside <code>for (int r = 1; r &lt;= numRooms; r++)</code> so that unsafe rooms reset
+                the current streak, and safe rooms increment the current streak AND update
+                <code>maxStreak</code> immediately whenever the current streak sets a new record?</li>
+        </ol>
+        <p>
+            Assemble <code>longestSafeStreak</code> in <code>EncounterSim.java</code> and trace
+            <code>(10, 6, 2)</code> and <code>(5, 1, 3)</code> to verify both extremes.
+        </p>
     </div>
 </div>
 
@@ -140,6 +227,7 @@ return maxStreak;</code></pre>
 
     <h3>Part 4: <code>simulateGauntletHP(int startingHP, int numRooms, int trapCycle, int healCycle)</code></h3>
 
+    <h4>AP Specification</h4>
     <p>
         Simulate a hero starting with <code>startingHP</code> walking through rooms
         <code>1</code> through <code>numRooms</code> in order. In each room <code>r</code>:
@@ -155,24 +243,58 @@ return maxStreak;</code></pre>
     <p>
         <strong>Critical Death Rule:</strong> At the end of each room, if the hero's HP has dropped
         to <code>0</code> or below, the hero dies immediately — return <code>0</code> right away so
-        a future healing room cannot resurrect a dead hero!
+        a future healing room cannot resurrect a dead hero! If <code>numRooms &lt;= 0</code>, return
+        <code>startingHP</code> (or <code>0</code> if <code>startingHP &lt;= 0</code>).
     </p>
+    <ul>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>(20, 6, 2, 3)</code> &rarr; R1: <code>19</code>, R2: <code>19-4=15</code>, R3: <code>15+6=21</code>, R4: <code>21-8=13</code>, R5: <code>13-1=12</code>, R6 (both!): <code>12-5=7</code> &rarr; returns <code>7</code>.</li>
+                <li><code>(5, 4, 2, 3)</code> &rarr; R1: <code>4</code>, R2: <code>4-4=0</code> (dies immediately!) &rarr; returns <code>0</code>.</li>
+                <li><code>(20, 0, 2, 3)</code> &rarr; <code>20</code>.</li>
+            </ul>
+        </li>
+    </ul>
 
     <div class="socratic">
-        <h3>Socratic Checkpoint — Post-Mortem Healing &amp; FizzBuzz Ordering</h3>
+        <h3>Edge-Case Analysis: Post-Mortem Healing &amp; FizzBuzz Ordering</h3>
         <ol>
-            <li>Why would waiting until <em>after</em> the <code>for</code> loop finishes to check
-                <code>if (hp &lt;= 0) return 0;</code> fail Check 2 in Part 4
-                (<code>simulateGauntletHP(5, 4, 2, 3)</code>)? Trace the hero's HP in Room 1, Room
-                2, and Room 3 to see what happens if the loop keeps running after death.</li>
+            <li>Trace <code>simulateGauntletHP(5, 4, 2, 3)</code> through Room 1, Room 2, and Room 3
+                if a programmer waits until <em>after</em> the <code>for</code> loop finishes to
+                write <code>if (hp &lt;= 0) return 0;</code>. What HP does the hero end up with in
+                Room 3 and Room 4, and why does it violate the death rule?</li>
+            <li>In <code>simulateGauntletHP(20, 6, 2, 3)</code>, Room 6 is divisible by both
+                <code>2</code> and <code>3</code>. What would happen to Room 6's HP change if you
+                put <code>else if (r % trapCycle == 0)</code> <em>above</em> the Cursed Fountain
+                check?</li>
         </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>simulateGauntletHP</code></h3>
+        <ol>
+            <li><strong>Piece A (Pre-Loop Guard &amp; Room Event Chain):</strong> Write the
+                pre-loop setup (<code>int hp = startingHP;</code> and guard if
+                <code>hp &lt;= 0</code>) plus the 4-branch <code>if / else if / else</code> for one
+                room <code>r</code> in exact priority order?</li>
+            <li><strong>Piece B (End-of-Room Death Guard &amp; Return):</strong> Write the exact
+                <code>if</code> check placed at the bottom of the room loop body and the final
+                <code>return</code> after the loop finishes?</li>
+        </ol>
+        <p>
+            Combine Pieces A and B into <code>simulateGauntletHP</code> in
+            <code>EncounterSim.java</code>. Hand-trace or run your own <code>main</code> test on
+            <code>(20, 6, 2, 3)</code> and <code>(5, 4, 2, 3)</code>, and <strong>only then</strong>
+            run <code>java EncounterSimCheck</code> as final verification.
+        </p>
     </div>
 
     <div class="checklist">
         <h3>Done When</h3>
         <ul>
+            <li>All four methods in <code>EncounterSim.java</code> were built from your pieces and self-tested before running the check</li>
             <li><code>java EncounterSimCheck</code> reports <strong><code>16 passed, 0 failed</code></strong></li>
-            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+            <li>You have completed the reflection and code-piece boxes above and downloaded your <code>.json</code> for Canvas</li>
         </ul>
     </div>
 </div>

@@ -79,8 +79,8 @@ public class ScrollCipherCheck {
                 safePurge("hexed sword of hexes", "hex", "ed sword of es"));
         check("adjacent/repeated occurrences: remove \"ab\" from \"ababab\" -> \"\"",
                 safePurge("ababab", "ab", ""));
-        check("CHAINED FORMATION TRAP: remove \"oo\" from \"boook\" -> \"bk\"",
-                safePurge("boook", "oo", "bk"));
+        check("CHAINED FORMATION TRAP: remove \"oo\" from \"booook\" -> \"bk\"",
+                safePurge("booook", "oo", "bk"));
         check("glyph not present: remove \"zzz\" from \"fireball\" -> \"fireball\"",
                 safePurge("fireball", "zzz", "fireball"));
     }

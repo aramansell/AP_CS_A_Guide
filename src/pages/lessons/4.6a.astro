@@ -12,20 +12,27 @@ const body = `<h1>4.6 (Day 1) — Dungeon Crawler RPG Build: Combat &amp; Duel E
 </p>
 
 <div class="callout">
-    <strong>Starting Files (Download All Three into the Same Folder):</strong>
+    <strong>Spec-First Workflow (Download All Three Files):</strong>
     <ul>
         <li>
-            <a href="../data/DungeonLoop.java" download>DungeonLoop.java</a> — bare-minimum
-            compiling stub for both days of the 4.6 build.
+            <a href="../data/DungeonLoop.java" download>DungeonLoop.java</a> — starter stub for
+            both days of the 4.6 build.
         </li>
         <li>
-            <a href="../data/DungeonLoopCheck.java" download>DungeonLoopCheck.java</a> — automated
-            acceptance test suite (13 checks across Parts 1–4).
+            <a href="../data/DungeonLoopCheck.java" download>DungeonLoopCheck.java</a> — final
+            acceptance verification suite (13 checks across Parts 1–4; Day 1 covers the 6 checks in
+            Parts 1–2).
         </li>
         <li>
             <a href="../data/Dice.java" download>Dice.java</a> — your dice engine from Unit 1.7.
         </li>
     </ul>
+    <p style="margin-top:0.5rem; margin-bottom:0.25rem;">
+        <strong>How to work today:</strong> Read each specification, analyze the edge cases
+        (one-shot kills, overkill clamping, natural 1/20 priority, dead-monster guards), draft the
+        code pieces in the prompts below, assemble them in <code>DungeonLoop.java</code>, and test
+        your own edge cases <em>before</em> running <code>DungeonLoopCheck</code>.
+    </p>
     <pre><code>javac Dice.java DungeonLoop.java DungeonLoopCheck.java
 java DungeonLoopCheck</code></pre>
 </div>
@@ -33,15 +40,16 @@ java DungeonLoopCheck</code></pre>
 <!-- ============================================================ -->
 <div class="activity rpg">
     <div class="activity-header">
-        <span class="activity-label">Part 1 · Discovery &amp; Build</span>
+        <span class="activity-label">Part 1 · Spec, Edge Cases &amp; Build</span>
         <span class="activity-time">~45 min</span>
     </div>
 
     <h3>Part 1: <code>simulateDuelToDeath(int playerHP, int playerDmgPerHit, int monsterHP, int monsterDmgPerHit)</code></h3>
 
+    <h4>AP Specification</h4>
     <p>
-        Before adding dice randomness, build the deterministic duel engine that <code>DungeonLoopCheck</code>
-        and tomorrow's floor crawler both rely on:
+        Before adding dice randomness, build the deterministic duel engine that tomorrow's floor
+        crawler will also call as a helper:
     </p>
     <ul>
         <li>Loop <strong>while both combatants are alive</strong>
@@ -56,10 +64,18 @@ java DungeonLoopCheck</code></pre>
         </li>
         <li>When the loop ends, return the player's remaining HP — <strong>clamped at
             <code>0</code></strong> if <code>playerHP</code> dropped below <code>0</code>.</li>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>(20, 6, 12, 5)</code> &rarr; R1: monster <code>6</code>, player <code>15</code>; R2: monster <code>0</code> (dead, no counterattack!) &rarr; returns <code>15</code>.</li>
+                <li><code>(10, 15, 12, 99)</code> &rarr; R1: monster <code>-3</code> (one-shot kill, monster never swings!) &rarr; returns <code>10</code>.</li>
+                <li><code>(10, 3, 20, 6)</code> &rarr; R1: m <code>17</code>, p <code>4</code>; R2: m <code>14</code>, p <code>-2</code> &rarr; clamped to <code>0</code>.</li>
+                <li><code>(18, 5, 0, 10)</code> &rarr; monster is already dead, loop runs <code>0</code> times &rarr; returns <code>18</code>.</li>
+            </ul>
+        </li>
     </ul>
 
     <div class="bug-hunt">
-        <h3>Discovery Trap: Using <code>||</code> Instead of <code>&amp;&amp;</code> in a Duel Loop</h3>
+        <h3>Edge-Case Analysis: Loop Condition, Zombie Swings &amp; Overkill Negatives</h3>
         <ol>
             <li>What happens if a student writes
                 <code>while (playerHP &gt; 0 || monsterHP &gt; 0)</code> ("keep fighting while
@@ -67,8 +83,28 @@ java DungeonLoopCheck</code></pre>
                 monster dies on Round 2 while the player still has <code>15 HP</code>!</li>
             <li>Apply De Morgan's Law: the duel stops when
                 <code>playerHP &lt;= 0 || monsterHP &lt;= 0</code>. Negate that stop condition to
-                prove why the continuation condition must use <code>&amp;&amp;</code>.</li>
+                prove why the continuation condition must use <code>&amp;&amp;</code>?</li>
+            <li>What two bugs happen if you omit (a) <code>if (monsterHP &gt; 0)</code> before the
+                monster's attack and (b) clamping <code>playerHP</code> at <code>0</code> after the
+                loop?</li>
         </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>simulateDuelToDeath</code></h3>
+        <ol>
+            <li><strong>Piece A (Duel Loop &amp; Turn Order):</strong> Write the
+                <code>while</code> loop header and the exact two-step round body (player strike,
+                then guarded monster counterattack)?</li>
+            <li><strong>Piece B (Overkill Clamping &amp; Return):</strong> Write the post-loop
+                clamping return statement so negative player HP returns <code>0</code> while
+                <code>(18, 5, 0, 10)</code> returns <code>18</code>?</li>
+        </ol>
+        <p>
+            Combine Pieces A and B inside <code>simulateDuelToDeath</code> in
+            <code>DungeonLoop.java</code> and hand-trace <code>(10, 15, 12, 99)</code> and
+            <code>(10, 3, 20, 6)</code>.
+        </p>
     </div>
 </div>
 
@@ -81,6 +117,7 @@ java DungeonLoopCheck</code></pre>
 
     <h3>Part 2: <code>runCombat(...)</code></h3>
 
+    <h4>AP Specification</h4>
     <p>
         Now implement the live dice-driven combat loop using <code>Dice.roll(...)</code>:
     </p>
@@ -92,9 +129,9 @@ java DungeonLoopCheck</code></pre>
         <li>Loop while <code>playerHP &gt; 0 &amp;&amp; monsterHP &gt; 0</code>:
             <ol>
                 <li><strong>Player attack:</strong> Roll <code>int d20 = Dice.roll(20);</code>. A
-                    natural <code>20</code> deals <code>Dice.roll(8) * 2</code> damage; a natural
-                    <code>1</code> deals <code>0</code>; otherwise if
-                    <code>d20 + playerAttackBonus &gt;= monsterAC</code>, deal
+                    natural <code>20</code> deals <code>Dice.roll(8) * 2</code> damage (always hits);
+                    a natural <code>1</code> deals <code>0</code> damage (always misses); otherwise
+                    if <code>d20 + playerAttackBonus &gt;= monsterAC</code>, deal
                     <code>Dice.roll(8)</code> damage. Subtract from <code>monsterHP</code>.</li>
                 <li><strong>Monster counterattack (only if <code>monsterHP &gt; 0</code>):</strong>
                     Roll <code>int m20 = Dice.roll(20);</code>. If
@@ -106,11 +143,45 @@ java DungeonLoopCheck</code></pre>
             <code>false</code> otherwise.</li>
     </ul>
 
+    <div class="socratic">
+        <h3>Edge-Case Analysis: Crit/Fumble Branch Order &amp; Boolean Zen</h3>
+        <ol>
+            <li>Suppose a hero has <code>playerAttackBonus = +20</code> facing a Goblin with
+                <code>monsterAC = 8</code>, and rolls <code>d20 = 1</code>. Why would putting
+                <code>if (d20 + playerAttackBonus &gt;= monsterAC)</code> <em>above</em>
+                <code>else if (d20 == 1)</code> let a Natural 1 hit the Goblin?</li>
+            <li>How can you write the final <code>return</code> statement of <code>runCombat</code>
+                in a single line using Boolean Zen instead of an <code>if / else</code> returning
+                <code>true</code> and <code>false</code>?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>runCombat</code></h3>
+        <ol>
+            <li><strong>Piece A (Player Strike Chain):</strong> Inside the combat
+                <code>while</code> loop, write the <code>d20</code> roll and ordered
+                <code>if / else if / else if</code> chain for Natural <code>20</code>, Natural
+                <code>1</code>, and normal AC hit that updates <code>monsterHP</code>?</li>
+            <li><strong>Piece B (Guarded Monster Strike &amp; Return):</strong> Write the
+                <code>if (monsterHP &gt; 0)</code> counterattack block using
+                <code>Dice.roll(monsterDamageDie)</code>, plus the final Boolean Zen
+                <code>return</code>?</li>
+        </ol>
+        <p>
+            Combine Pieces A and B inside <code>runCombat</code> in <code>DungeonLoop.java</code>.
+            Test both Day 1 methods in a scratch <code>main</code> (checking a one-shot kill,
+            overkill clamping, and a live fight), and <strong>only then</strong> run
+            <code>java DungeonLoopCheck</code> to verify all 6 Day 1 checks in Parts 1–2 pass.
+        </p>
+    </div>
+
     <div class="checklist">
         <h3>Day 1 Milestone — Done When</h3>
         <ul>
-            <li>All <strong>6 checks in Parts 1 and 2</strong> of <code>java DungeonLoopCheck</code> report <code>PASS</code></li>
-            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+            <li>Parts 1 and 2 in <code>DungeonLoop.java</code> were built from your pieces and self-tested before running the check</li>
+            <li>All <strong>6 checks in Parts 1 and 2</strong> of <code>java DungeonLoopCheck</code> report <code>PASS</code> (Parts 3–4 are tomorrow!)</li>
+            <li>You have completed the reflection and code-piece boxes above and downloaded your <code>.json</code> for Canvas</li>
         </ul>
     </div>
 </div>

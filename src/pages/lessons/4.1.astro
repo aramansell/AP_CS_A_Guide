@@ -13,16 +13,25 @@ const body = `<h1>4.1 — while Loops &amp; The WhileLab Algorithms Build</h1>
 </p>
 
 <div class="callout">
-    <strong>Starting Files (Download Both):</strong>
+    <strong>Spec-First Workflow (Download Both Files):</strong>
     <ul>
         <li>
-            <a href="../data/WhileLab.java" download>WhileLab.java</a> — bare-minimum compiling stub.
+            <a href="../data/WhileLab.java" download>WhileLab.java</a> — starter stub where you will
+            assemble all four methods.
         </li>
         <li>
-            <a href="../data/WhileLabCheck.java" download>WhileLabCheck.java</a> — automated AP-style
-            test suite (19 checks across 4 parts).
+            <a href="../data/WhileLabCheck.java" download>WhileLabCheck.java</a> — final acceptance
+            verification suite (19 checks across 4 parts).
         </li>
     </ul>
+    <p style="margin-top:0.5rem; margin-bottom:0.25rem;">
+        <strong>How to work today:</strong> On the AP exam, you get a specification and no check file.
+        For each part below: (1) read the spec and trace the edge cases, (2) draft the individual code
+        pieces in the assignment prompts, (3) combine your pieces into <code>WhileLab.java</code>,
+        and (4) test your own edge cases by hand-tracing or in a scratch <code>main</code>
+        <em>before</em> running <code>WhileLabCheck</code> at the end as final verification. Do not
+        open <code>WhileLabCheck.java</code> to hunt for edge cases.
+    </p>
     <pre><code>javac WhileLab.java WhileLabCheck.java
 java WhileLabCheck</code></pre>
 </div>
@@ -30,12 +39,13 @@ java WhileLabCheck</code></pre>
 <!-- ============================================================ -->
 <div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Part 1 · Discovery &amp; Build</span>
+        <span class="activity-label">Part 1 · Spec, Edge Cases &amp; Build</span>
         <span class="activity-time">~30 min</span>
     </div>
 
     <h3>Part 1: <code>roundsToSurvivePoison(int startingHP, int poisonPerRound, int regenPerRound)</code></h3>
 
+    <h4>AP Specification</h4>
     <p>
         A hero enters a toxic swamp with <code>startingHP</code> hit points. During each round:
     </p>
@@ -47,33 +57,73 @@ java WhileLabCheck</code></pre>
             dropped to <code>0</code> or below from the poison tick, the hero dies immediately and
             regeneration does <strong>not</strong> occur.</li>
     </ol>
-    <p>
-        Your method returns the total number of rounds the hero was subjected to poison before
-        dying (or <code>0</code> if <code>startingHP &lt;= 0</code> to begin with). If the hero
-        will survive <strong>forever</strong> (an infinite loop!), your method must return
-        <code>-1</code> without freezing.
-    </p>
+    <ul>
+        <li><strong>Pre-existing defeat:</strong> If <code>startingHP &lt;= 0</code>, the hero never
+            endures a round — return <code>0</code>.</li>
+        <li><strong>Infinite survival:</strong> If the hero will survive <strong>forever</strong>,
+            return <code>-1</code> without entering an infinite loop.</li>
+        <li><strong>Otherwise:</strong> Return the exact integer number of rounds the hero is
+            subjected to poison before dying.</li>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>(0, 5, 2)</code> &rarr; <code>0</code> (already dead before Round 1).</li>
+                <li><code>(15, 4, 0)</code> &rarr; <code>4</code> (HP after each round: <code>11 &rarr; 7 &rarr; 3 &rarr; -1</code>).</li>
+                <li><code>(10, 4, 2)</code> &rarr; <code>4</code> (R1: <code>10-4=6, +2=8</code>; R2: <code>8-4=4, +2=6</code>; R3: <code>6-4=2, +2=4</code>; R4: <code>4-4=0</code> dies before regen).</li>
+                <li><code>(5, 5, 10)</code> &rarr; <code>1</code> (Round 1 poison drops HP to <code>0</code> before regen can fire).</li>
+                <li><code>(10, 4, 4)</code> &rarr; <code>-1</code> (survives Round 1 with <code>6</code> HP, then regens back to <code>10</code> every round forever).</li>
+                <li><code>(10, 0, 0)</code> &rarr; <code>-1</code> (non-positive poison never reduces HP).</li>
+            </ul>
+        </li>
+    </ul>
 
     <div class="bug-hunt">
-        <h3>Discovery Trap 1: The Round-1 Lethal Tick vs. Infinite Regen</h3>
+        <h3>Edge-Case Analysis: Poison, HP, and Regen Guards</h3>
         <p>
-            To avoid an infinite loop, most programmers immediately write this guard at the top of
-            <code>roundsToSurvivePoison</code>:
+            To avoid an infinite loop, most programmers immediately write this guard at the very top
+            of <code>roundsToSurvivePoison</code>:
         </p>
-        <pre><code>// Naive infinite-loop guard — why does this fail Check 4 in WhileLabCheck?
+        <pre><code>// Naive infinite-loop guard — why does this break on certain inputs?
 if (regenPerRound &gt;= poisonPerRound) {
     return -1;
 }</code></pre>
         <ol>
-            <li>Trace <code>roundsToSurvivePoison(5, 5, 10)</code>: the hero starts with
-                <code>5 HP</code>, takes <code>5</code> poison per round, and regenerates
-                <code>10</code> HP per round. Even though <code>regenPerRound &gt;= poisonPerRound</code>,
-                what happens on Round 1 when poison hits <em>before</em> regeneration? Why does the
-                naive guard above return <code>-1</code> when the correct answer is <code>1</code>?</li>
-            <li>What is the exact condition under which a hero with <code>startingHP &gt; 0</code>
-                truly survives forever? (Check both <code>poisonPerRound &lt;= 0</code> and what
-                must be true after Round 1's poison tick!)</li>
+            <li>Trace <code>roundsToSurvivePoison(5, 5, 10)</code>: even though
+                <code>regenPerRound &gt;= poisonPerRound</code>, what happens on Round 1 when poison
+                hits <em>before</em> regeneration? Why does the naive guard above return
+                <code>-1</code> when the spec requires <code>1</code>?</li>
+            <li>What happens if <code>startingHP = 0</code> (or <code>-3</code>) and
+                <code>regenPerRound = 10, poisonPerRound = 4</code>? Which condition must be checked
+                first: <code>startingHP &lt;= 0</code> or infinite survival?</li>
+            <li>State the exact conditions under which a hero with <code>startingHP &gt; 0</code>
+                truly survives forever (consider both <code>poisonPerRound &lt;= 0</code> and what
+                must survive Round 1's poison tick when <code>regenPerRound &gt;= poisonPerRound</code>)?</li>
         </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>roundsToSurvivePoison</code></h3>
+        <p>
+            Write each individual piece below before opening <code>WhileLab.java</code>.
+        </p>
+        <ol>
+            <li><strong>Piece A (Entry Guards):</strong> Write the two <code>if</code> statements that
+                handle (a) a hero who enters with <code>startingHP &lt;= 0</code> and (b) non-positive
+                poison (<code>poisonPerRound &lt;= 0</code>) when the hero is alive?</li>
+            <li><strong>Piece B (Round-1 vs. Infinite Regen Guard):</strong> Assuming
+                <code>startingHP &gt; 0</code> and <code>poisonPerRound &gt; 0</code>, write the
+                <code>if</code> logic that catches a Round-1 lethal tick
+                (<code>startingHP - poisonPerRound &lt;= 0</code>) <em>before</em> returning
+                <code>-1</code> when <code>regenPerRound &gt;= poisonPerRound</code>?</li>
+            <li><strong>Piece C (Simulation Loop &amp; Return):</strong> Write the local variable
+                initializations (<code>hp</code>, <code>rounds</code>), the <code>while</code> loop
+                header, the exact intra-round order (increment <code>rounds</code>, subtract poison,
+                conditional regen only if <code>hp &gt; 0</code>), and the final <code>return</code>?</li>
+        </ol>
+        <p>
+            Now combine Pieces A, B, and C in order inside <code>roundsToSurvivePoison</code> in
+            <code>WhileLab.java</code>, then hand-trace <code>(10, 4, 2)</code> and
+            <code>(5, 5, 10)</code> through your finished method.
+        </p>
     </div>
 </div>
 
@@ -84,23 +134,54 @@ if (regenPerRound &gt;= poisonPerRound) {
         <span class="activity-time">~35 min</span>
     </div>
 
-    <h3>Parts 2 &amp; 3: <code>sumRuneDigits(int runeCode)</code> &amp; <code>countEvenDigits(int runeCode)</code></h3>
+    <h3>Part 2: <code>sumRuneDigits(int runeCode)</code></h3>
 
-    <p>
-        One of the most frequent algorithms on the AP CS A exam peels digits off a non-negative
-        integer from right to left using two arithmetic operators:
-    </p>
+    <h4>AP Specification</h4>
     <ul>
-        <li><code>runeCode % 10</code> — extracts the <strong>rightmost digit</strong>
-            (e.g., <code>4729 % 10</code> is <code>9</code>).</li>
-        <li><code>runeCode / 10</code> — removes the rightmost digit via integer division
-            (e.g., <code>4729 / 10</code> is <code>472</code>).</li>
+        <li><strong>Signature:</strong> <code>public static int sumRuneDigits(int runeCode)</code></li>
+        <li><strong>Precondition:</strong> <code>runeCode &gt;= 0</code>.</li>
+        <li><strong>Behavior:</strong> Peel digits from right to left using <code>% 10</code>
+            (rightmost digit) and <code>/ 10</code> (drop rightmost digit) and return the sum of all
+            base-10 digits in <code>runeCode</code>.</li>
+        <li><strong>Worked examples:</strong> <code>4729 &rarr; 22</code> (<code>4 + 7 + 2 + 9</code>),
+            <code>1005 &rarr; 6</code>, <code>8 &rarr; 8</code>, <code>0 &rarr; 0</code>.</li>
+    </ul>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>sumRuneDigits</code></h3>
+        <ol>
+            <li><strong>Piece A (Accumulator &amp; Loop Header):</strong> What accumulator variable
+                do you initialize before the loop, what <code>while</code> condition peels all
+                digits, and why does <code>sumRuneDigits(0)</code> naturally return <code>0</code>
+                even if the loop runs <code>0</code> times?</li>
+            <li><strong>Piece B (Loop Body &amp; Order):</strong> Write the loop body statements that
+                extract the rightmost digit with <code>% 10</code>, add it to your accumulator, and
+                shrink <code>runeCode</code> with <code>/ 10</code> — why would dividing by
+                <code>10</code> <em>before</em> taking <code>% 10</code> break <code>4729</code>?</li>
+        </ol>
+        <p>
+            Combine Pieces A and B into <code>sumRuneDigits</code> in <code>WhileLab.java</code>.
+        </p>
+    </div>
+
+    <h3>Part 3: <code>countEvenDigits(int runeCode)</code></h3>
+
+    <h4>AP Specification</h4>
+    <ul>
+        <li><strong>Signature:</strong> <code>public static int countEvenDigits(int runeCode)</code></li>
+        <li><strong>Precondition:</strong> <code>runeCode &gt;= 0</code>.</li>
+        <li><strong>Behavior:</strong> Returns the count of even base-10 digits
+            (<code>0, 2, 4, 6, 8</code>) in <code>runeCode</code>.</li>
+        <li><strong>Worked examples:</strong> <code>4826 &rarr; 4</code>,
+            <code>13579 &rarr; 0</code>, <code>20405 &rarr; 4</code> (<code>0</code> is even!),
+            <code>0 &rarr; 1</code>.</li>
     </ul>
 
     <div class="bug-hunt">
-        <h3>Discovery Trap 2: The Premature Return &amp; The Zero Edge Case</h3>
+        <h3>Edge-Case Analysis: The Premature Return &amp; The Zero Edge Case</h3>
         <p>
-            Look at two common bugs when students write <code>countEvenDigits(int runeCode)</code>:
+            Look at two common bugs when students adapt <code>sumRuneDigits</code> into
+            <code>countEvenDigits(int runeCode)</code>:
         </p>
         <pre><code>// Bug A: Premature else-return inside the loop
 while (runeCode &gt; 0) {
@@ -117,23 +198,32 @@ while (runeCode &gt; 0) {
 // How many times does while (runeCode &gt; 0) run when runeCode == 0?</code></pre>
         <ol>
             <li>In Bug A, why does putting <code>return count;</code> inside the loop stop after the
-                very first odd digit (<code>5</code> in <code>20405</code>), never inspecting <code>0</code>, <code>4</code>, <code>0</code>, or <code>2</code>?</li>
-            <li>The integer <code>0</code> has one digit, and <code>0</code> is an even number (<code>0 % 2 == 0</code>),
-                so <code>countEvenDigits(0)</code> must return <code>1</code>. Why does a plain
-                <code>while (runeCode &gt; 0)</code> loop return <code>0</code> for
-                <code>countEvenDigits(0)</code>, and how do you guard for it?</li>
+                very first odd digit (<code>5</code> in <code>20405</code>), never inspecting
+                <code>0</code>, <code>4</code>, <code>0</code>, or <code>2</code>?</li>
+            <li>The integer <code>0</code> has one digit, and <code>0</code> is an even number
+                (<code>0 % 2 == 0</code>), so <code>countEvenDigits(0)</code> must return
+                <code>1</code>. Why does a plain <code>while (runeCode &gt; 0)</code> loop return
+                <code>0</code> for <code>countEvenDigits(0)</code>, and why didn't that same issue
+                hurt <code>sumRuneDigits(0)</code>?</li>
         </ol>
     </div>
 
-    <h4>AP Specification — Parts 2 &amp; 3</h4>
-    <ul>
-        <li><code>public static int sumRuneDigits(int runeCode)</code> — precondition:
-            <code>runeCode &gt;= 0</code>. Returns the sum of all base-10 digits in
-            <code>runeCode</code>.</li>
-        <li><code>public static int countEvenDigits(int runeCode)</code> — precondition:
-            <code>runeCode &gt;= 0</code>. Returns the count of even base-10 digits (<code>0, 2, 4, 6, 8</code>)
-            in <code>runeCode</code>. Note that <code>countEvenDigits(0)</code> returns <code>1</code>.</li>
-    </ul>
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>countEvenDigits</code></h3>
+        <ol>
+            <li><strong>Piece A (Zero Edge-Case Guard):</strong> Write the exact <code>if</code>
+                guard at the top of <code>countEvenDigits</code> for <code>runeCode == 0</code> —
+                what does it return?</li>
+            <li><strong>Piece B (Digit-Filter Loop):</strong> Write the counter initialization,
+                <code>while</code> loop header, digit extraction, even check
+                (<code>digit % 2 == 0</code>) with no premature return, shrinking step, and final
+                <code>return</code>?</li>
+        </ol>
+        <p>
+            Combine Pieces A and B into <code>countEvenDigits</code> in <code>WhileLab.java</code>
+            and trace <code>20405</code> and <code>0</code> by hand.
+        </p>
+    </div>
 </div>
 
 <!-- ============================================================ -->
@@ -145,23 +235,27 @@ while (runeCode &gt; 0) {
 
     <h3>Part 4: <code>manaCrystalSteps(int startingEnergy)</code></h3>
 
+    <h4>AP Specification</h4>
     <p>
         An unstable mana crystal oscillates according to the Collatz (Hailstone) rules until its
         energy stabilizes at <code>1</code>:
     </p>
     <ul>
         <li>If <code>startingEnergy &lt;= 1</code>, it is already stable; return <code>0</code> steps.</li>
-        <li>While energy is greater than <code>1</code>:
+        <li>While energy is strictly greater than <code>1</code>:
             <ul>
                 <li>If energy is <strong>even</strong>, divide it by <code>2</code>.</li>
                 <li>If energy is <strong>odd</strong>, multiply it by <code>3</code> and add <code>1</code>.</li>
             </ul>
         </li>
         <li>Count and return the total number of transformations required to reach <code>1</code>.</li>
+        <li><strong>Worked examples:</strong> <code>1 &rarr; 0</code>, <code>0 &rarr; 0</code>,
+            <code>16 &rarr; 4</code> (<code>16 &rarr; 8 &rarr; 4 &rarr; 2 &rarr; 1</code>),
+            <code>6 &rarr; 8</code> (<code>6 &rarr; 3 &rarr; 10 &rarr; 5 &rarr; 16 &rarr; 8 &rarr; 4 &rarr; 2 &rarr; 1</code>).</li>
     </ul>
 
     <div class="socratic">
-        <h3>Socratic Checkpoint — <code>if / else</code> vs. Two Separate <code>if</code>s Inside a Loop</h3>
+        <h3>Edge-Case Analysis: <code>if / else</code> vs. Two Separate <code>if</code>s Inside a Loop</h3>
         <ol>
             <li>Suppose a student writes two separate <code>if</code> statements instead of
                 <code>if / else</code> inside the <code>while</code> loop:
@@ -177,11 +271,32 @@ if (energy % 2 == 0) {
         </ol>
     </div>
 
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>manaCrystalSteps</code></h3>
+        <ol>
+            <li><strong>Piece A (Loop Condition &amp; Base Case):</strong> Write the
+                <code>steps</code> initialization and <code>while</code> loop header — how does
+                <code>while (startingEnergy &gt; 1)</code> automatically handle
+                <code>startingEnergy &lt;= 1</code> without a separate <code>if</code> guard?</li>
+            <li><strong>Piece B (One-Step Update &amp; Return):</strong> Write the
+                <code>if / else</code> transformation, step-counter increment, and final
+                <code>return</code> statement?</li>
+        </ol>
+        <p>
+            Combine Pieces A and B into <code>manaCrystalSteps</code> in <code>WhileLab.java</code>.
+            Add a temporary <code>main</code> method (or trace by hand) to test your edge cases
+            (<code>(0,5,2)</code>, <code>(5,5,10)</code>, <code>20405</code>, <code>0</code>,
+            <code>6</code>), and <strong>only then</strong> run <code>java WhileLabCheck</code> as
+            your final acceptance test.
+        </p>
+    </div>
+
     <div class="checklist">
         <h3>Done When</h3>
         <ul>
+            <li>Every method in <code>WhileLab.java</code> was built from your spec &amp; edge-case pieces and tested before running the check</li>
             <li><code>java WhileLabCheck</code> reports <strong><code>19 passed, 0 failed</code></strong></li>
-            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+            <li>You have completed the reflection and code-piece boxes above and downloaded your <code>.json</code> for Canvas</li>
         </ul>
     </div>
 </div>

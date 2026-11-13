@@ -13,17 +13,24 @@ const body = `<h1>4.3 — String Traversal: The ScrollCipher &amp; AP String Bui
 </p>
 
 <div class="callout">
-    <strong>Starting Files (Download Both):</strong>
+    <strong>Spec-First Workflow (Download Both Files):</strong>
     <ul>
         <li>
-            <a href="../data/ScrollCipher.java" download>ScrollCipher.java</a> — bare-minimum
-            compiling stub.
+            <a href="../data/ScrollCipher.java" download>ScrollCipher.java</a> — starter stub where
+            you will assemble all four String methods.
         </li>
         <li>
-            <a href="../data/ScrollCipherCheck.java" download>ScrollCipherCheck.java</a> —
-            automated AP-style test suite (18 checks across 4 parts).
+            <a href="../data/ScrollCipherCheck.java" download>ScrollCipherCheck.java</a> — final
+            acceptance verification suite (18 checks across 4 parts).
         </li>
     </ul>
+    <p style="margin-top:0.5rem; margin-bottom:0.25rem;">
+        <strong>How to work today:</strong> For each method, trace the index boundaries and edge
+        cases on paper first, draft the code pieces in the prompts below, assemble them in
+        <code>ScrollCipher.java</code>, and test your own tricky inputs (empty strings, 1-char
+        strings, negative shifts, chained substrings) <em>before</em> running
+        <code>ScrollCipherCheck</code> at the end.
+    </p>
     <pre><code>javac ScrollCipher.java ScrollCipherCheck.java
 java ScrollCipherCheck</code></pre>
 </div>
@@ -31,28 +38,36 @@ java ScrollCipherCheck</code></pre>
 <!-- ============================================================ -->
 <div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Part 1 · Discovery &amp; Build</span>
+        <span class="activity-label">Part 1 · Spec, Edge Cases &amp; Build</span>
         <span class="activity-time">~20 min</span>
     </div>
 
     <h3>Part 1: <code>countAdjacentDoubles(String spell)</code></h3>
 
-    <p>
-        Count how many times two identical adjacent characters appear in <code>spell</code>. For
-        example, <code>"bookkeeper"</code> contains <code>"oo"</code>, <code>"kk"</code>, and
-        <code>"ee"</code> (returns <code>3</code>), and <code>"aaa"</code> contains two adjacent
-        pairs at indices <code>0–1</code> and <code>1–2</code> (returns <code>2</code>).
-    </p>
+    <h4>AP Specification</h4>
+    <ul>
+        <li><strong>Signature:</strong> <code>public static int countAdjacentDoubles(String spell)</code></li>
+        <li><strong>Precondition:</strong> <code>spell != null</code>.</li>
+        <li><strong>Behavior:</strong> Return how many indices <code>i</code> have the same
+            character at index <code>i</code> and index <code>i + 1</code>.</li>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>"bookkeeper"</code> &rarr; <code>3</code> (<code>"oo"</code>, <code>"kk"</code>, <code>"ee"</code>).</li>
+                <li><code>"aaa"</code> &rarr; <code>2</code> (overlapping pairs at indices <code>0–1</code> and <code>1–2</code>).</li>
+                <li><code>"dragon"</code> &rarr; <code>0</code>.</li>
+                <li><code>""</code> &rarr; <code>0</code> and <code>"x"</code> &rarr; <code>0</code> (no crash!).</li>
+            </ul>
+        </li>
+    </ul>
 
     <div class="bug-hunt">
-        <h3>Discovery Trap 1: The Lookahead Out-of-Bounds Crash</h3>
+        <h3>Edge-Case Analysis: The Lookahead Bounds Crash &amp; Short Strings</h3>
         <p>
             To compare character <code>i</code> with character <code>i + 1</code> using the AP Java
             Quick Reference, you compare <code>spell.substring(i, i + 1)</code> with
-            <code>spell.substring(i + 1, i + 2)</code>. Watch what happens if you use a standard
-            <code>i &lt; spell.length()</code> loop header:
+            <code>spell.substring(i + 1, i + 2)</code>. Trace this buggy version on paper:
         </p>
-        <pre><code>// Put this in countAdjacentDoubles and run ScrollCipherCheck:
+        <pre><code>// Buggy lookahead loop — trace before writing code:
 int count = 0;
 for (int i = 0; i &lt; spell.length(); i++) {
     if (spell.substring(i, i + 1).equals(spell.substring(i + 1, i + 2))) {
@@ -64,29 +79,53 @@ return count;</code></pre>
             <li>When <code>spell</code> is <code>"bookkeeper"</code> (length <code>10</code>), what
                 is the value of <code>i</code> on the final iteration of
                 <code>i &lt; spell.length()</code>, and what second argument gets passed into
-                <code>spell.substring(i + 1, i + 2)</code>?</li>
+                <code>spell.substring(i + 1, i + 2)</code> to cause a
+                <code>StringIndexOutOfBoundsException</code>?</li>
             <li>What must the loop bound be whenever your loop body inspects both index
-                <code>i</code> and index <code>i + 1</code>?</li>
+                <code>i</code> and index <code>i + 1</code>, and what happens to that bound when
+                <code>spell</code> is <code>""</code> (length <code>0</code>) or <code>"x"</code>
+                (length <code>1</code>)?</li>
         </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>countAdjacentDoubles</code></h3>
+        <ol>
+            <li><strong>Piece A (Safe Lookahead Header):</strong> Write the <code>count</code>
+                initialization and the <code>for</code> loop header that visits every valid pair
+                <code>(i, i + 1)</code> without crashing on <code>""</code> or <code>"x"</code>?</li>
+            <li><strong>Piece B (Substring Pair Comparison):</strong> Write the <code>if</code>
+                statement inside the loop using <code>substring</code> and <code>.equals(...)</code>
+                (why not <code>==</code>?), plus the counter increment and <code>return</code>?</li>
+        </ol>
+        <p>
+            Combine Pieces A and B into <code>countAdjacentDoubles</code> in
+            <code>ScrollCipher.java</code>, then trace <code>"aaa"</code> and <code>"x"</code>.
+        </p>
     </div>
 </div>
 
 <!-- ============================================================ -->
 <div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Part 2 · Discovery &amp; Build</span>
+        <span class="activity-label">Part 2 · Spec, Edge Cases &amp; Build</span>
         <span class="activity-time">~15 min</span>
     </div>
 
     <h3>Part 2: <code>reverseRunes(String scroll)</code></h3>
 
-    <p>
-        Return a new <code>String</code> containing the characters of <code>scroll</code> in
-        reverse order (e.g., <code>"dragon"</code> becomes <code>"nogard"</code>).
-    </p>
+    <h4>AP Specification</h4>
+    <ul>
+        <li><strong>Signature:</strong> <code>public static String reverseRunes(String scroll)</code></li>
+        <li><strong>Precondition:</strong> <code>scroll != null</code>.</li>
+        <li><strong>Behavior:</strong> Return a new <code>String</code> containing the characters
+            of <code>scroll</code> in reverse order.</li>
+        <li><strong>Worked examples:</strong> <code>"dragon" &rarr; "nogard"</code>,
+            <code>"A" &rarr; "A"</code>, <code>"" &rarr; ""</code>.</li>
+    </ul>
 
     <div class="bug-hunt">
-        <h3>Discovery Trap 2: Backward Traversal Boundaries</h3>
+        <h3>Edge-Case Analysis: Backward Traversal Boundaries</h3>
         <ol>
             <li>If you walk backward from the end of <code>scroll</code>, why does starting at
                 <code>int i = scroll.length()</code> and calling
@@ -97,17 +136,34 @@ return count;</code></pre>
                 <code>reverseRunes("dragon")</code>?</li>
         </ol>
     </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>reverseRunes</code></h3>
+        <ol>
+            <li><strong>Piece A (Accumulator &amp; Backward Header):</strong> Write the empty result
+                string initialization and the backward <code>for</code> loop header from the last
+                valid index down to index <code>0</code> — how many times does it execute when
+                <code>scroll</code> is <code>""</code>?</li>
+            <li><strong>Piece B (Concatenation &amp; Return):</strong> Write the loop body line that
+                appends character <code>i</code> onto your reversed string and the final
+                <code>return</code>?</li>
+        </ol>
+        <p>
+            Combine Pieces A and B into <code>reverseRunes</code> in <code>ScrollCipher.java</code>.
+        </p>
+    </div>
 </div>
 
 <!-- ============================================================ -->
 <div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Part 3 · Discovery &amp; Build</span>
+        <span class="activity-label">Part 3 · Spec, Edge Cases &amp; Build</span>
         <span class="activity-time">~30 min</span>
     </div>
 
     <h3>Part 3: <code>shiftUppercaseCipher(String text, int shift)</code></h3>
 
+    <h4>AP Specification</h4>
     <p>
         Using the uppercase alphabet string:
     </p>
@@ -117,15 +173,23 @@ return count;</code></pre>
     </p>
     <ul>
         <li>Find its position <code>int pos = alpha.indexOf(ch);</code>.</li>
-        <li>If <code>pos == -1</code> (spaces, punctuation, digits), append <code>ch</code>
-            unchanged.</li>
+        <li>If <code>pos == -1</code> (spaces, punctuation, digits, or non-uppercase characters),
+            append <code>ch</code> unchanged.</li>
         <li>If <code>pos &gt;= 0</code>, shift the position by <code>shift</code> (which may be
-            positive, negative, or larger than 26!) wrapped into the range <code>0..25</code>, and
-            append the shifted letter from <code>alpha</code>.</li>
+            positive, negative, or larger than <code>26</code>!) wrapped into the range
+            <code>0..25</code>, and append the shifted letter from <code>alpha</code>.</li>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>("ATTACK", 1)</code> &rarr; <code>"BUUBDL"</code></li>
+                <li><code>("DRAGON Z", 3)</code> &rarr; <code>"GUDJRQ C"</code> (<code>Z</code> wraps to <code>C</code>; space stays <code>" "</code>)</li>
+                <li><code>("ABZ!", -2)</code> &rarr; <code>"YZX!"</code> (<code>A</code> wraps backward to <code>Y</code>; <code>!</code> stays <code>"!"</code>)</li>
+                <li><code>("HAL", 27)</code> &rarr; <code>"IBM"</code> (<code>shift = 27</code> wraps to <code>+1</code>)</li>
+            </ul>
+        </li>
     </ul>
 
     <div class="bug-hunt">
-        <h3>Discovery Trap 3: How Java's <code>%</code> Operator Handles Negative Numbers</h3>
+        <h3>Edge-Case Analysis: How Java's <code>%</code> Operator Handles Negative Numbers</h3>
         <p>
             Suppose <code>ch</code> is <code>"A"</code> (<code>pos = 0</code>) and you are
             decrypting with <code>shift = -2</code>. You want to wrap backward 2 steps to
@@ -133,12 +197,32 @@ return count;</code></pre>
         </p>
         <ol>
             <li>What does Java evaluate <code>(0 + (-2)) % 26</code> to? (It is <strong>not</strong>
-                <code>24</code>!) What happens when you pass that number into
+                <code>24</code>!) What happens when you pass that negative value into
                 <code>alpha.substring(newPos, newPos + 1)</code>?</li>
-            <li>Explain why the two-step normalization formula
-                <code>int newPos = ((pos + shift) % 26 + 26) % 26;</code> guarantees a valid index
-                in <code>0..25</code> for every possible positive or negative <code>shift</code>.</li>
+            <li>Trace the two-step normalization formula
+                <code>int newPos = ((pos + shift) % 26 + 26) % 26;</code> on three cases:
+                (a) <code>pos = 0, shift = -2</code>, (b) <code>pos = 25, shift = 3</code>, and
+                (c) <code>pos = 7, shift = 27</code> — why do we need the outer <code>% 26</code>
+                after adding <code>26</code>?</li>
         </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>shiftUppercaseCipher</code></h3>
+        <ol>
+            <li><strong>Piece A (Alphabet, Result &amp; Traversal Header):</strong> Write the setup
+                variables (<code>alpha</code>, <code>result</code>) and the forward <code>for</code>
+                loop that extracts each 1-character substring <code>ch</code> and looks up
+                <code>pos</code> in <code>alpha</code>?</li>
+            <li><strong>Piece B (Non-Letter Guard vs. Wrapped Shift):</strong> Write the
+                <code>if / else</code> that leaves non-uppercase characters unchanged when
+                <code>pos == -1</code>, and otherwise computes <code>newPos</code> and appends the
+                shifted letter from <code>alpha</code>?</li>
+        </ol>
+        <p>
+            Combine Pieces A and B with <code>return result;</code> inside
+            <code>shiftUppercaseCipher</code> in <code>ScrollCipher.java</code>.
+        </p>
     </div>
 </div>
 
@@ -151,35 +235,72 @@ return count;</code></pre>
 
     <h3>Part 4: <code>purgeCursedGlyph(String scroll, String glyph)</code></h3>
 
+    <h4>AP Specification</h4>
     <p>
         A classic AP CS A Free Response question asks you to remove every occurrence of a substring
         <code>glyph</code> from <code>scroll</code> using a <code>while</code> loop and
         <code>indexOf</code>:
     </p>
     <ul>
-        <li>While <code>scroll.indexOf(glyph)</code> is not <code>-1</code>:</li>
-        <li>Slice out the occurrence at index <code>idx</code> by concatenating everything
-            <em>before</em> <code>idx</code> (<code>scroll.substring(0, idx)</code>) with everything
-            <em>after</em> the glyph (<code>scroll.substring(idx + glyph.length())</code>).</li>
+        <li><strong>Signature:</strong> <code>public static String purgeCursedGlyph(String scroll, String glyph)</code></li>
+        <li><strong>Precondition:</strong> <code>scroll != null</code>, <code>glyph != null</code>, <code>glyph.length() &gt; 0</code>.</li>
+        <li><strong>Behavior:</strong> Repeatedly locate the first occurrence of <code>glyph</code>
+            using <code>indexOf</code> and splice it out by concatenating everything <em>before</em>
+            the match with everything <em>after</em> the match, until <code>glyph</code> no longer
+            appears anywhere in <code>scroll</code>.</li>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>("hexed sword of hexes", "hex")</code> &rarr; <code>"ed sword of es"</code></li>
+                <li><code>("ababab", "ab")</code> &rarr; <code>""</code></li>
+                <li><code>("booook", "oo")</code> &rarr; <code>"bk"</code> (first removal leaves <code>"book"</code>, which still contains <code>"oo"</code>!)</li>
+                <li><code>("fireball", "zzz")</code> &rarr; <code>"fireball"</code></li>
+            </ul>
+        </li>
     </ul>
 
     <div class="socratic">
-        <h3>Socratic Checkpoint — The Chained Formation Effect</h3>
+        <h3>Edge-Case Analysis: The Chained Formation Effect</h3>
         <ol>
-            <li>Look at Check 3 in Part 4 of <code>ScrollCipherCheck</code>:
-                <code>purgeCursedGlyph("boook", "oo")</code>. On iteration 1, removing the first
-                <code>"oo"</code> from <code>"boook"</code> leaves <code>"bok"</code> (only one
-                <code>'o'</code> left). What if the input was <code>"b" + "o" + "oo" + "o" + "k"</code>
-                or <code>"ababa"</code>? Trace <code>purgeCursedGlyph("boook", "oo")</code> step by
-                step to verify why <code>idx + glyph.length()</code> slices at the exact right spot.</li>
+            <li>Compare <code>purgeCursedGlyph("boook", "oo")</code> (3 <code>'o'</code>s) versus
+                <code>purgeCursedGlyph("booook", "oo")</code> (4 <code>'o'</code>s). Trace each step
+                by hand: what does <code>"boook"</code> become after removing <code>"oo"</code> once,
+                and why does <code>"booook"</code> require a second loop iteration?</li>
+            <li>Suppose a student tries to remove all glyphs in a single left-to-right
+                <code>for</code> loop instead of re-checking <code>scroll.indexOf(glyph)</code> in
+                a <code>while</code> loop. What happens on <code>purgeCursedGlyph("xaabby", "ab")</code>
+                when removing the middle <code>"ab"</code> joins the outer <code>"a"</code> and
+                <code>"b"</code> into a brand-new <code>"ab"</code>?</li>
         </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>purgeCursedGlyph</code></h3>
+        <ol>
+            <li><strong>Piece A (Loop Condition &amp; Index Lookup):</strong> Write the
+                <code>while</code> condition (or <code>idx = scroll.indexOf(glyph)</code> loop) that
+                keeps repeating as long as <code>glyph</code> still exists in
+                <code>scroll</code>?</li>
+            <li><strong>Piece B (Substring Splice &amp; Return):</strong> Write the single assignment
+                statement inside the loop that removes the occurrence at <code>idx</code> using
+                <code>scroll.substring(0, idx)</code> and
+                <code>scroll.substring(idx + glyph.length())</code>, plus the final
+                <code>return</code>?</li>
+        </ol>
+        <p>
+            Assemble <code>purgeCursedGlyph</code> in <code>ScrollCipher.java</code>. Test all four
+            methods in a temporary <code>main</code> (or hand-trace <code>""</code>,
+            <code>"ABZ!"</code> with <code>-2</code>, and <code>"booook"</code> with
+            <code>"oo"</code>), and <strong>only then</strong> run
+            <code>java ScrollCipherCheck</code> to confirm all 18 checks pass.
+        </p>
     </div>
 
     <div class="checklist">
         <h3>Done When</h3>
         <ul>
+            <li>All four methods in <code>ScrollCipher.java</code> were built from your pieces and self-tested before running the check</li>
             <li><code>java ScrollCipherCheck</code> reports <strong><code>18 passed, 0 failed</code></strong></li>
-            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+            <li>You have completed the reflection and code-piece boxes above and downloaded your <code>.json</code> for Canvas</li>
         </ul>
     </div>
 </div>

@@ -6,22 +6,31 @@ const body = `<h1>4.4 — Nested Loops: The GridArchitect &amp; Fog-of-War Build
 <p>
     <strong>CED Topic 2.11 · 90-Minute Unified Build.</strong> When one loop sits inside another,
     the inner loop runs to completion for <em>every single step</em> of the outer loop. Today you
-    will build <code>GridArchitect.java</code> — generating bordered ASCII dungeon rooms, Manhattan-distance
-    fog-of-war maps, dependent staircase patterns, and unique item-pair combinations.
+    will build <code>GridArchitect.java</code> — generating bordered ASCII dungeon rooms,
+    Manhattan-distance fog-of-war maps, dependent staircase patterns, and unique item-pair
+    combinations.
 </p>
 
 <div class="callout">
-    <strong>Starting Files (Download Both):</strong>
+    <strong>Spec-First Workflow (Download Both Files):</strong>
     <ul>
         <li>
-            <a href="../data/GridArchitect.java" download>GridArchitect.java</a> — bare-minimum
-            compiling stub.
+            <a href="../data/GridArchitect.java" download>GridArchitect.java</a> — starter stub
+            where you will assemble all four nested-loop methods.
         </li>
         <li>
-            <a href="../data/GridArchitectCheck.java" download>GridArchitectCheck.java</a> —
-            automated AP-style test suite (13 checks across 4 parts).
+            <a href="../data/GridArchitectCheck.java" download>GridArchitectCheck.java</a> — final
+            acceptance verification suite (13 checks across 4 parts).
         </li>
     </ul>
+    <p style="margin-top:0.5rem; margin-bottom:0.25rem;">
+        <strong>How to work today:</strong> Draw small grids (<code>2&times;2</code>,
+        <code>3&times;4</code>, <code>height = 1</code>, <code>maxTier = 1</code>) on scratch paper
+        first, draft the loop headers and conditions in the prompts below, assemble each method in
+        <code>GridArchitect.java</code>, and print your grids from a scratch <code>main</code> to
+        inspect every character and newline <em>before</em> running
+        <code>GridArchitectCheck</code> at the end.
+    </p>
     <pre><code>javac GridArchitect.java GridArchitectCheck.java
 java GridArchitectCheck</code></pre>
 </div>
@@ -34,20 +43,48 @@ java GridArchitectCheck</code></pre>
     </div>
 
     <h3>Part 1: <code>buildBorderedRoom(int rows, int cols)</code></h3>
+
+    <h4>AP Specification</h4>
     <p>
         Return a multi-line <code>String</code> representing a <code>rows</code> by
-        <code>cols</code> dungeon room (<code>0 .. rows - 1</code> and <code>0 .. cols - 1</code>):
+        <code>cols</code> dungeon room (indices <code>0 .. rows - 1</code> and
+        <code>0 .. cols - 1</code>; precondition: <code>rows &gt;= 2</code>, <code>cols &gt;= 2</code>):
     </p>
     <ul>
         <li>Every cell on the outer boundary (first row <code>r == 0</code>, last row
             <code>r == rows - 1</code>, first column <code>c == 0</code>, or last column
             <code>c == cols - 1</code>) is a wall (<code>"#"</code>).</li>
         <li>Every interior cell is floor (<code>"."</code>).</li>
-        <li>Append a newline (<code>"\\n"</code>) at the end of each row (right after the inner
-            column loop finishes).</li>
+        <li>Append a newline (<code>"\\n"</code>) at the end of <strong>every</strong> row,
+            including the final row.</li>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>buildBorderedRoom(3, 4)</code> &rarr; <code>"####\\n#..#\\n####\\n"</code></li>
+                <li><code>buildBorderedRoom(2, 2)</code> &rarr; <code>"##\\n##\\n"</code> (all four cells are on the border; zero interior cells).</li>
+            </ul>
+        </li>
     </ul>
 
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>buildBorderedRoom</code></h3>
+        <ol>
+            <li><strong>Piece A (Grid Loops):</strong> Write the <code>result</code> initialization
+                and the nested <code>for</code> loop headers for row <code>r</code> and column
+                <code>c</code>?</li>
+            <li><strong>Piece B (Border Condition &amp; Newline):</strong> Write the compound boolean
+                expression that decides whether cell <code>(r, c)</code> is <code>"#"</code> vs.
+                <code>"."</code>, and show exactly where <code>result += "\\n";</code> goes relative
+                to the inner and outer loop braces?</li>
+        </ol>
+        <p>
+            Combine Pieces A and B with <code>return result;</code> inside
+            <code>buildBorderedRoom</code> in <code>GridArchitect.java</code>.
+        </p>
+    </div>
+
     <h3>Part 2: <code>renderFogOfWar(int size, int heroRow, int heroCol, int visionRadius)</code></h3>
+
+    <h4>AP Specification</h4>
     <p>
         Render a <code>size</code> by <code>size</code> grid (rows <code>0 .. size - 1</code>,
         columns <code>0 .. size - 1</code>) around the hero at <code>(heroRow, heroCol)</code>:
@@ -60,43 +97,96 @@ java GridArchitectCheck</code></pre>
             <code>&lt;= visionRadius</code> is visible floor (<code>"."</code>).</li>
         <li>All tiles beyond <code>visionRadius</code> are shrouded in fog (<code>"?"</code>).</li>
         <li>Append <code>"\\n"</code> at the end of every row.</li>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>renderFogOfWar(5, 2, 2, 1)</code> &rarr; center tile <code>(2,2)</code> is <code>@</code>, 4 adjacent tiles at distance <code>1</code> are <code>.</code>, all others are <code>?</code>.</li>
+                <li><code>renderFogOfWar(3, 1, 1, 0)</code> &rarr; <code>"???\\n?@?\\n???\\n"</code> (only the hero is visible when <code>visionRadius == 0</code>).</li>
+            </ul>
+        </li>
     </ul>
 
     <div class="socratic">
-        <h3>Socratic Checkpoint — Row-Break Placement &amp; Manhattan Diamonds</h3>
+        <h3>Edge-Case Analysis: Row Breaks, Manhattan Diamonds &amp; Branch Priority</h3>
         <ol>
             <li>What happens to the returned string if you accidentally place
                 <code>result += "\\n";</code> <em>inside</em> the inner column loop instead of
                 between the end of the inner loop and the end of the outer loop?</li>
             <li>Why does the Manhattan distance condition
                 <code>Math.abs(r - heroRow) + Math.abs(c - heroCol) &lt;= 1</code> produce a
-                5-tile diamond (up, down, left, right, center) rather than a 3×3 square? What
+                5-tile diamond (up, down, left, right, center) rather than a 3&times;3 square? What
                 is the Manhattan distance of a diagonal corner like
                 <code>(heroRow - 1, heroCol - 1)</code>?</li>
+            <li>At the hero's own tile <code>(heroRow, heroCol)</code>, what is its Manhattan
+                distance to itself? Why must the <code>if</code> branch for <code>"@"</code> be
+                checked <em>before</em> <code>dist &lt;= visionRadius</code>?</li>
         </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>renderFogOfWar</code></h3>
+        <ol>
+            <li><strong>Piece A (Distance &amp; Tile Classifier):</strong> Inside the nested
+                <code>r</code> / <code>c</code> loops, write the Manhattan distance calculation and
+                the 3-way <code>if / else if / else</code> in priority order for <code>"@"</code>,
+                <code>"."</code>, and <code>"?"</code>?</li>
+        </ol>
+        <p>
+            Wrap Piece A in your <code>0 .. size - 1</code> grid loops with row newlines and
+            <code>return result;</code> inside <code>renderFogOfWar</code> in
+            <code>GridArchitect.java</code>.
+        </p>
     </div>
 </div>
 
 <!-- ============================================================ -->
 <div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Parts 3 &amp; 4 · Discovery &amp; Build</span>
+        <span class="activity-label">Parts 3 &amp; 4 · Dependent Inner Bounds &amp; Build</span>
         <span class="activity-time">~45 min</span>
     </div>
 
     <h3>Part 3: <code>buildRightStaircase(int height)</code></h3>
+
+    <h4>AP Specification</h4>
     <p>
-        For each row <code>r</code> from <code>1</code> through <code>height</code> (return
-        <code>""</code> if <code>height &lt;= 0</code>), append <code>height - r</code> dots
+        For each row <code>r</code> from <code>1</code> through <code>height</code> inclusive
+        (return <code>""</code> if <code>height &lt;= 0</code>), append <code>height - r</code> dots
         (<code>"."</code>) followed by <code>r</code> hashes (<code>"#"</code>) and a newline
-        (<code>"\\n"</code>). For <code>height = 4</code>:
+        (<code>"\\n"</code>).
     </p>
-    <pre><code>...#
+    <ul>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>buildRightStaircase(0)</code> &rarr; <code>""</code></li>
+                <li><code>buildRightStaircase(1)</code> &rarr; <code>"#\\n"</code> (<code>0</code> dots, <code>1</code> hash)</li>
+                <li><code>buildRightStaircase(4)</code>:
+                    <pre><code>...#
 ..##
 .###
 ####</code></pre>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>buildRightStaircase</code></h3>
+        <ol>
+            <li><strong>Piece A (Outer Row Loop &amp; Sequential Inner Loops):</strong> Inside
+                <code>for (int r = 1; r &lt;= height; r++)</code>, you need <em>two separate
+                consecutive</em> inner loops (not nested inside each other!): one for dots and one
+                for hashes. Write both inner <code>for</code> loops, the row newline, and explain
+                why <code>height &lt;= 0</code> returns <code>""</code> cleanly?</li>
+        </ol>
+        <p>
+            Assemble <code>buildRightStaircase</code> in <code>GridArchitect.java</code> and verify
+            <code>height = 1</code> and <code>height = 4</code>.
+        </p>
+    </div>
 
     <h3>Part 4: <code>countLuckyLootPairs(int maxTier)</code></h3>
+
+    <h4>AP Specification</h4>
     <p>
         Two treasure chests are forged with integer tiers <code>a</code> and <code>b</code> between
         <code>1</code> and <code>maxTier</code> inclusive. A pair of <strong>distinct</strong>
@@ -104,9 +194,19 @@ java GridArchitectCheck</code></pre>
         (so <code>(1, 2)</code> and <code>(2, 1)</code> are the <em>same</em> pair and must only
         be counted once, and a tier cannot pair with itself like <code>(3, 3)</code>).
     </p>
+    <ul>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>maxTier = 1</code> &rarr; <code>0</code> (only tier <code>1</code> exists; cannot pair with itself).</li>
+                <li><code>maxTier = 2</code> &rarr; <code>1</code> (only <code>(1, 2)</code>).</li>
+                <li><code>maxTier = 4</code> &rarr; <code>2</code> (<code>(1, 2)</code> and <code>(2, 4)</code>).</li>
+                <li><code>maxTier = 6</code> &rarr; <code>5</code> (<code>(1, 2), (1, 5), (2, 4), (3, 6), (4, 5)</code>).</li>
+            </ul>
+        </li>
+    </ul>
 
     <div class="bug-hunt">
-        <h3>Discovery Trap: The Self-Pair &amp; Double-Count Bug</h3>
+        <h3>Edge-Case Analysis: The Self-Pair &amp; Double-Count Bug</h3>
         <p>
             Look at what happens when a student starts both loops at <code>1</code>:
         </p>
@@ -124,15 +224,33 @@ for (int a = 1; a &lt;= maxTier; a++) {
                 <code>maxTier = 4</code>. Which ones are self-pairs (<code>a == b</code>), and
                 which ones are reversed duplicates of an earlier pair?</li>
             <li>How does starting the inner loop at <code>int b = a + 1;</code> automatically
-                prevent <em>both</em> self-pairs and reversed duplicates in a single stroke?</li>
+                prevent <em>both</em> self-pairs and reversed duplicates — and why does it also
+                naturally return <code>0</code> when <code>maxTier &lt;= 1</code>?</li>
         </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>countLuckyLootPairs</code></h3>
+        <ol>
+            <li><strong>Piece A (Unique-Pair Loop &amp; Condition):</strong> Write the full
+                <code>countLuckyLootPairs</code> body using <code>int b = a + 1;</code> and the
+                divisibility check?</li>
+        </ol>
+        <p>
+            Assemble <code>countLuckyLootPairs</code> in <code>GridArchitect.java</code>. Test all
+            four methods in a scratch <code>main</code> (checking <code>2&times;2</code>, radius
+            <code>0</code>, height <code>1</code>, and <code>maxTier = 1</code>), and
+            <strong>only then</strong> run <code>java GridArchitectCheck</code> to verify all 13
+            checks pass.
+        </p>
     </div>
 
     <div class="checklist">
         <h3>Done When</h3>
         <ul>
+            <li>All four methods in <code>GridArchitect.java</code> were built from your pieces and self-tested before running the check</li>
             <li><code>java GridArchitectCheck</code> reports <strong><code>13 passed, 0 failed</code></strong></li>
-            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+            <li>You have completed the reflection and code-piece boxes above and downloaded your <code>.json</code> for Canvas</li>
         </ul>
     </div>
 </div>

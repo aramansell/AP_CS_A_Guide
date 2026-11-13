@@ -12,10 +12,13 @@ const body = `<h1>4.6 (Day 2) — Dungeon Crawler RPG Build: Multi-Floor Campaig
 </p>
 
 <div class="callout">
-    <strong>Continue in Your Existing Files:</strong> Keep working in your
+    <strong>Spec-First Workflow (Continue in Your Existing Files):</strong> Keep working in your
     <code>DungeonLoop.java</code> from <code>4.6a</code> alongside
-    <a href="../data/DungeonLoopCheck.java" download>DungeonLoopCheck.java</a> and
-    <a href="../data/Dice.java" download>Dice.java</a>.
+    <a href="../data/Dice.java" download>Dice.java</a> and
+    <a href="../data/DungeonLoopCheck.java" download>DungeonLoopCheck.java</a>. For Parts 3 and 4,
+    trace the death/shrine and campfire/clamping edge cases on paper, draft the code pieces below,
+    assemble them in <code>DungeonLoop.java</code>, and self-test your own cases <em>before</em>
+    running <code>DungeonLoopCheck</code> at the end.
     <pre><code>javac Dice.java DungeonLoop.java DungeonLoopCheck.java
 java DungeonLoopCheck</code></pre>
 </div>
@@ -23,43 +26,69 @@ java DungeonLoopCheck</code></pre>
 <!-- ============================================================ -->
 <div class="activity rpg">
     <div class="activity-header">
-        <span class="activity-label">Part 3 · Discovery &amp; Build</span>
+        <span class="activity-label">Part 3 · Spec, Edge Cases &amp; Build</span>
         <span class="activity-time">~40 min</span>
     </div>
 
     <h3>Part 3: <code>exploreFloorDeterministic(int startingHP, int numRooms, int monsterBaseHP, int playerDmg, int monsterDmg)</code></h3>
 
+    <h4>AP Specification</h4>
     <p>
         Walk a hero with <code>startingHP</code> through rooms <code>r = 1</code> to
-        <code>numRooms</code> inclusive:
+        <code>numRooms</code> inclusive (if <code>startingHP &lt;= 0</code>, return <code>0</code>):
     </p>
     <ol>
         <li>In room <code>r</code>, the monster's starting HP is
             <code>monsterBaseHP + r * 2</code>.</li>
         <li>Call your own <code>simulateDuelToDeath(hp, playerDmg, roomMonsterHP, monsterDmg)</code>
-            from Day 1 to update the hero's HP!</li>
+            from Day 1 to update the hero's HP (do not duplicate the <code>while</code> loop!).</li>
         <li>If the hero died in that duel (<code>hp &lt;= 0</code>), immediately return
-            <code>0</code> (or <code>break</code>) — a dead hero cannot visit a shrine or enter the
-            next room!</li>
+            <code>0</code> — a dead hero cannot visit a shrine or enter the next room!</li>
         <li>If the hero <strong>survived</strong> room <code>r</code> AND <code>r</code> is a
             multiple of <code>3</code> (<code>r % 3 == 0</code>), the room contains a Healing Shrine
             that restores <code>+4</code> HP.</li>
     </ol>
-    <p>
-        Return the hero's remaining HP after room <code>numRooms</code> (or <code>0</code> if they
-        fell).
-    </p>
+    <ul>
+        <li>Return the hero's remaining HP after room <code>numRooms</code> (or <code>0</code> if
+            they fell).</li>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>(20, 3, 4, 5, 3)</code> &rarr; R1 (mHP <code>6</code>): <code>17 HP</code>; R2 (mHP <code>8</code>): <code>14 HP</code>; R3 (mHP <code>10</code>): <code>11 HP</code> + <code>4</code> shrine = <code>15</code>.</li>
+                <li><code>(8, 3, 4, 5, 3)</code> &rarr; R1: <code>5 HP</code>; R2: <code>2 HP</code>; R3: hero dies (<code>0 HP</code>) &rarr; returns <code>0</code> (no shrine heal!).</li>
+                <li><code>(3, 5, 10, 4, 5)</code> &rarr; dies in Room 1 &rarr; returns <code>0</code>.</li>
+            </ul>
+        </li>
+    </ul>
 
     <div class="bug-hunt">
-        <h3>Discovery Trap 1: The Dead-Hero Shrine Resurrection</h3>
+        <h3>Edge-Case Analysis: The Dead-Hero Shrine Resurrection</h3>
         <ol>
-            <li>In Check 2 of Part 3 (<code>exploreFloorDeterministic(8, 3, 4, 5, 3)</code>), the
-                hero enters Room 3 with <code>2 HP</code> and dies during the Room 3 fight
-                (<code>hp</code> becomes <code>0</code>). Since Room 3 is a multiple of 3
-                (<code>r % 3 == 0</code>), what happens if you check
-                <code>if (r % 3 == 0) hp += 4;</code> <em>before</em> checking whether the hero
-                survived the duel in Room 3?</li>
+            <li>Trace <code>exploreFloorDeterministic(8, 3, 4, 5, 3)</code>: the hero enters Room 3
+                with <code>2 HP</code> and dies during the Room 3 fight (<code>hp</code> becomes
+                <code>0</code>). Since Room 3 is a multiple of 3 (<code>r % 3 == 0</code>), what
+                happens if you check <code>if (r % 3 == 0) hp += 4;</code> <em>before</em> checking
+                whether the hero survived the duel in Room 3?</li>
+            <li>Why is delegating the fight to <code>simulateDuelToDeath(...)</code> better than
+                writing a nested <code>while</code> loop directly inside
+                <code>exploreFloorDeterministic</code>?</li>
         </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>exploreFloorDeterministic</code></h3>
+        <ol>
+            <li><strong>Piece A (Floor Setup &amp; Duel Call):</strong> Write the
+                <code>startingHP &lt;= 0</code> guard, the <code>for</code> loop over rooms
+                <code>1 .. numRooms</code>, the <code>roomMonsterHP</code> calculation, and the call
+                to <code>simulateDuelToDeath</code>?</li>
+            <li><strong>Piece B (Death Guard, Shrine &amp; Return):</strong> Write the exact order
+                of the <code>hp &lt;= 0</code> death exit and the <code>r % 3 == 0</code> shrine
+                heal inside the loop, plus the final <code>return</code>?</li>
+        </ol>
+        <p>
+            Combine Pieces A and B inside <code>exploreFloorDeterministic</code> in
+            <code>DungeonLoop.java</code>.
+        </p>
     </div>
 </div>
 
@@ -72,8 +101,9 @@ java DungeonLoopCheck</code></pre>
 
     <h3>Part 4: <code>runMultiFloorCampaign(int startingHP, int maxHP, int floors, int roomsPerFloor, int playerDmg, int monsterDmg)</code></h3>
 
+    <h4>AP Specification</h4>
     <p>
-        Now nest three levels of loops together — an outer <code>for</code> loop over floors
+        Now nest three levels of control together — an outer <code>for</code> loop over floors
         (<code>floor = 1 .. floors</code>), an inner <code>for</code> loop over rooms
         (<code>room = 1 .. roomsPerFloor</code>), and your <code>while</code>-loop duel inside
         <code>simulateDuelToDeath</code>:
@@ -94,24 +124,59 @@ java DungeonLoopCheck</code></pre>
             so HP never exceeds <code>maxHP</code>!</li>
         <li>If the hero survives all floors, return their final positive HP.</li>
     </ol>
+    <ul>
+        <li><strong>Worked examples:</strong>
+            <ul>
+                <li><code>(25, 25, 2, 2, 6, 4)</code> &rarr; Floor 1 (R1 mHP <code>6</code>: 0 dmg &rarr; <code>25</code>; R2 mHP <code>8</code>: 4 dmg &rarr; <code>21</code>; campfire <code>+3</code> &rarr; <code>24</code>); Floor 2 (R1 mHP <code>10</code>: 4 dmg &rarr; <code>20</code>; R2 mHP <code>12</code>: 4 dmg &rarr; <code>16</code>; campfire <code>+6</code> &rarr; <code>22</code>) &rarr; returns <code>22</code>.</li>
+                <li><code>(25, 25, 1, 2, 20, 4)</code> &rarr; clears Floor 1 with <code>25 HP</code>; campfire <code>+3</code> is capped at <code>maxHP = 25</code> &rarr; returns <code>25</code> (not <code>28</code>!).</li>
+                <li><code>(10, 25, 3, 2, 5, 4)</code> &rarr; survives Floor 1 (<code>2 + 3 = 5 HP</code>), falls in Floor 2 Room 2 &rarr; returns <code>-2</code>.</li>
+            </ul>
+        </li>
+    </ul>
 
     <div class="socratic">
-        <h3>Socratic Checkpoint — Campfire Placement &amp; Overheal Clamping</h3>
+        <h3>Edge-Case Analysis: Campfire Placement, Overheal Clamping &amp; Early Exit</h3>
         <ol>
             <li>What would happen if you placed the campfire heal (<code>hp += floor * 3</code>)
                 inside the <em>inner</em> room loop instead of at the end of the <em>outer</em>
                 floor loop? How many times would the hero rest on a 3-floor, 4-room-per-floor
                 campaign?</li>
-            <li>Why does Check 2 in Part 4 fail if you write <code>hp += floor * 3;</code> without
-                clamping <code>if (hp &gt; maxHP) hp = maxHP;</code>?</li>
+            <li>What happens when a full-HP hero (<code>hp = 25, maxHP = 25</code>) clears Floor 1
+                taking zero damage if you write <code>hp += floor * 3;</code> without clamping
+                <code>if (hp &gt; maxHP) hp = maxHP;</code>?</li>
+            <li>Suppose a student used <code>break;</code> instead of <code>return -floor;</code>
+                when <code>hp &lt;= 0</code> inside the inner room loop. What two bugs would
+                <code>break;</code> cause at the end of that floor and on the next floor?</li>
         </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Build Step-by-Step: Draft the Pieces for <code>runMultiFloorCampaign</code></h3>
+        <ol>
+            <li><strong>Piece A (Nested Loops, Duel &amp; Defeat Exit):</strong> Write the outer
+                <code>floor</code> loop, inner <code>room</code> loop, <code>monsterHP</code>
+                formula, <code>simulateDuelToDeath</code> update, and immediate
+                <code>return -floor;</code> when <code>hp &lt;= 0</code>?</li>
+            <li><strong>Piece B (Campfire Rest, Clamp &amp; Final Return):</strong> Write the
+                end-of-floor campfire heal with <code>maxHP</code> clamping (placed right after the
+                inner loop closes, still inside the outer loop) and the final
+                <code>return hp;</code>?</li>
+        </ol>
+        <p>
+            Assemble <code>runMultiFloorCampaign</code> in <code>DungeonLoop.java</code>. Test both
+            Day 2 methods in a scratch <code>main</code> on <code>(8, 3, 4, 5, 3)</code>,
+            <code>(25, 25, 1, 2, 20, 4)</code>, and <code>(10, 25, 3, 2, 5, 4)</code>, and
+            <strong>only then</strong> run <code>java DungeonLoopCheck</code> to verify all 13
+            checks across Parts 1–4 pass.
+        </p>
     </div>
 
     <div class="checklist">
         <h3>Day 2 Milestone — Done When</h3>
         <ul>
+            <li>All four methods in <code>DungeonLoop.java</code> were built from your pieces and self-tested before running the check</li>
             <li><code>java DungeonLoopCheck</code> reports <strong><code>13 passed, 0 failed</code></strong> across all 4 parts</li>
-            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+            <li>You have completed the reflection and code-piece boxes above and downloaded your <code>.json</code> for Canvas</li>
         </ul>
     </div>
 </div>
