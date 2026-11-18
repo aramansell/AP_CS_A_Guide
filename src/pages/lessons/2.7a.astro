@@ -19,14 +19,14 @@ const body = `<h1>2.7a — Character Creator: StatBlock</h1>
 </p>
 
 <div class="callout">
-    <strong>Starting files.</strong> If your own <code>Dice.java</code> never passed
-    <code>DiceCheck</code> in Unit 1.7, download the complete reference
-    <a href="../data/Dice.java" download>Dice.java</a> and use it instead — then read
-    every method until you could write it yourself. And to start the build itself,
-    download the scaffold
-    <a href="../data/Character.java" download>Character.java</a>: it has every field
-    and every method stubbed, so <code>CharacterCheck.java</code> compiles from the
-    first minute. Fill in the <code>TODO</code> bodies as the three days go by.
+    <strong>Design-First Workflow (One-Shot Challenge):</strong> If your own <code>Dice.java</code>
+    never passed <code>DiceCheck</code> in Unit 1.7, download the complete reference
+    <a href="../data/Dice.java" download>Dice.java</a> and use it instead — then read every method
+    until you could write it yourself. To start today's build, download the scaffold
+    <a href="../data/Character.java" download>Character.java</a>: it has every field, method
+    stub, and a built-in <strong>Character Creator Sandbox</strong> in <code>main()</code> so you
+    can test live with <code>javac Dice.java Character.java &amp;&amp; java Character</code> before
+    unlocking <code>CharacterCheck.java</code> at the bottom of the page.
 </div>
 
 <!-- ============================================================ -->
@@ -47,50 +47,29 @@ const body = `<h1>2.7a — Character Creator: StatBlock</h1>
 
     <h3>The Setup</h3>
 
-    <p>Three files. You write the first one (or start from the scaffold above):</p>
+    <p>Two starter files plus your own scratch tester:</p>
     <ol>
         <li>
-            <code>Character.java</code> — the character. This is today's build. Start
-            from scratch, or download the
+            <code>Character.java</code> — the character. Download the
             <a href="../data/Character.java" download>Character.java scaffold</a>
-            and fill in its TODOs.
+            and fill in its methods.
         </li>
         <li>
-            <code>Dice.java</code> — your engine from 1.7, in the same folder.
-            If yours never passed the acceptance test, use the reference
-            <a href="../data/Dice.java" download>Dice.java</a> above.
-        </li>
-        <li>
-            <a href="../data/CharacterCheck.java" download>CharacterCheck.java</a> —
-            the acceptance test. Download it; you do not write it.
+            <code>Dice.java</code> — your engine from 1.7, in the same folder (or the reference
+            <a href="../data/Dice.java" download>Dice.java</a> above).
         </li>
     </ol>
     <p>
-        You will also want a <code>CharacterTester.java</code> with a <code>main</code>
-        method for your own experiments. That file is yours — nothing tests it.
+        You can test directly with the sandbox <code>main()</code> inside <code>Character.java</code>
+        (or create your own <code>CharacterTester.java</code> for extra experiments):
     </p>
-
-    <h3>How to Run the Acceptance Test</h3>
-
+    <pre><code>javac Dice.java Character.java
+java Character</code></pre>
     <p>
-        Download <a href="../data/CharacterCheck.java" download>CharacterCheck.java</a>,
-        put it beside your <code>Character.java</code> and <code>Dice.java</code>, and
-        from a terminal in that folder run:
-    </p>
-    <pre><code>javac Dice.java Character.java CharacterCheck.java
-java CharacterCheck</code></pre>
-    <p>
-        The first command compiles all three files together. The second runs the tests
-        and prints a <code>PASS</code> or <code>FAIL</code> for every check. The last
-        line counts them:
-    </p>
-    <pre><code>44 passed, 0 failed
-Your Character class meets the spec.</code></pre>
-    <p>
-        You cannot pass all of these until you have built every method in 2.7a, 2.7b,
-        and 2.7c — so expect <code>FAIL</code> lines at the start, and expect the test
-        not to compile until every method exists. Run it again after each method you
-        finish and watch the failures shrink. The
+        Once your <code>2.7a</code> methods work cleanly in the sandbox (and you complete the Guided
+        Design questions below), you can unlock <code>CharacterCheck.java</code> at the bottom of
+        the page to verify your progress—note that all <strong>44 checks</strong> won't pass until
+        you finish <code>2.7b</code> and <code>2.7c</code>. The
         <a href="../docs/unit-02/character-creator.html">full Character Creator guide</a>
         walks through the setup in more detail.
     </p>

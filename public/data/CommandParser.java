@@ -3,17 +3,9 @@ import java.util.Scanner;
 /**
  * CommandParser.java — starter stub & playable battle sandbox for Lesson 3.4.
  *
- * TRY YOUR CODE INTERACTIVELY (Sandbox Battle Loop):
+ * TRY YOUR CODE INTERACTIVELY (Sandbox Battle Loop) BEFORE UNLOCKING CommandParserCheck:
  *   javac CommandParser.java
  *   java CommandParser
- *
- * RUN THE AUTOMATED ACCEPTANCE TESTS:
- *   javac CommandParser.java CommandParserCheck.java
- *   java CommandParserCheck        (runs all 4 parts)
- *   java CommandParserCheck 1      (runs only Part 1)
- *   java CommandParserCheck 2      (runs only Part 2)
- *   java CommandParserCheck 3      (runs only Part 3)
- *   java CommandParserCheck 4      (runs only Part 4)
  */
 public class CommandParser {
 
@@ -102,26 +94,41 @@ public class CommandParser {
     // YOUR BUILD — IMPLEMENT PARTS 1 THROUGH 4 BELOW
     // =========================================================================
 
-    // Part 1
+    /**
+     * Part 1: Null-safe, case-sensitive equality check between two command/target strings.
+     */
     public static boolean isSameCommand(String input, String target) {
         return false;
     }
 
-    // Part 2
+    /**
+     * Part 2a: Returns the action verb before the first space (or the full command if no space),
+     * or "" when {@code rawCommand} is null or empty.
+     */
     public static String extractVerb(String rawCommand) {
         return "";
     }
 
+    /**
+     * Part 2b: Returns the target text strictly after the first space, or "" when
+     * {@code rawCommand} is null, empty, or contains no space.
+     */
     public static String extractTarget(String rawCommand) {
         return "";
     }
 
-    // Part 3
+    /**
+     * Part 3: Uses {@code compareTo} to return whichever of {@code nameA} or {@code nameB}
+     * comes first alphabetically (returns {@code nameA} on tie).
+     */
     public static String firstInTurnOrder(String nameA, String nameB) {
         return "";
     }
 
-    // Part 4
+    /**
+     * Part 4: Parses {@code rawCommand}, mutates hero/enemy state according to the combat
+     * table, and returns the action outcome code (-1 invalid, 0 fizzle, damage/heal, or 99 flee).
+     */
     public static int resolveCombatTurn(String rawCommand, Enemy[] roster) {
         return 0;
     }

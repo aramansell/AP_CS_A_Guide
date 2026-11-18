@@ -4,42 +4,41 @@ import Lesson from '../../layouts/LessonLayout.astro';
 const body = `<h1>3.4 — Comparing Objects &amp; The CommandParser Battle Build</h1>
 
 <p>
-    <strong>CED Topic 2.6 · 90-Minute Unified Build.</strong> Today you will build the command
-    and combat engine for a multi-enemy dungeon encounter in <code>CommandParser.java</code>.
-    Your Hero starts with <strong>60 HP, 25 Mana, and 2 Potions</strong> facing an array of three
-    enemies: a <code>goblin</code> (20 HP), a <code>skeleton</code> (25 HP), and an armored
-    <code>boss</code> (45 HP).
+    <strong>CED Topic 2.6 · 90-Minute Design-First Build.</strong> Today you will design and build
+    the command parser and combat engine for a multi-enemy dungeon encounter in
+    <code>CommandParser.java</code>. Your Hero starts with <strong>60 HP, 25 Mana, and 2
+    Potions</strong> facing an array of three enemies: a <code>goblin</code> (20 HP), a
+    <code>skeleton</code> (25 HP), and an armored <code>boss</code> (45 HP).
 </p>
 
 <div class="callout">
-    <strong>Starting Files (Download Both):</strong>
+    <strong>Design-First Workflow (One-Shot Challenge):</strong>
     <ul>
         <li>
-            <a href="../data/CommandParser.java" download>CommandParser.java</a> —
-            starter stub containing the <code>Enemy</code> class, starting Hero stats, the
-            <code>Enemy[] enemies</code> array, two roster-search helpers (<code>findEnemy</code>
-            and <code>firstLivingEnemy</code>), an interactive battle loop in <code>main</code>,
-            and bare-minimum stubs for the 5 methods you will write.
-        </li>
-        <li>
-            <a href="../data/CommandParserCheck.java" download>CommandParserCheck.java</a> —
-            automated AP-style test suite (38 checks across 4 parts).
+            <a href="../data/CommandParser.java" download>CommandParser.java</a> — starter stub
+            containing the <code>Enemy</code> class, Hero stats, <code>Enemy[] enemies</code>,
+            provided roster helpers (<code>findEnemy</code> and <code>firstLivingEnemy</code>),
+            an interactive battle loop in <code>main()</code>, and stubs for your 5 methods.
         </li>
     </ul>
     <p style="margin-top:0.5rem; margin-bottom:0.25rem;">
-        <strong>Two Ways to Run Your Code:</strong>
+        <strong>How to work today:</strong>
     </p>
-    <pre><code># 1. Play the interactive battle sandbox (test commands &amp; see live trace output):
-javac CommandParser.java
-java CommandParser
-
-# 2. Run the automated check suite (all parts, or one part at a time!):
-javac CommandParser.java CommandParserCheck.java
-java CommandParserCheck 1    # test only Part 1
-java CommandParserCheck 2    # test only Part 2
-java CommandParserCheck 3    # test only Part 3
-java CommandParserCheck 4    # test only Part 4
-java CommandParserCheck      # run all 38 checks</code></pre>
+    <ol style="margin-bottom:0.5rem;">
+        <li><strong>Design before coding:</strong> Answer the Guided Design questions for each part
+            to avoid String <code>==</code> traps, null crashes, <code>indexOf(" ") == -1</code>
+            crashes, and <code>compareTo == -1</code> bugs.</li>
+        <li><strong>Draft &amp; battle in the sandbox:</strong> Copy each method into
+            <code>CommandParser.java</code> and fight the encounter live in your terminal:</li>
+    </ol>
+    <pre><code>javac CommandParser.java
+java CommandParser</code></pre>
+    <p style="margin-top:0.4rem; margin-bottom:0;">
+        <strong>Step 3 (One-Shot Pass):</strong> Once you can play a full battle cleanly (testing
+        <code>attack</code>, <code>cast</code>, <code>drink potion</code>, <code>defend</code>, and
+        invalid commands), unlock <code>CommandParserCheck.java</code> below and aim to pass all
+        <strong>38 checks</strong> on your very first run.
+    </p>
 </div>
 
 <!-- ============================================================ -->
@@ -52,382 +51,217 @@ java CommandParserCheck      # run all 38 checks</code></pre>
     <h3>Read First: How Player Stats &amp; the <code>Enemy[]</code> Roster Work</h3>
 
     <p>
-        Open <code>CommandParser.java</code> and read the top half of the file before writing any code.
-        Even though we cover custom classes in Unit 5 and arrays in Unit 6, you can already read how
-        the encounter state is organized:
+        Open <code>CommandParser.java</code> and read the top half of the file before writing code:
     </p>
-
     <ul>
-        <li>
-            <strong>The <code>Enemy</code> Object Blueprint:</strong> Each enemy has four fields:
-            <code>e.name</code> (<code>String</code>), <code>e.hp</code> and <code>e.maxHp</code>
-            (<code>int</code>), <code>e.attackDamage</code> (<code>int</code>), and
-            <code>e.armored</code> (<code>boolean</code>).
-        </li>
-        <li>
-            <strong>Hero State Variables:</strong> <code>playerHp = 60</code>,
+        <li><strong><code>Enemy</code> Fields:</strong> <code>e.name</code>, <code>e.hp</code>,
+            <code>e.maxHp</code>, <code>e.attackDamage</code>, and <code>e.armored</code>.</li>
+        <li><strong>Hero State Variables:</strong> <code>playerHp = 60</code>,
             <code>maxHp = 60</code>, <code>mana = 25</code>, <code>potions = 2</code>, and
-            <code>isShielded = false</code>.
-        </li>
-        <li>
-            <strong>The <code>Enemy[] enemies</code> Roster &amp; Helpers:</strong> Look at the two
-            provided helper methods right above your stubs:
-            <ul>
-                <li><code>findEnemy(Enemy[] roster, String targetName)</code> loops through
-                    <code>roster</code> and returns the living enemy (<code>e.hp &gt; 0</code>) whose
-                    <code>e.name</code> matches <code>targetName</code> — by calling
-                    <strong>your <code>isSameCommand</code> method</strong>!</li>
-                <li><code>firstLivingEnemy(Enemy[] roster)</code> loops through <code>roster</code>
-                    and returns the living enemy whose name comes first alphabetically — by calling
-                    <strong>your <code>firstInTurnOrder</code> method</strong>!</li>
-            </ul>
-        </li>
+            <code>isShielded = false</code>.</li>
+        <li><strong>Provided Roster Helpers:</strong> <code>findEnemy(roster, targetName)</code>
+            calls your <code>isSameCommand</code>, and <code>firstLivingEnemy(roster)</code> calls
+            your <code>firstInTurnOrder</code>.</li>
     </ul>
 </div>
 
 <!-- ============================================================ -->
 <div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Part 1 · Discovery &amp; Build</span>
+        <span class="activity-label">Part 1 · Reference vs. Value Equality</span>
         <span class="activity-time">~20 min</span>
     </div>
 
     <h3>Part 1: <code>isSameCommand(String input, String target)</code></h3>
 
-    <p>
-        Primitives (<code>int</code>, <code>double</code>, <code>boolean</code>) store their raw value
-        directly in the variable, so <code>==</code> compares their values. Objects like
-        <code>String</code> store a <strong>memory reference</strong> (an address on the heap).
-        Using <code>==</code> on two <code>String</code> variables asks:
-        <em>"Are these two variables pointing at the exact same object in memory?"</em>
-    </p>
-
-    <div class="bug-hunt">
-        <h3>Discovery Trap 1: Why <code>==</code> Breaks <code>findEnemy</code> in the Real Game</h3>
+    <div class="design-context">
+        <h4>What This Function Does &amp; Why It Exists</h4>
         <p>
-            Before writing your real solution, put this one-line body inside
-            <code>isSameCommand</code> in <code>CommandParser.java</code> and run
-            <code>java CommandParserCheck 1</code>:
+            Primitives compare raw values with <code>==</code>, whereas <code>String</code>
+            variables hold memory references. When a player types <code>"attack goblin"</code>,
+            <code>extractTarget</code> creates a brand-new heap <code>String</code> via
+            <code>substring</code>. Using <code>==</code> would say that new <code>"goblin"</code>
+            does not match the <code>"goblin"</code> literal inside <code>enemies</code>!
         </p>
-        <pre><code>public static boolean isSameCommand(String input, String target) {
-    return input == target;
-}</code></pre>
+        <h4>Specification</h4>
+        <ul class="param-list">
+            <li>Returns <code>true</code> iff both <code>input</code> and <code>target</code> are
+                non-null and contain identical characters (case-sensitive); <code>false</code>
+                otherwise.</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Guided Program Design: <code>isSameCommand</code></h3>
+        <p>Reason through reference equality and null safety:</p>
         <ol>
-            <li>Look at the Part 1 output from <code>java CommandParserCheck 1</code>. Why did
-                <code>isSameCommand("attack", "attack")</code> PASS with <code>==</code>, while
-                <code>findEnemy</code> FAILED to match the living <code>"goblin"</code> when
-                <code>targetName</code> came from <code>"attack goblin".substring(7)</code>?</li>
-            <li>Now change <code>return input == target;</code> to
-                <code>return input.equals(target);</code> and re-run
-                <code>java CommandParserCheck 1</code>. The heap substring check passes, but the
-                <code>null</code> checks crash with <code>NullPointerException</code>! Why does
-                <code>input != null &amp;&amp; target != null &amp;&amp; input.equals(target)</code>
-                prevent the crash, whereas putting <code>input != null</code> <em>after</em>
-                <code>input.equals(target)</code> still crashes?</li>
+            <li><strong><code>==</code> vs. <code>.equals</code> &amp; Short-Circuit Null Guard:</strong>
+                Why can <code>"attack" == "attack"</code> evaluate to <code>true</code> while
+                <code>"attack goblin".substring(7) == "goblin"</code> evaluates to
+                <code>false</code>? And why must <code>input != null &amp;&amp; target != null</code>
+                come <em>before</em> <code>input.equals(target)</code>?</li>
         </ol>
     </div>
 
-    <h4>AP Specification — <code>isSameCommand</code></h4>
-    <ul>
-        <li><strong>Signature:</strong> <code>public static boolean isSameCommand(String input, String target)</code></li>
-        <li><strong>Behavior:</strong> Returns <code>true</code> if and only if both <code>input</code>
-            and <code>target</code> are non-null and contain the exact same sequence of characters
-            (case-sensitive). Returns <code>false</code> if either parameter is <code>null</code> or
-            their characters differ.</li>
-    </ul>
-    <p>
-        Fix <code>isSameCommand</code> and run <code>java CommandParserCheck 1</code> until all
-        <strong>9 checks in Part 1</strong> report <code>PASS</code>.
-    </p>
+    <div class="tinker">
+        <h3>Draft &amp; Test in <code>CommandParser.java</code></h3>
+        <ol>
+            <li>Write your <code>isSameCommand</code> method body and copy it into
+                <code>CommandParser.java</code>?</li>
+        </ol>
+    </div>
 </div>
 
 <!-- ============================================================ -->
 <div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Part 2 · Discovery &amp; Build</span>
+        <span class="activity-label">Part 2 · Substring &amp; indexOf Parsing</span>
         <span class="activity-time">~20 min</span>
     </div>
 
     <h3>Part 2: <code>extractVerb(String rawCommand)</code> &amp; <code>extractTarget(String rawCommand)</code></h3>
 
-    <p>
-        When you type a command like <code>"attack goblin"</code> or <code>"cast fireball"</code> in
-        <code>java CommandParser</code>, the engine needs to split the line at the first space
-        (<code>" "</code>) into two pieces:
-    </p>
-    <ul>
-        <li><strong>Verb:</strong> the action word before the space (e.g., <code>"attack"</code>,
-            <code>"cast"</code>, <code>"drink"</code>, or a single-word command like
-            <code>"defend"</code> or <code>"flee"</code>).</li>
-        <li><strong>Target:</strong> the word after the space (e.g., <code>"goblin"</code>,
-            <code>"fireball"</code>, <code>"potion"</code>, or <code>""</code> if the command is a
-            single word with no space).</li>
-    </ul>
-
-    <div class="bug-hunt">
-        <h3>Discovery Trap 2: The Single-Word Crash &amp; The Leading-Space Bug</h3>
+    <div class="design-context">
+        <h4>What These Functions Do &amp; Why They Exist</h4>
         <p>
-            A student writes these two implementations assuming every command has a space:
+            Splits user input at the first space (<code>" "</code>) into an action verb
+            (<code>"attack"</code>, <code>"cast"</code>, or single-word <code>"defend"</code>) and
+            an optional target (<code>"goblin"</code>, <code>"fireball"</code>, or <code>""</code>
+            when there is no space).
         </p>
-        <pre><code>// Naive attempt — two hidden bugs!
-public static String extractVerb(String rawCommand) {
-    int space = rawCommand.indexOf(" ");
-    return rawCommand.substring(0, space);
-}
+        <h4>Specification</h4>
+        <ul class="param-list">
+            <li>If <code>rawCommand == null || rawCommand.length() == 0</code>, both return <code>""</code>.</li>
+            <li>If <code>int space = rawCommand.indexOf(" ");</code> is <code>&gt;= 0</code>:
+                <code>extractVerb</code> returns <code>substring(0, space)</code>;
+                <code>extractTarget</code> returns the substring strictly after the space.</li>
+            <li>If <code>space == -1</code>: <code>extractVerb</code> returns <code>rawCommand</code>;
+                <code>extractTarget</code> returns <code>""</code>.</li>
+        </ul>
+    </div>
 
-public static String extractTarget(String rawCommand) {
-    int space = rawCommand.indexOf(" ");
-    return rawCommand.substring(space);
-}</code></pre>
+    <div class="socratic">
+        <h3>Guided Program Design: <code>extractVerb</code> &amp; <code>extractTarget</code></h3>
+        <p>Catch the two classic parsing bugs before coding:</p>
         <ol>
-            <li>When a player types a single-word command like <code>"defend"</code> or
-                <code>"flee"</code>, what integer does <code>rawCommand.indexOf(" ")</code> return,
-                and what happens when <code>rawCommand.substring(0, space)</code> executes?</li>
-            <li>For <code>"attack goblin"</code>, <code>space</code> is <code>6</code>. Why does
-                <code>rawCommand.substring(space)</code> cause <code>findEnemy(enemies, target)</code>
-                to return <code>null</code> (failing to find <code>"goblin"</code> in the
-                <code>enemies</code> array), and how do you fix the starting index?</li>
+            <li><strong>Missing Space &amp; Off-by-One Space Index:</strong> What does
+                <code>rawCommand.indexOf(" ")</code> return on a single-word command like
+                <code>"defend"</code>, and what crashes if you pass that to
+                <code>substring</code> without checking <code>space == -1</code>? Also, in
+                <code>"attack goblin"</code>, why does <code>rawCommand.substring(space)</code> fail
+                to match <code>"goblin"</code>, and what starting index fixes it?</li>
         </ol>
     </div>
 
-    <h4>AP Specification — <code>extractVerb</code> &amp; <code>extractTarget</code></h4>
-    <ul>
-        <li><strong>Signatures:</strong>
-            <ul>
-                <li><code>public static String extractVerb(String rawCommand)</code></li>
-                <li><code>public static String extractTarget(String rawCommand)</code></li>
-            </ul>
-        </li>
-        <li><strong>Null / Empty Guard:</strong> If <code>rawCommand</code> is <code>null</code> or
-            <code>rawCommand.length() == 0</code>, both methods must return <code>""</code>.</li>
-        <li><strong>When a space exists</strong> (<code>int space = rawCommand.indexOf(" ");</code> is
-            <code>&gt;= 0</code>):
-            <ul>
-                <li><code>extractVerb</code> returns the substring before the first space.</li>
-                <li><code>extractTarget</code> returns the substring after the first space.</li>
-            </ul>
-        </li>
-        <li><strong>When no space exists</strong> (<code>space == -1</code>):
-            <ul>
-                <li><code>extractVerb</code> returns <code>rawCommand</code> in full.</li>
-                <li><code>extractTarget</code> returns <code>""</code>.</li>
-            </ul>
-        </li>
-    </ul>
-    <p>
-        Implement both methods and run <code>java CommandParserCheck 2</code> until all
-        <strong>10 checks in Part 2</strong> pass. Then try running <code>java CommandParser</code>
-        and type <code>attack goblin</code> — you will see your live <code>[Trace]</code> line match
-        <code>goblin</code> in the roster!
-    </p>
+    <div class="tinker">
+        <h3>Draft &amp; Test in <code>CommandParser.java</code></h3>
+        <ol>
+            <li>Write both <code>extractVerb</code> and <code>extractTarget</code>, copy them into
+                <code>CommandParser.java</code>, and test typing <code>attack goblin</code> in
+                <code>java CommandParser</code> to inspect the <code>[Trace]</code> line?</li>
+        </ol>
+    </div>
 </div>
 
 <!-- ============================================================ -->
 <div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Part 3 · Discovery &amp; Build</span>
+        <span class="activity-label">Part 3 · Dictionary Ordering with compareTo</span>
         <span class="activity-time">~15 min</span>
     </div>
 
     <h3>Part 3: <code>firstInTurnOrder(String nameA, String nameB)</code></h3>
 
-    <p>
-        Look at <code>firstLivingEnemy(Enemy[] roster)</code> in <code>CommandParser.java</code>.
-        Both your spells and the enemy counter-attack phase need to know which living enemy in the
-        <code>enemies</code> array comes first in alphabetical turn order. For ordering,
-        <code>String</code> provides <code>a.compareTo(b)</code>:
-    </p>
-    <ul>
-        <li>Returns a <strong>negative integer</strong> (<code>&lt; 0</code>) if <code>a</code> comes
-            <em>before</em> <code>b</code> in Unicode (dictionary) order.</li>
-        <li>Returns <strong><code>0</code></strong> if <code>a</code> and <code>b</code> are equal.</li>
-        <li>Returns a <strong>positive integer</strong> (<code>&gt; 0</code>) if <code>a</code> comes
-            <em>after</em> <code>b</code>.</li>
-    </ul>
-
-    <div class="bug-hunt">
-        <h3>Discovery Trap 3: The <code>compareTo == -1</code> Myth &amp; ASCII Case Order</h3>
+    <div class="design-context">
+        <h4>What This Function Does &amp; Why It Exists</h4>
         <p>
-            A classic mistake is assuming <code>compareTo</code> only returns <code>-1</code>,
-            <code>0</code>, or <code>1</code>, and writing:
+            Powers <code>firstLivingEnemy(roster)</code> so spells and counterattacks target living
+            enemies in alphabetical turn order using <code>a.compareTo(b)</code> (negative when
+            <code>a</code> comes first, <code>0</code> when equal, positive when <code>a</code>
+            comes after).
         </p>
-        <pre><code>// Broken check — why does this fail on ("goblin", "skeleton")?
-if (nameA.compareTo(nameB) == -1) {
-    return nameA;
-}</code></pre>
+    </div>
+
+    <div class="socratic">
+        <h3>Guided Program Design: <code>firstInTurnOrder</code></h3>
+        <p>Avoid the classic <code>compareTo</code> myth:</p>
         <ol>
-            <li>When Java compares <code>"goblin".compareTo("skeleton")</code>, it subtracts the
-                Unicode values of the first differing characters: <code>'g' - 's'</code>
-                (<code>103 - 115</code>). What exact integer does
-                <code>"goblin".compareTo("skeleton")</code> return, and why did <code>== -1</code>
-                fail in <code>CommandParserCheck</code>?</li>
-            <li>In Unicode, uppercase letters (<code>'A'</code>–<code>'Z'</code>) have codes
-                <code>65</code>–<code>90</code>, while lowercase letters (<code>'a'</code>–<code>'z'</code>)
-                have codes <code>97</code>–<code>122</code>. Between <code>"goblin"</code> and
-                <code>"Boss"</code>, which string does <code>compareTo</code> say comes first, and why?</li>
+            <li><strong><code>compareTo</code> Sign vs. <code>-1</code> &amp; Case Order:</strong>
+                What integer does <code>"goblin".compareTo("skeleton")</code> return, and why does
+                testing <code>compareTo(...) == -1</code> fail instead of <code>&lt;= 0</code>? Also,
+                between <code>"goblin"</code> and <code>"Boss"</code>, which comes first in Unicode?</li>
         </ol>
     </div>
 
-    <h4>AP Specification — <code>firstInTurnOrder</code></h4>
-    <ul>
-        <li><strong>Signature:</strong> <code>public static String firstInTurnOrder(String nameA, String nameB)</code></li>
-        <li><strong>Precondition:</strong> <code>nameA</code> and <code>nameB</code> are non-null.</li>
-        <li><strong>Behavior:</strong> Returns whichever of <code>nameA</code> or <code>nameB</code>
-            comes first using <code>compareTo</code>. If they are equal, returns <code>nameA</code>.</li>
-    </ul>
-    <p>
-        Implement <code>firstInTurnOrder</code> and run <code>java CommandParserCheck 3</code> until
-        all <strong>7 checks in Part 3</strong> (including <code>firstLivingEnemy(roster)</code>) pass.
-    </p>
+    <div class="tinker">
+        <h3>Draft &amp; Test in <code>CommandParser.java</code></h3>
+        <ol>
+            <li>Write your <code>firstInTurnOrder</code> method body and copy it into
+                <code>CommandParser.java</code>?</li>
+        </ol>
+    </div>
 </div>
 
 <!-- ============================================================ -->
 <div class="activity rpg">
     <div class="activity-header">
-        <span class="activity-label">Part 4 · AP Synthesis Build</span>
+        <span class="activity-label">Part 4 · AP Synthesis: Full Combat Turn Resolver</span>
         <span class="activity-time">~30 min</span>
     </div>
 
     <h3>Part 4: <code>resolveCombatTurn(String rawCommand, Enemy[] roster)</code></h3>
 
-    <p>
-        Now connect your parser to the Hero's stats (<code>playerHp</code>, <code>maxHp</code>,
-        <code>mana</code>, <code>potions</code>, <code>isShielded</code>) and the
-        <code>Enemy[] roster</code>! Inside <code>resolveCombatTurn</code>, call your own
-        <code>extractVerb</code>, <code>extractTarget</code>, <code>isSameCommand</code>, and the
-        provided <code>findEnemy</code> / <code>firstLivingEnemy</code> helpers.
-    </p>
-
-    <h4>Combat Action Specification Table</h4>
-    <table>
-        <tr>
-            <th>Verb</th>
-            <th>Target &amp; Preconditions</th>
-            <th>Effect on Hero &amp; <code>Enemy[] roster</code></th>
-            <th>Return Value</th>
-        </tr>
-        <tr>
-            <td><code>null</code> or <code>""</code></td>
-            <td>Command is <code>null</code> or <code>extractVerb</code> is <code>""</code></td>
-            <td>No state changes</td>
-            <td><code>-1</code></td>
-        </tr>
-        <tr>
-            <td><code>"attack"</code></td>
-            <td>Find target via <code>Enemy e = findEnemy(roster, target);</code><br/>
-                If <code>e == null</code> (missing name, unknown enemy, or <code>0</code> HP), invalid!</td>
-            <td>
-                If <code>e == null</code>: no changes.<br/>
-                Otherwise compute damage:<br/>
-                • Unarmored (<code>!e.armored</code>): <strong>12</strong> dmg<br/>
-                • Armored + Shielded (<code>e.armored &amp;&amp; isShielded</code>): shield-bash pierces armor for <strong>15</strong> dmg<br/>
-                • Armored + Unshielded (<code>e.armored &amp;&amp; !isShielded</code>): armor blocks half, dealing <strong>6</strong> dmg<br/>
-                Subtract damage from <code>e.hp</code> (if <code>e.hp &lt; 0</code>, set <code>e.hp = 0</code>).
-            </td>
-            <td><code>-1</code> if <code>e == null</code>, else damage dealt (<code>12</code>, <code>15</code>, or <code>6</code>)</td>
-        </tr>
-        <tr>
-            <td><code>"cast"</code></td>
-            <td>Target is <code>""</code> (missing spell name)</td>
-            <td>No state changes</td>
-            <td><code>-1</code></td>
-        </tr>
-        <tr>
-            <td><code>"cast"</code></td>
-            <td>Target is <code>"heal"</code> (costs <strong>5</strong> mana)</td>
-            <td>
-                If <code>mana &lt; 5</code>: fizzles (no state changes).<br/>
-                If <code>mana &gt;= 5</code>: subtract <code>5</code> from <code>mana</code>, add <code>20</code> to <code>playerHp</code> (cap at <code>maxHp</code>).
-            </td>
-            <td><code>20</code> if cast, else <code>0</code></td>
-        </tr>
-        <tr>
-            <td><code>"cast"</code></td>
-            <td>Target is <code>"fireball"</code> (costs <strong>10</strong> mana, hits <code>firstLivingEnemy(roster)</code>)</td>
-            <td>
-                Let <code>Enemy t = firstLivingEnemy(roster);</code><br/>
-                If <code>mana &lt; 10 || t == null</code>: fizzles (no changes).<br/>
-                Otherwise: subtract <code>10</code> from <code>mana</code>, subtract <code>25</code> from <code>t.hp</code> (clamp at <code>0</code>).
-            </td>
-            <td><code>25</code> if cast, else <code>0</code></td>
-        </tr>
-        <tr>
-            <td><code>"cast"</code></td>
-            <td>Any other spell where <code>target.compareTo("m") &lt; 0</code> (Arcane spell, e.g. <code>"blizzard"</code>; costs <strong>8</strong> mana)</td>
-            <td>
-                Let <code>Enemy t = firstLivingEnemy(roster);</code><br/>
-                If <code>mana &lt; 8 || t == null</code>: fizzles.<br/>
-                Otherwise: subtract <code>8</code> from <code>mana</code>, subtract <code>18</code> from <code>t.hp</code> (clamp at <code>0</code>).
-            </td>
-            <td><code>18</code> if cast, else <code>0</code></td>
-        </tr>
-        <tr>
-            <td><code>"cast"</code></td>
-            <td>Any other spell where <code>target.compareTo("m") &gt;= 0</code> (Mystic spell, e.g. <code>"thunder"</code>; costs <strong>12</strong> mana)</td>
-            <td>
-                Let <code>Enemy t = firstLivingEnemy(roster);</code><br/>
-                If <code>mana &lt; 12 || t == null</code>: fizzles.<br/>
-                Otherwise: subtract <code>12</code> from <code>mana</code>, subtract <code>22</code> from <code>t.hp</code> (clamp at <code>0</code>).
-            </td>
-            <td><code>22</code> if cast, else <code>0</code></td>
-        </tr>
-        <tr>
-            <td><code>"drink"</code></td>
-            <td>Target must be <code>"potion"</code> (any other target is invalid)</td>
-            <td>
-                If target is not <code>"potion"</code>: return <code>-1</code>.<br/>
-                If <code>potions &lt;= 0</code>: fizzles (return <code>0</code>).<br/>
-                Otherwise: subtract <code>1</code> from <code>potions</code>, add <code>25</code> to <code>playerHp</code> (cap at <code>maxHp</code>), add <code>10</code> to <code>mana</code>.
-            </td>
-            <td><code>-1</code> if bad target, <code>0</code> if out of potions, else <code>25</code></td>
-        </tr>
-        <tr>
-            <td><code>"defend"</code></td>
-            <td>Target must be <code>""</code> (if non-empty, return <code>-1</code>)</td>
-            <td>Set <code>isShielded = true</code> and add <code>5</code> to <code>mana</code>.</td>
-            <td><code>5</code> (or <code>-1</code> if target non-empty)</td>
-        </tr>
-        <tr>
-            <td><code>"flee"</code></td>
-            <td>Target must be <code>""</code> (if non-empty, return <code>-1</code>)</td>
-            <td>Signals the battle loop to flee the encounter.</td>
-            <td><code>99</code> (or <code>-1</code> if target non-empty)</td>
-        </tr>
-        <tr>
-            <td>Any other verb</td>
-            <td>Unknown command</td>
-            <td>No state changes</td>
-            <td><code>-1</code></td>
-        </tr>
-    </table>
+    <div class="design-context">
+        <h4>Combat Action Specification Table</h4>
+        <table>
+            <tr><th>Verb</th><th>Target &amp; Preconditions</th><th>Effect on Hero &amp; <code>Enemy[] roster</code></th><th>Return</th></tr>
+            <tr><td><code>null</code> / <code>""</code></td><td>Command null or verb <code>""</code></td><td>No changes</td><td><code>-1</code></td></tr>
+            <tr><td><code>"attack"</code></td><td><code>Enemy e = findEnemy(roster, target);</code> (<code>e == null</code> &rarr; <code>-1</code>)</td><td>Unarmored: 12; Armored+Shielded: 15; Armored+Unshielded: 6. Clamp <code>e.hp &gt;= 0</code>.</td><td>damage or <code>-1</code></td></tr>
+            <tr><td><code>"cast"</code></td><td>Target <code>""</code></td><td>No changes</td><td><code>-1</code></td></tr>
+            <tr><td><code>"cast"</code></td><td><code>"heal"</code> (5 mana)</td><td>If mana &lt; 5 fizzle (0); else <code>mana -= 5</code>, <code>playerHp += 20</code> (cap <code>maxHp</code>).</td><td><code>20</code> or <code>0</code></td></tr>
+            <tr><td><code>"cast"</code></td><td><code>"fireball"</code> (10 mana, hits <code>firstLivingEnemy(roster)</code>)</td><td>If <code>mana &lt; 10 || t == null</code> fizzle (0); else <code>mana -= 10</code>, <code>t.hp -= 25</code> (clamp 0).</td><td><code>25</code> or <code>0</code></td></tr>
+            <tr><td><code>"cast"</code></td><td>Other spell with <code>target.compareTo("m") &lt; 0</code> (8 mana)</td><td>If <code>mana &lt; 8 || t == null</code> fizzle (0); else <code>mana -= 8</code>, <code>t.hp -= 18</code> (clamp 0).</td><td><code>18</code> or <code>0</code></td></tr>
+            <tr><td><code>"cast"</code></td><td>Other spell with <code>target.compareTo("m") &gt;= 0</code> (12 mana)</td><td>If <code>mana &lt; 12 || t == null</code> fizzle (0); else <code>mana -= 12</code>, <code>t.hp -= 22</code> (clamp 0).</td><td><code>22</code> or <code>0</code></td></tr>
+            <tr><td><code>"drink"</code></td><td>Target must be <code>"potion"</code></td><td>Bad target &rarr; -1; <code>potions &lt;= 0</code> &rarr; 0; else <code>potions--</code>, <code>playerHp += 25</code> (cap), <code>mana += 10</code>.</td><td><code>25</code> / <code>0</code> / <code>-1</code></td></tr>
+            <tr><td><code>"defend"</code></td><td>Target must be <code>""</code></td><td><code>isShielded = true; mana += 5;</code></td><td><code>5</code> or <code>-1</code></td></tr>
+            <tr><td><code>"flee"</code></td><td>Target must be <code>""</code></td><td>Flee encounter</td><td><code>99</code> or <code>-1</code></td></tr>
+            <tr><td>Other verb</td><td>Unknown command</td><td>No changes</td><td><code>-1</code></td></tr>
+        </table>
+    </div>
 
     <div class="socratic">
-        <h3>Socratic Checkpoint — Ordering Your Branches &amp; Playing the Encounter</h3>
+        <h3>Guided Program Design: <code>resolveCombatTurn</code></h3>
+        <p>Plan branch ordering inside <code>"cast"</code> before writing code:</p>
         <ol>
-            <li>Inside the <code>"cast"</code> branch, why must you check for specific spells
-                (<code>"fireball"</code> and <code>"heal"</code>) <em>before</em> checking
-                <code>target.compareTo("m") &lt; 0</code>? What would happen to
-                <code>"cast fireball"</code> and <code>"cast heal"</code> if the
-                <code>compareTo("m")</code> check came first?</li>
-            <li>Run <code>java CommandParserCheck</code> to verify all 38 checks pass, then play a
-                full fight in <code>java CommandParser</code> until you defeat the <code>goblin</code>,
-                <code>skeleton</code>, and <code>boss</code>. Paste your <code>38 passed, 0 failed</code>
-                line here and describe what sequence of commands you used to defeat the armored
-                <code>boss</code>.</li>
+            <li><strong>Spell Branch Priority:</strong> Inside <code>"cast"</code>, why must you check
+                specific spells (<code>"fireball"</code> and <code>"heal"</code>) <em>before</em>
+                checking <code>target.compareTo("m") &lt; 0</code>? What would happen to
+                <code>"cast fireball"</code> and <code>"cast heal"</code> if
+                <code>compareTo("m")</code> came first?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Draft &amp; Play in <code>CommandParser.java</code></h3>
+        <ol>
+            <li>Write your <code>resolveCombatTurn</code> implementation (or outline its helper
+                calls and branches), copy it into <code>CommandParser.java</code>, and play through
+                a full fight in <code>java CommandParser</code> to defeat the <code>goblin</code>,
+                <code>skeleton</code>, and <code>boss</code> before unlocking
+                <code>CommandParserCheck.java</code> below?</li>
         </ol>
     </div>
 
     <div class="checklist">
         <h3>Done When</h3>
         <ul>
-            <li><code>java CommandParserCheck</code> reports <strong><code>38 passed, 0 failed</code></strong></li>
-            <li>You have played through the encounter using <code>java CommandParser</code></li>
-            <li>You have answered the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+            <li>You played through and won an encounter in <code>java CommandParser</code></li>
+            <li>You unlock <code>CommandParserCheck.java</code> below and aim for <strong><code>38 passed, 0 failed</code></strong> on your first run</li>
+            <li>You have downloaded your <code>.json</code> answers file for Canvas</li>
         </ul>
     </div>
 </div>
 
-<!-- ============================================================ -->
 <div class="resources">
     <h3>Reference Docs</h3>
     <ul>

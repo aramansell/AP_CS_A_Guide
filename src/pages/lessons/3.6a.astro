@@ -4,173 +4,159 @@ import Lesson from '../../layouts/LessonLayout.astro';
 const body = `<h1>3.6 (Day 1) — Combat Engine RPG Build: Attack &amp; Crit Resolver</h1>
 
 <p>
-    <strong>CED Topics 2.1, 2.3, 2.5 · 90-Minute RPG Build (Day 1 of 2).</strong> Your character
-    has ability scores from Unit 2 and a <code>Dice</code> engine from Unit 1. Over the next two
-    days you will build <code>Combat.java</code> — the tactical combat resolver that powers every
-    dungeon fight in your RPG. Today you build Parts 1 and 2 (deterministic strike evaluation and
-    live dice integration); next class (<code>3.6b</code>) you build damage mitigation, shield
-    clamping, and tactical stance rounds.
+    <strong>CED Topics 2.1, 2.3, 2.5 · 90-Minute Design-First RPG Build (Day 1 of 2).</strong> Your
+    character has ability scores from Unit 2 and a <code>Dice</code> engine from Unit 1. Over the
+    next two classes you will build <code>Combat.java</code> — the tactical combat resolver that
+    powers every dungeon fight. Today you design and build Parts 1 and 2 (deterministic strike
+    rules and live dice integration); next class (<code>3.6b</code>) you build damage mitigation
+    and tactical stances.
 </p>
 
 <div class="callout">
-    <strong>Starting Files (Download All Three into the Same Folder):</strong>
+    <strong>Design-First Workflow (Download Both Starter Files):</strong>
     <ul>
         <li>
-            <a href="../data/Combat.java" download>Combat.java</a> — bare-minimum compiling stub
-            for both days of the 3.6 build.
+            <a href="../data/Combat.java" download>Combat.java</a> — starter file with Javadocs,
+            stubs, and a built-in <strong>Tactical Combat Engine Sandbox</strong> in
+            <code>main()</code>.
         </li>
         <li>
-            <a href="../data/CombatCheck.java" download>CombatCheck.java</a> — automated acceptance
-            test suite (32 checks across Parts 1–5).
-        </li>
-        <li>
-            <a href="../data/Dice.java" download>Dice.java</a> — your dice engine from Unit 1.7 (or
-            the reference copy if yours did not pass <code>DiceCheck</code>).
+            <a href="../data/Dice.java" download>Dice.java</a> — your dice engine from Unit 1.7.
         </li>
     </ul>
-    <pre><code>javac Dice.java Combat.java CombatCheck.java
-java CombatCheck</code></pre>
+    <p style="margin-top:0.5rem; margin-bottom:0.25rem;">
+        <strong>How to work today:</strong>
+    </p>
+    <ol style="margin-bottom:0.5rem;">
+        <li><strong>Design before coding:</strong> Answer the Guided Design questions on
+            deterministic rule testing, Natural 1/20 branch priority, and avoiding duplicated logic.</li>
+        <li><strong>Draft &amp; test in the sandbox:</strong> Draft each method below, click
+            <strong>Copy</strong> to paste into <code>Combat.java</code>, and test your combat log
+            with:</li>
+    </ol>
+    <pre><code>javac Dice.java Combat.java
+java Combat</code></pre>
+    <p style="margin-top:0.4rem; margin-bottom:0;">
+        <strong>Step 3 (Day 1 Verification):</strong> Unlock <code>CombatCheck.java</code> below
+        and pass all <strong>14 checks in Parts 1 and 2</strong> on your first run (Parts 3–5 are
+        tomorrow!).
+    </p>
 </div>
 
 <!-- ============================================================ -->
 <div class="activity rpg">
     <div class="activity-header">
-        <span class="activity-label">Part 1 · Discovery &amp; Build</span>
+        <span class="activity-label">Part 1 · Deterministic Rule Evaluation</span>
         <span class="activity-time">~45 min</span>
     </div>
 
     <h3>Part 1: <code>evaluateStrike(int d20Roll, int attackBonus, int targetAC, int baseDamage, boolean canCrit)</code></h3>
 
-    <p>
-        Professional game engines — and AP Computer Science A Free Response questions — separate
-        <strong>random roll generation</strong> from <strong>rule evaluation</strong>. Why? Because
-        if a method rolls a random <code>d20</code> inside itself, you have to run it 100 times
-        just to hope a Natural 1 or Natural 20 shows up! By passing <code>d20Roll</code> and
-        <code>baseDamage</code> as parameters into <code>evaluateStrike</code>, we can test every
-        single edge case deterministically.
-    </p>
-
-    <h4>5e Strike Rules</h4>
-    <ul>
-        <li><strong>When <code>canCrit</code> is <code>true</code> (Players &amp; Bosses):</strong>
-            <ul>
-                <li>A <code>d20Roll</code> of <code>20</code> is a <strong>Critical Hit</strong>:
-                    it automatically hits regardless of <code>attackBonus</code> or
-                    <code>targetAC</code>, and returns <code>baseDamage * 2</code>.</li>
-                <li>A <code>d20Roll</code> of <code>1</code> is a <strong>Critical Miss</strong>:
-                    it automatically misses regardless of <code>attackBonus</code> or
-                    <code>targetAC</code>, and returns <code>0</code>.</li>
-            </ul>
-        </li>
-        <li><strong>Standard Attack (any other roll, OR whenever <code>canCrit</code> is <code>false</code>):</strong>
-            <ul>
-                <li>Compute the total attack roll: <code>d20Roll + attackBonus</code>.</li>
-                <li><strong>"Meets it, beats it":</strong> If the total is greater than or equal to
-                    <code>targetAC</code>, the strike hits and returns <code>baseDamage</code>.</li>
-                <li>Otherwise, the strike misses and returns <code>0</code>.</li>
-            </ul>
-        </li>
-    </ul>
-
-    <div class="bug-hunt">
-        <h3>Discovery Trap 1: The Natural 1 Override Bug (Branch Order Matters!)</h3>
+    <div class="design-context">
+        <h4>What This Function Does &amp; Why It Exists</h4>
         <p>
-            Suppose a Level 15 Paladin has <code>attackBonus = 18</code> and attacks a weak
-            Goblin with <code>targetAC = 10</code>. The Paladin rolls a <strong>Natural 1</strong>
-            on the d20 (<code>d20Roll = 1</code>).
+            Professional game engines—and AP CS A Free Response questions—separate <strong>random
+            dice rolling</strong> from <strong>rule evaluation</strong>. Passing
+            <code>d20Roll</code> and <code>baseDamage</code> as parameters lets us deterministically
+            verify Natural 20 crits, Natural 1 fumbles, and exact AC ties without hoping luck strikes
+            in 100 random runs.
         </p>
-        <pre><code>// Broken branch order — trace what happens when d20Roll = 1, attackBonus = 18, targetAC = 10:
-if (canCrit &amp;&amp; d20Roll == 20) {
-    return baseDamage * 2;
-} else if (d20Roll + attackBonus &gt;= targetAC) {
-    return baseDamage;
-} else if (canCrit &amp;&amp; d20Roll == 1) {
-    return 0;
-}</code></pre>
+        <h4>5e Strike Rules &amp; Parameters</h4>
+        <ul class="param-list">
+            <li><code>canCrit == true</code> (Players &amp; Bosses): <code>d20Roll == 20</code>
+                always hits for <code>baseDamage * 2</code>; <code>d20Roll == 1</code> always misses
+                for <code>0</code> damage, regardless of <code>attackBonus</code> or <code>targetAC</code>.</li>
+            <li>Standard attack (any other roll, or whenever <code>canCrit == false</code>): if
+                <code>d20Roll + attackBonus &gt;= targetAC</code> ("meets it, beats it"), return
+                <code>baseDamage</code>; otherwise return <code>0</code>.</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Guided Program Design: <code>evaluateStrike</code></h3>
+        <p>Think through branch order before writing any <code>if / else if</code>:</p>
         <ol>
-            <li>Trace the code above with <code>evaluateStrike(1, 18, 10, 8, true)</code>. Which
-                branch executes, what value is returned, and why is the <code>d20Roll == 1</code>
-                branch unreachable whenever <code>1 + attackBonus &gt;= targetAC</code>?</li>
-            <li>Now trace <code>evaluateStrike(20, 2, 15, 6, false)</code> (a standard monster
-                with <code>canCrit = false</code> rolling a 20 against AC 15). What must it return,
-                and what would happen if your first branch only checked
-                <code>if (d20Roll == 20)</code> without checking <code>canCrit</code>?</li>
+            <li><strong>Natural 1 vs. Huge Bonus (Branch Order):</strong> Suppose a Level 15 Paladin
+                has <code>attackBonus = 18</code> facing a Goblin with <code>targetAC = 10</code>,
+                and rolls a Natural 1 (<code>d20Roll = 1</code>). Why must the
+                <code>canCrit &amp;&amp; d20Roll == 20</code> and
+                <code>canCrit &amp;&amp; d20Roll == 1</code> branches come <em>before</em>
+                <code>d20Roll + attackBonus &gt;= targetAC</code>?</li>
+            <li><strong>Monster Crit Guard:</strong> If a standard monster with
+                <code>canCrit = false</code>, <code>attackBonus = 2</code>, and
+                <code>targetAC = 15</code> rolls a <code>20</code>, what must
+                <code>evaluateStrike(20, 2, 15, 6, false)</code> return, and what bug happens if
+                you forget <code>canCrit &amp;&amp;</code> in the first branch?</li>
         </ol>
     </div>
 
-    <p>
-        Implement <code>evaluateStrike</code> in <code>Combat.java</code> and run
-        <code>java CombatCheck</code> until all <strong>9 checks in Part 1</strong> report
-        <code>PASS</code>.
-    </p>
+    <div class="tinker">
+        <h3>Draft &amp; Test in <code>Combat.java</code></h3>
+        <ol>
+            <li>Write your complete <code>evaluateStrike</code> method body, copy it into
+                <code>Combat.java</code>, and check Part 1 edge cases in <code>java Combat</code>?</li>
+        </ol>
+    </div>
 </div>
 
 <!-- ============================================================ -->
 <div class="activity rpg">
     <div class="activity-header">
-        <span class="activity-label">Part 2 · RPG Engine Integration</span>
+        <span class="activity-label">Part 2 · Live Dice Integration</span>
         <span class="activity-time">~45 min</span>
     </div>
 
     <h3>Part 2: <code>playerAttack(...)</code> &amp; <code>monsterAttack(...)</code></h3>
 
-    <p>
-        Now connect your deterministic <code>evaluateStrike</code> rule engine to your
-        <code>Dice.java</code> utility class! Because <code>evaluateStrike</code> already knows all
-        the rules for crits, fumbles, and Armor Class, <code>playerAttack</code> and
-        <code>monsterAttack</code> should NOT duplicate that <code>if/else</code> chain — they
-        should roll the dice and call <code>evaluateStrike</code>!
-    </p>
-
-    <h4>AP Specification — <code>playerAttack</code> &amp; <code>monsterAttack</code></h4>
-    <ul>
-        <li><strong>Signatures:</strong>
-            <ul>
-                <li><code>public static int playerAttack(int attackBonus, int targetAC, int damageDie, String targetName)</code></li>
-                <li><code>public static int monsterAttack(int attackBonus, int targetAC, int damageDie, String monsterName)</code></li>
-            </ul>
-        </li>
-        <li><strong>Behavior for <code>playerAttack</code>:</strong>
-            <ol>
-                <li>Roll a 20-sided die using <code>Dice.roll(20)</code> and a damage die using
-                    <code>Dice.roll(damageDie)</code>.</li>
-                <li>Call <code>evaluateStrike(d20, attackBonus, targetAC, baseDmg, true)</code> to
-                    compute the final damage dealt.</li>
-                <li>Print a clear combat log line describing the outcome (crit, hit, or miss) against
-                    <code>targetName</code>, and return the damage dealt.</li>
-            </ol>
-        </li>
-        <li><strong>Behavior for <code>monsterAttack</code>:</strong>
-            <ol>
-                <li>Roll a 20-sided die using <code>Dice.roll(20)</code> and a damage die using
-                    <code>Dice.roll(damageDie)</code>.</li>
-                <li>Call <code>evaluateStrike(d20, attackBonus, targetAC, baseDmg, false)</code>
-                    (standard monsters do not crit or auto-miss on 1/20).</li>
-                <li>Print a combat log line for <code>monsterName</code> and return the damage dealt.</li>
-            </ol>
-        </li>
-    </ul>
+    <div class="design-context">
+        <h4>What These Functions Do &amp; Why They Exist</h4>
+        <p>
+            These two methods connect your <code>Dice.java</code> utility to your
+            <code>evaluateStrike</code> rule engine. By delegating the math to
+            <code>evaluateStrike</code>, crit/fumble logic lives in exactly <strong>one place</strong>
+            across the whole codebase.
+        </p>
+        <h4>Signatures &amp; Behavior</h4>
+        <ul class="param-list">
+            <li><code>public static int playerAttack(int attackBonus, int targetAC, int damageDie, String targetName)</code>
+                — rolls <code>d20 = Dice.roll(20)</code> and <code>baseDmg = Dice.roll(damageDie)</code>,
+                calls <code>evaluateStrike(d20, attackBonus, targetAC, baseDmg, true)</code>, prints
+                a combat log line naming <code>targetName</code>, and returns damage dealt.</li>
+            <li><code>public static int monsterAttack(int attackBonus, int targetAC, int damageDie, String monsterName)</code>
+                — same steps, except calls <code>evaluateStrike(..., false)</code> (monsters cannot
+                crit or auto-fumble).</li>
+        </ul>
+    </div>
 
     <div class="socratic">
-        <h3>Socratic Checkpoint — Single Source of Truth</h3>
+        <h3>Guided Program Design: Single Source of Truth</h3>
+        <p>Analyze modularity and probability edge cases:</p>
         <ol>
-            <li>Why is calling <code>evaluateStrike</code> from inside <code>playerAttack</code>
-                and <code>monsterAttack</code> better software design than copy-pasting the
-                <code>if/else</code> conditions into all three methods? If the game designer later
-                changes crits to triple damage (<code>baseDamage * 3</code>), how many lines of code
-                do you have to edit?</li>
-            <li>Look at how <code>CombatCheck.java</code> tests <code>playerAttack</code> in Part 2:
-                it calls <code>playerAttack(0, 50, 6, "Dragon")</code> 250 times. Since
-                <code>20 + 0</code> is only <code>20</code> (way below AC 50), how is it possible
-                for the player to ever deal damage in that test?</li>
+            <li><strong>Modularity:</strong> Why is calling <code>evaluateStrike</code> inside
+                <code>playerAttack</code> and <code>monsterAttack</code> better design than copying
+                the <code>if / else if</code> rules into both methods? If crits later change to
+                <code>baseDamage * 3</code>, how many places do you edit?</li>
+            <li><strong>Testing Randomness:</strong> How can a test call
+                <code>playerAttack(0, 50, 6, "Dragon")</code> 250 times and still verify damage &gt; 0
+                even though <code>20 + 0 &lt; 50</code>?</li>
+        </ol>
+    </div>
+
+    <div class="tinker">
+        <h3>Draft &amp; Test in <code>Combat.java</code></h3>
+        <ol>
+            <li>Write both <code>playerAttack</code> and <code>monsterAttack</code>, copy them into
+                <code>Combat.java</code>, and test with <code>java Combat</code> before unlocking
+                <code>CombatCheck.java</code> below?</li>
         </ol>
     </div>
 
     <div class="checklist">
         <h3>Day 1 Milestone — Done When</h3>
         <ul>
-            <li>All <strong>14 checks in Parts 1 and 2</strong> of <code>java CombatCheck</code> report <code>PASS</code></li>
-            <li>You have completed the reflection boxes above and downloaded your <code>.json</code> for Canvas</li>
+            <li>Parts 1 and 2 work cleanly in <code>java Combat</code></li>
+            <li>You unlock <code>CombatCheck.java</code> below and pass all <strong>14 checks in Parts 1 and 2</strong> (Parts 3–5 are tomorrow!)</li>
+            <li>You have downloaded your <code>.json</code> answers file for Canvas</li>
         </ul>
     </div>
 </div>

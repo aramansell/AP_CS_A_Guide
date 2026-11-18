@@ -1,0 +1,191 @@
+---
+import { CHECK_GATES, MASTER_TEACHER_PIN } from '../data/checkGates';
+
+interface Props {
+  canvasHref: string;
+}
+const { canvasHref } = Astro.props;
+const gates = Object.values(CHECK_GATES);
+
+function esc(s: string): string {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function fnv1a(s: string): string {
+  let h = 0x811c9dc5;
+  for (let k = 0; k < s.length; k++) {
+    h ^= s.charCodeAt(k);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(16);
+}
+
+const TEACHER_PW = '0316';
+const pwHash = fnv1a(TEACHER_PW);
+
+const rowsHtml = gates.map((g) => `
+  <tr>
+    <td><a href="../lessons/${esc(g.lessonId)}.html">${esc(g.lessonId)}</a></td>
+    <td>${esc(g.title)}</td>
+    <td><a href="../data/${esc(g.starterFile)}" download>${esc(g.starterFile)}</a></td>
+    <td><a href="../data/${esc(g.checkFile)}" download>${esc(g.checkFile)}</a></td>
+    <td>
+      <code class="pin-code">${esc(g.pin)}</code>
+      <button type="button" class="lab-copy-btn" data-copy-text="${esc(g.pin)}">Copy</button>
+    </td>
+    <td>${g.gatedOnPage ? 'Active' : 'Open'}</td>
+  </tr>
+`).join('');
+
+const vaultHtml = `
+  <div class="pin-hero">
+    <div>
+      <strong>Universal Master PIN</strong> (works on every gated lesson):
+      <code class="pin-code">${esc(MASTER_TEACHER_PIN)}</code>
+    </div>
+    <button type="button" class="lab-copy-btn" data-copy-text="${esc(MASTER_TEACHER_PIN)}">Copy Master PIN</button>
+  </div>
+
+  <h2>Lesson PINs &amp; Acceptance Tests</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lesson</th>
+        <th>Title</th>
+        <th>Starter</th>
+        <th>Check File</th>
+        <th>Lesson PIN</th>
+        <th>Page Gate</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rowsHtml}
+    </tbody>
+  </table>
+`;
+
+const vaultBytes = Buffer.from(vaultHtml, 'utf8');
+const keyBytes = Buffer.from('apcsa-teacher-' + TEACHER_PW, 'utf8');
+const xored = Buffer.alloc(vaultBytes.length);
+for (let i = 0; i < vaultBytes.length; i++) {
+  xored[i] = vaultBytes[i] ^ keyBytes[i % keyBytes.length];
+}
+const encodedVault = xored.toString('base64');
+---
+<div data-pagefind-ignore id="teacher-pin-gate" data-pw-hash={pwHash} data-vault={encodedVault}>
+  <nav>
+    <a href="../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href={canvasHref}>Teacher: Lab Forms + Canvas</a>
+    <span class="sep">/</span>
+    <span class="here">Check Gate PINs</span>
+  </nav>
+
+  <h1>Teacher Check Gate PINs</h1>
+
+  <p>
+    Design-First labs withhold <code>*Check.java</code> until a student either completes and passes
+    at least 75% of the page's Guided Design validator or enters a Teacher PIN. When a student
+    downloads their <code>.json</code> submission, <code>gateUnlocked</code> records whether they
+    unlocked via <code>design-check</code> or <code>teacher-pin</code>.
+  </p>
+
+  <div class="check-gate" id="teacher-pw-box">
+    <h2>Teacher Access Required</h2>
+    <p>Enter the teacher password to reveal the Master PIN and all lesson Check Gate PINs.</p>
+    <div class="gate-actions">
+      <div class="gate-pin-row">
+        <label for="teacher-pw-input">Password:</label>
+        <input type="password" id="teacher-pw-input" placeholder="Enter password" autocomplete="off" />
+        <button type="button" class="gate-verify-btn" id="teacher-pw-btn">Unlock Teacher PINs</button>
+      </div>
+    </div>
+    <div class="gate-feedback error" id="teacher-pw-err" hidden>Incorrect password.</div>
+  </div>
+
+  <div id="teacher-pin-vault" hidden></div>
+
+  <p><a href={canvasHref}>&larr; Lab Forms + Canvas guide</a></p>
+</div>
+
+<script is:inline>
+(function () {
+  var gate = document.getElementById('teacher-pin-gate');
+  if (!gate) return;
+  var pwHash = gate.getAttribute('data-pw-hash') || '';
+  var vaultB64 = gate.getAttribute('data-vault') || '';
+  var pwBox = document.getElementById('teacher-pw-box');
+  var pwInput = document.getElementById('teacher-pw-input');
+  var pwBtn = document.getElementById('teacher-pw-btn');
+  var pwErr = document.getElementById('teacher-pw-err');
+  var vaultEl = document.getElementById('teacher-pin-vault');
+  var SKEY = 'apcsa-teacher-pw';
+
+  function fnv1a(str) {
+    var h = 0x811c9dc5;
+    for (var i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+    return (h >>> 0).toString(16);
+  }
+
+  function decodeVault(pw) {
+    var bin = atob(vaultB64);
+    var xored = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) xored[i] = bin.charCodeAt(i);
+    var key = 'apcsa-teacher-' + pw;
+    var out = new Uint8Array(xored.length);
+    for (var j = 0; j < xored.length; j++) {
+      out[j] = xored[j] ^ key.charCodeAt(j % key.length);
+    }
+    return typeof TextDecoder !== 'undefined'
+      ? new TextDecoder().decode(out)
+      : String.fromCharCode.apply(null, out);
+  }
+
+  function tryUnlock(pw, save) {
+    if (!pw || fnv1a(pw) !== pwHash) return false;
+    if (save) {
+      try { sessionStorage.setItem(SKEY, pw); } catch (e) {}
+    }
+    if (vaultEl) {
+      vaultEl.innerHTML = decodeVault(pw);
+      vaultEl.hidden = false;
+    }
+    if (pwBox) pwBox.hidden = true;
+    if (pwErr) pwErr.hidden = true;
+    return true;
+  }
+
+  try {
+    var saved = sessionStorage.getItem(SKEY);
+    if (saved) tryUnlock(saved, false);
+  } catch (e) {}
+
+  function submitPw() {
+    var pw = pwInput ? pwInput.value.trim() : '';
+    if (!tryUnlock(pw, true) && pwErr) {
+      pwErr.hidden = false;
+      if (pwInput) {
+        pwInput.focus();
+        pwInput.select();
+      }
+    }
+  }
+
+  if (pwBtn) pwBtn.addEventListener('click', submitPw);
+  if (pwInput) {
+    pwInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        submitPw();
+      }
+    });
+  }
+})();
+</script>

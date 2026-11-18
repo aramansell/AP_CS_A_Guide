@@ -4,251 +4,300 @@ import Lesson from '../../layouts/LessonLayout.astro';
 const body = `<h1>4.5 — Loop Analysis, Fencepost Traps &amp; The LoopTracer Build</h1>
 
 <p>
-    <strong>CED Topics 2.1, 2.9 · 90-Minute Unified Build.</strong> On the AP CS A exam, nearly a
-    quarter of Multiple Choice questions ask you to determine how many times a loop executes, spot
-    an off-by-one ("fencepost") error, or trace a loop whose variable both gains and loses value
-    within the cycle. Today you build <code>LoopTracer.java</code> and confront the nastiest
-    loop-analysis traps on the exam.
+    <strong>CED Topics 2.1, 2.9 · 90-Minute Design-First Build.</strong> Nearly a quarter of AP CS A
+    Multiple Choice questions ask you to predict how many times a loop executes, spot an off-by-one
+    ("fencepost") error, or trace a loop whose state rises and falls inside the same iteration.
+    Today you will design and build <code>LoopTracer.java</code>—a telemetry and simulation module
+    built to defeat the exam's toughest loop-analysis traps on your very first run.
 </p>
 
 <div class="callout">
-    <strong>Spec-First Workflow (Download Both Files):</strong>
+    <strong>Design-First Workflow (One-Shot Challenge):</strong>
     <ul>
         <li>
-            <a href="../data/LoopTracer.java" download>LoopTracer.java</a> — starter stub where you
-            will assemble all four methods.
-        </li>
-        <li>
-            <a href="../data/LoopTracerCheck.java" download>LoopTracerCheck.java</a> — final
-            acceptance verification suite (17 checks across 4 parts).
+            <a href="../data/LoopTracer.java" download>LoopTracer.java</a> — starter file with
+            Javadocs, method stubs, and a built-in <strong>Dungeon Telemetry &amp; Mana
+            Simulator</strong> in <code>main()</code>.
         </li>
     </ul>
     <p style="margin-top:0.5rem; margin-bottom:0.25rem;">
-        <strong>How to work today:</strong> On AP MC and FRQ problems, you must trace loop counts
-        and edge cases by hand with zero test harness. For each part below, trace the tricky edge
-        cases on paper first, draft the code pieces in the prompts, combine them in
-        <code>LoopTracer.java</code>, and test your own boundary values <em>before</em> running
-        <code>LoopTracerCheck</code> at the end.
+        <strong>How to work today:</strong>
     </p>
-    <pre><code>javac LoopTracer.java LoopTracerCheck.java
-java LoopTracerCheck</code></pre>
+    <ol style="margin-bottom:0.5rem;">
+        <li><strong>Design before coding:</strong> Trace small values on paper and answer the Guided
+            Design questions on guard order, fencepost structure, intra-turn step ordering, and
+            infinite-loop detection.</li>
+        <li><strong>Draft &amp; simulate in the sandbox:</strong> Draft your method code in the box,
+            click <strong>Copy</strong> to paste it into <code>LoopTracer.java</code>, and check
+            your simulation outputs with:</li>
+    </ol>
+    <pre><code>javac LoopTracer.java
+java LoopTracer</code></pre>
+    <p style="margin-top:0.4rem; margin-bottom:0;">
+        <strong>Step 3 (One-Shot Pass):</strong> Once your sandbox telemetry matches your paper
+        traces, unlock <code>LoopTracerCheck.java</code> below and aim to pass all
+        <strong>17 checks</strong> on your very first run.
+    </p>
 </div>
 
 <!-- ============================================================ -->
 <div class="activity expand-app">
     <div class="activity-header">
-        <span class="activity-label">Parts 1 &amp; 2 · Guard Priority &amp; Fenceposts</span>
-        <span class="activity-time">~40 min</span>
+        <span class="activity-label">Part 1 · Loop Guards &amp; Termination Analysis</span>
+        <span class="activity-time">~20 min</span>
     </div>
 
     <h3>Part 1: <code>countWhileIterations(int start, int limit, int step)</code></h3>
 
-    <h4>AP Specification</h4>
-    <p>
-        Return the exact number of times the body of this loop executes:
-    </p>
-    <pre><code>int val = start;
+    <div class="design-context">
+        <h4>What This Function Does &amp; Why It Exists</h4>
+        <p>
+            Before executing an arbitrary spell-charge loop like:
+        </p>
+        <pre><code>int val = start;
 while (val &lt; limit) {
-    // body
     val += step;
 }</code></pre>
-    <ul>
-        <li>If <code>start &gt;= limit</code>, the condition is immediately <code>false</code> on
-            the first check, so the loop runs <code>0</code> times (even if <code>step &lt;= 0</code>!).</li>
-        <li>If <code>start &lt; limit</code> and <code>step &lt;= 0</code>, the loop would run
-            forever; return <code>-1</code> without hanging.</li>
-        <li>Otherwise, simulate or compute the exact number of iterations.</li>
-        <li><strong>Worked examples:</strong>
-            <ul>
-                <li><code>(0, 10, 3)</code> &rarr; <code>4</code> (<code>val</code> visits <code>0, 3, 6, 9</code>).</li>
-                <li><code>(2, 10, 4)</code> &rarr; <code>2</code> (<code>val</code> visits <code>2, 6</code>; stops at <code>10</code> since <code>10 &lt; 10</code> is <code>false</code>).</li>
-                <li><code>(12, 10, 0)</code> &rarr; <code>0</code> (loop test is <code>false</code> immediately!).</li>
-                <li><code>(0, 10, 0)</code> or <code>(0, 10, -2)</code> &rarr; <code>-1</code> (infinite loop).</li>
-            </ul>
-        </li>
-    </ul>
+        <p>
+            the engine's Telemetry Guard predicts <em>how many times the body will execute</em>—and
+            refuses to hang if a bad <code>step</code> would cause an infinite loop.
+        </p>
+        <h4>Parameters &amp; Return Value</h4>
+        <ul class="param-list">
+            <li><code>int start</code> — initial value of <code>val</code> before the loop begins.</li>
+            <li><code>int limit</code> — exclusive upper bound (<code>val &lt; limit</code>).</li>
+            <li><code>int step</code> — amount added to <code>val</code> each iteration (may be
+                positive, <code>0</code>, or negative!).</li>
+            <li><strong>Returns (<code>int</code>):</strong> exact number of loop iterations,
+                <code>0</code> if the loop never enters, or <code>-1</code> if it would run forever.</li>
+        </ul>
+        <h4>Walkthrough Examples</h4>
+        <ul class="param-list">
+            <li><code>(0, 10, 3)</code> &rarr; <code>4</code> (<code>val</code> visits
+                <code>0, 3, 6, 9</code>; stops at <code>12</code>).</li>
+            <li><code>(2, 10, 4)</code> &rarr; <code>2</code> (<code>val</code> visits
+                <code>2, 6</code>; stops when <code>val == 10</code> because
+                <code>10 &lt; 10</code> is <code>false</code>).</li>
+            <li><code>(12, 10, 0)</code> &rarr; <code>0</code> (condition <code>12 &lt; 10</code>
+                is immediately <code>false</code>, so <code>step == 0</code> never executes!).</li>
+            <li><code>(0, 10, 0)</code> or <code>(0, 10, -2)</code> &rarr; <code>-1</code>
+                (starts inside the loop and never progresses toward <code>limit</code>).</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Guided Program Design: <code>countWhileIterations</code></h3>
+        <p>Reason through the guard priority and loop structure before coding:</p>
+        <ol>
+            <li><strong>Guard Priority (Edge Case):</strong> Suppose you check
+                <code>if (step &lt;= 0) return -1;</code> <em>before</em> checking
+                <code>if (start &gt;= limit) return 0;</code>. Which walkthrough example breaks that
+                order, and what exact order of <code>if</code> guards prevents both false
+                <code>-1</code>s and infinite loops?</li>
+            <li><strong>Local Variables &amp; Simulation Loop:</strong> Once past the guards, what
+                local variables do you declare, and what <code>while</code> loop counts the exact
+                number of executions without an off-by-one error on <code>(2, 10, 4)</code>?</li>
+        </ol>
+    </div>
 
     <div class="tinker">
-        <h3>Build Step-by-Step: Draft the Pieces for <code>countWhileIterations</code></h3>
+        <h3>Draft &amp; Test in <code>LoopTracer.java</code></h3>
         <ol>
-            <li><strong>Piece A (Guard Priority):</strong> Suppose a student checks
-                <code>if (step &lt;= 0) return -1;</code> <em>before</em> checking
-                <code>if (start &gt;= limit) return 0;</code>. Which test input breaks that order,
-                and what are the two guards in the right order?</li>
-            <li><strong>Piece B (Simulation Loop &amp; Return):</strong> Write the loop and counter
-                that counts exact iterations once you know <code>start &lt; limit</code> and
-                <code>step &gt; 0</code>?</li>
+            <li>Write your complete <code>countWhileIterations</code> method body, copy it into
+                <code>LoopTracer.java</code>, and check the sandbox output for
+                <code>(0, 10, 3)</code>, <code>(2, 10, 4)</code>, <code>(12, 10, 0)</code>, and
+                <code>(0, 10, -2)</code>?</li>
         </ol>
-        <p>
-            Combine Pieces A and B inside <code>countWhileIterations</code> in
-            <code>LoopTracer.java</code>.
-        </p>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Part 2 · The Fencepost Pattern</span>
+        <span class="activity-time">~20 min</span>
     </div>
 
     <h3>Part 2: <code>buildRunedFence(String rune, int pillars)</code></h3>
 
-    <h4>AP Specification</h4>
-    <p>
-        Build a fence banner containing <code>pillars</code> copies of <code>"[" + rune + "]"</code>
-        connected by <code>"---"</code> dividers:
-    </p>
-    <ul>
-        <li><code>buildRunedFence("*", 3)</code> &rarr; <code>"[*]---[*]---[*]"</code> (3 pillars,
-            <strong>2</strong> dividers, no trailing <code>---</code>).</li>
-        <li><code>buildRunedFence("SOL", 1)</code> &rarr; <code>"[SOL]"</code> (1 pillar,
-            <strong>0</strong> dividers).</li>
-        <li>If <code>pillars &lt;= 0</code>, return <code>""</code>.</li>
-    </ul>
-
-    <div class="bug-hunt">
-        <h3>Edge-Case Analysis: The Fencepost Problem</h3>
+    <div class="design-context">
+        <h4>What This Function Does &amp; Why It Exists</h4>
         <p>
-            To build a 3-pillar fence, there are <code>3</code> pillars (<code>[*]</code>) but only
-            <code>2</code> spans of wire (<code>---</code>) between them.
+            To mark a warded arena border, the builder strings together <code>pillars</code> rune
+            posts (<code>"[" + rune + "]"</code>) linked by <code>"---"</code> energy spans. Just
+            like a real fence with 3 posts has only 2 rails between them, joining <em>N</em> items
+            with <em>N - 1</em> separators is the classic <strong>Fencepost Problem</strong>.
         </p>
+        <h4>Parameters &amp; Return Value</h4>
+        <ul class="param-list">
+            <li><code>String rune</code> (precondition: <code>rune != null</code>) — label inside
+                each pillar.</li>
+            <li><code>int pillars</code> — number of pillars to place.</li>
+            <li><strong>Returns (<code>String</code>):</strong> <code>pillars</code> posts connected
+                by <code>pillars - 1</code> dividers (no leading or trailing <code>"---"</code>), or
+                <code>""</code> if <code>pillars &lt;= 0</code>.</li>
+        </ul>
+        <h4>Walkthrough Examples</h4>
+        <ul class="param-list">
+            <li><code>("*", 3)</code> &rarr; <code>"[*]---[*]---[*]"</code> (3 posts, 2 dividers).</li>
+            <li><code>("SOL", 1)</code> &rarr; <code>"[SOL]"</code> (1 post, 0 dividers).</li>
+            <li><code>("*", 0)</code> or <code>("*", -2)</code> &rarr; <code>""</code>.</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Guided Program Design: <code>buildRunedFence</code></h3>
+        <p>Design a clean fencepost loop with zero trailing separators:</p>
         <ol>
-            <li>If a loop simply runs <code>pillars</code> times and does
-                <code>result += "[" + rune + "]---";</code> every iteration, what does
-                <code>buildRunedFence("*", 3)</code> return, and why does it fail?</li>
-            <li>Explain the "Fencepost Pattern": how do you place the first post outside the loop
-                (or check the loop index) so there are always <code>pillars - 1</code> dividers for
-                <code>pillars</code> posts?</li>
+            <li><strong>The Naive-Loop Trap:</strong> Why does a simple loop running
+                <code>pillars</code> times and appending <code>"[" + rune + "]---"</code> fail on
+                <code>("*", 3)</code>? How does placing the <em>first</em> post before the loop (and
+                looping <code>pillars - 1</code> times to append <code>"---[" + rune + "]"</code>)
+                solve the fencepost problem?</li>
+            <li><strong>Edge-Case Guard:</strong> If you place the first post before the loop, why
+                must you add an <code>if (pillars &lt;= 0)</code> guard at the very top of
+                <code>buildRunedFence</code> before initializing <code>result</code>?</li>
         </ol>
     </div>
 
     <div class="tinker">
-        <h3>Build Step-by-Step: Draft the Pieces for <code>buildRunedFence</code></h3>
+        <h3>Draft &amp; Test in <code>LoopTracer.java</code></h3>
         <ol>
-            <li><strong>Piece A (Non-Positive Guard &amp; First Post):</strong> Write the guard for
-                <code>pillars &lt;= 0</code> and the initial <code>result</code> holding the very
-                first pillar?</li>
-            <li><strong>Piece B (Divider + Post Loop):</strong> Write the <code>for</code> loop
-                that appends the remaining <code>pillars - 1</code> spans of
-                <code>"---[" + rune + "]"</code> and returns <code>result</code>?</li>
+            <li>Write your complete <code>buildRunedFence</code> method body, copy it into
+                <code>LoopTracer.java</code>, and check the sandbox banners for
+                <code>("*", 3)</code>, <code>("SOL", 1)</code>, and <code>("*", 0)</code>?</li>
         </ol>
-        <p>
-            Assemble <code>buildRunedFence</code> in <code>LoopTracer.java</code> and trace
-            <code>("*", 0)</code>, <code>("SOL", 1)</code>, and <code>("*", 3)</code>.
-        </p>
     </div>
 </div>
 
 <!-- ============================================================ -->
 <div class="activity rpg">
     <div class="activity-header">
-        <span class="activity-label">Parts 3 &amp; 4 · Spec, Edge Cases &amp; Build</span>
-        <span class="activity-time">~50 min</span>
+        <span class="activity-label">Part 3 · Periodic Cycles &amp; Peak-Before-Drain</span>
+        <span class="activity-time">~30 min</span>
     </div>
 
     <h3>Part 3: <code>firstTurnReachingMana(int startMana, int gainPerTurn, int drainEveryThirdTurn, int targetMana)</code></h3>
 
-    <h4>AP Specification</h4>
-    <p>
-        A mage starts with <code>startMana</code>. If <code>startMana &gt;= targetMana</code>
-        before Turn 1 even begins, return <code>0</code>. Otherwise, during each turn
-        <code>turn = 1, 2, 3, ...</code>:
-    </p>
-    <ol>
-        <li>The mage gains <code>gainPerTurn</code> mana.</li>
-        <li>If <code>turn</code> is a multiple of <code>3</code> (<code>turn % 3 == 0</code>), a
-            curse drains <code>drainEveryThirdTurn</code> mana during that same turn.</li>
-        <li>At the end of the turn (after any Turn-3 drain), check if mana is now
-            <code>&gt;= targetMana</code>. If so, return <code>turn</code>!</li>
-    </ol>
-    <ul>
-        <li>If the mage will <strong>never</strong> reach <code>targetMana</code>, return
-            <code>-1</code> without entering an infinite loop.</li>
-        <li><strong>Worked examples:</strong>
-            <ul>
-                <li><code>(20, 5, 2, 15)</code> &rarr; <code>0</code> (already at or above target before Turn 1).</li>
-                <li><code>(0, 5, 4, 15)</code> &rarr; <code>4</code> (T1: <code>5</code>, T2: <code>10</code>, T3: <code>10 + 5 - 4 = 11</code>, T4: <code>11 + 5 = 16 &gt;= 15</code>).</li>
-                <li><code>(0, 2, 6, 10)</code> &rarr; <code>-1</code> (every 3 turns nets <code>0</code>, never reaches <code>10</code>).</li>
-                <li><code>(6, 2, 10, 10)</code> &rarr; <code>2</code> (reaches <code>10</code> on Turn 2 <em>before</em> the Turn-3 drain fires!).</li>
-            </ul>
-        </li>
-    </ul>
-
-    <div class="bug-hunt">
-        <h3>Edge-Case Analysis: The Peak-Before-Drain Trap &amp; Turn-3 Ordering</h3>
+    <div class="design-context">
+        <h4>What This Function Does &amp; Why It Exists</h4>
         <p>
-            Over every 3-turn cycle, the mage's net mana change is
-            <code>3 * gainPerTurn - drainEveryThirdTurn</code>. Suppose a programmer writes this
-            infinite-loop check at the very top of the method:
+            A cursed wizard regenerates mana every turn, but every 3rd turn a curse siphons away a
+            burst of energy. Your turn simulator determines the exact turn number when the wizard
+            finally hits <code>targetMana</code> to cast their escape spell—or detects that the
+            curse permanently traps them below the goal.
         </p>
-        <pre><code>// Naive guard — why does this fail when the mage peaks early?
-if (3 * gainPerTurn - drainEveryThirdTurn &lt;= 0) {
-    return -1;
-}</code></pre>
+        <h4>Turn Simulation Rules &amp; Parameters</h4>
+        <ul class="param-list">
+            <li>If <code>startMana &gt;= targetMana</code> before Turn 1, return <code>0</code>.</li>
+            <li>On each turn <code>turn = 1, 2, 3, ...</code>:
+                <ol>
+                    <li>Add <code>gainPerTurn</code> to <code>mana</code>.</li>
+                    <li>If <code>turn % 3 == 0</code>, subtract <code>drainEveryThirdTurn</code>.</li>
+                    <li>At the end of the turn, if <code>mana &gt;= targetMana</code>, return
+                        <code>turn</code>.</li>
+                </ol>
+            </li>
+            <li><strong>Returns (<code>int</code>):</strong> first winning turn number,
+                <code>0</code> if already at target, or <code>-1</code> if <code>targetMana</code>
+                can never be reached.</li>
+        </ul>
+        <h4>Walkthrough Examples</h4>
+        <ul class="param-list">
+            <li><code>(0, 5, 4, 15)</code> &rarr; <code>4</code> (T1: <code>5</code>, T2:
+                <code>10</code>, T3: <code>10 + 5 - 4 = 11</code>, T4: <code>11 + 5 = 16 &gt;= 15</code>).</li>
+            <li><code>(6, 2, 10, 10)</code> &rarr; <code>2</code> (3-turn net is negative
+                <code>6 - 10 = -4</code>, yet Turn 1 reaches <code>8</code> and Turn 2 reaches
+                <code>10</code> <em>before</em> Turn 3's drain hits!).</li>
+            <li><code>(0, 2, 6, 10)</code> &rarr; <code>-1</code> (every 3 turns nets
+                <code>0</code>, so mana cycles <code>2, 4, 0, 2, 4, 0...</code> forever).</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Guided Program Design: <code>firstTurnReachingMana</code></h3>
+        <p>Analyze loop choice, order inside a turn, and the early-peak trap:</p>
         <ol>
-            <li>Trace <code>firstTurnReachingMana(6, 2, 10, 10)</code>: even though the 3-turn net
-                change is negative (<code>6 - 10 = -4</code>), what is the mage's mana at the end
-                of Turn 1 and Turn 2? Why does the mage win on Turn 2 <em>before</em> the Turn-3
-                drain ever fires?</li>
-            <li>Trace <code>firstTurnReachingMana(0, 5, 4, 15)</code> on Turn 3: why would checking
-                <code>if (mana &gt;= targetMana)</code> <em>before</em> subtracting
-                <code>drainEveryThirdTurn</code> wrongly return <code>3</code> instead of
-                <code>4</code>?</li>
-            <li>Why is it safe to simulate Turn 1, Turn 2, and Turn 3 first, and only return
-                <code>-1</code> if the mage hasn't reached <code>targetMana</code> by the end of
-                Turn 3 AND their mana at the end of Turn 3 is <code>&lt;= startMana</code>?</li>
+            <li><strong>Loop Choice &amp; Order of Operations:</strong> Why must this use a
+                <code>while</code> loop rather than a fixed <code>for</code> loop? Inside one turn
+                (using Turn 3 of <code>(0, 5, 4, 15)</code> as proof), why would checking
+                <code>mana &gt;= targetMana</code> <em>before</em> subtracting
+                <code>drainEveryThirdTurn</code> return the wrong turn number?</li>
+            <li><strong>Stall Detection Edge Case:</strong> Why does checking
+                <code>if (3 * gainPerTurn - drainEveryThirdTurn &lt;= 0) return -1;</code> at the
+                top of the method fail on <code>(6, 2, 10, 10)</code>? Why is it safe to simulate at
+                least through Turn 3 and only return <code>-1</code> if at the end of Turn 3 the
+                mage hasn't won and <code>mana &lt;= startMana</code>?</li>
         </ol>
     </div>
 
     <div class="tinker">
-        <h3>Build Step-by-Step: Draft the Pieces for <code>firstTurnReachingMana</code></h3>
+        <h3>Draft &amp; Test in <code>LoopTracer.java</code></h3>
         <ol>
-            <li><strong>Piece A (Already-At-Target Guard &amp; Setup):</strong> Write the
-                <code>startMana &gt;= targetMana</code> guard and initialize <code>mana</code> and
-                <code>turn</code>?</li>
-            <li><strong>Piece B (Turn Loop, Intra-Turn Order &amp; Cycle Guard):</strong> Inside a
-                <code>while (true)</code> loop, write the exact sequence for one turn: increment
-                <code>turn</code>, add <code>gainPerTurn</code>, conditionally apply
-                <code>drainEveryThirdTurn</code> on multiples of 3, check for victory
-                (<code>mana &gt;= targetMana</code>), and check the Turn-3 stall guard
-                (<code>turn == 3 &amp;&amp; mana &lt;= startMana</code>)?</li>
+            <li>Write your complete <code>firstTurnReachingMana</code> method body, copy it into
+                <code>LoopTracer.java</code>, and verify all four walkthrough scenarios in
+                <code>java LoopTracer</code>?</li>
         </ol>
-        <p>
-            Combine Pieces A and B inside <code>firstTurnReachingMana</code> in
-            <code>LoopTracer.java</code>.
-        </p>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="activity expand-app">
+    <div class="activity-header">
+        <span class="activity-label">Part 4 · Non-Unit Step Nested Loop Tracing</span>
+        <span class="activity-time">~20 min</span>
     </div>
 
     <h3>Part 4: <code>countTriangularSteps(int n)</code></h3>
 
-    <h4>AP Specification</h4>
-    <p>
-        Return the total number of times <code>steps++</code> executes in this nested loop (or
-        <code>0</code> if <code>n &lt;= 0</code>):
-    </p>
-    <pre><code>int steps = 0;
+    <div class="design-context">
+        <h4>What This Function Does &amp; Why It Exists</h4>
+        <p>
+            AP Multiple Choice questions love pairing a dependent inner start (<code>j = i</code>)
+            with a non-unit step (<code>j += 2</code>). Writing an instrumented counter lets you
+            verify your hand-trace tables against actual Java execution.
+        </p>
+        <pre><code>int steps = 0;
 for (int i = 1; i &lt;= n; i++) {
     for (int j = i; j &lt;= n; j += 2) {
         steps++;
     }
 }</code></pre>
+        <h4>Parameters &amp; Return Value</h4>
+        <ul class="param-list">
+            <li><code>int n</code> — upper bound of both loops (if <code>n &lt;= 0</code>, return
+                <code>0</code>).</li>
+            <li><strong>Returns (<code>int</code>):</strong> total executions of
+                <code>steps++</code>.</li>
+        </ul>
+    </div>
+
+    <div class="socratic">
+        <h3>Guided Program Design: <code>countTriangularSteps</code></h3>
+        <p>Hand-trace the loop pairs before implementing:</p>
+        <ol>
+            <li><strong>Hand Trace:</strong> List the exact <code>j</code> values visited for each
+                <code>i</code> when <code>n = 4</code> and when <code>n = 5</code>, and state the
+                total <code>steps</code> for both (plus how <code>i &lt;= n</code> handles
+                <code>n &lt;= 0</code> without a separate guard)?</li>
+        </ol>
+    </div>
 
     <div class="tinker">
-        <h3>Trace &amp; Build: Hand-Trace Before Coding</h3>
+        <h3>Draft &amp; Test in <code>LoopTracer.java</code></h3>
         <ol>
-            <li>Hand-trace the exact <code>(i, j)</code> pairs and total <code>steps</code> for
-                <code>n = 4</code> and <code>n = 5</code> (remember <code>j</code> jumps by
-                <code>2</code>!)?</li>
-            <li>How does the outer loop condition <code>i &lt;= n</code> handle
-                <code>n &lt;= 0</code> automatically without an extra <code>if</code> guard?</li>
+            <li>Write your <code>countTriangularSteps</code> method body, copy it into
+                <code>LoopTracer.java</code>, and check <code>java LoopTracer</code> against your
+                paper trace before unlocking <code>LoopTracerCheck.java</code> below?</li>
         </ol>
-        <p>
-            Implement <code>countTriangularSteps</code> in <code>LoopTracer.java</code>. Test all
-            four methods in a scratch <code>main</code> against your hand-traced values, and
-            <strong>only then</strong> run <code>java LoopTracerCheck</code> as final verification.
-        </p>
     </div>
 
     <div class="checklist">
         <h3>Done When</h3>
         <ul>
-            <li>All four methods in <code>LoopTracer.java</code> were built from your pieces and verified against your own traces first</li>
-            <li><code>java LoopTracerCheck</code> reports <strong><code>17 passed, 0 failed</code></strong></li>
-            <li>You have completed the reflection and code-piece boxes above and downloaded your <code>.json</code> for Canvas</li>
+            <li>All four methods produce expected traces in <code>java LoopTracer</code></li>
+            <li>You unlock <code>LoopTracerCheck.java</code> below and aim for <strong><code>17 passed, 0 failed</code></strong> on your first run</li>
+            <li>You have downloaded your <code>.json</code> answers file for Canvas</li>
         </ul>
     </div>
 </div>

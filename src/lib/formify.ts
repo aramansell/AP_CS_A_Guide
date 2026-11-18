@@ -76,12 +76,16 @@ function isQuestion(text: string): boolean {
 
 function field(qid: string, block: string, question: string): string {
   const q = escapeAttr(question.slice(0, 400));
+  const inputId = 'ans-' + qid;
   return (
-    '<label class="lab-field" data-pagefind-ignore>' +
-    '<span class="lab-field-label">Your answer</span>' +
-    '<textarea class="lab-answer" rows="2" data-q="' + qid + '" data-block="' + block +
-    '" data-question="' + q + '" placeholder="write your answer, then keep going"></textarea>' +
-    '</label>'
+    '<div class="lab-field" data-pagefind-ignore>' +
+    '<div class="lab-field-head">' +
+    '<label class="lab-field-label" for="' + inputId + '">Your design / code</label>' +
+    '<button type="button" class="lab-copy-btn" data-copy-for="' + qid + '" aria-label="Copy your answer">Copy</button>' +
+    '</div>' +
+    '<textarea class="lab-answer" rows="3" id="' + inputId + '" data-q="' + qid + '" data-block="' + block +
+    '" data-question="' + q + '" placeholder="write your design or code here, then keep going"></textarea>' +
+    '</div>'
   );
 }
 

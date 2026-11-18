@@ -82,9 +82,13 @@ code {
     padding: 0.15em 0.4em;
     border-radius: 3px;
 }
+.pre-wrap {
+    position: relative;
+    margin: 0.75rem 0 1.25rem;
+}
 pre {
     background: var(--code-bg);
-    padding: 1rem 1.25rem;
+    padding: 1.85rem 1.25rem 1rem;
     border-radius: 6px;
     overflow-x: auto;
     margin: 0.75rem 0 1.25rem;
@@ -93,7 +97,35 @@ pre {
     line-height: 1.5;
     position: relative; /* the language badge in the corner is positioned against this */
 }
+.pre-wrap pre { margin: 0; }
 pre code { background: none; padding: 0; border-radius: 0; }
+
+.pre-copy-btn,
+.lab-copy-btn {
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 0.16rem 0.52rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.pre-copy-btn {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.5rem;
+    z-index: 2;
+}
+.pre-copy-btn:hover,
+.lab-copy-btn:hover,
+.pre-copy-btn.copied,
+.lab-copy-btn.copied {
+    color: var(--accent);
+    border-color: var(--accent);
+}
 
 /* ---- Syntax colour — VS Code Dark+ --------------------------------------
    These nine hexes ARE the theme. Dark+ is what current VS Code ships, and
@@ -126,8 +158,8 @@ pre code { background: none; padding: 0; border-radius: 0; }
 pre[data-lang]::after {
     content: attr(data-lang);
     position: absolute;
-    top: 0.4rem;
-    right: 0.7rem;
+    top: 0.48rem;
+    right: 4.3rem;
     font-size: 10px;
     letter-spacing: 0.09em;
     text-transform: uppercase;
@@ -752,30 +784,199 @@ th { color: var(--accent); font-weight: 600; }
     margin: 0.5rem 0 1rem;
     font-size: 13px;
 }
+.lab-field-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
 .lab-field-label {
     display: block;
     color: var(--accent);
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0;
 }
 .lab-answer {
     display: block;
     width: 100%;
-    font: inherit;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 13px;
+    line-height: 1.45;
     color: var(--text);
     background: var(--code-bg);
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 0.5rem 0.6rem;
+    padding: 0.55rem 0.65rem;
     resize: vertical;
-    min-height: 2.4rem;
+    min-height: 2.8rem;
 }
 .lab-answer:focus {
     outline: 2px solid var(--accent);
     outline-offset: 1px;
     border-color: var(--accent);
+}
+.lab-answer.needs-work {
+    border-color: var(--warn);
+    outline: 1px solid var(--warn);
+}
+
+/* ---- One-Shot Check Gate ---- */
+.check-gate {
+    margin-top: 2rem;
+    padding: 1.25rem 1.4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--warn);
+    border-radius: 8px;
+}
+.check-gate.is-unlocked {
+    border-left-color: var(--accent);
+}
+.check-gate h2 {
+    margin-top: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+    color: #fff;
+    font-size: 1.15rem;
+}
+.gate-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    margin-top: 0.85rem;
+}
+.gate-verify-btn,
+.gate-download-btn {
+    font: inherit;
+    font-weight: 600;
+    color: #10231a;
+    background: var(--accent);
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+.gate-verify-btn:hover,
+.gate-download-btn:hover { background: #7dd07d; }
+.gate-pin-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 13px;
+    color: var(--muted);
+}
+.gate-pin-row input {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    width: 9.5rem;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.35rem 0.55rem;
+    text-transform: uppercase;
+}
+.gate-pin-btn {
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.35rem 0.75rem;
+    cursor: pointer;
+}
+.gate-pin-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.gate-feedback {
+    margin-top: 0.9rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    background: rgba(232, 184, 75, 0.1);
+    border: 1px solid rgba(232, 184, 75, 0.45);
+    font-size: 13.5px;
+}
+.gate-feedback.error {
+    background: rgba(224, 85, 85, 0.1);
+    border-color: rgba(224, 85, 85, 0.45);
+}
+.gate-feedback ul { margin: 0.35rem 0 0 1.25rem; }
+.gate-unlocked {
+    margin-top: 1rem;
+    padding: 1rem 1.1rem;
+    border-radius: 6px;
+    background: rgba(108, 191, 108, 0.08);
+    border: 1px solid var(--accent-dim);
+}
+.gate-unlocked-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+}
+.gate-unlocked-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.4rem 0 0.75rem;
+}
+
+/* ---- Design-First Concept & Parameter Cards ---- */
+.design-context {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.9rem 1.1rem;
+    margin: 0.75rem 0 1rem;
+}
+.design-context h4 {
+    margin-top: 0;
+    color: var(--accent);
+    font-size: 0.92rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.param-list {
+    margin: 0.35rem 0 0.65rem 1.25rem;
+}
+.param-list li {
+    margin-bottom: 0.3rem;
+}
+
+/* ---- Teacher PIN Page ---- */
+.pin-hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--accent-dim);
+    border-radius: 8px;
+    margin: 1rem 0 1.5rem;
+}
+.pin-code {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--code-bg);
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
 }
 
 .lab-bar {
@@ -917,7 +1118,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 /* ---- Print ---- */
 @media print {
     .top-nav, .lesson-nav, .progress-toggle, .progress-note,
-    .lab-bar, .lab-field, .dashboard-total, .unit-selector,
+    .lab-bar, .lab-field, .check-gate, .pre-copy-btn, .lab-copy-btn,
+    .dashboard-total, .unit-selector,
     .progress-reset, .mywork, .search-form, .skip-link,
     .lesson-foot {
         display: none !important;

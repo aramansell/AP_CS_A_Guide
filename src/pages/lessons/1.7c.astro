@@ -18,16 +18,11 @@ const body = `<h1>1.7c — Dice Roller: Testing &amp; Integration</h1>
     <p>
         <code>DiceCheck.java</code> is an acceptance test that calls every method in
         your <code>Dice.java</code> and prints <code>PASS</code> or <code>FAIL</code>
-        for each check. It does not read your code — it runs it, so a
-        <code>PASS</code> means the method genuinely behaves. Download
-        <a href="../data/DiceCheck.java" download>DiceCheck.java</a>, put it beside
-        your <code>Dice.java</code>, and run it:
+        for each check. Prove every method works in <code>DiceTester.java</code> on paper
+        and in the terminal first, answer the checkpoint below, and then unlock
+        <code>DiceCheck.java</code> at the bottom of the page for a one-shot pass of
+        <code>30 passed, 0 failed</code>.
     </p>
-    <pre><code>javac Dice.java DiceCheck.java
-java DiceCheck</code></pre>
-    <p>Both files must compile before anything runs. The last two lines count the results:</p>
-    <pre><code>30 passed, 0 failed
-Your Dice engine meets the spec.</code></pre>
 
     <p>
         A passing suite is the goal, but it is not the whole job — you still need to be

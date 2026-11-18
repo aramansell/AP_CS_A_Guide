@@ -35,31 +35,15 @@ const body = `<h1>1.7a — Dice Roller: roll()</h1>
 }</code></pre>
 
     <p>
-        You also need a third file, which you do not write. Download
-        <a href="../data/DiceCheck.java" download>DiceCheck.java</a> and put it in the
-        same folder as your <code>Dice.java</code>. It is an acceptance test: it calls
-        every method you are asked to build and tells you whether each one is correct.
+        Test each method in your <code>DiceTester.java</code> <code>main</code> method as you go:
     </p>
-
-    <h3>How to Run the Acceptance Test</h3>
-
+    <pre><code>javac Dice.java DiceTester.java
+java DiceTester</code></pre>
     <p>
-        Download <a href="../data/DiceCheck.java" download>DiceCheck.java</a>, put it
-        beside your <code>Dice.java</code>, and from a terminal in that folder run:
-    </p>
-    <pre><code>javac Dice.java DiceCheck.java
-java DiceCheck</code></pre>
-    <p>
-        The first command compiles both files together. The second runs the tests and
-        prints a <code>PASS</code> or <code>FAIL</code> for every check. The last line
-        counts them:
-    </p>
-    <pre><code>30 passed, 0 failed
-Your Dice engine meets the spec.</code></pre>
-    <p>
-        You cannot pass all of these until you have built every method in 1.7a, 1.7b,
-        and 1.7c — so expect <code>FAIL</code> lines at the start. Run it again after
-        each method you finish and watch the failures shrink. The
+        Once your <code>1.7a</code> methods pass your own tests in <code>DiceTester</code> (and
+        you finish the checkpoints below), you can unlock <code>DiceCheck.java</code> at the bottom
+        of the page to verify your progress—note that all <strong>30 checks</strong> won't pass
+        until you finish <code>1.7b</code> and <code>1.7c</code>. The
         <a href="../docs/unit-01/dice-roller.html">full Dice Roller guide</a> walks
         through the setup in more detail.
     </p>

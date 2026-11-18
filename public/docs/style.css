@@ -93,9 +93,13 @@ code {
     padding: 0.15em 0.4em;
     border-radius: 3px;
 }
+.pre-wrap {
+    position: relative;
+    margin: 0.75rem 0 1.25rem;
+}
 pre {
     background: var(--code-bg);
-    padding: 1rem 1.25rem;
+    padding: 1.85rem 1.25rem 1rem;
     border-radius: 6px;
     overflow-x: auto;
     margin: 0.75rem 0 1.25rem;
@@ -104,10 +108,32 @@ pre {
     line-height: 1.5;
     position: relative; /* the language badge in the corner is positioned against this */
 }
+.pre-wrap pre { margin: 0; }
 pre code {
     background: none;
     padding: 0;
     border-radius: 0;
+}
+.pre-copy-btn {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.5rem;
+    z-index: 2;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 0.16rem 0.52rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+.pre-copy-btn:hover,
+.pre-copy-btn.copied {
+    color: var(--accent);
+    border-color: var(--accent);
 }
 
 /* ---- Syntax colour — VS Code Dark+ --------------------------------------
@@ -130,8 +156,8 @@ pre code {
 pre[data-lang]::after {
     content: attr(data-lang);
     position: absolute;
-    top: 0.4rem;
-    right: 0.7rem;
+    top: 0.48rem;
+    right: 4.3rem;
     font-size: 10px;
     letter-spacing: 0.09em;
     text-transform: uppercase;
@@ -308,7 +334,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* ---- Print ---- */
 @media print {
-    .top-nav, .search-form, .skip-link { display: none !important; }
+    .top-nav, .search-form, .skip-link, .pre-copy-btn { display: none !important; }
     body { background: #fff; color: #000; padding: 0; }
     a { color: #000; text-decoration: none; }
     h1, h2, h3, th, code { color: #000; }

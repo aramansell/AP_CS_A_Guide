@@ -68,5 +68,93 @@ const tabs = [
     <slot />
 </div><!-- .page -->
 
+<script is:inline>
+(function () {
+  function copyText(text, btn, emptyLabel) {
+    var val = text == null ? '' : String(text);
+    if (!val.trim()) {
+      flash(btn, emptyLabel || 'Empty');
+      return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(val).then(function () {
+        flash(btn, 'Copied!');
+      }, function () {
+        fallbackCopy(val, btn);
+      });
+    } else {
+      fallbackCopy(val, btn);
+    }
+  }
+
+  function fallbackCopy(val, btn) {
+    var ta = document.createElement('textarea');
+    ta.value = val;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      flash(btn, 'Copied!');
+    } catch (e) {
+      flash(btn, 'Failed');
+    }
+    ta.remove();
+  }
+
+  function flash(btn, label) {
+    if (!btn.dataset.origText) btn.dataset.origText = btn.textContent;
+    btn.textContent = label;
+    btn.classList.toggle('copied', label === 'Copied!');
+    clearTimeout(btn._copyTimer);
+    btn._copyTimer = setTimeout(function () {
+      btn.textContent = btn.dataset.origText;
+      btn.classList.remove('copied');
+    }, 1500);
+  }
+
+  document.querySelectorAll('pre').forEach(function (pre) {
+    if (pre.parentElement && pre.parentElement.classList.contains('pre-wrap')) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'pre-wrap';
+    pre.parentNode.insertBefore(wrap, pre);
+    wrap.appendChild(pre);
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pre-copy-btn';
+    btn.textContent = 'Copy';
+    btn.setAttribute('aria-label', 'Copy code');
+    btn.setAttribute('data-pagefind-ignore', '');
+    btn.addEventListener('click', function () {
+      var codeEl = pre.querySelector('code');
+      var raw = (codeEl ? codeEl.textContent : pre.textContent) || '';
+      copyText(raw.replace(/\n$/, ''), btn);
+    });
+    wrap.appendChild(btn);
+  });
+
+  document.addEventListener('click', function (e) {
+    var labBtn = e.target.closest('.lab-copy-btn');
+    if (labBtn) {
+      var qid = labBtn.getAttribute('data-copy-for');
+      var ta = qid ? document.getElementById('ans-' + qid) : null;
+      if (!ta) {
+        var field = labBtn.closest('.lab-field');
+        ta = field ? field.querySelector('textarea.lab-answer') : null;
+      }
+      copyText(ta ? ta.value : '', labBtn, 'Empty');
+      return;
+    }
+    var directBtn = e.target.closest('[data-copy-text]');
+    if (directBtn) {
+      copyText(directBtn.getAttribute('data-copy-text') || '', directBtn);
+    }
+  });
+})();
+</script>
+
 </body>
 </html>

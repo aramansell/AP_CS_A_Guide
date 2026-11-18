@@ -11,9 +11,13 @@
  * Also renders the per-student "I finished this lesson" progress toggle
  * (stored in localStorage, read back on the dashboard).
  */
+import fs from 'node:fs';
+import path from 'node:path';
 import Base from './BaseLayout.astro';
 import { LESSON_CHAIN } from '../data/curriculum';
 import { LESSONS } from '../data/lessons';
+import { CHECK_GATES, MASTER_TEACHER_PIN } from '../data/checkGates';
+import { ANSWER_KEYS } from '../data/answerKeys';
 import { formify } from '../lib/formify';
 
 interface Props {
@@ -46,6 +50,37 @@ const targets = meta?.targets ?? [];
 const h1CloseIdx = formBody.indexOf('</h1>');
 const headingHtml = h1CloseIdx !== -1 ? formBody.slice(0, h1CloseIdx + 5) : '';
 const restBodyHtml = h1CloseIdx !== -1 ? formBody.slice(h1CloseIdx + 5) : formBody;
+
+function pinHash(s: string): string {
+  let h = 0x811c9dc5;
+  for (let k = 0; k < s.length; k++) {
+    h ^= s.charCodeAt(k);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(16);
+}
+
+const gate = CHECK_GATES[id];
+let encodedCheck = '';
+let designKeysB64 = '';
+let pinHashesJson = '[]';
+let starterClass = '';
+if (gate?.gatedOnPage) {
+  const checkPath = path.resolve(process.cwd(), 'public', 'data', gate.checkFile);
+  const rawBytes = fs.readFileSync(checkPath);
+  const keyBytes = Buffer.from('apcsa-gate-' + id, 'utf8');
+  const xored = Buffer.alloc(rawBytes.length);
+  for (let idx = 0; idx < rawBytes.length; idx++) {
+    xored[idx] = rawBytes[idx] ^ keyBytes[idx % keyBytes.length];
+  }
+  encodedCheck = xored.toString('base64');
+  designKeysB64 = Buffer.from(JSON.stringify(ANSWER_KEYS[id] ?? {}), 'utf8').toString('base64');
+  pinHashesJson = JSON.stringify([
+    pinHash(gate.pin.toUpperCase()),
+    pinHash(MASTER_TEACHER_PIN.toUpperCase()),
+  ]);
+  starterClass = gate.starterFile.replace(/\.java$/, '');
+}
 ---
 <Base title={title} active="dashboard" root={root} docsHome={root + '/docs/index.html'} css={css}
   description={"Lesson " + id + " " + lessonTitle + " — AP CS A. Predict-first labs, bug hunts, and checkpoints with answer boxes you can download and turn in."}>
@@ -82,6 +117,48 @@ const restBodyHtml = h1CloseIdx !== -1 ? formBody.slice(h1CloseIdx + 5) : formBo
   </header>
 
   <Fragment set:html={restBodyHtml} />
+
+  {gate?.gatedOnPage && (
+    <section
+      class="check-gate"
+      id="check-gate"
+      data-lesson={id}
+      data-check-file={gate.checkFile}
+      data-payload={encodedCheck}
+      data-keys={designKeysB64}
+      data-pin-hashes={pinHashesJson}
+      data-pagefind-ignore
+    >
+      <h2>One-Shot Acceptance Challenge: Unlock <code>{gate.checkFile}</code></h2>
+      <p>
+        Complete at least 75% of the Guided Design &amp; Code Draft boxes above and test your methods by running{' '}
+        <code>{gate.sandboxCmd ?? ('java ' + starterClass)}</code> in your terminal first. When your code is ready to pass
+        on the very first run, verify your design below (or enter a Teacher PIN) to unlock{' '}
+        <code>{gate.checkFile}</code>.
+      </p>
+      <div class="gate-actions">
+        <button type="button" class="gate-verify-btn" id="gate-verify-btn">
+          Verify My Design &amp; Unlock {gate.checkFile}
+        </button>
+        <div class="gate-pin-row">
+          <label for="gate-pin-input">Teacher PIN:</label>
+          <input type="text" id="gate-pin-input" placeholder="Enter PIN" autocomplete="off" />
+          <button type="button" class="gate-pin-btn" id="gate-pin-btn">Unlock with PIN</button>
+        </div>
+      </div>
+      <div class="gate-feedback" id="gate-feedback" hidden></div>
+      <div class="gate-unlocked" id="gate-unlocked" hidden>
+        <span class="gate-unlocked-badge">Unlocked &middot; Ready for Your One-Shot Verification</span>
+        <div class="gate-unlocked-row">
+          <button type="button" class="gate-download-btn" id="gate-download-btn">
+            Download {gate.checkFile}
+          </button>
+          <span class="lab-note" style="margin:0;">Save it into the same folder as <code>{gate.starterFile}</code> and run:</span>
+        </div>
+        <pre><code>{gate.compileCmd}</code></pre>
+      </div>
+    </section>
+  )}
 
   {questionCount > 0 && (
     <div class="lab-bar" data-lesson={id} data-lesson-title={lessonTitle} data-count={questionCount} data-pagefind-ignore>

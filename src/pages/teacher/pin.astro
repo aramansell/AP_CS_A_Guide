@@ -1,0 +1,9 @@
+---
+// Alias route (/teacher/pin.html) matching /teachers/pin.html.
+import Base from '../../layouts/BaseLayout.astro';
+import TeacherPinView from '../../components/TeacherPinView.astro';
+---
+<Base title="Teacher Check Gate PINs — AP CS A" active={undefined} root=".." docsHome="../docs/index.html" css="../style.css"
+  description="Teacher PIN lookup for unlocking *Check.java acceptance test gates.">
+  <TeacherPinView canvasHref="../teachers/canvas.html" />
+</Base>
